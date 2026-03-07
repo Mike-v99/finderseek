@@ -549,6 +549,207 @@ function UpgradeBanner({ onUpgrade, t }) {
   );
 }
 
+
+// ─── Claim Tab ─────────────────────────────────────────────────────────────
+function ClaimTab({ hunt, t, isDark }) {
+  const [digits, setDigits] = useState(["","","","","",""]);
+  const [status, setStatus] = useState("idle"); // idle | checking | success | error | used
+  const [showConfetti, setShowConfetti] = useState(false);
+  const inputRefs = useRef([]);
+
+  const handleDigit = (i, val) => {
+    if(!/^[0-9]?$/.test(val)) return;
+    const next = [...digits];
+    next[i] = val;
+    setDigits(next);
+    if(val && i < 5) inputRefs.current[i+1]?.focus();
+  };
+
+  const handleKeyDown = (i, e) => {
+    if(e.key==="Backspace" && !digits[i] && i > 0) {
+      inputRefs.current[i-1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    const paste = e.clipboardData.getData("text").replace(/\D/g,"").slice(0,6);
+    if(paste.length === 6) {
+      setDigits(paste.split(""));
+      inputRefs.current[5]?.focus();
+    }
+  };
+
+  const code = digits.join("");
+
+  const submit = async () => {
+    if(code.length < 6) return;
+    setStatus("checking");
+    // Simulate checking against Supabase
+    // TODO: replace with real Supabase lookup against find_codes table
+    await new Promise(r => setTimeout(r, 1400));
+    // Demo: any 6-digit code starting with "4" succeeds
+    if(code.startsWith("4")) {
+      setStatus("success");
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    } else if(code === "000000") {
+      setStatus("used");
+    } else {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 2500);
+    }
+  };
+
+  const reset = () => { setDigits(["","","","","",""]); setStatus("idle"); inputRefs.current[0]?.focus(); };
+
+  return (
+    <div style={{ display:"flex",flexDirection:"column",gap:"16px",animation:"slideIn .3s ease" }}>
+
+      {/* Confetti overlay */}
+      {showConfetti && (
+        <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:200,overflow:"hidden" }}>
+          {Array.from({length:60}).map((_,i) => {
+            const colors = ["#c8860a","#e8a820","#4caf50","#5b8dee","#e05599","#fff8e7","#ff6b6b"];
+            const color = colors[i % colors.length];
+            const left = Math.random()*100;
+            const delay = Math.random()*2;
+            const dur = 2.5 + Math.random()*2;
+            const size = 6 + Math.random()*8;
+            return (
+              <div key={i} style={{
+                position:"absolute", top:"-10px",
+                left:`${left}%`, width:`${size}px`, height:`${size}px`,
+                background:color, borderRadius: i%3===0 ? "50%" : "2px",
+                animation:`confettiFall ${dur}s ${delay}s linear forwards`,
+                transform:`rotate(${Math.random()*360}deg)`,
+              }} />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Header card */}
+      <div style={{ background:t.prizeBg,border:`1px solid ${t.prizeBorder}`,borderRadius:"16px",padding:"18px 20px",textAlign:"center" }}>
+        <div style={{ fontSize:"36px",marginBottom:"8px" }}>✉️</div>
+        <div style={{ color:t.text,fontSize:"18px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"4px" }}>Found the Envelope?</div>
+        <div style={{ color:t.textMuted,fontSize:"13px",lineHeight:1.6 }}>Enter the 6-digit code inside to claim your prize. Each code can only be used once.</div>
+      </div>
+
+      {status === "success" ? (
+        /* ── SUCCESS STATE ── */
+        <div style={{ background:`linear-gradient(135deg,${t.green}18,${t.green}08)`,border:`2px solid ${t.green}`,borderRadius:"20px",padding:"28px 20px",textAlign:"center" }}>
+          <div style={{ fontSize:"56px",marginBottom:"12px" }}>🏆</div>
+          <div style={{ color:t.green,fontSize:"22px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"6px" }}>You found it!</div>
+          <div style={{ color:t.text,fontSize:"20px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"4px" }}>{hunt.prize}</div>
+          <div style={{ color:t.textMuted,fontSize:"13px",marginBottom:"24px" }}>Your claim has been confirmed. Payment instructions below.</div>
+
+          {/* Payment options */}
+          <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"18px",textAlign:"left",marginBottom:"16px" }}>
+            <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"14px",textAlign:"center" }}>💸 Choose Your Payment Method</div>
+            {[
+              { name:"Zelle", icon:"💙", color:"#4c8ef7", desc:"Send your Zelle registered phone or email to the Pirate to receive payment.", action:"Copy Zelle Info" },
+              { name:"Venmo", icon:"💚", color:"#3d95ce", desc:"Send your Venmo @username to the Pirate to receive payment.", action:"Copy Venmo Info" },
+            ].map(method => (
+              <div key={method.name} style={{ background:`${method.color}10`,border:`1px solid ${method.color}30`,borderRadius:"12px",padding:"14px 16px",marginBottom:"10px" }}>
+                <div style={{ display:"flex",alignItems:"center",gap:"10px",marginBottom:"8px" }}>
+                  <span style={{ fontSize:"22px" }}>{method.icon}</span>
+                  <div style={{ color:t.text,fontSize:"15px",fontWeight:"700" }}>{method.name}</div>
+                </div>
+                <div style={{ color:t.textMuted,fontSize:"12px",lineHeight:1.6,marginBottom:"10px" }}>{method.desc}</div>
+                <button style={{ background:`${method.color}22`,border:`1px solid ${method.color}55`,color:method.color,padding:"7px 16px",borderRadius:"8px",cursor:"pointer",fontSize:"12px",fontWeight:"600",width:"100%" }}>
+                  {method.action}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background:`${t.accent}10`,border:`1px solid ${t.accent}30`,borderRadius:"10px",padding:"12px 14px",textAlign:"left" }}>
+            <div style={{ color:t.accent,fontSize:"11px",fontWeight:"700",marginBottom:"4px" }}>⏰ Payment Timeline</div>
+            <div style={{ color:t.textMuted,fontSize:"12px",lineHeight:1.6 }}>Pirates using <strong style={{ color:t.text }}>FinderSeek Escrow</strong> pay instantly. Honor System Pirates have <strong style={{ color:t.text }}>48 hours</strong> to send payment. If you don't receive payment, contact support.</div>
+          </div>
+        </div>
+      ) : (
+        /* ── CODE ENTRY STATE ── */
+        <div style={{ background:t.surfaceBg,border:`1.5px solid ${t.surfaceBorder}`,borderRadius:"18px",padding:"24px 20px" }}>
+          <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"16px",textAlign:"center" }}>Enter 6-Digit Code</div>
+
+          {/* Digit inputs */}
+          <div style={{ display:"flex",gap:"8px",justifyContent:"center",marginBottom:"20px" }} onPaste={handlePaste}>
+            {digits.map((d,i) => (
+              <input
+                key={i}
+                ref={el=>inputRefs.current[i]=el}
+                type="text" inputMode="numeric" maxLength={1}
+                value={d}
+                onChange={e=>handleDigit(i,e.target.value)}
+                onKeyDown={e=>handleKeyDown(i,e)}
+                style={{
+                  width:"44px", height:"56px", textAlign:"center",
+                  fontSize:"24px", fontWeight:"700",
+                  fontFamily:"'DM Mono',monospace",
+                  background: status==="error" ? `${t.danger}18` : d ? `${t.accent}15` : t.inputBg,
+                  border:`2px solid ${status==="error" ? t.danger : d ? t.accent : t.inputBorder}`,
+                  borderRadius:"12px", color:t.text, outline:"none",
+                  transition:"border-color .15s,background .15s",
+                  boxShadow: d ? `0 0 12px ${t.accent}33` : "none",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Status messages */}
+          {status==="error" && (
+            <div style={{ background:`${t.danger}15`,border:`1px solid ${t.danger}40`,borderRadius:"10px",padding:"10px 14px",marginBottom:"14px",textAlign:"center",color:t.danger,fontSize:"13px",fontWeight:"600" }}>
+              ❌ Code not found. Double-check and try again.
+            </div>
+          )}
+          {status==="used" && (
+            <div style={{ background:`${t.accent}15`,border:`1px solid ${t.accent}40`,borderRadius:"10px",padding:"10px 14px",marginBottom:"14px",textAlign:"center",color:t.accent,fontSize:"13px",fontWeight:"600" }}>
+              ⚠️ This code has already been claimed.
+            </div>
+          )}
+
+          <button
+            onClick={submit}
+            disabled={code.length < 6 || status==="checking"}
+            style={{
+              width:"100%", background:code.length===6 ? `linear-gradient(135deg,${t.accent},${t.accentHover})` : t.inputBg,
+              border:"none", borderRadius:"12px", padding:"15px",
+              color:code.length===6 ? "#fff" : t.textMuted,
+              fontSize:"15px", fontWeight:"700", cursor:code.length===6 ? "pointer" : "not-allowed",
+              transition:"all .2s",
+              boxShadow:code.length===6 ? `0 4px 20px ${t.accent}55` : "none",
+              display:"flex",alignItems:"center",justifyContent:"center",gap:"8px"
+            }}
+          >
+            {status==="checking" ? <><span style={{ animation:"spin 1s linear infinite",display:"inline-block" }}>⏳</span> Checking…</> : "Claim Treasure →"}
+          </button>
+
+          <div style={{ marginTop:"14px",color:t.textDim,fontSize:"11px",textAlign:"center" }}>
+            Tip: You can paste the full 6-digit code directly
+          </div>
+        </div>
+      )}
+
+      {/* How it works mini */}
+      <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"12px",padding:"14px 16px" }}>
+        <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>How Claiming Works</div>
+        {[
+          ["1","Find the hidden envelope in your city"],
+          ["2","Open it — there's a 6-digit code inside"],
+          ["3","Enter the code here to claim your prize"],
+          ["4","Receive payment via Zelle or Venmo"],
+        ].map(([num,text]) => (
+          <div key={num} style={{ display:"flex",alignItems:"center",gap:"12px",padding:"6px 0",borderBottom:`1px solid ${t.divider}` }}>
+            <div style={{ width:"22px",height:"22px",borderRadius:"50%",background:`${t.accent}20`,border:`1px solid ${t.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:t.accent,fontSize:"11px",fontWeight:"700" }}>{num}</div>
+            <div style={{ color:t.textMuted,fontSize:"13px" }}>{text}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Admin panel (condensed)
 function AdminPanel({ t, isDark, onPublish, simOffset, setSimOffset }) {
   const [form,setForm]=useState({address:"",hidingSpot:"",landmarks:"",areaDescription:"",hidingMethod:"",redHerrings:"",prizeDescription:"",weekOf:""});
@@ -792,6 +993,7 @@ export default function FinderSeekApp() {
         @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
         @keyframes newPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.08)}}
         @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
         textarea,input{color-scheme:${isDark?"dark":"light"};}
       `}</style>
 
@@ -959,9 +1161,14 @@ export default function FinderSeekApp() {
             </div>
             <div style={{ background:t.surfaceBg,border:`1px dashed ${isDark?"#2a2a2a":"#d4c090"}`,borderRadius:"12px",padding:"18px",textAlign:"center" }}>
               <div style={{ color:t.textDim,fontSize:"13px" }}>Found the treasure? Report your find!</div>
-              <button style={{ marginTop:"10px",background:"transparent",border:`1px solid ${t.green}`,color:t.green,padding:"9px 22px",borderRadius:"8px",cursor:"pointer",fontSize:"13px",fontWeight:"600" }}>🎉 I Found It!</button>
+              <button onClick={()=>setActiveTab("claim")} style={{ marginTop:"10px",background:`linear-gradient(135deg,${t.green},#66bb6a)`,border:"none",color:"#fff",padding:"9px 22px",borderRadius:"8px",cursor:"pointer",fontSize:"13px",fontWeight:"700",boxShadow:`0 4px 16px ${t.green}44` }}>🔢 Enter Claim Code</button>
             </div>
           </div>
+        )}
+
+        {/* CLAIM TAB */}
+        {activeTab==="claim"&&(
+          <ClaimTab hunt={hunt} t={t} isDark={isDark} />
         )}
 
         {/* ADMIN TAB */}
