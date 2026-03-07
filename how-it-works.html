@@ -1,1 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>How It Works — FinderSeek</title>
+<meta name="description" content="Learn how FinderSeek works. Follow clues, find treasure, claim real cash prizes hidden in your city every week."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:    #06050a;
+  --gold:   #c9890c;
+  --gold2:  #e8a820;
+  --cream:  #f5ead8;
+  --dim:    #e8dcc8;
+  --muted:  #b0a080;
+  --border: rgba(201,137,12,.18);
+  --card:   rgba(255,255,255,.03);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);
+  color:var(--cream);
+  font-family:'Karla',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px 200px;opacity:.5;
+}
 
+/* Pirate bg subtle */
+.page-bg{
+  position:fixed;inset:0;z-index:0;
+  background:url('pirate.png') center 20%/cover no-repeat;
+  opacity:0.07;
+  filter:saturate(0.4) sepia(0.3);
+}
+.page-bg-overlay{
+  position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse at center, rgba(6,5,10,0.7) 0%, rgba(6,5,10,0.97) 70%);
+}
+
+#cur{position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen;}
+#curl{position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.35;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;
+  background:linear-gradient(180deg,rgba(6,5,10,.97) 0%,transparent 100%);
+  backdrop-filter:blur(8px);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 12px rgba(201,137,12,.4);}
+.nav-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:.5px;transition:color .2s;}
+.nav-back:hover{color:var(--gold);}
+
+/* HERO */
+.hero{
+  position:relative;z-index:2;
+  padding:140px 24px 80px;
+  text-align:center;
+  max-width:700px;
+  margin:0 auto;
+}
+.hero-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.3);
+  border-radius:24px;padding:5px 16px;margin-bottom:28px;
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+  animation:fadeUp .8s .1s both;
+}
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,8vw,88px);
+  font-weight:600;line-height:1.05;
+  margin-bottom:20px;
+  background:linear-gradient(160deg,#ffffff 20%,var(--gold2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .8s .2s both;
+}
+.hero h1 em{font-style:italic;font-weight:300;}
+.hero-sub{
+  font-size:17px;color:var(--dim);line-height:1.8;
+  max-width:500px;margin:0 auto;
+  animation:fadeUp .8s .3s both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* TIMELINE */
+.timeline{
+  position:relative;z-index:2;
+  max-width:860px;margin:0 auto;
+  padding:0 24px 100px;
+}
+
+/* Vertical line */
+.timeline::before{
+  content:'';
+  position:absolute;left:50%;top:0;bottom:0;
+  width:1px;
+  background:linear-gradient(180deg,transparent,rgba(201,137,12,.3) 10%,rgba(201,137,12,.3) 90%,transparent);
+  transform:translateX(-50%);
+}
+
+.step{
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  align-items:center;
+  gap:0;
+  margin-bottom:80px;
+  opacity:0;transform:translateY(30px);
+  transition:opacity .7s,transform .7s;
+}
+.step.visible{opacity:1;transform:translateY(0);}
+
+/* Alternate left/right */
+.step:nth-child(odd) .step-content{grid-column:1;text-align:right;padding-right:40px;}
+.step:nth-child(odd) .step-node{grid-column:2;}
+.step:nth-child(odd) .step-visual{grid-column:3;padding-left:40px;}
+
+.step:nth-child(even) .step-visual{grid-column:1;padding-right:40px;text-align:right;}
+.step:nth-child(even) .step-node{grid-column:2;}
+.step:nth-child(even) .step-content{grid-column:3;text-align:left;padding-left:40px;}
+
+/* Node (center circle) */
+.step-node{
+  display:flex;align-items:center;justify-content:center;
+  z-index:2;
+}
+.node-circle{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 0 0 6px rgba(201,137,12,.12), 0 4px 20px rgba(201,137,12,.4);
+  flex-shrink:0;
+}
+
+/* Content */
+.step-num{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:#f0c060;opacity:1;margin-bottom:8px;
+}
+.step-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,3vw,34px);font-weight:600;line-height:1.1;
+  margin-bottom:12px;
+}
+.step-body{
+  font-size:14px;color:#e0d4bc;line-height:1.8;
+}
+.step-body strong{color:var(--cream);}
+
+/* Visual card */
+.step-visual-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:24px;
+  display:inline-block;
+  min-width:180px;
+}
+.step-visual-icon{font-size:48px;display:block;margin-bottom:12px;}
+.step-visual-label{
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);opacity:.7;
+}
+
+/* Special: clue schedule */
+.clue-schedule{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:16px;min-width:200px;display:inline-block;
+}
+.clue-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  font-size:12px;
+}
+.clue-row:last-child{border:none;}
+.clue-day{color:var(--dim);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;}
+.clue-badge{
+  font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border-radius:8px;font-family:'DM Mono',monospace;
+}
+.clue-badge.free{background:rgba(201,137,12,.15);color:var(--gold);}
+.clue-badge.pro{background:rgba(138,58,185,.2);color:#c084fc;}
+
+/* Code entry mockup */
+.code-mockup{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;min-width:200px;display:inline-block;
+}
+.code-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.code-digits{display:flex;gap:6px;justify-content:center;margin-bottom:14px;}
+.code-digit{
+  width:32px;height:40px;border-radius:8px;
+  background:rgba(201,137,12,.1);border:1.5px solid rgba(201,137,12,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--gold);
+}
+.code-btn{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0800;font-weight:700;font-size:11px;letter-spacing:1px;
+  border:none;border-radius:8px;padding:8px;
+  font-family:'Karla',sans-serif;text-transform:uppercase;
+}
+
+/* Prize mockup */
+.prize-mockup{
+  background:var(--card);border:1px solid rgba(201,137,12,.3);
+  border-radius:16px;padding:20px;min-width:200px;display:inline-block;
+  text-align:center;
+}
+.prize-amount{
+  font-family:'Cormorant Garamond',serif;
+  font-size:40px;font-weight:600;color:var(--gold);
+  margin-bottom:4px;
+}
+.prize-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:14px;}
+.prize-methods{display:flex;gap:8px;justify-content:center;}
+.prize-method{
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;
+  font-size:11px;color:var(--dim);font-weight:600;
+}
+
+/* Pirate section */
+.pirate-section{
+  position:relative;z-index:2;
+  background:linear-gradient(135deg,rgba(139,26,26,.08),rgba(201,137,12,.04));
+  border-top:1px solid rgba(192,57,43,.15);
+  border-bottom:1px solid rgba(192,57,43,.15);
+  padding:80px 24px;
+  text-align:center;
+  margin-bottom:80px;
+}
+.pirate-inner{max-width:640px;margin:0 auto;}
+.pirate-section .hero-label{background:rgba(139,26,26,.2);border-color:rgba(192,57,43,.3);color:#e07070;}
+.pirate-section h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,60px);font-weight:600;line-height:1.1;
+  margin-bottom:16px;
+}
+.pirate-section p{font-size:15px;color:var(--dim);line-height:1.8;margin-bottom:32px;}
+.pirate-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#1a2090;color:#fff;
+  font-weight:700;font-size:15px;
+  border-radius:14px;padding:16px 36px;
+  text-decoration:none;cursor:none;
+  box-shadow:0 4px 24px rgba(26,32,144,.5);
+  transition:transform .2s,box-shadow .2s;
+  font-family:'Karla',sans-serif;
+  text-shadow:0 0 20px rgba(255,255,255,.4);
+}
+.pirate-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.7);}
+
+/* CTA */
+.cta-section{
+  position:relative;z-index:2;
+  text-align:center;padding:0 24px 100px;
+}
+.cta-section h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,60px);font-weight:600;
+  margin-bottom:16px;
+}
+.cta-section p{font-size:15px;color:var(--dim);margin-bottom:32px;}
+.cta-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0800;font-weight:700;font-size:15px;
+  border-radius:14px;padding:16px 40px;
+  text-decoration:none;cursor:none;
+  box-shadow:0 4px 24px rgba(201,137,12,.4);
+  transition:transform .2s,box-shadow .2s;
+  font-family:'Karla',sans-serif;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
+
+/* Footer */
+footer{
+  position:relative;z-index:2;
+  text-align:center;padding:28px 24px;
+  border-top:1px solid rgba(255,255,255,.04);
+  font-size:11px;color:var(--muted);
+  font-family:'DM Mono',monospace;letter-spacing:1px;
+}
+footer a{color:var(--muted);text-decoration:none;}
+footer a:hover{color:var(--gold);}
+
+/* Mobile */
+@media(max-width:640px){
+  .timeline::before{left:28px;}
+  .step{grid-template-columns:56px 1fr;grid-template-rows:auto auto;}
+
+  .step:nth-child(odd) .step-content,
+  .step:nth-child(even) .step-content{
+    grid-column:2;grid-row:1;
+    text-align:left;padding:0 0 0 16px;
+  }
+  .step:nth-child(odd) .step-node,
+  .step:nth-child(even) .step-node{grid-column:1;grid-row:1;align-self:start;margin-top:4px;}
+
+  .step:nth-child(odd) .step-visual,
+  .step:nth-child(even) .step-visual{
+    grid-column:2;grid-row:2;
+    padding:16px 0 0 16px;text-align:left;
+  }
+  .step-visual-card,.clue-schedule,.code-mockup,.prize-mockup{min-width:unset;width:100%;}
+  nav{padding:14px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-bg"></div>
+<div class="page-bg-overlay"></div>
+<div id="cur"></div>
+<div id="curl"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-icon">🔍</div>
+    <div class="nav-name">FinderSeek</div>
+  </a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">The adventure</div>
+  <h1>How it <em>works.</em></h1>
+  <p class="hero-sub">Real cash. Hidden in your city. A new treasure drops every Friday. Here's everything you need to know to find it.</p>
+</div>
+
+<!-- TIMELINE -->
+<div class="timeline">
+
+  <!-- Step 1: Pirates hide -->
+  <div class="step">
+    <div class="step-content">
+      <div class="step-num">Step 01</div>
+      <div class="step-title">A Pirate hides the treasure</div>
+      <div class="step-body">
+        Every week, a local <strong>Pirate</strong> — someone in your city — hides a sealed envelope somewhere publicly accessible. Inside is a unique <strong>6-digit claim code</strong> and the prize amount. The location is their secret. Your job is to find it.
+      </div>
+    </div>
+    <div class="step-node"><div class="node-circle">🏴‍☠️</div></div>
+    <div class="step-visual">
+      <div class="step-visual-card">
+        <span class="step-visual-icon">✉️</span>
+        <div class="step-visual-label">Sealed envelope · hidden</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Browse hunts -->
+  <div class="step">
+    <div class="step-visual">
+      <div class="step-visual-card">
+        <span class="step-visual-icon">🗺️</span>
+        <div class="step-visual-label">Active hunts · your city</div>
+      </div>
+    </div>
+    <div class="step-node"><div class="node-circle">🗺️</div></div>
+    <div class="step-content">
+      <div class="step-num">Step 02</div>
+      <div class="step-title">Browse active hunts in your city</div>
+      <div class="step-body">
+        Open FinderSeek and see all <strong>live treasure hunts</strong> near you. Each hunt shows the prize amount, how many clues have dropped, and how many days remain. Pick one — but choose wisely. <strong>Seekers can only join one hunt per week.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Clue drops -->
+  <div class="step">
+    <div class="step-content">
+      <div class="step-num">Step 03</div>
+      <div class="step-title">Follow the daily clue drops</div>
+      <div class="step-body">
+        Starting Friday at 8 AM, a new clue drops every day. <strong>Free members</strong> get the first 4 clues. <strong>Pro members</strong> unlock all 6 clues plus a photo clue on Thursday — a massive advantage. Each clue gets more specific. The sooner you find it, the bigger the bragging rights.
+      </div>
+    </div>
+    <div class="step-node"><div class="node-circle">📜</div></div>
+    <div class="step-visual">
+      <div class="clue-schedule">
+        <div class="clue-row"><span class="clue-day">FRI · Clue 1</span><span class="clue-badge free">Free</span></div>
+        <div class="clue-row"><span class="clue-day">SAT · Clue 2</span><span class="clue-badge free">Free</span></div>
+        <div class="clue-row"><span class="clue-day">SUN · Clue 3</span><span class="clue-badge free">Free</span></div>
+        <div class="clue-row"><span class="clue-day">MON · Clue 4</span><span class="clue-badge free">Free</span></div>
+        <div class="clue-row"><span class="clue-day">TUE · Clue 5</span><span class="clue-badge pro">Pro</span></div>
+        <div class="clue-row"><span class="clue-day">WED · Clue 6</span><span class="clue-badge pro">Pro</span></div>
+        <div class="clue-row"><span class="clue-day">THU · Photo</span><span class="clue-badge pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Find & enter code -->
+  <div class="step">
+    <div class="step-visual">
+      <div class="code-mockup">
+        <div class="code-label">Enter claim code</div>
+        <div class="code-digits">
+          <div class="code-digit">4</div>
+          <div class="code-digit">7</div>
+          <div class="code-digit">2</div>
+          <div class="code-digit">9</div>
+          <div class="code-digit">1</div>
+          <div class="code-digit">8</div>
+        </div>
+        <button class="code-btn">Claim Treasure →</button>
+      </div>
+    </div>
+    <div class="step-node"><div class="node-circle">🔢</div></div>
+    <div class="step-content">
+      <div class="step-num">Step 04</div>
+      <div class="step-title">Find the envelope & enter the code</div>
+      <div class="step-body">
+        You found it! Open the envelope and grab the <strong>6-digit code</strong> inside. Enter it on FinderSeek to officially claim the treasure. The hunt closes instantly — the prize is yours. No one else can claim it.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5: Claim prize -->
+  <div class="step">
+    <div class="step-content">
+      <div class="step-num">Step 05</div>
+      <div class="step-title">Claim your prize</div>
+      <div class="step-body">
+        Once you enter the winning code, your prize is confirmed. Payment is sent via <strong>Zelle or Venmo</strong> — your choice. If the Pirate used the FinderSeek escrow option, payment arrives within minutes. Honor system Pirates have <strong>48 hours</strong> to pay out.
+      </div>
+    </div>
+    <div class="step-node"><div class="node-circle">💰</div></div>
+    <div class="step-visual">
+      <div class="prize-mockup">
+        <div class="prize-amount">$250</div>
+        <div class="prize-sub">Prize confirmed · pay via</div>
+        <div class="prize-methods">
+          <div class="prize-method">Zelle</div>
+          <div class="prize-method">Venmo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PIRATE SECTION -->
+<div class="pirate-section">
+  <div class="pirate-inner">
+    <div class="hero-label" style="display:inline-flex;">🏴‍☠️ &nbsp;For the bold ones</div>
+    <h2>Want to hide the treasure?</h2>
+    <p>Pirates are the ones who make the hunt happen. Set your own prize, write your own clues, and hide the envelope anywhere in your city. Your identity stays hidden. Your legend doesn't.</p>
+    <a href="pirate.html" class="pirate-btn">🏴‍☠️ &nbsp;Become a Pirate</a>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to start hunting?</h2>
+  <p>Get notified when the first hunt drops in your city.</p>
+  <a href="index.html" class="cta-btn">Join the Waitlist →</a>
+</div>
+
+<footer>
+  <a href="index.html">finderseek.com</a> &nbsp;·&nbsp; the treasure is already out there
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),curl=document.getElementById('curl');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curl.style.left=rx+'px';curl.style.top=ry+'px';requestAnimationFrame(a);})();
+
+// Scroll reveal with stagger
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.15});
+document.querySelectorAll('.step').forEach((el,i)=>{
+  el.style.transitionDelay=`${i*0.05}s`;
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
