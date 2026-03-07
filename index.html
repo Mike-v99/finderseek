@@ -102,8 +102,8 @@
   /* Headline */
   h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(42px, 10vw, 86px);
-    font-weight: 600; line-height: 1.1;
+    font-size: 52px;
+    font-weight: 600; line-height: 1.3; padding-bottom: 6px;
     margin-bottom: 14px;
     background: linear-gradient(160deg, #fff8ef 30%, var(--gold) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -111,6 +111,7 @@
     animation: fadeUp 1s .3s cubic-bezier(.16,1,.3,1) both;
   }
   h1 em { font-style: italic; font-weight: 300; }
+  @media(max-width:600px){ h1 { font-size: 32px !important; } }
   .sub {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(16px, 3vw, 22px);
