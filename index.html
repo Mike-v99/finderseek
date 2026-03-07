@@ -263,11 +263,37 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-function submit(){
+async function submit(){
   const val=document.getElementById('email').value.trim();
   if(!val||!val.includes('@'))return;
-  document.getElementById('form-wrap').style.display='none';
-  document.getElementById('confirm').classList.add('show');
+  const btn=document.querySelector('.submit-btn');
+  btn.textContent='Saving…';
+  btn.disabled=true;
+  try {
+    const res = await fetch(
+      'https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/waitlist',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email: val })
+      }
+    );
+    if(res.ok || res.status===409){
+      document.getElementById('form-wrap').style.display='none';
+      document.getElementById('confirm').classList.add('show');
+    } else {
+      btn.textContent='Notify Me →';
+      btn.disabled=false;
+    }
+  } catch(e){
+    btn.textContent='Notify Me →';
+    btn.disabled=false;
+  }
 }
 document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
 </script>
