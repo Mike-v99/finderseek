@@ -1,0 +1,1016 @@
+import { useState, useEffect, useRef } from "react";
+
+// ─── Hunt schedule ─────────────────────────────────────────────────────────
+const HUNT_START = new Date("2026-03-06T08:00:00");
+const HUNT_END   = new Date("2026-03-13T10:00:00");
+const REVEAL_DATES = {
+  1:"2026-03-06T08:00:00", 2:"2026-03-07T08:00:00", 3:"2026-03-08T08:00:00",
+  4:"2026-03-09T08:00:00", 5:"2026-03-10T08:00:00", 6:"2026-03-11T08:00:00",
+  7:"2026-03-12T08:00:00",
+};
+const DEFAULT_CLUES = [
+  { id:1,day:"Friday",   date:"Mar 6", tier:"free",text:"Where the city rests its weary iron feet, and steam once breathed life into morning streets — look beneath what travelers left behind." },
+  { id:2,day:"Saturday", date:"Mar 7", tier:"free",text:"Faces carved in stone watch over those who seek — find the oldest name etched in the shadow of civic pride." },
+  { id:3,day:"Sunday",   date:"Mar 8", tier:"free",text:"Water doesn't flow here anymore, but children still laugh. The fountain stands dry yet the treasure doesn't." },
+  { id:4,day:"Monday",   date:"Mar 9", tier:"free",text:"Three benches face east. The middle one holds a secret under the armrest closest to the morning sun." },
+  { id:5,day:"Tuesday",  date:"Mar 10",tier:"pro", text:"Near the mural of the blue heron, count seven paces north from the corner where art meets brick." },
+  { id:6,day:"Wednesday",date:"Mar 11",tier:"pro", text:"The clock tower shadow at noon points directly to your next step — follow it to the red door that never opens." },
+  { id:7,day:"Thursday", date:"Mar 12",tier:"pro", text:"",isPhoto:true,photoUrl:null },
+];
+const DEFAULT_HUNT = { weekOf:"March 6–13, 2026", prize:"$250 Cash + $50 Gift Card", clues:DEFAULT_CLUES };
+const LEADERBOARD = [
+  {rank:1,name:"ShadowFox_88",  finds:4,streak:"🔥 3 weeks"},
+  {rank:2,name:"MargaretK",     finds:3,streak:"🔥 2 weeks"},
+  {rank:3,name:"TreasureTrail99",finds:2,streak:""},
+  {rank:4,name:"UrbanSeeker",   finds:1,streak:""},
+  {rank:5,name:"Downtown_D",    finds:1,streak:""},
+];
+const US_CITIES = ["New York, NY","Los Angeles, CA","Chicago, IL","Houston, TX","Phoenix, AZ","Philadelphia, PA","San Antonio, TX","San Diego, CA","Dallas, TX","Austin, TX","Jacksonville, FL","Fort Worth, TX","Columbus, OH","Charlotte, NC","Indianapolis, IN","San Francisco, CA","Seattle, WA","Denver, CO","Nashville, TN","Oklahoma City, OK","Portland, OR","Las Vegas, NV","Memphis, TN","Louisville, KY","Baltimore, MD","Milwaukee, WI","Albuquerque, NM","Tucson, AZ","Fresno, CA","Sacramento, CA","Atlanta, GA","Boston, MA","Miami, FL","Minneapolis, MN","New Orleans, LA","Tampa, FL","Arlington, TX","Bakersfield, CA","Honolulu, HI","Anaheim, CA"];
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+const isRevealed = (id, now) => now >= new Date(REVEAL_DATES[id]);
+const isNew = (id, now) => { const r=new Date(REVEAL_DATES[id]); return now>=r && (now-r)<7200000; };
+function nextReveal(now) {
+  return Object.values(REVEAL_DATES).map(d=>new Date(d)).filter(d=>d>now).sort((a,b)=>a-b)[0]||null;
+}
+function fmtHMS(ms) {
+  if(ms<=0)return"00:00:00";
+  return[Math.floor(ms/3600000),Math.floor((ms%3600000)/60000),Math.floor((ms%60000)/1000)].map(n=>String(n).padStart(2,"0")).join(":");
+}
+function fmtDHMS(ms) {
+  if(ms<=0)return"HUNT OVER";
+  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
+  return`${d}d  ${h}h  ${m}m  ${s}s`;
+}
+function initials(name) {
+  if(!name)return"?";
+  return name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+}
+function avatarColor(name) {
+  const colors=["#c8860a","#4caf50","#5b8dee","#e05599","#aa55e0","#e07733"];
+  let h=0; for(let c of(name||"")) h=(h*31+c.charCodeAt(0))%colors.length;
+  return colors[h];
+}
+
+// ─── Themes ────────────────────────────────────────────────────────────────
+const T = {
+  dark:{
+    bg:"#080604",bgCard:"linear-gradient(135deg,#12090a,#1e1008)",bgLocked:"linear-gradient(135deg,#0e0e0e,#181818)",bgFuture:"linear-gradient(135deg,#0a0a0a,#141414)",
+    headerBg:"rgba(10,8,3,0.96)",headerBorder:"#1a1200",
+    prizeBg:"linear-gradient(135deg,#0f0a02,#1a1000)",prizeBorder:"#2a1800",
+    timerBg:"linear-gradient(135deg,#1a0a00,#2d1200)",
+    nextBg:"linear-gradient(135deg,#0a0a14,#0f0f20)",nextBorder:"#2a2a60",
+    mapBg:"linear-gradient(135deg,#0a0f0a,#0f1a0f)",mapBorder:"#2a5a2a",mapInner:"#1a3a1a",
+    panelBg:"#0c0c0a",panelBorder:"#2a1800",
+    inputBg:"#111",inputBorder:"#2a2a22",inputFocus:"#c8860a",
+    surfaceBg:"#0d0d0b",surfaceBorder:"#1a1a14",
+    modalBg:"linear-gradient(180deg,#1a1000,#0f0a02)",
+    upgradeBg:"linear-gradient(135deg,#1a1000,#2a1800)",
+    authBg:"#0a0804",authCard:"linear-gradient(180deg,#0f0a02,#080604)",
+    cardBorder:"#7a4f10",cardBorderLocked:"#252520",cardBorderFuture:"#1e1e1e",
+    text:"#fff8e7",textMuted:"#666",textDim:"#444",textSubtle:"#888",
+    textClue:"#e8d5b0",textDate:"#8a6a30",zoneName:"#e8d5b0",
+    accent:"#c8860a",accentHover:"#e6a020",green:"#4caf50",blue:"#5b8dee",red:"#e05555",
+    toggleBg:"#1a1a1a",toggleBorder:"#333",
+    gridLine:"rgba(76,175,80,0.07)",
+    shimmer:"linear-gradient(90deg,#c8860a,#fff8e7,#c8860a)",
+    danger:"#e05555",dangerBg:"rgba(224,85,85,0.1)",
+    simBg:"#0a0a14",simBorder:"#2a2a5a",
+    divider:"#1e1e18",
+  },
+  light:{
+    bg:"#fdf8f0",bgCard:"linear-gradient(135deg,#fffdf5,#fff8e8)",bgLocked:"linear-gradient(135deg,#f5f5f0,#eeeee8)",bgFuture:"linear-gradient(135deg,#f8f8f5,#f0f0ec)",
+    headerBg:"rgba(253,248,240,0.96)",headerBorder:"#e8d8b0",
+    prizeBg:"linear-gradient(135deg,#fffcf0,#fff8e0)",prizeBorder:"#e8d090",
+    timerBg:"linear-gradient(135deg,#fff8e0,#fff0cc)",
+    nextBg:"linear-gradient(135deg,#f0f0ff,#e8e8f8)",nextBorder:"#b0b0e0",
+    mapBg:"linear-gradient(135deg,#f0f7f0,#e8f5e8)",mapBorder:"#5aaf5a",mapInner:"#c0e0c0",
+    panelBg:"#fffcf5",panelBorder:"#e8d090",
+    inputBg:"#ffffff",inputBorder:"#ddd0a0",inputFocus:"#b07008",
+    surfaceBg:"#ffffff",surfaceBorder:"#e8d8b0",
+    modalBg:"linear-gradient(180deg,#fff8e0,#fffcf5)",
+    upgradeBg:"linear-gradient(135deg,#fff8e0,#fff0cc)",
+    authBg:"#fdf8f0",authCard:"linear-gradient(180deg,#ffffff,#fdf8f0)",
+    cardBorder:"#c8860a",cardBorderLocked:"#ddd",cardBorderFuture:"#e0e0d8",
+    text:"#1a0a00",textMuted:"#888",textDim:"#bbb",textSubtle:"#777",
+    textClue:"#3a2000",textDate:"#9a7030",zoneName:"#2a1800",
+    accent:"#b07008",accentHover:"#c88010",green:"#2a9a38",blue:"#3a6ecc",red:"#cc3333",
+    toggleBg:"#f0e8d0",toggleBorder:"#d4c090",
+    gridLine:"rgba(76,175,80,0.12)",
+    shimmer:"linear-gradient(90deg,#b07008,#3a2000,#b07008)",
+    danger:"#cc3333",dangerBg:"rgba(204,51,51,0.08)",
+    simBg:"#f0f0ff",simBorder:"#c0c0e8",
+    divider:"#ede0c0",
+  },
+};
+
+// ─── AUTH SCREENS ──────────────────────────────────────────────────────────
+
+function SocialBtn({ icon, label, onClick, t }) {
+  const [hov,setHov]=useState(false);
+  return (
+    <button onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{ width:"100%",background:hov?`${t.accent}10`:"transparent",border:`1.5px solid ${hov?t.accent:t.inputBorder}`,borderRadius:"12px",padding:"13px 16px",display:"flex",alignItems:"center",gap:"12px",cursor:"pointer",transition:"all .18s",color:t.text,fontSize:"14px",fontWeight:"500",fontFamily:"'DM Sans',sans-serif" }}>
+      <span style={{ fontSize:"20px",flexShrink:0 }}>{icon}</span>
+      <span style={{ flex:1,textAlign:"left" }}>{label}</span>
+      <span style={{ color:t.textMuted,fontSize:"16px" }}>›</span>
+    </button>
+  );
+}
+
+function InputField({ label, type="text", value, onChange, placeholder, error, t, autoFocus }) {
+  const [focused,setFocused]=useState(false);
+  return (
+    <div style={{ marginBottom:"14px" }}>
+      {label && <label style={{ display:"block",color:t.textSubtle,fontSize:"11px",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:"6px" }}>{label}</label>}
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} autoFocus={autoFocus}
+        onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}
+        style={{ width:"100%",background:t.inputBg,border:`1.5px solid ${error?t.danger:focused?t.inputFocus:t.inputBorder}`,borderRadius:"10px",padding:"12px 14px",color:t.text,fontSize:"14px",outline:"none",fontFamily:"'DM Sans',sans-serif",transition:"border-color .2s" }}
+      />
+      {error && <div style={{ color:t.danger,fontSize:"12px",marginTop:"4px" }}>{error}</div>}
+    </div>
+  );
+}
+
+// Welcome / choose method screen
+function AuthWelcome({ onMethod, onGuest, t, isDark }) {
+  return (
+    <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+      <div style={{ width:"100%",maxWidth:"360px" }}>
+        {/* Logo */}
+        <div style={{ textAlign:"center",marginBottom:"36px" }}>
+          <div style={{ width:"64px",height:"64px",borderRadius:"20px",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px",margin:"0 auto 16px",boxShadow:`0 4px 24px ${t.accent}55` }}>🔍</div>
+          <div style={{ fontSize:"28px",fontFamily:"'Playfair Display',serif",fontWeight:"700",background:t.shimmer,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 5s linear infinite" }}>
+            Finder<span style={{ fontStyle:"italic" }}>Seek</span>
+          </div>
+          <div style={{ color:t.textMuted,fontSize:"13px",marginTop:"6px" }}>City treasure hunts. Real prizes.</div>
+        </div>
+
+        {/* Social login buttons */}
+        <div style={{ display:"flex",flexDirection:"column",gap:"10px",marginBottom:"20px" }}>
+          <SocialBtn icon="🍎" label="Continue with Apple" onClick={()=>onMethod("apple")} t={t} />
+          <SocialBtn icon="🌐" label="Continue with Google" onClick={()=>onMethod("google")} t={t} />
+          <SocialBtn icon="📱" label="Continue with Phone" onClick={()=>onMethod("phone")} t={t} />
+        </div>
+
+        {/* Divider */}
+        <div style={{ display:"flex",alignItems:"center",gap:"12px",marginBottom:"20px" }}>
+          <div style={{ flex:1,height:"1px",background:t.divider }} />
+          <span style={{ color:t.textMuted,fontSize:"12px" }}>or</span>
+          <div style={{ flex:1,height:"1px",background:t.divider }} />
+        </div>
+
+        {/* Email */}
+        <button onClick={()=>onMethod("email")} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"12px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:"pointer",letterSpacing:"0.5px",boxShadow:`0 4px 20px ${t.accent}44`,marginBottom:"14px" }}>
+          Sign up with Email
+        </button>
+        <div style={{ textAlign:"center",marginBottom:"20px" }}>
+          <span style={{ color:t.textMuted,fontSize:"13px" }}>Already have an account? </span>
+          <button onClick={()=>onMethod("login")} style={{ background:"transparent",border:"none",color:t.accent,fontSize:"13px",fontWeight:"600",cursor:"pointer",padding:0 }}>Log in →</button>
+        </div>
+
+        {/* Guest */}
+        <button onClick={onGuest} style={{ width:"100%",background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textMuted,borderRadius:"10px",padding:"11px",fontSize:"13px",cursor:"pointer" }}>
+          Browse as guest (limited)
+        </button>
+
+        <div style={{ textAlign:"center",marginTop:"24px",color:t.textDim,fontSize:"11px",lineHeight:"1.6" }}>
+          By continuing you agree to our Terms of Service<br/>and Privacy Policy.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Email sign-up / login form
+function AuthEmail({ mode, onBack, onDone, t }) {
+  const isLogin = mode==="login";
+  const [email,setEmail]=useState("");
+  const [pass,setPass]=useState("");
+  const [errors,setErrors]=useState({});
+  const [loading,setLoading]=useState(false);
+
+  const validate = () => {
+    const e={};
+    if(!email||!email.includes("@")) e.email="Enter a valid email address";
+    if(pass.length<6) e.pass="Password must be at least 6 characters";
+    return e;
+  };
+  const submit = () => {
+    const e=validate(); setErrors(e);
+    if(Object.keys(e).length) return;
+    setLoading(true);
+    setTimeout(()=>{ setLoading(false); onDone({email,name:email.split("@")[0]}); },1200);
+  };
+
+  return (
+    <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+      <div style={{ width:"100%",maxWidth:"360px" }}>
+        <button onClick={onBack} style={{ background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer",padding:"0 0 20px",display:"flex",alignItems:"center",gap:"6px" }}>← Back</button>
+        <div style={{ background:t.authCard,border:`1.5px solid ${t.surfaceBorder}`,borderRadius:"18px",padding:"28px 24px" }}>
+          <div style={{ marginBottom:"22px" }}>
+            <div style={{ fontSize:"22px",fontFamily:"'Playfair Display',serif",fontWeight:"700",color:t.text,marginBottom:"4px" }}>{isLogin?"Welcome back":"Create account"}</div>
+            <div style={{ color:t.textMuted,fontSize:"13px" }}>{isLogin?"Log in to your FinderSeek account":"Join the hunt — it's free"}</div>
+          </div>
+          <InputField label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" error={errors.email} t={t} autoFocus />
+          <InputField label="Password" type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder={isLogin?"Your password":"At least 6 characters"} error={errors.pass} t={t} />
+          {isLogin && <div style={{ textAlign:"right",marginTop:"-8px",marginBottom:"16px" }}><button style={{ background:"transparent",border:"none",color:t.accent,fontSize:"12px",cursor:"pointer",padding:0 }}>Forgot password?</button></div>}
+          <button onClick={submit} disabled={loading} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"11px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:loading?"not-allowed":"pointer",opacity:loading?.7:1,boxShadow:`0 4px 20px ${t.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",gap:"8px" }}>
+            {loading?<><span style={{ animation:"spin 1s linear infinite",display:"inline-block" }}>⏳</span>Working…</>:(isLogin?"Log In →":"Create Account →")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Phone / SMS screen
+function AuthPhone({ onBack, onDone, t }) {
+  const [step,setStep]=useState("number"); // "number" | "code"
+  const [phone,setPhone]=useState("");
+  const [code,setCode]=useState("");
+  const [sent,setSent]=useState(false);
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
+
+  const sendCode = () => {
+    if(phone.replace(/\D/g,"").length<10){setError("Enter a valid 10-digit phone number");return;}
+    setError(""); setLoading(true);
+    setTimeout(()=>{ setLoading(false); setSent(true); setStep("code"); },1000);
+  };
+  const verifyCode = () => {
+    if(code.length<4){setError("Enter the 6-digit code");return;}
+    setError(""); setLoading(true);
+    setTimeout(()=>{ setLoading(false); onDone({phone,name:""}); },1000);
+  };
+
+  return (
+    <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+      <div style={{ width:"100%",maxWidth:"360px" }}>
+        <button onClick={onBack} style={{ background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer",padding:"0 0 20px",display:"flex",alignItems:"center",gap:"6px" }}>← Back</button>
+        <div style={{ background:t.authCard,border:`1.5px solid ${t.surfaceBorder}`,borderRadius:"18px",padding:"28px 24px" }}>
+          <div style={{ marginBottom:"22px" }}>
+            <div style={{ fontSize:"22px",fontFamily:"'Playfair Display',serif",fontWeight:"700",color:t.text,marginBottom:"4px" }}>📱 {step==="number"?"Enter your number":"Check your texts"}</div>
+            <div style={{ color:t.textMuted,fontSize:"13px" }}>{step==="number"?"We'll send a one-time code":`Code sent to ${phone}`}</div>
+          </div>
+          {step==="number" ? (
+            <>
+              <InputField label="Phone Number" type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="+1 (555) 000-0000" error={error} t={t} autoFocus />
+              <button onClick={sendCode} disabled={loading} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"11px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:"pointer",boxShadow:`0 4px 20px ${t.accent}44` }}>
+                {loading?"Sending…":"Send Code →"}
+              </button>
+            </>
+          ) : (
+            <>
+              <InputField label="Verification Code" type="number" value={code} onChange={e=>setCode(e.target.value)} placeholder="6-digit code" error={error} t={t} autoFocus />
+              <button onClick={verifyCode} disabled={loading} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"11px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:"pointer",boxShadow:`0 4px 20px ${t.accent}44`,marginBottom:"10px" }}>
+                {loading?"Verifying…":"Verify Code →"}
+              </button>
+              <button onClick={()=>{setStep("number");setCode("");setError("");}} style={{ width:"100%",background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer",padding:"8px" }}>Resend code</button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Social SSO simulation
+function AuthSocial({ provider, onBack, onDone, t }) {
+  const [progress,setProgress]=useState(0);
+  useEffect(()=>{
+    const id=setInterval(()=>setProgress(p=>{ if(p>=100){ clearInterval(id); onDone({name:provider==="google"?"Alex Johnson":"Alex",email:provider==="google"?"alex@gmail.com":""}); return 100; } return p+8; }),80);
+    return ()=>clearInterval(id);
+  },[]);
+  return (
+    <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",gap:"24px" }}>
+      <div style={{ fontSize:"48px" }}>{provider==="google"?"🌐":"🍎"}</div>
+      <div style={{ color:t.text,fontSize:"16px",fontWeight:"600" }}>Connecting to {provider==="google"?"Google":"Apple"}…</div>
+      <div style={{ width:"200px",height:"4px",background:t.divider,borderRadius:"2px",overflow:"hidden" }}>
+        <div style={{ height:"100%",width:`${progress}%`,background:`linear-gradient(90deg,${t.accent},${t.accentHover})`,transition:"width .1s" }} />
+      </div>
+      <button onClick={onBack} style={{ background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer" }}>Cancel</button>
+    </div>
+  );
+}
+
+// Profile setup — name + city picker
+function ProfileSetup({ user, onDone, t }) {
+  const [name,setName]=useState(user.name||"");
+  const [city,setCity]=useState("");
+  const [citySearch,setCitySearch]=useState("");
+  const [showCities,setShowCities]=useState(false);
+  const [error,setError]=useState("");
+
+  const filtered = US_CITIES.filter(c=>c.toLowerCase().includes(citySearch.toLowerCase())).slice(0,6);
+
+  const submit = () => {
+    if(name.trim().length<2){setError("Enter a display name (at least 2 characters)");return;}
+    onDone({...user,name:name.trim(),city,setupDone:true});
+  };
+
+  return (
+    <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+      <div style={{ width:"100%",maxWidth:"360px" }}>
+        <div style={{ background:t.authCard,border:`1.5px solid ${t.surfaceBorder}`,borderRadius:"18px",padding:"28px 24px" }}>
+          {/* Avatar preview */}
+          <div style={{ textAlign:"center",marginBottom:"24px" }}>
+            <div style={{ width:"64px",height:"64px",borderRadius:"50%",background:avatarColor(name||"?"),display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"22px",fontWeight:"700",color:"#fff",marginBottom:"10px",boxShadow:`0 2px 16px ${avatarColor(name||"?")}55`,transition:"background .3s" }}>
+              {initials(name)||"?"}
+            </div>
+            <div style={{ color:t.text,fontSize:"20px",fontFamily:"'Playfair Display',serif",fontWeight:"700" }}>Set up your profile</div>
+            <div style={{ color:t.textMuted,fontSize:"13px",marginTop:"4px" }}>Hunters will see this on the leaderboard</div>
+          </div>
+
+          <InputField label="Display Name *" value={name} onChange={e=>{setName(e.target.value);setError("");}} placeholder="e.g. ShadowFox_88" error={error} t={t} autoFocus />
+
+          {/* City picker */}
+          <div style={{ marginBottom:"20px",position:"relative" }}>
+            <label style={{ display:"block",color:t.textSubtle,fontSize:"11px",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:"6px" }}>Your City</label>
+            <input value={citySearch||city} onChange={e=>{setCitySearch(e.target.value);setCity("");setShowCities(true);}} onFocus={()=>setShowCities(true)}
+              placeholder="Search your city…"
+              style={{ width:"100%",background:t.inputBg,border:`1.5px solid ${showCities&&citySearch?t.inputFocus:t.inputBorder}`,borderRadius:"10px",padding:"12px 14px",color:t.text,fontSize:"14px",outline:"none",fontFamily:"'DM Sans',sans-serif",transition:"border-color .2s" }}
+            />
+            {showCities && citySearch && filtered.length>0 && (
+              <div style={{ position:"absolute",top:"100%",left:0,right:0,zIndex:50,background:t.inputBg,border:`1px solid ${t.inputBorder}`,borderRadius:"10px",marginTop:"4px",overflow:"hidden",boxShadow:"0 8px 24px rgba(0,0,0,.25)" }}>
+                {filtered.map(c=>(
+                  <button key={c} onClick={()=>{setCity(c);setCitySearch(c);setShowCities(false);}}
+                    style={{ width:"100%",background:"transparent",border:"none",borderBottom:`1px solid ${t.divider}`,padding:"11px 14px",textAlign:"left",color:t.text,fontSize:"13px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif" }}
+                    onMouseEnter={e=>e.currentTarget.style.background=`${t.accent}15`}
+                    onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+                  >{c}</button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button onClick={submit} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"11px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:"pointer",boxShadow:`0 4px 20px ${t.accent}44` }}>
+            Start Hunting →
+          </button>
+          <button onClick={()=>onDone({...user,name:user.name||"Hunter",setupDone:true})} style={{ width:"100%",background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer",padding:"10px",marginTop:"4px" }}>
+            Skip for now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Account dropdown menu
+function AccountMenu({ user, isPro, onUpgrade, onLogout, onEditProfile, t, isDark }) {
+  const [open,setOpen]=useState(false);
+  const ref=useRef();
+  useEffect(()=>{
+    const h=e=>{ if(ref.current&&!ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown",h); return ()=>document.removeEventListener("mousedown",h);
+  },[]);
+
+  return (
+    <div ref={ref} style={{ position:"relative" }}>
+      <button onClick={()=>setOpen(o=>!o)} style={{ width:"34px",height:"34px",borderRadius:"50%",background:avatarColor(user.name),border:`2px solid ${open?t.accent:t.inputBorder}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px",fontWeight:"700",color:"#fff",cursor:"pointer",transition:"border-color .2s",flexShrink:0 }}>
+        {initials(user.name)}
+      </button>
+      {open && (
+        <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,zIndex:200,background:t.inputBg,border:`1px solid ${t.inputBorder}`,borderRadius:"14px",padding:"6px",minWidth:"220px",boxShadow:"0 12px 40px rgba(0,0,0,.35)",animation:"slideIn .15s ease" }}>
+          {/* User info */}
+          <div style={{ padding:"12px 14px 10px",borderBottom:`1px solid ${t.divider}` }}>
+            <div style={{ display:"flex",alignItems:"center",gap:"10px" }}>
+              <div style={{ width:"38px",height:"38px",borderRadius:"50%",background:avatarColor(user.name),display:"flex",alignItems:"center",justifyContent:"center",fontSize:"14px",fontWeight:"700",color:"#fff",flexShrink:0 }}>{initials(user.name)}</div>
+              <div>
+                <div style={{ color:t.text,fontSize:"14px",fontWeight:"600" }}>{user.name||"Hunter"}</div>
+                <div style={{ color:t.textMuted,fontSize:"11px" }}>{user.email||user.phone||"—"}</div>
+                {user.city && <div style={{ color:t.textMuted,fontSize:"11px" }}>📍 {user.city}</div>}
+              </div>
+            </div>
+            {isPro && <div style={{ marginTop:"8px",background:`${t.accent}15`,border:`1px solid ${t.accent}33`,borderRadius:"8px",padding:"4px 10px",color:t.accent,fontSize:"11px",fontWeight:"700",textAlign:"center",letterSpacing:"1px" }}>⭐ PRO MEMBER</div>}
+          </div>
+          {/* Menu items */}
+          {[
+            ["👤","Edit Profile",onEditProfile],
+            ...(!isPro?[["⭐","Upgrade to Pro",onUpgrade]]:[]),
+            ["🏆","My Hunt History",()=>{}],
+            ["⚙️","Settings",()=>{}],
+          ].map(([icon,label,fn])=>(
+            <button key={label} onClick={()=>{fn();setOpen(false);}}
+              style={{ width:"100%",background:"transparent",border:"none",borderRadius:"8px",padding:"10px 12px",display:"flex",alignItems:"center",gap:"10px",cursor:"pointer",color:t.text,fontSize:"13px",fontFamily:"'DM Sans',sans-serif",transition:"background .15s" }}
+              onMouseEnter={e=>e.currentTarget.style.background=`${t.accent}15`}
+              onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+            ><span>{icon}</span><span>{label}</span></button>
+          ))}
+          <div style={{ borderTop:`1px solid ${t.divider}`,marginTop:"4px",paddingTop:"4px" }}>
+            <button onClick={()=>{onLogout();setOpen(false);}}
+              style={{ width:"100%",background:"transparent",border:"none",borderRadius:"8px",padding:"10px 12px",display:"flex",alignItems:"center",gap:"10px",cursor:"pointer",color:t.danger,fontSize:"13px",fontFamily:"'DM Sans',sans-serif",transition:"background .15s" }}
+              onMouseEnter={e=>e.currentTarget.style.background=t.dangerBg}
+              onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+            ><span>🚪</span><span>Log Out</span></button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Hunt UI components ─────────────────────────────────────────────────────
+function ThemeToggle({ isDark, onToggle, t }) {
+  return (
+    <button onClick={onToggle} style={{ background:t.toggleBg,border:`1px solid ${t.toggleBorder}`,borderRadius:"22px",padding:"5px 8px 5px 7px",display:"flex",alignItems:"center",gap:"6px",cursor:"pointer",transition:"all .25s" }}>
+      <span style={{ fontSize:"14px",lineHeight:1 }}>{isDark?"🌙":"☀️"}</span>
+      <div style={{ width:"30px",height:"17px",borderRadius:"9px",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,position:"relative",flexShrink:0 }}>
+        <div style={{ position:"absolute",top:"2.5px",left:isDark?"15px":"2.5px",width:"12px",height:"12px",background:"#fff",borderRadius:"50%",transition:"left .25s",boxShadow:"0 1px 4px rgba(0,0,0,.3)" }} />
+      </div>
+    </button>
+  );
+}
+
+function NextClueBanner({ now, t }) {
+  const next=nextReveal(now); if(!next)return null;
+  const ms=next-now;
+  const clueId=Object.entries(REVEAL_DATES).find(([,d])=>new Date(d).getTime()===next.getTime())?.[0];
+  const clue=DEFAULT_CLUES.find(c=>c.id===Number(clueId)); if(!clue)return null;
+  return (
+    <div style={{ background:t.nextBg,border:`1.5px solid ${t.nextBorder}`,borderRadius:"12px",padding:"13px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px" }}>
+      <div>
+        <div style={{ color:t.blue,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"3px" }}>{clue.tier==="free"?"Next Free Clue":"⭐ Next Pro Clue"}</div>
+        <div style={{ color:t.text,fontSize:"13px",fontWeight:"600" }}>Clue {clue.id} · {clue.day}</div>
+      </div>
+      <div style={{ textAlign:"right",flexShrink:0 }}>
+        <div style={{ color:t.blue,fontSize:"10px",letterSpacing:"1px",textTransform:"uppercase",marginBottom:"2px" }}>Drops in</div>
+        <div style={{ color:t.text,fontSize:"20px",fontFamily:"'DM Mono',monospace",fontWeight:"700",letterSpacing:"2px" }}>{fmtHMS(ms)}</div>
+      </div>
+    </div>
+  );
+}
+
+function ClueCard({ clue, isPro, now, t }) {
+  const tierLocked=clue.tier==="pro"&&!isPro;
+  const timeLocked=!isRevealed(clue.id,now);
+  const showNew=isNew(clue.id,now)&&!timeLocked;
+  const revDate=new Date(REVEAL_DATES[clue.id]);
+  const msUntil=revDate-now;
+  return (
+    <div
+      onMouseEnter={e=>{ if(!tierLocked&&!timeLocked){e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 10px 36px ${t.accent}28`;} }}
+      onMouseLeave={e=>{ e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"; }}
+      style={{ background:timeLocked?t.bgFuture:tierLocked?t.bgLocked:t.bgCard,border:`1.5px solid ${timeLocked?t.cardBorderFuture:tierLocked?t.cardBorderLocked:t.cardBorder}`,borderRadius:"14px",padding:"18px 22px",position:"relative",overflow:"hidden",opacity:timeLocked?.5:tierLocked?.72:1,transition:"transform .2s,box-shadow .2s" }}>
+      {!timeLocked&&!tierLocked&&<div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:`linear-gradient(90deg,transparent,${t.accent},transparent)` }} />}
+      {showNew&&<div style={{ position:"absolute",top:"12px",right:"12px",background:t.green,color:"#fff",fontSize:"9px",fontWeight:"800",letterSpacing:"1.5px",padding:"3px 8px",borderRadius:"10px",animation:"newPulse 1.5s ease-in-out infinite" }}>NEW</div>}
+      <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"12px" }}>
+        <span style={{ background:clue.tier==="pro"?`${t.accent}20`:`${t.text}0a`,border:`1px solid ${clue.tier==="pro"?t.accent:t.cardBorderLocked}`,color:clue.tier==="pro"?t.accent:t.textMuted,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",padding:"3px 10px",borderRadius:"20px" }}>
+          {clue.tier==="pro"?"⭐ PRO":"FREE"}
+        </span>
+        <div style={{ textAlign:"right",paddingRight:showNew?"46px":"0" }}>
+          <div style={{ color:t.accent,fontSize:"12px",fontWeight:"600" }}>Clue {clue.id}</div>
+          <div style={{ color:t.textMuted,fontSize:"11px" }}>{clue.day}, {clue.date}</div>
+        </div>
+      </div>
+      {timeLocked ? (
+        <div style={{ display:"flex",alignItems:"center",gap:"14px",padding:"4px 0" }}>
+          <div style={{ fontSize:"20px",opacity:.5 }}>⏰</div>
+          <div>
+            <div style={{ color:t.textMuted,fontSize:"13px",fontWeight:"500",marginBottom:"2px" }}>Drops {clue.day} at 8:00 AM</div>
+            <div style={{ color:t.textDim,fontSize:"11px",fontFamily:"'DM Mono',monospace" }}>{fmtHMS(msUntil)} remaining</div>
+          </div>
+        </div>
+      ):tierLocked?(
+        <div style={{ textAlign:"center",padding:"12px 0" }}>
+          <div style={{ fontSize:"24px",marginBottom:"6px" }}>🔒</div>
+          <div style={{ color:t.textDim,fontSize:"13px" }}>Unlock with Pro membership</div>
+        </div>
+      ):clue.isPhoto?(
+        clue.photoUrl?(
+          <div style={{ borderRadius:"10px",overflow:"hidden",border:`1px solid ${t.accent}` }}>
+            <img src={clue.photoUrl} alt="photo clue" style={{ width:"100%",display:"block",maxHeight:"200px",objectFit:"cover" }} />
+            <div style={{ background:`${t.accent}15`,padding:"8px 14px",color:t.accent,fontSize:"12px",fontWeight:"600" }}>📸 Thursday Photo Clue</div>
+          </div>
+        ):(
+          <div style={{ background:`${t.accent}10`,border:`1px dashed ${t.accent}`,borderRadius:"10px",padding:"18px",textAlign:"center" }}>
+            <div style={{ fontSize:"22px",marginBottom:"6px" }}>📸</div>
+            <div style={{ color:t.accent,fontSize:"13px",fontWeight:"600" }}>Photo Clue — Thursday Morning</div>
+            <div style={{ color:t.textMuted,fontSize:"12px",marginTop:"4px" }}>Shown to Pro members at 8 AM</div>
+          </div>
+        )
+      ):(
+        <p style={{ color:t.textClue,fontSize:"15px",lineHeight:"1.75",fontFamily:"'Playfair Display',serif",fontStyle:"italic",margin:0 }}>"{clue.text}"</p>
+      )}
+    </div>
+  );
+}
+
+function MapSection({ isPro, t }) {
+  return (
+    <div style={{ background:t.mapBg,border:`1.5px solid ${t.mapBorder}`,borderRadius:"14px",overflow:"hidden" }}>
+      <div style={{ padding:"16px 22px",borderBottom:`1px solid ${t.mapInner}`,display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+        <div>
+          <div style={{ color:t.green,fontSize:"12px",letterSpacing:"2px",textTransform:"uppercase" }}>Hunt Map</div>
+          <div style={{ color:t.textSubtle,fontSize:"12px",marginTop:"2px" }}>{isPro?"Zoomed-in · ~200m accuracy":"General area — upgrade for close-up"}</div>
+        </div>
+        {isPro&&<span style={{ background:`${t.green}22`,border:`1px solid ${t.green}`,color:t.green,fontSize:"10px",padding:"3px 10px",borderRadius:"20px" }}>⭐ PRO</span>}
+      </div>
+      <div style={{ height:"200px",position:"relative",display:"flex",alignItems:"center",justifyContent:"center" }}>
+        {[...Array(5)].map((_,i)=><div key={`h${i}`} style={{ position:"absolute",left:0,right:0,top:`${(i+1)*16}%`,height:"1px",background:t.gridLine }} />)}
+        {[...Array(7)].map((_,i)=><div key={`v${i}`} style={{ position:"absolute",top:0,bottom:0,left:`${(i+1)*12}%`,width:"1px",background:t.gridLine }} />)}
+        {isPro?(
+          <>
+            <div style={{ position:"absolute",left:"58%",top:"48%",width:"64px",height:"64px",background:`radial-gradient(circle,${t.green}44,transparent)`,borderRadius:"50%",transform:"translate(-50%,-50%)",animation:"pulse 2s infinite" }} />
+            <div style={{ position:"absolute",left:"58%",top:"48%",transform:"translate(-50%,-50%)",fontSize:"24px",filter:`drop-shadow(0 0 8px ${t.green})` }}>📍</div>
+            <div style={{ position:"absolute",bottom:"12px",right:"12px",background:"rgba(0,0,0,0.65)",border:`1px solid ${t.green}`,color:t.green,fontSize:"11px",padding:"4px 10px",borderRadius:"6px" }}>~200m radius zone</div>
+          </>
+        ):(
+          <div style={{ textAlign:"center" }}>
+            <div style={{ fontSize:"34px",opacity:.3,marginBottom:"8px" }}>🗺️</div>
+            <div style={{ color:t.textDim,fontSize:"13px" }}>Upgrade to Pro for zoomed map</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function UpgradeBanner({ onUpgrade, t }) {
+  return (
+    <div style={{ background:t.upgradeBg,border:`2px solid ${t.accent}`,borderRadius:"16px",padding:"22px 24px",position:"relative",overflow:"hidden" }}>
+      <div style={{ position:"absolute",top:"-40px",right:"-40px",width:"110px",height:"110px",background:`radial-gradient(circle,${t.accent}18,transparent)`,borderRadius:"50%" }} />
+      <div style={{ position:"relative" }}>
+        <div style={{ fontSize:"20px",marginBottom:"6px" }}>⭐</div>
+        <div style={{ color:t.text,fontSize:"16px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"5px" }}>Go Pro — Find It First</div>
+        <div style={{ color:t.textDate,fontSize:"13px",lineHeight:"1.6",marginBottom:"12px" }}>
+          Get <strong style={{ color:t.accent }}>6 clues</strong>, a zoomed map, and a <strong style={{ color:t.accent }}>Thursday photo clue</strong>.
+        </div>
+        <div style={{ display:"flex",gap:"8px",flexWrap:"wrap",marginBottom:"14px" }}>
+          {["6 Clues","Zoomed Map","Photo Clue","Early Access"].map(f=>(
+            <span key={f} style={{ background:`${t.accent}15`,border:`1px solid ${t.accent}44`,color:t.accent,fontSize:"11px",padding:"3px 10px",borderRadius:"20px" }}>✓ {f}</span>
+          ))}
+        </div>
+        <button onClick={onUpgrade} style={{ background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"10px",padding:"11px 26px",fontSize:"14px",fontWeight:"700",cursor:"pointer",boxShadow:`0 4px 20px ${t.accent}44` }}>
+          UNLOCK PRO — $4.99/mo
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Admin panel (condensed)
+function AdminPanel({ t, isDark, onPublish, simOffset, setSimOffset }) {
+  const [form,setForm]=useState({address:"",hidingSpot:"",landmarks:"",areaDescription:"",hidingMethod:"",redHerrings:"",prizeDescription:"",weekOf:""});
+  const [photoPreview,setPhotoPreview]=useState(null);
+  const [photoFile,setPhotoFile]=useState(null);
+  const [generating,setGenerating]=useState(false);
+  const [generated,setGenerated]=useState(null);
+  const [editingId,setEditingId]=useState(null);
+  const [editText,setEditText]=useState("");
+  const [status,setStatus]=useState("");
+  const [published,setPublished]=useState(false);
+  const fileRef=useRef();
+  const totalHours=Math.round((HUNT_END-HUNT_START)/3600000);
+  const simNow=simOffset!==null?new Date(HUNT_START.getTime()+simOffset*3600000):new Date();
+
+  const fi=(key,label,ph,multi=false)=>(
+    <div style={{ marginBottom:"12px" }}>
+      <label style={{ display:"block",color:t.textSubtle,fontSize:"10px",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:"5px" }}>{label}</label>
+      {multi
+        ?<textarea value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} placeholder={ph} rows={2} style={{ width:"100%",background:t.inputBg,border:`1px solid ${t.inputBorder}`,borderRadius:"8px",padding:"9px 12px",color:t.text,fontSize:"13px",resize:"vertical",outline:"none",fontFamily:"'DM Sans',sans-serif" }} onFocus={e=>e.target.style.borderColor=t.inputFocus} onBlur={e=>e.target.style.borderColor=t.inputBorder} />
+        :<input value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} placeholder={ph} style={{ width:"100%",background:t.inputBg,border:`1px solid ${t.inputBorder}`,borderRadius:"8px",padding:"9px 12px",color:t.text,fontSize:"13px",outline:"none",fontFamily:"'DM Sans',sans-serif" }} onFocus={e=>e.target.style.borderColor=t.inputFocus} onBlur={e=>e.target.style.borderColor=t.inputBorder} />
+      }
+    </div>
+  );
+
+  const generate=async()=>{
+    if(!form.address||!form.hidingSpot||!form.landmarks){setStatus("⚠️ Fill in Address, Hiding Spot, and Landmarks first.");return;}
+    setGenerating(true);setStatus("");setGenerated(null);
+    const prompt=`You are writing clues for FinderSeek city treasure hunt. Write exactly 6 clues.
+Location: ${form.address}
+Hiding Spot: ${form.hidingSpot}
+Landmarks: ${form.landmarks}
+Area: ${form.areaDescription||"n/a"}
+Method: ${form.hidingMethod||"n/a"}
+Red Herrings: ${form.redHerrings||"none"}
+Clue 1 (Fri FREE): Very vague, poetic, no street names.
+Clue 2 (Sat FREE): General area/landmark type only.
+Clue 3 (Sun FREE): Specific feature type without naming it.
+Clue 4 (Mon FREE): Named landmark hinted cryptically.
+Clue 5 (Tue PRO): Clear directional with named landmark.
+Clue 6 (Wed PRO): Within 10-20 feet, nearly gives it away.
+Respond ONLY with JSON array, no markdown: [{"id":1,"clue":"..."},...,{"id":6,"clue":"..."}]`;
+    try {
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+      const data=await res.json();
+      const raw=data.content?.find(b=>b.type==="text")?.text||"";
+      setGenerated(JSON.parse(raw.replace(/```json|```/g,"").trim()));
+      setStatus("✅ Clues generated! Review and publish.");
+    } catch { setStatus("❌ Generation failed. Try again."); }
+    finally { setGenerating(false); }
+  };
+
+  const publish=()=>{
+    if(!generated){setStatus("⚠️ Generate clues first.");return;}
+    const days=["Friday","Saturday","Sunday","Monday","Tuesday","Wednesday"],dates=["Mar 6","Mar 7","Mar 8","Mar 9","Mar 10","Mar 11"];
+    const newClues=[...generated.map((c,i)=>({id:i+1,day:days[i],date:dates[i],tier:i<4?"free":"pro",text:c.clue})),{id:7,day:"Thursday",date:"Mar 12",tier:"pro",text:"",isPhoto:true,photoUrl:photoPreview||null}];
+    onPublish({clues:newClues,prize:form.prizeDescription||DEFAULT_HUNT.prize,weekOf:form.weekOf||DEFAULT_HUNT.weekOf});
+    setPublished(true);setStatus("🎉 Hunt published!");
+  };
+
+  const dayLabels=["Friday (Free)","Saturday (Free)","Sunday (Free)","Monday (Free)","Tuesday (Pro)","Wednesday (Pro)"];
+
+  return (
+    <div style={{ display:"flex",flexDirection:"column",gap:"14px" }}>
+      <div style={{ background:t.panelBg,border:`1.5px solid ${t.accent}`,borderRadius:"16px",padding:"16px 20px",position:"relative",overflow:"hidden" }}>
+        <div style={{ position:"absolute",top:0,left:0,right:0,height:"3px",background:`linear-gradient(90deg,${t.accent},${t.accentHover},${t.accent})` }} />
+        <div style={{ color:t.text,fontSize:"16px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"4px" }}>🔐 Admin Panel</div>
+        <div style={{ color:t.textMuted,fontSize:"12px" }}>Enter location → generate clues → publish.</div>
+      </div>
+
+      {/* Time simulator */}
+      <div style={{ background:t.simBg,border:`1.5px solid ${t.simBorder}`,borderRadius:"12px",padding:"16px 18px" }}>
+        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"8px" }}>
+          <div style={{ color:t.blue,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase" }}>🧪 Time Simulator</div>
+          <button onClick={()=>setSimOffset(null)} style={{ background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textMuted,fontSize:"10px",padding:"2px 8px",borderRadius:"6px",cursor:"pointer" }}>Real Time</button>
+        </div>
+        <div style={{ color:t.text,fontSize:"12px",marginBottom:"8px",fontFamily:"'DM Mono',monospace" }}>
+          <strong style={{ color:t.accent }}>{simNow.toLocaleString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</strong>
+        </div>
+        <input type="range" min={0} max={totalHours} step={0.25} value={simOffset??0} onChange={e=>setSimOffset(Number(e.target.value))} style={{ width:"100%",accentColor:t.accent,cursor:"pointer",marginBottom:"6px" }} />
+        <div style={{ display:"flex",gap:"5px",flexWrap:"wrap" }}>
+          {DEFAULT_CLUES.map(c=>{ const hrs=(new Date(REVEAL_DATES[c.id])-HUNT_START)/3600000; return (
+            <button key={c.id} onClick={()=>setSimOffset(hrs+0.1)} style={{ background:`${c.tier==="pro"?t.accent:t.blue}18`,border:`1px solid ${c.tier==="pro"?t.accent:t.blue}44`,color:c.tier==="pro"?t.accent:t.blue,fontSize:"10px",padding:"2px 8px",borderRadius:"6px",cursor:"pointer",fontWeight:"600" }}>{c.day.slice(0,3)}</button>
+          );})}
+        </div>
+      </div>
+
+      {/* Schedule */}
+      <div style={{ background:t.panelBg,border:`1px solid ${t.panelBorder}`,borderRadius:"12px",padding:"14px 18px" }}>
+        <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>📅 Release Schedule</div>
+        {DEFAULT_CLUES.map(c=>{ const rev=isRevealed(c.id,simNow),next=nextReveal(simNow)&&new Date(REVEAL_DATES[c.id]).getTime()===nextReveal(simNow).getTime(); return (
+          <div key={c.id} style={{ display:"flex",alignItems:"center",gap:"10px",padding:"5px 0",borderBottom:`1px solid ${t.divider}` }}>
+            <div style={{ width:"7px",height:"7px",borderRadius:"50%",flexShrink:0,background:rev?t.green:next?t.accent:t.textDim,boxShadow:rev?`0 0 6px ${t.green}88`:next?`0 0 6px ${t.accent}88`:"none" }} />
+            <span style={{ flex:1,color:rev?t.text:t.textMuted,fontSize:"12px" }}>Clue {c.id} · {c.day}{c.isPhoto?" 📸":""}</span>
+            {next&&<span style={{ background:`${t.accent}20`,border:`1px solid ${t.accent}`,color:t.accent,fontSize:"9px",fontWeight:"700",padding:"1px 6px",borderRadius:"6px" }}>NEXT</span>}
+            <span style={{ color:rev?t.green:t.textDim,fontSize:"10px" }}>{rev?"✓ Live":`8AM ${c.day.slice(0,3)}`}</span>
+            <span style={{ color:c.tier==="pro"?t.accent:t.textSubtle,fontSize:"9px",letterSpacing:"1px" }}>{c.tier==="pro"?"PRO":"FREE"}</span>
+          </div>
+        );})}
+      </div>
+
+      {/* Hunt + Location */}
+      <div style={{ background:t.panelBg,border:`1px solid ${t.panelBorder}`,borderRadius:"12px",padding:"14px 18px" }}>
+        <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>📋 Hunt Details</div>
+        {fi("weekOf","Week Label","e.g. March 6–13, 2026")}
+        {fi("prizeDescription","Prize","e.g. $300 Cash + $50 Gift Card")}
+      </div>
+      <div style={{ background:t.panelBg,border:`1px solid ${t.panelBorder}`,borderRadius:"12px",padding:"14px 18px" }}>
+        <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>📍 Location</div>
+        {fi("address","Address / Intersection *","e.g. Corner of Main St & 3rd Ave")}
+        {fi("hidingSpot","Exact Hiding Spot *","e.g. Taped under middle bench armrest",true)}
+        {fi("landmarks","Nearby Landmarks *","e.g. Blue heron mural, dry fountain",true)}
+        {fi("areaDescription","Area Description","e.g. Busy plaza, quiet park path",true)}
+        {fi("hidingMethod","Hiding Method","e.g. Magnetic box, ziplock bag")}
+        {fi("redHerrings","Red Herrings","e.g. There are two fountains — not the big one",true)}
+      </div>
+
+      {/* Photo upload */}
+      <div style={{ background:t.panelBg,border:`1px solid ${t.panelBorder}`,borderRadius:"12px",padding:"14px 18px" }}>
+        <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"4px" }}>📸 Thursday Photo</div>
+        <div style={{ color:t.textMuted,fontSize:"12px",marginBottom:"10px" }}>Shown to Pro members Thursday 8 AM.</div>
+        <input ref={fileRef} type="file" accept="image/*" onChange={e=>{ const f=e.target.files[0];if(!f)return;setPhotoFile(f);const r=new FileReader();r.onload=ev=>setPhotoPreview(ev.target.result);r.readAsDataURL(f); }} style={{ display:"none" }} />
+        {photoPreview?(
+          <div style={{ borderRadius:"10px",overflow:"hidden",border:`1px solid ${t.accent}` }}>
+            <img src={photoPreview} alt="preview" style={{ width:"100%",maxHeight:"160px",objectFit:"cover",display:"block" }} />
+            <div style={{ background:`${t.accent}18`,padding:"7px 12px",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+              <span style={{ color:t.accent,fontSize:"11px",fontWeight:"600" }}>📸 {photoFile?.name||"Photo"}</span>
+              <div style={{ display:"flex",gap:"6px" }}>
+                <button onClick={()=>fileRef.current.click()} style={{ background:t.accent,color:"#fff",border:"none",borderRadius:"5px",padding:"2px 8px",cursor:"pointer",fontSize:"11px" }}>Replace</button>
+                <button onClick={()=>{setPhotoFile(null);setPhotoPreview(null);}} style={{ background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textMuted,borderRadius:"5px",padding:"2px 6px",cursor:"pointer",fontSize:"13px" }}>×</button>
+              </div>
+            </div>
+          </div>
+        ):(
+          <button onClick={()=>fileRef.current.click()} style={{ width:"100%",background:"transparent",border:`2px dashed ${t.inputBorder}`,borderRadius:"10px",padding:"20px",cursor:"pointer",textAlign:"center",transition:"all .2s" }} onMouseEnter={e=>{e.currentTarget.style.borderColor=t.accent;e.currentTarget.style.background=`${t.accent}08`;}} onMouseLeave={e=>{e.currentTarget.style.borderColor=t.inputBorder;e.currentTarget.style.background="transparent";}}>
+            <div style={{ fontSize:"24px",marginBottom:"4px" }}>📷</div>
+            <div style={{ color:t.textSubtle,fontSize:"13px",fontWeight:"600" }}>Click to upload Thursday photo</div>
+            <div style={{ color:t.textDim,fontSize:"11px",marginTop:"2px" }}>JPG, PNG, WEBP</div>
+          </button>
+        )}
+      </div>
+
+      <button onClick={generate} disabled={generating} style={{ background:generating?`${t.accent}55`:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"12px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:generating?"not-allowed":"pointer",letterSpacing:"1px",boxShadow:generating?"none":`0 4px 24px ${t.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",gap:"10px" }}>
+        {generating?<><span style={{ animation:"spin 1s linear infinite",display:"inline-block" }}>⏳</span>Generating…</>:"✨ Generate 6 Clues with AI"}
+      </button>
+
+      {status&&<div style={{ background:status.startsWith("❌")?t.dangerBg:status.startsWith("⚠️")?`${t.accent}12`:`${t.green}12`,border:`1px solid ${status.startsWith("❌")?t.danger:status.startsWith("⚠️")?t.accent:t.green}`,borderRadius:"10px",padding:"11px 14px",color:status.startsWith("❌")?t.danger:status.startsWith("⚠️")?t.accent:t.green,fontSize:"13px" }}>{status}</div>}
+
+      {generated&&(
+        <div style={{ background:t.panelBg,border:`1px solid ${t.green}44`,borderRadius:"12px",padding:"14px 18px" }}>
+          <div style={{ color:t.green,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>✅ Review & Edit</div>
+          <div style={{ display:"flex",flexDirection:"column",gap:"9px" }}>
+            {generated.map((c,i)=>(
+              <div key={c.id} style={{ background:isDark?"#111":"#fafaf5",border:`1px solid ${i>=4?`${t.accent}55`:t.inputBorder}`,borderRadius:"9px",padding:"11px 14px" }}>
+                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"6px" }}>
+                  <div style={{ display:"flex",gap:"6px",alignItems:"center" }}>
+                    <span style={{ background:i>=4?`${t.accent}20`:`${t.text}0a`,border:`1px solid ${i>=4?t.accent:t.inputBorder}`,color:i>=4?t.accent:t.textMuted,fontSize:"9px",letterSpacing:"1.5px",textTransform:"uppercase",padding:"2px 7px",borderRadius:"10px" }}>{i>=4?"⭐ PRO":"FREE"}</span>
+                    <span style={{ color:t.textSubtle,fontSize:"11px" }}>{dayLabels[i]}</span>
+                  </div>
+                  {editingId===c.id
+                    ?<div style={{ display:"flex",gap:"5px" }}><button onClick={()=>{setGenerated(p=>p.map(x=>x.id===c.id?{...x,clue:editText}:x));setEditingId(null);}} style={{ background:t.green,color:"#fff",border:"none",borderRadius:"5px",padding:"2px 8px",cursor:"pointer",fontSize:"11px",fontWeight:"600" }}>Save</button><button onClick={()=>setEditingId(null)} style={{ background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textMuted,borderRadius:"5px",padding:"2px 7px",cursor:"pointer",fontSize:"11px" }}>✕</button></div>
+                    :<button onClick={()=>{setEditingId(c.id);setEditText(c.clue);}} style={{ background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textSubtle,borderRadius:"5px",padding:"2px 8px",cursor:"pointer",fontSize:"10px" }}>✏️</button>
+                  }
+                </div>
+                {editingId===c.id
+                  ?<textarea value={editText} onChange={e=>setEditText(e.target.value)} rows={2} style={{ width:"100%",background:t.inputBg,border:`1px solid ${t.inputFocus}`,borderRadius:"7px",padding:"8px 10px",color:t.text,fontSize:"13px",lineHeight:"1.5",resize:"vertical",outline:"none",fontFamily:"'DM Sans',sans-serif" }} />
+                  :<p style={{ color:t.textClue,fontSize:"13px",lineHeight:"1.6",fontFamily:"'Playfair Display',serif",fontStyle:"italic",margin:0 }}>"{c.clue}"</p>
+                }
+              </div>
+            ))}
+          </div>
+          <button onClick={publish} style={{ marginTop:"12px",width:"100%",background:`linear-gradient(135deg,${t.green},#66bb6a)`,color:"#fff",border:"none",borderRadius:"10px",padding:"13px",fontSize:"14px",fontWeight:"700",cursor:"pointer",boxShadow:`0 4px 20px ${t.green}44` }}>
+            {published?"🔄 Re-Publish":"🚀 Publish This Week's Hunt"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── ROOT APP ──────────────────────────────────────────────────────────────
+export default function FinderSeekApp() {
+  // Auth state
+  const [authScreen, setAuthScreen] = useState("welcome"); // welcome|email|login|phone|google|apple|setup|app
+  const [user,       setUser]       = useState(null);  // null = not logged in
+  const [isGuest,    setIsGuest]    = useState(false);
+
+  // App state
+  const [isPro,      setIsPro]      = useState(false);
+  const [activeTab,  setActiveTab]  = useState("hunt");
+  const [showModal,  setShowModal]  = useState(false);
+  const [isDark,     setIsDark]     = useState(true);
+  const [isAdmin,    setIsAdmin]    = useState(false);
+  const [adminCode,  setAdminCode]  = useState("");
+  const [adminErr,   setAdminErr]   = useState("");
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [hunt,       setHunt]       = useState(DEFAULT_HUNT);
+  const [simOffset,  setSimOffset]  = useState(null);
+  const [,setTick]                  = useState(0);
+  const [editingProfile, setEditingProfile] = useState(false);
+
+  useEffect(()=>{ const id=setInterval(()=>setTick(n=>n+1),1000); return ()=>clearInterval(id); },[]);
+
+  const t = isDark ? T.dark : T.light;
+  const now = simOffset!==null ? new Date(HUNT_START.getTime()+simOffset*3600000) : new Date();
+  const huntOver = now>=HUNT_END;
+  const revealedCount = hunt.clues.filter(c=>isRevealed(c.id,now)).length;
+  const freeClues = hunt.clues.filter(c=>c.tier==="free");
+  const proClues  = hunt.clues.filter(c=>c.tier==="pro");
+
+  const handleAdminLogin = () => {
+    if(adminCode==="findseek2026"){setIsAdmin(true);setShowAdminLogin(false);setActiveTab("admin");setAdminErr("");}
+    else setAdminErr("Incorrect code.");
+  };
+
+  const tabs = [["hunt","🏴‍☠️ Hunt"],["map","🗺️ Map"],["leaderboard","🏆 Hunters"],...(isAdmin?[["admin","🔐 Admin"]]:[])] ;
+
+  // ── AUTH ROUTING ──
+  if(authScreen==="google")  return <AuthSocial provider="google" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
+  if(authScreen==="apple")   return <AuthSocial provider="apple"  onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
+  if(authScreen==="phone")   return <AuthPhone  onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
+  if(authScreen==="email")   return <AuthEmail  mode="email" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
+  if(authScreen==="login")   return <AuthEmail  mode="login" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
+  if(authScreen==="setup"||editingProfile) return <ProfileSetup user={user||{}} onDone={u=>{setUser(u);setAuthScreen("app");setEditingProfile(false);}} t={t} />;
+  if(authScreen==="welcome") return (
+    <AuthWelcome
+      onMethod={m=>setAuthScreen(m)}
+      onGuest={()=>{setIsGuest(true);setUser({name:"Guest",isGuest:true});setAuthScreen("app");}}
+      t={t} isDark={isDark}
+    />
+  );
+
+  // ── MAIN APP ──
+  return (
+    <div style={{ minHeight:"100vh",background:t.bg,fontFamily:"'DM Sans',sans-serif",color:t.text,transition:"background .3s,color .3s" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;}
+        @keyframes pulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}}
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        @keyframes newPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.08)}}
+        @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        textarea,input{color-scheme:${isDark?"dark":"light"};}
+      `}</style>
+
+      {/* ── HEADER ── */}
+      <div style={{ background:t.headerBg,borderBottom:`1px solid ${t.headerBorder}`,padding:"0 20px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(14px)" }}>
+        <div style={{ maxWidth:"520px",margin:"0 auto",padding:"12px 0",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"10px" }}>
+          {/* Logo */}
+          <div style={{ display:"flex",alignItems:"center",gap:"9px",flexShrink:0 }}>
+            <div style={{ width:"34px",height:"34px",borderRadius:"10px",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px",boxShadow:`0 2px 12px ${t.accent}44`,flexShrink:0 }}>🔍</div>
+            <div>
+              <div style={{ fontSize:"18px",fontFamily:"'Playfair Display',serif",fontWeight:"700",lineHeight:1.1,background:t.shimmer,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 5s linear infinite" }}>
+                Finder<span style={{ fontStyle:"italic" }}>Seek</span>
+              </div>
+              <div style={{ color:t.textDim,fontSize:"9px",letterSpacing:"0.8px" }}>finderseek.com</div>
+            </div>
+          </div>
+          {/* Right controls */}
+          <div style={{ display:"flex",alignItems:"center",gap:"8px" }}>
+            {simOffset!==null&&<span style={{ background:`${t.blue}20`,border:`1px solid ${t.blue}`,color:t.blue,fontSize:"9px",fontWeight:"700",padding:"2px 7px",borderRadius:"8px",letterSpacing:"1px" }}>SIM</span>}
+            <ThemeToggle isDark={isDark} onToggle={()=>setIsDark(d=>!d)} t={t} />
+            {!isAdmin&&<button onClick={()=>setShowAdminLogin(true)} style={{ background:"transparent",border:`1px solid ${t.inputBorder}`,color:t.textMuted,fontSize:"11px",padding:"5px 10px",borderRadius:"20px",cursor:"pointer" }}>🔐</button>}
+            {isPro
+              ?<span style={{ background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",fontSize:"11px",fontWeight:"700",padding:"5px 12px",borderRadius:"20px",letterSpacing:"1px",whiteSpace:"nowrap" }}>⭐ PRO</span>
+              :<button onClick={()=>setShowModal(true)} style={{ background:"transparent",border:`1.5px solid ${t.accent}`,color:t.accent,fontSize:"11px",fontWeight:"600",padding:"5px 12px",borderRadius:"20px",cursor:"pointer",whiteSpace:"nowrap" }}>UPGRADE</button>
+            }
+            {user&&(
+              <AccountMenu user={user} isPro={isPro} t={t} isDark={isDark}
+                onUpgrade={()=>setShowModal(true)}
+                onLogout={()=>{setUser(null);setIsGuest(false);setIsPro(false);setAuthScreen("welcome");}}
+                onEditProfile={()=>setEditingProfile(true)}
+              />
+            )}
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div style={{ height:"2px",background:isDark?"#1a1a14":"#e8e0c8",position:"relative" }}>
+          <div style={{ position:"absolute",left:0,top:0,height:"100%",width:`${(revealedCount/hunt.clues.length)*100}%`,background:`linear-gradient(90deg,${t.accent},${t.green})`,transition:"width 1s" }} />
+        </div>
+        {/* Tabs */}
+        <div style={{ maxWidth:"520px",margin:"0 auto",display:"flex",borderTop:`1px solid ${t.headerBorder}` }}>
+          {tabs.map(([id,label])=>(
+            <button key={id} onClick={()=>setActiveTab(id)} style={{ flex:1,padding:"10px 4px",background:"transparent",border:"none",borderBottom:activeTab===id?`2.5px solid ${id==="admin"?t.green:t.accent}`:"2.5px solid transparent",color:activeTab===id?(id==="admin"?t.green:t.accent):t.textMuted,fontSize:"11px",fontWeight:activeTab===id?"700":"400",cursor:"pointer",transition:"all .18s",whiteSpace:"nowrap" }}>{label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ maxWidth:"520px",margin:"0 auto",padding:"20px 16px 52px" }}>
+
+        {/* HUNT TAB */}
+        {activeTab==="hunt"&&(
+          <div style={{ display:"flex",flexDirection:"column",gap:"14px",animation:"slideIn .3s ease" }}>
+            {huntOver?(
+              <div style={{ background:t.prizeBg,border:`2px solid ${t.accent}`,borderRadius:"16px",padding:"24px",textAlign:"center" }}>
+                <div style={{ fontSize:"40px",marginBottom:"10px" }}>🏁</div>
+                <div style={{ color:t.text,fontSize:"20px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"6px" }}>Hunt Has Ended</div>
+                <div style={{ color:t.textMuted,fontSize:"14px" }}>Check back Friday for the next hunt!</div>
+              </div>
+            ):(
+              <>
+                <div style={{ background:t.prizeBg,border:`1px solid ${t.prizeBorder}`,borderRadius:"16px",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+                  <div>
+                    <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"3px" }}>This Week's Prize</div>
+                    <div style={{ color:t.text,fontSize:"19px",fontFamily:"'Playfair Display',serif",fontWeight:"700" }}>{hunt.prize}</div>
+                    <div style={{ color:t.textDim,fontSize:"11px",marginTop:"3px" }}>{hunt.weekOf} · Ends Friday 10AM</div>
+                  </div>
+                  <div style={{ fontSize:"34px",opacity:.85 }}>💰</div>
+                </div>
+                <div style={{ background:t.timerBg,border:`2px solid ${t.accent}`,borderRadius:"12px",padding:"16px 22px",textAlign:"center",boxShadow:`0 0 20px ${t.accent}22` }}>
+                  <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px" }}>Hunt Ends In</div>
+                  <div style={{ color:t.text,fontSize:"24px",fontFamily:"'Playfair Display',serif",fontWeight:"700",letterSpacing:"1px" }}>{fmtDHMS(HUNT_END-now)}</div>
+                  <div style={{ color:t.textDate,fontSize:"11px",marginTop:"5px" }}>Friday, March 13 · 10:00 AM</div>
+                </div>
+                <NextClueBanner now={now} t={t} />
+                <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"12px",padding:"12px 16px",display:"flex",alignItems:"center",gap:"14px" }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"5px" }}>Clues Released</div>
+                    <div style={{ height:"5px",background:isDark?"#1a1a14":"#e8e0c8",borderRadius:"3px",overflow:"hidden" }}>
+                      <div style={{ height:"100%",width:`${(revealedCount/hunt.clues.length)*100}%`,background:`linear-gradient(90deg,${t.accent},${t.green})`,borderRadius:"3px",transition:"width 1s" }} />
+                    </div>
+                  </div>
+                  <div style={{ color:t.text,fontSize:"18px",fontWeight:"700",fontFamily:"'DM Mono',monospace",flexShrink:0 }}>{revealedCount}<span style={{ color:t.textMuted,fontSize:"12px" }}>/{hunt.clues.length}</span></div>
+                </div>
+              </>
+            )}
+            <div>
+              <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"9px",paddingLeft:"2px" }}>Free Clues · Fri–Mon</div>
+              <div style={{ display:"flex",flexDirection:"column",gap:"10px" }}>{freeClues.map(c=><ClueCard key={c.id} clue={c} isPro={isPro} now={now} t={t} />)}</div>
+            </div>
+            <div>
+              <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"9px",paddingLeft:"2px",display:"flex",alignItems:"center",gap:"5px" }}><span>⭐</span>Pro Clues · Tue–Thu</div>
+              <div style={{ display:"flex",flexDirection:"column",gap:"10px" }}>{proClues.map(c=><ClueCard key={c.id} clue={c} isPro={isPro} now={now} t={t} />)}</div>
+            </div>
+            {!isPro&&<UpgradeBanner onUpgrade={()=>setShowModal(true)} t={t} />}
+            <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"16px 20px" }}>
+              <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>How It Works</div>
+              {[["🌱 Friday","Treasure planted · Clue 1 drops 8 AM"],["📜 Daily","New clue each morning at 8 AM"],["⭐ Tue–Thu","Pro members get 3 more targeted clues"],["📸 Thursday","Pro photo clue drops 8 AM"],["🏁 Fri 10AM","Hunt ends — prize rolls over"]].map(([time,desc])=>(
+                <div key={time} style={{ display:"flex",gap:"10px",marginBottom:"8px",alignItems:"flex-start" }}>
+                  <div style={{ color:t.accent,fontSize:"11px",minWidth:"84px",fontWeight:"600" }}>{time}</div>
+                  <div style={{ color:t.textMuted,fontSize:"12px",lineHeight:"1.5" }}>{desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MAP TAB */}
+        {activeTab==="map"&&(
+          <div style={{ display:"flex",flexDirection:"column",gap:"14px",animation:"slideIn .3s ease" }}>
+            <MapSection isPro={isPro} t={t} />
+            {!isPro&&<div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"12px",padding:"14px 18px",textAlign:"center" }}>
+              <div style={{ color:t.textMuted,fontSize:"13px",marginBottom:"10px" }}>Pro members see a zoomed-in map within ~200m of the treasure</div>
+              <button onClick={()=>setShowModal(true)} style={{ background:"transparent",border:`1px solid ${t.accent}`,color:t.accent,padding:"9px 22px",borderRadius:"8px",cursor:"pointer",fontSize:"13px",fontWeight:"600" }}>Unlock Pro Map →</button>
+            </div>}
+            <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"16px 20px" }}>
+              <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>Search Zones</div>
+              {[{zone:"Downtown Core",hint:"High activity area",hot:true},{zone:"Riverfront District",hint:"Possible but less likely",hot:false},{zone:"City Park",hint:"Previous hunt location",hot:false}].map((z,i,arr)=>(
+                <div key={z.zone} style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:i<arr.length-1?`1px solid ${t.divider}`:"none" }}>
+                  <div>
+                    <div style={{ color:t.zoneName,fontSize:"14px" }}>{z.zone}</div>
+                    <div style={{ color:t.textDim,fontSize:"12px" }}>{z.hint}</div>
+                  </div>
+                  {z.hot&&<span style={{ background:`${t.accent}15`,border:`1px solid ${t.accent}`,color:t.accent,fontSize:"10px",padding:"2px 8px",borderRadius:"10px" }}>🔥 HOT</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* LEADERBOARD TAB */}
+        {activeTab==="leaderboard"&&(
+          <div style={{ display:"flex",flexDirection:"column",gap:"14px",animation:"slideIn .3s ease" }}>
+            <div style={{ background:t.prizeBg,border:`1px solid ${t.prizeBorder}`,borderRadius:"14px",padding:"18px 22px",textAlign:"center" }}>
+              <div style={{ fontSize:"28px",marginBottom:"5px" }}>🏆</div>
+              <div style={{ color:t.text,fontFamily:"'Playfair Display',serif",fontSize:"19px",fontWeight:"700" }}>Hall of Hunters</div>
+              <div style={{ color:t.textMuted,fontSize:"12px",marginTop:"3px" }}>All-time finds leaderboard</div>
+            </div>
+            {/* Current user row */}
+            {user&&!user.isGuest&&(
+              <div style={{ background:t.surfaceBg,border:`1.5px solid ${t.accent}33`,borderRadius:"12px",padding:"13px 18px",display:"flex",alignItems:"center",gap:"12px" }}>
+                <div style={{ width:"30px",height:"30px",borderRadius:"50%",background:avatarColor(user.name),display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px",fontWeight:"700",color:"#fff",flexShrink:0 }}>{initials(user.name)}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ color:t.text,fontSize:"13px",fontWeight:"600" }}>{user.name}</div>
+                  {user.city&&<div style={{ color:t.textMuted,fontSize:"11px" }}>📍 {user.city}</div>}
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ color:t.accent,fontSize:"14px",fontWeight:"700" }}>0</div>
+                  <div style={{ color:t.textDim,fontSize:"10px" }}>your finds</div>
+                </div>
+              </div>
+            )}
+            <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",overflow:"hidden" }}>
+              {LEADERBOARD.map((h,i)=>(
+                <div key={h.rank} style={{ display:"flex",alignItems:"center",gap:"12px",padding:"13px 18px",borderBottom:i<LEADERBOARD.length-1?`1px solid ${t.divider}`:"none",background:i===0?`${t.accent}08`:"transparent" }}>
+                  <div style={{ width:"28px",height:"28px",borderRadius:"50%",flexShrink:0,background:i===0?`linear-gradient(135deg,${t.accent},${t.accentHover})`:i===1?"linear-gradient(135deg,#888,#bbb)":i===2?"linear-gradient(135deg,#a0522d,#cd853f)":isDark?"#222":"#eee",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"11px",fontWeight:"700",color:i<3?"#fff":t.textMuted }}>{h.rank}</div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ color:t.text,fontSize:"13px",fontWeight:"500" }}>{h.name}</div>
+                    {h.streak&&<div style={{ color:t.textSubtle,fontSize:"11px" }}>{h.streak}</div>}
+                  </div>
+                  <div style={{ textAlign:"right" }}>
+                    <div style={{ color:t.accent,fontSize:"14px",fontWeight:"700" }}>{h.finds}</div>
+                    <div style={{ color:t.textDim,fontSize:"10px" }}>finds</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background:t.surfaceBg,border:`1px dashed ${isDark?"#2a2a2a":"#d4c090"}`,borderRadius:"12px",padding:"18px",textAlign:"center" }}>
+              <div style={{ color:t.textDim,fontSize:"13px" }}>Found the treasure? Report your find!</div>
+              <button style={{ marginTop:"10px",background:"transparent",border:`1px solid ${t.green}`,color:t.green,padding:"9px 22px",borderRadius:"8px",cursor:"pointer",fontSize:"13px",fontWeight:"600" }}>🎉 I Found It!</button>
+            </div>
+          </div>
+        )}
+
+        {/* ADMIN TAB */}
+        {activeTab==="admin"&&isAdmin&&(
+          <AdminPanel t={t} isDark={isDark} onPublish={d=>setHunt(p=>({...p,...d}))} simOffset={simOffset} setSimOffset={v=>setSimOffset(v===null?null:v)} />
+        )}
+      </div>
+
+      {/* ── ADMIN LOGIN ── */}
+      {showAdminLogin&&(
+        <div onClick={()=>setShowAdminLogin(false)} style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:"20px" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:t.surfaceBg,border:`2px solid ${t.green}`,borderRadius:"18px",padding:"26px 24px",width:"100%",maxWidth:"320px" }}>
+            <div style={{ textAlign:"center",marginBottom:"18px" }}>
+              <div style={{ fontSize:"28px",marginBottom:"6px" }}>🔐</div>
+              <div style={{ color:t.text,fontSize:"17px",fontFamily:"'Playfair Display',serif",fontWeight:"700" }}>Admin Access</div>
+            </div>
+            <input type="password" value={adminCode} onChange={e=>setAdminCode(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleAdminLogin()} placeholder="Admin code…" autoFocus style={{ width:"100%",background:t.inputBg,border:`1.5px solid ${adminErr?t.danger:t.inputBorder}`,borderRadius:"10px",padding:"11px 13px",color:t.text,fontSize:"14px",outline:"none",marginBottom:"10px",fontFamily:"'DM Sans',sans-serif" }} />
+            {adminErr&&<div style={{ color:t.danger,fontSize:"12px",marginBottom:"10px" }}>{adminErr}</div>}
+            <button onClick={handleAdminLogin} style={{ width:"100%",background:`linear-gradient(135deg,${t.green},#66bb6a)`,color:"#fff",border:"none",borderRadius:"10px",padding:"12px",fontSize:"14px",fontWeight:"700",cursor:"pointer",marginBottom:"8px" }}>Enter →</button>
+            <button onClick={()=>{setShowAdminLogin(false);setAdminCode("");setAdminErr("");}} style={{ width:"100%",background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",padding:"6px",cursor:"pointer" }}>Cancel</button>
+            <div style={{ marginTop:"10px",background:`${t.accent}10`,border:`1px solid ${t.accent}30`,borderRadius:"8px",padding:"7px 10px",color:t.textMuted,fontSize:"11px",textAlign:"center" }}>Demo: <strong style={{ color:t.accent }}>findseek2026</strong></div>
+          </div>
+        </div>
+      )}
+
+      {/* ── UPGRADE MODAL ── */}
+      {showModal&&(
+        <div onClick={()=>setShowModal(false)} style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:999,padding:"20px" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:t.modalBg,border:`2px solid ${t.accent}`,borderRadius:"20px",padding:"26px 22px",width:"100%",maxWidth:"420px",marginBottom:"16px" }}>
+            <div style={{ textAlign:"center",marginBottom:"18px" }}>
+              <div style={{ fontSize:"34px",marginBottom:"8px" }}>⭐</div>
+              <div style={{ color:t.text,fontSize:"20px",fontFamily:"'Playfair Display',serif",fontWeight:"700" }}>Unlock Pro Membership</div>
+              <div style={{ color:t.textDate,fontSize:"13px",marginTop:"4px" }}>Get the full advantage every week</div>
+            </div>
+            <div style={{ display:"flex",flexDirection:"column",gap:"8px",marginBottom:"18px" }}>
+              {[["📜","6 Clues/Week","Tue–Thu clues only for Pro"],["🗺️","Zoomed Map","~200m radius pinpoint"],["📸","Thursday Photo","Photo clue at 8 AM"],["⚡","Daily 8 AM Access","Clues the moment they drop"]].map(([icon,title,desc])=>(
+                <div key={title} style={{ display:"flex",gap:"12px",alignItems:"center",background:`${t.accent}0e`,borderRadius:"10px",padding:"10px 13px" }}>
+                  <span style={{ fontSize:"18px" }}>{icon}</span>
+                  <div><div style={{ color:t.text,fontSize:"13px",fontWeight:"600" }}>{title}</div><div style={{ color:t.textMuted,fontSize:"12px" }}>{desc}</div></div>
+                </div>
+              ))}
+            </div>
+            <button onClick={()=>{setIsPro(true);setShowModal(false);}} style={{ width:"100%",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,color:"#fff",border:"none",borderRadius:"12px",padding:"14px",fontSize:"15px",fontWeight:"700",cursor:"pointer",marginBottom:"10px",boxShadow:`0 6px 28px ${t.accent}55` }}>
+              START PRO — $4.99/mo
+            </button>
+            <button onClick={()=>setShowModal(false)} style={{ width:"100%",background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",padding:"8px",cursor:"pointer" }}>Maybe later</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
