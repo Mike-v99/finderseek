@@ -6,15 +6,15 @@
 <title>FinderSeek — Coming Soon</title>
 <meta name="description" content="Real money hidden in your city every week. Follow the clues. Find the treasure."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Montserrat:wght@700&display=swap" rel="stylesheet"/>
 <style>
   :root {
     --ink:   #06050a;
     --gold:  #c9890c;
     --gold2: #e8a820;
     --cream: #f5ead8;
-    --dim:   #6a5a3a;
-    --muted: #3a2e1e;
+    --dim:   #c8b48a;
+    --muted: #8a7a5a;
     --border: rgba(201,137,12,0.2);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -181,6 +181,8 @@
 </style>
 </head>
 <body>
+<div style="position:fixed;inset:0;z-index:0;background:url('pirate.png') center center/cover no-repeat;opacity:0.13;filter:saturate(0.6) sepia(0.3);"></div>
+<div style="position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at center, rgba(6,5,10,0.55) 0%, rgba(6,5,10,0.92) 70%, rgba(6,5,10,0.98) 100%);"></div>
 <canvas id="bg"></canvas>
 <div class="glow"></div>
 <div id="cur"></div>
@@ -212,11 +214,23 @@
   </div>
   <div class="confirm" id="confirm">✓ You're on the list — we'll find you.</div>
 
+  <div style="margin-top:12px;animation:fadeUp 1s .65s cubic-bezier(.16,1,.3,1) both;opacity:0;">
+    <a href="pirate.html" style="display:inline-flex;align-items:center;gap:8px;color:#6a5a3a;font-size:13px;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:1px;border:1px solid rgba(201,137,12,.2);border-radius:24px;padding:8px 20px;transition:color .2s,border-color .2s;" onmouseenter="this.style.color='#c9890c';this.style.borderColor='rgba(201,137,12,.5)'" onmouseleave="this.style.color='#6a5a3a';this.style.borderColor='rgba(201,137,12,.2)'">
+      🏴‍☠️ &nbsp;Become a Pirate →
+    </a>
+  </div>
+
   <div class="pills">
     <div class="pill">💰 Real cash prizes</div>
     <div class="pill">📜 Daily clue drops</div>
     <div class="pill">🗺️ Your city</div>
     <div class="pill">🆓 Free to play</div>
+  </div>
+
+  <div style="margin-bottom:28px;animation:fadeUp 1s .75s cubic-bezier(.16,1,.3,1) both;opacity:0;">
+    <a href="pirate.html" style="display:inline-flex;align-items:center;gap:10px;color:#f0f4ff;font-size:14px;font-weight:700;text-decoration:none;font-family:'Montserrat',sans-serif;letter-spacing:.5px;text-shadow:0 0 20px rgba(255,255,255,.6);background:#2832C2;border-radius:14px;padding:14px 28px;box-shadow:0 4px 24px rgba(40,50,194,.5);transition:transform .2s,box-shadow .2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 36px rgba(192,57,43,.7)'" onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 24px rgba(192,57,43,.5)'">
+      🏴‍☠️ &nbsp;Become a Pirate — Hide Treasure in Your City
+    </a>
   </div>
 
   <div class="divider"></div>
