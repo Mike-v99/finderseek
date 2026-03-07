@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FinderSeek — Coming Soon</title>
-<meta name="description" content="Real money hidden in your city every week. Follow the clues. Find the treasure. Coming soon to finderseek.com"/>
+<meta name="description" content="Real money hidden in your city every week. Follow the clues. Find the treasure."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -19,7 +19,6 @@
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-
   body {
     background: var(--ink);
     color: var(--cream);
@@ -29,12 +28,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
     cursor: none;
-    padding: 24px;
+    padding: 40px 24px;
   }
-
-  /* ── Noise ── */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -42,19 +39,19 @@
     background-size: 200px 200px;
     opacity: 0.5;
   }
-
-  /* ── Canvas ── */
   #bg { position: fixed; inset: 0; z-index: 0; }
-
-  /* ── Cursor ── */
-  #cur  { position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .15s,height .15s; }
-  #curl { position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.4;transition:width .2s,height .2s,opacity .2s; }
-
-  /* ── Main card ── */
+  #cur  { position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen; }
+  #curl { position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.4; }
+  .glow {
+    position: fixed; z-index: 1; pointer-events: none;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,137,12,.07) 0%, transparent 65%);
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+  }
   .card {
     position: relative; z-index: 2;
     text-align: center;
-    max-width: 560px;
+    max-width: 520px;
     width: 100%;
     animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;
     opacity: 0;
@@ -63,23 +60,29 @@
     from { opacity:0; transform:translateY(32px); }
     to   { opacity:1; transform:translateY(0); }
   }
-
-  /* ── Logo ── */
-  .logo-wrap {
-    display: inline-flex; align-items: center; gap: 12px;
-    margin-bottom: 48px;
+  /* Logo row */
+  .logo-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
     animation: fadeUp 1s .1s cubic-bezier(.16,1,.3,1) both;
   }
+  .logo-inner {
+    display: flex; align-items: center; gap: 10px;
+  }
   .logo-icon {
-    width: 48px; height: 48px; border-radius: 14px;
+    width: 40px; height: 40px; border-radius: 11px;
     background: linear-gradient(135deg, var(--gold), var(--gold2));
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 24px rgba(201,137,12,.5);
+    font-size: 20px;
+    box-shadow: 0 4px 20px rgba(201,137,12,.5);
+    flex-shrink: 0;
   }
   .logo-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 28px; font-weight: 600;
+    font-size: 24px; font-weight: 600;
     background: linear-gradient(90deg, var(--gold), var(--gold2), #fff8e0, var(--gold));
     background-size: 300% auto;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -87,58 +90,51 @@
     animation: shimmer 5s linear infinite;
   }
   @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:300% center} }
-
-  /* ── Eyebrow ── */
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(201,137,12,.1); border: 1px solid rgba(201,137,12,.3);
-    border-radius: 24px; padding: 5px 14px; margin-bottom: 28px;
+    border-radius: 24px; padding: 5px 14px;
     font-family: 'DM Mono', monospace; font-size: 10px;
     letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
-    animation: fadeUp 1s .2s cubic-bezier(.16,1,.3,1) both;
   }
   .pulse-dot { width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s infinite;flex-shrink:0; }
   @keyframes blink { 0%,100%{opacity:1}50%{opacity:.15} }
-
-  /* ── Headline ── */
+  /* Headline */
   h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(52px, 10vw, 96px);
-    font-weight: 600; line-height: 1;
-    margin-bottom: 12px;
+    font-size: clamp(42px, 10vw, 86px);
+    font-weight: 600; line-height: 1.1;
+    margin-bottom: 14px;
     background: linear-gradient(160deg, #fff8ef 30%, var(--gold) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: fadeUp 1s .3s cubic-bezier(.16,1,.3,1) both;
   }
   h1 em { font-style: italic; font-weight: 300; }
-
   .sub {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(18px, 3vw, 24px);
+    font-size: clamp(16px, 3vw, 22px);
     font-weight: 300; font-style: italic;
-    color: var(--dim); margin-bottom: 20px;
+    color: var(--dim); margin-bottom: 18px;
     animation: fadeUp 1s .4s cubic-bezier(.16,1,.3,1) both;
   }
-
   .body {
-    font-size: 15px; color: var(--dim); line-height: 1.75;
-    max-width: 400px; margin: 0 auto 40px;
+    font-size: 14px; color: var(--dim); line-height: 1.75;
+    max-width: 380px; margin: 0 auto 32px;
     animation: fadeUp 1s .5s cubic-bezier(.16,1,.3,1) both;
   }
   .body strong { color: var(--gold); font-weight: 600; }
-
-  /* ── Email form ── */
+  /* Form */
   .form-wrap {
     display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     animation: fadeUp 1s .6s cubic-bezier(.16,1,.3,1) both;
   }
   .email-input {
-    flex: 1; min-width: 220px; max-width: 300px;
+    flex: 1; min-width: 200px;
     background: rgba(255,255,255,.05);
     border: 1.5px solid var(--border);
-    border-radius: 12px; padding: 14px 18px;
+    border-radius: 12px; padding: 13px 16px;
     color: var(--cream); font-size: 14px; font-family: 'Karla', sans-serif;
     outline: none; transition: border-color .2s, background .2s;
     cursor: none;
@@ -148,110 +144,61 @@
   .submit-btn {
     background: linear-gradient(135deg, var(--gold), var(--gold2));
     color: #1a0800; font-weight: 700; font-size: 14px; letter-spacing: .5px;
-    border: none; border-radius: 12px; padding: 14px 28px;
+    border: none; border-radius: 12px; padding: 13px 24px;
     cursor: none; white-space: nowrap;
     box-shadow: 0 4px 24px rgba(201,137,12,.4);
     transition: transform .2s, box-shadow .2s;
     font-family: 'Karla', sans-serif;
   }
   .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,137,12,.6); }
-  .submit-btn:active { transform: translateY(0); }
-
-  .confirm {
-    display: none; color: var(--gold); font-size: 13px;
-    font-family: 'DM Mono', monospace; letter-spacing: 1px;
-    margin-bottom: 28px; animation: fadeUp .5s ease both;
-  }
-  .confirm.show { display: block; }
-
-  /* ── Pills ── */
+  .confirm { display:none; color:var(--gold); font-size:13px; font-family:'DM Mono',monospace; letter-spacing:1px; margin-bottom:24px; }
+  .confirm.show { display:block; }
+  /* Pills */
   .pills {
-    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-    margin-bottom: 48px;
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 36px;
     animation: fadeUp 1s .7s cubic-bezier(.16,1,.3,1) both;
   }
   .pill {
     background: rgba(201,137,12,.08); border: 1px solid rgba(201,137,12,.2);
-    border-radius: 20px; padding: 6px 14px;
-    font-size: 12px; color: var(--dim); letter-spacing: .5px;
+    border-radius: 20px; padding: 5px 13px;
+    font-size: 12px; color: var(--dim);
   }
-  .pill span { color: var(--gold); }
-
-  /* ── Divider ── */
-  .divider {
-    width: 1px; height: 48px;
-    background: linear-gradient(180deg, transparent, var(--border), transparent);
-    margin: 0 auto 32px;
-    animation: fadeUp 1s .8s cubic-bezier(.16,1,.3,1) both;
-  }
-
-  /* ── Hunt countdown teaser ── */
-  .teaser {
-    animation: fadeUp 1s .9s cubic-bezier(.16,1,.3,1) both;
-  }
-  .teaser-label {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
-    margin-bottom: 10px; opacity: .7;
-  }
-  .countdown {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(32px, 6vw, 52px); font-weight: 600;
-    letter-spacing: 2px; color: var(--cream);
-  }
-  .countdown-sub {
-    font-size: 12px; color: var(--muted); margin-top: 6px;
-    font-family: 'DM Mono', monospace; letter-spacing: 1px;
-  }
-
-  /* ── Footer ── */
-  .footer {
-    position: fixed; bottom: 24px; left: 0; right: 0;
-    text-align: center; z-index: 2;
-    font-size: 11px; color: var(--muted); letter-spacing: 1px;
-    font-family: 'DM Mono', monospace;
-    animation: fadeUp 1s 1.1s cubic-bezier(.16,1,.3,1) both;
-    opacity: 0;
-  }
-
-  /* ── Radial glow ── */
-  .glow {
-    position: fixed; z-index: 1; pointer-events: none;
-    width: 700px; height: 700px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(201,137,12,.07) 0%, transparent 65%);
-    left: 50%; top: 50%; transform: translate(-50%, -50%);
-  }
-
-  @media (max-width: 480px) {
-    .form-wrap { flex-direction: column; align-items: center; }
-    .email-input { max-width: 100%; }
-    .submit-btn { width: 100%; }
+  /* Divider */
+  .divider { width:1px;height:40px;background:linear-gradient(180deg,transparent,var(--border),transparent);margin:0 auto 28px; animation: fadeUp 1s .8s cubic-bezier(.16,1,.3,1) both; }
+  /* Countdown */
+  .teaser { animation: fadeUp 1s .9s cubic-bezier(.16,1,.3,1) both; }
+  .teaser-label { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;opacity:.7; }
+  .countdown { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,48px);font-weight:600;letter-spacing:2px;color:var(--cream); }
+  .countdown-sub { font-size:11px;color:var(--muted);margin-top:5px;font-family:'DM Mono',monospace;letter-spacing:1px; }
+  /* Footer */
+  .footer { margin-top:40px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:1px;font-family:'DM Mono',monospace;position:relative;z-index:2; }
+  @media(max-width:480px){
+    .form-wrap{flex-direction:column;align-items:stretch;}
+    .submit-btn{width:100%;}
   }
 </style>
 </head>
 <body>
-
 <canvas id="bg"></canvas>
 <div class="glow"></div>
 <div id="cur"></div>
 <div id="curl"></div>
 
 <div class="card">
-
-  <div class="logo-wrap">
-    <div class="logo-icon">🔍</div>
-    <div class="logo-text">Finder<em>Seek</em></div>
+  <div class="logo-row">
+    <div class="logo-inner">
+      <div class="logo-icon">🔍</div>
+      <div class="logo-text">FinderSeek</div>
+    </div>
+    <div class="eyebrow">
+      <span class="pulse-dot"></span>
+      Something is being hidden
+    </div>
   </div>
 
-  <div class="eyebrow">
-    <span class="pulse-dot"></span>
-    Something is being hidden
-  </div>
-
-  <h1>The hunt<br>is <em>coming.</em></h1>
-
+  <h1>The hunt is <em>coming.</em></h1>
   <p class="sub">Real money. Hidden in your city. Every week.</p>
-
   <p class="body">
     Follow cryptic clues, solve riddles, and be the first to find
     <strong>real cash prizes</strong> hidden somewhere in your city.
@@ -259,16 +206,16 @@
   </p>
 
   <div class="form-wrap" id="form-wrap">
-    <input class="email-input" type="email" id="email" placeholder="your@email.com" />
+    <input class="email-input" type="email" id="email" placeholder="your@email.com"/>
     <button class="submit-btn" onclick="submit()">Notify Me →</button>
   </div>
   <div class="confirm" id="confirm">✓ You're on the list — we'll find you.</div>
 
   <div class="pills">
-    <div class="pill"><span>💰</span> Real cash prizes</div>
-    <div class="pill"><span>📜</span> Daily clue drops</div>
-    <div class="pill"><span>🗺️</span> Your city</div>
-    <div class="pill"><span>🆓</span> Free to play</div>
+    <div class="pill">💰 Real cash prizes</div>
+    <div class="pill">📜 Daily clue drops</div>
+    <div class="pill">🗺️ Your city</div>
+    <div class="pill">🆓 Free to play</div>
   </div>
 
   <div class="divider"></div>
@@ -279,70 +226,49 @@
     <div class="countdown-sub">Friday · 8:00 AM</div>
   </div>
 
+  <div class="footer">finderseek.com &nbsp;·&nbsp; the treasure is already out there</div>
 </div>
 
-<div class="footer">finderseek.com &nbsp;·&nbsp; the treasure is already out there</div>
-
 <script>
-// ── Cursor ──────────────────────────────────────────────────
-const cur=document.getElementById('cur'), curl=document.getElementById('curl');
+const cur=document.getElementById('cur'),curl=document.getElementById('curl');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
-(function a(){ rx+=(mx-rx)*.1; ry+=(my-ry)*.1; curl.style.left=rx+'px'; curl.style.top=ry+'px'; requestAnimationFrame(a); })();
-document.querySelectorAll('button,input,a').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{ cur.style.width='5px';cur.style.height='5px';curl.style.width='44px';curl.style.height='44px';curl.style.opacity='.7'; });
-  el.addEventListener('mouseleave',()=>{ cur.style.width='10px';cur.style.height='10px';curl.style.width='32px';curl.style.height='32px';curl.style.opacity='.4'; });
-});
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curl.style.left=rx+'px';curl.style.top=ry+'px';requestAnimationFrame(a);})();
 
-// ── Particle canvas ─────────────────────────────────────────
-const canvas=document.getElementById('bg'), ctx=canvas.getContext('2d');
+const canvas=document.getElementById('bg'),ctx=canvas.getContext('2d');
 let W,H,pts=[];
-function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
-resize(); window.addEventListener('resize',resize);
-for(let i=0;i<80;i++) pts.push({ x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,r:Math.random()*1.2+.3,a:Math.random()*.4+.08 });
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+for(let i=0;i<70;i++)pts.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,r:Math.random()*1.2+.3,a:Math.random()*.35+.08});
 (function draw(){
   ctx.clearRect(0,0,W,H);
-  for(let i=0;i<pts.length;i++){
-    for(let j=i+1;j<pts.length;j++){
-      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<120){ ctx.beginPath();ctx.strokeStyle=`rgba(201,137,12,${(1-d/120)*.07})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke(); }
-    }
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<120){ctx.beginPath();ctx.strokeStyle=`rgba(201,137,12,${(1-d/120)*.07})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}
   }
-  pts.forEach(p=>{
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,137,12,${p.a})`;ctx.fill();
-    p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1;
-  });
+  pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,137,12,${p.a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;});
   requestAnimationFrame(draw);
 })();
 
-// ── Countdown to next Friday 8 AM ───────────────────────────
 function nextFriday8am(){
-  const now=new Date(), d=now.getDay();
-  const daysUntil=(5-d+7)%7||(now.getHours()<8?0:7);
-  const target=new Date(now);
-  target.setDate(now.getDate()+daysUntil);
-  target.setHours(8,0,0,0);
-  return target;
+  const now=new Date(),d=now.getDay(),daysUntil=(5-d+7)%7||(now.getHours()<8?0:7);
+  const t=new Date(now);t.setDate(now.getDate()+daysUntil);t.setHours(8,0,0,0);return t;
 }
 function tick(){
   const ms=nextFriday8am()-new Date();
   if(ms<=0){document.getElementById('countdown').textContent='Any moment now…';return;}
   const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-  document.getElementById('countdown').textContent=
-    `${String(d).padStart(2,'0')}d  ${String(h).padStart(2,'0')}h  ${String(m).padStart(2,'0')}m  ${String(s).padStart(2,'0')}s`;
+  document.getElementById('countdown').textContent=`${String(d).padStart(2,'0')}d  ${String(h).padStart(2,'0')}h  ${String(m).padStart(2,'0')}m  ${String(s).padStart(2,'0')}s`;
 }
-tick(); setInterval(tick,1000);
+tick();setInterval(tick,1000);
 
-// ── Email submit ─────────────────────────────────────────────
 function submit(){
   const val=document.getElementById('email').value.trim();
-  if(!val||!val.includes('@')) return;
+  if(!val||!val.includes('@'))return;
   document.getElementById('form-wrap').style.display='none';
   document.getElementById('confirm').classList.add('show');
-  // TODO: connect to Supabase / Mailchimp / Resend to store email
 }
-document.getElementById('email').addEventListener('keydown',e=>{ if(e.key==='Enter') submit(); });
+document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
 </script>
 </body>
 </html>
