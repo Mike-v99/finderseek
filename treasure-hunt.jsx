@@ -18,6 +18,85 @@ const DEFAULT_CLUES = [
   { id:7,day:"Thursday", date:"Mar 12",tier:"pro", text:"Where the stones meet the grass at the edge of the old mercantile driveway — the first sentinel holds your fortune.",isPhoto:true,photoUrl:null },
 ];
 const DEFAULT_HUNT = { weekOf:"March 6–13, 2026", prize:"$20 Cash", clues:DEFAULT_CLUES };
+
+// ─── Active hunts across cities ────────────────────────────────────────────
+const ACTIVE_HUNTS = [
+  {
+    id:"tomball-1",
+    city:"Tomball, TX",
+    area:"Downtown Tomball",
+    prize:"$20 Cash",
+    weekOf:"March 6–13, 2026",
+    status:"active",
+    cluesRevealed:2,
+    totalClues:7,
+    endsAt:HUNT_END,
+    startsAt:HUNT_START,
+    pirate:"CaptainTex",
+    difficulty:"Medium",
+    clues:DEFAULT_CLUES,
+  },
+  {
+    id:"houston-1",
+    city:"Houston, TX",
+    area:"Heights District",
+    prize:"$50 Cash",
+    weekOf:"March 6–13, 2026",
+    status:"active",
+    cluesRevealed:2,
+    totalClues:7,
+    endsAt:HUNT_END,
+    startsAt:HUNT_START,
+    pirate:"BayouBandit",
+    difficulty:"Hard",
+    clues:DEFAULT_CLUES,
+  },
+  {
+    id:"austin-1",
+    city:"Austin, TX",
+    area:"South Congress",
+    prize:"$30 Cash",
+    weekOf:"March 6–13, 2026",
+    status:"active",
+    cluesRevealed:2,
+    totalClues:7,
+    endsAt:HUNT_END,
+    startsAt:HUNT_START,
+    pirate:"KeepAustinHidden",
+    difficulty:"Easy",
+    clues:DEFAULT_CLUES,
+  },
+  {
+    id:"dallas-1",
+    city:"Dallas, TX",
+    area:"Deep Ellum",
+    prize:"$40 Cash",
+    weekOf:"March 6–13, 2026",
+    status:"active",
+    cluesRevealed:2,
+    totalClues:7,
+    endsAt:HUNT_END,
+    startsAt:HUNT_START,
+    pirate:"LoneStarLoot",
+    difficulty:"Medium",
+    clues:DEFAULT_CLUES,
+  },
+  {
+    id:"sanantonio-1",
+    city:"San Antonio, TX",
+    area:"Pearl District",
+    prize:"$25 Cash",
+    weekOf:"March 6–13, 2026",
+    status:"active",
+    cluesRevealed:2,
+    totalClues:7,
+    endsAt:HUNT_END,
+    startsAt:HUNT_START,
+    pirate:"AlamoPirate",
+    difficulty:"Easy",
+    clues:DEFAULT_CLUES,
+  },
+];
 const LEADERBOARD = [
   {rank:1,name:"ShadowFox_88",  finds:4,streak:"🔥 3 weeks"},
   {rank:2,name:"MargaretK",     finds:3,streak:"🔥 2 weeks"},
@@ -104,6 +183,188 @@ const T = {
   },
 };
 
+// ─── HUNT BROWSER (HOME SCREEN) ───────────────────────────────────────────
+function HuntBrowser({ onSelectHunt, t, isDark }) {
+  const [cityFilter, setCityFilter] = useState("All");
+  const [searchText, setSearchText] = useState("");
+  const [hoveredId, setHoveredId] = useState(null);
+  const now = new Date();
+
+  const cities = ["All", ...new Set(ACTIVE_HUNTS.map(h => h.city))];
+  const filtered = ACTIVE_HUNTS.filter(h => {
+    if (cityFilter !== "All" && h.city !== cityFilter) return false;
+    if (searchText && !h.city.toLowerCase().includes(searchText.toLowerCase()) && !h.area.toLowerCase().includes(searchText.toLowerCase())) return false;
+    return true;
+  });
+
+  const diffColor = (d) => d === "Easy" ? t.green : d === "Hard" ? "#e05555" : t.accent;
+
+  return (
+    <div style={{ minHeight:"100vh",background:t.bg,fontFamily:"'DM Sans',sans-serif",color:t.text,transition:"background .3s,color .3s" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;}
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+      `}</style>
+
+      {/* Header */}
+      <div style={{ background:t.headerBg,borderBottom:`1px solid ${t.headerBorder}`,padding:"0 20px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(14px)" }}>
+        <div style={{ maxWidth:"560px",margin:"0 auto",padding:"14px 0",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+          <div style={{ display:"flex",alignItems:"center",gap:"9px" }}>
+            <div style={{ width:"34px",height:"34px",borderRadius:"10px",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px",boxShadow:`0 2px 12px ${t.accent}44` }}>🔍</div>
+            <div>
+              <div style={{ fontSize:"18px",fontFamily:"'Playfair Display',serif",fontWeight:"700",lineHeight:1.1,background:t.shimmer,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 5s linear infinite" }}>
+                Finder<span style={{ fontStyle:"italic" }}>Seek</span>
+              </div>
+              <div style={{ color:t.textDim,fontSize:"9px",letterSpacing:"0.8px" }}>finderseek.com</div>
+            </div>
+          </div>
+          <div style={{ color:t.textMuted,fontSize:"12px",display:"flex",alignItems:"center",gap:"6px" }}>
+            <span style={{ width:"7px",height:"7px",borderRadius:"50%",background:t.green,display:"inline-block",animation:"pulse 2s infinite" }} />
+            {ACTIVE_HUNTS.length} active hunts
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:"560px",margin:"0 auto",padding:"20px 16px 52px" }}>
+
+        {/* Hero */}
+        <div style={{ textAlign:"center",marginBottom:"24px",animation:"fadeUp .6s ease both" }}>
+          <div style={{ fontSize:"28px",marginBottom:"8px" }}>🏴‍☠️</div>
+          <div style={{ fontSize:"24px",fontFamily:"'Playfair Display',serif",fontWeight:"700",color:t.text,marginBottom:"6px" }}>Active Treasure Hunts</div>
+          <div style={{ color:t.textMuted,fontSize:"14px",lineHeight:1.6 }}>Real cash hidden in real cities. Pick a hunt and start solving.</div>
+        </div>
+
+        {/* Search bar */}
+        <div style={{ marginBottom:"14px",animation:"fadeUp .6s .1s ease both",opacity:0 }}>
+          <div style={{ position:"relative" }}>
+            <span style={{ position:"absolute",left:"14px",top:"50%",transform:"translateY(-50%)",fontSize:"16px",opacity:.5 }}>🔍</span>
+            <input
+              value={searchText} onChange={e=>setSearchText(e.target.value)}
+              placeholder="Search city or area…"
+              style={{ width:"100%",background:t.inputBg,border:`1.5px solid ${t.inputBorder}`,borderRadius:"12px",padding:"13px 14px 13px 40px",color:t.text,fontSize:"14px",outline:"none",fontFamily:"'DM Sans',sans-serif",transition:"border-color .2s" }}
+              onFocus={e=>e.target.style.borderColor=t.inputFocus}
+              onBlur={e=>e.target.style.borderColor=t.inputBorder}
+            />
+          </div>
+        </div>
+
+        {/* City filter pills */}
+        <div style={{ display:"flex",gap:"8px",flexWrap:"wrap",marginBottom:"20px",animation:"fadeUp .6s .15s ease both",opacity:0 }}>
+          {cities.map(c => (
+            <button key={c} onClick={()=>setCityFilter(c)}
+              style={{
+                background:cityFilter===c ? `linear-gradient(135deg,${t.accent},${t.accentHover})` : `${t.accent}0a`,
+                border:`1.5px solid ${cityFilter===c ? t.accent : t.inputBorder}`,
+                color:cityFilter===c ? "#fff" : t.textMuted,
+                borderRadius:"20px", padding:"7px 16px", fontSize:"12px", fontWeight:cityFilter===c?"700":"500",
+                cursor:"pointer", transition:"all .2s", fontFamily:"'DM Sans',sans-serif",
+                boxShadow:cityFilter===c ? `0 2px 12px ${t.accent}44` : "none",
+              }}
+            >
+              {c === "All" ? "🌎 All" : `📍 ${c}`}
+            </button>
+          ))}
+        </div>
+
+        {/* Hunt cards */}
+        <div style={{ display:"flex",flexDirection:"column",gap:"12px" }}>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign:"center",padding:"40px 20px",color:t.textMuted }}>
+              <div style={{ fontSize:"32px",marginBottom:"10px",opacity:.4 }}>🗺️</div>
+              <div style={{ fontSize:"15px" }}>No hunts found in this area yet.</div>
+              <div style={{ fontSize:"12px",marginTop:"4px",color:t.textDim }}>Check back soon — new hunts drop every Friday!</div>
+            </div>
+          ) : filtered.map((hunt, idx) => {
+            const msLeft = hunt.endsAt - now;
+            const timeLeft = msLeft > 0 ? fmtDHMS(msLeft) : "Ended";
+            const revCount = hunt.clues.filter(c => isRevealed(c.id, now)).length;
+            const isHov = hoveredId === hunt.id;
+
+            return (
+              <div
+                key={hunt.id}
+                onClick={() => onSelectHunt(hunt)}
+                onMouseEnter={() => setHoveredId(hunt.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                style={{
+                  background: t.bgCard,
+                  border: `1.5px solid ${isHov ? t.accent : t.cardBorder}`,
+                  borderRadius: "16px",
+                  padding: "20px",
+                  cursor: "pointer",
+                  transition: "all .2s",
+                  transform: isHov ? "translateY(-3px)" : "none",
+                  boxShadow: isHov ? `0 10px 36px ${t.accent}22` : "none",
+                  position: "relative",
+                  overflow: "hidden",
+                  animation: `fadeUp .5s ${0.2 + idx * 0.08}s ease both`,
+                  opacity: 0,
+                }}
+              >
+                {/* Top accent line */}
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:`linear-gradient(90deg,transparent,${t.accent},transparent)`,opacity:isHov?1:.4,transition:"opacity .2s" }} />
+
+                {/* Row 1: City + Prize */}
+                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"14px" }}>
+                  <div>
+                    <div style={{ color:t.text,fontSize:"17px",fontWeight:"700",marginBottom:"3px" }}>{hunt.city}</div>
+                    <div style={{ color:t.textMuted,fontSize:"12px",display:"flex",alignItems:"center",gap:"6px" }}>
+                      <span>📍 {hunt.area}</span>
+                      <span style={{ color:t.textDim }}>·</span>
+                      <span>🏴‍☠️ {hunt.pirate}</span>
+                    </div>
+                  </div>
+                  <div style={{ textAlign:"right",flexShrink:0 }}>
+                    <div style={{ color:t.accent,fontSize:"18px",fontWeight:"700",fontFamily:"'Playfair Display',serif" }}>{hunt.prize}</div>
+                    <span style={{ background:diffColor(hunt.difficulty)+"18",border:`1px solid ${diffColor(hunt.difficulty)}44`,color:diffColor(hunt.difficulty),fontSize:"10px",fontWeight:"600",padding:"2px 8px",borderRadius:"10px",letterSpacing:"0.5px" }}>{hunt.difficulty}</span>
+                  </div>
+                </div>
+
+                {/* Row 2: Progress + Timer */}
+                <div style={{ display:"flex",gap:"12px",alignItems:"center",marginBottom:"12px" }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"4px" }}>
+                      <span style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"1.5px",textTransform:"uppercase" }}>Clues</span>
+                      <span style={{ color:t.text,fontSize:"11px",fontWeight:"700",fontFamily:"'DM Mono',monospace" }}>{revCount}/{hunt.totalClues}</span>
+                    </div>
+                    <div style={{ height:"4px",background:isDark?"#1a1a14":"#e8e0c8",borderRadius:"2px",overflow:"hidden" }}>
+                      <div style={{ height:"100%",width:`${(revCount/hunt.totalClues)*100}%`,background:`linear-gradient(90deg,${t.accent},${t.green})`,borderRadius:"2px",transition:"width 1s" }} />
+                    </div>
+                  </div>
+                  <div style={{ background:`${t.accent}10`,border:`1px solid ${t.accent}30`,borderRadius:"8px",padding:"5px 10px",textAlign:"center",flexShrink:0 }}>
+                    <div style={{ color:t.accent,fontSize:"8px",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:"1px" }}>Ends in</div>
+                    <div style={{ color:t.text,fontSize:"12px",fontWeight:"700",fontFamily:"'DM Mono',monospace" }}>{timeLeft}</div>
+                  </div>
+                </div>
+
+                {/* Row 3: CTA */}
+                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+                  <div style={{ color:t.textDim,fontSize:"11px" }}>{hunt.weekOf}</div>
+                  <div style={{ color:t.accent,fontSize:"13px",fontWeight:"700",display:"flex",alignItems:"center",gap:"4px" }}>
+                    Join Hunt <span style={{ fontSize:"16px",transition:"transform .2s",transform:isHov?"translateX(3px)":"none" }}>→</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{ marginTop:"28px",textAlign:"center",animation:"fadeUp .6s .5s ease both",opacity:0 }}>
+          <div style={{ color:t.textDim,fontSize:"12px",marginBottom:"8px" }}>Want to hide treasure in your city?</div>
+          <button style={{ background:"transparent",border:`1.5px solid ${t.blue}`,color:t.blue,borderRadius:"12px",padding:"10px 22px",fontSize:"13px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif" }}>
+            🏴‍☠️ Become a Pirate
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── AUTH SCREENS ──────────────────────────────────────────────────────────
 
 function SocialBtn({ icon, label, onClick, t }) {
@@ -133,10 +394,11 @@ function InputField({ label, type="text", value, onChange, placeholder, error, t
 }
 
 // Welcome / choose method screen
-function AuthWelcome({ onMethod, onGuest, t, isDark }) {
+function AuthWelcome({ onMethod, onGuest, onBack, t, isDark }) {
   return (
     <div style={{ minHeight:"100vh",background:t.authBg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px" }}>
       <div style={{ width:"100%",maxWidth:"360px" }}>
+        {onBack && <button onClick={onBack} style={{ background:"transparent",border:"none",color:t.textMuted,fontSize:"13px",cursor:"pointer",padding:"0 0 20px",display:"flex",alignItems:"center",gap:"6px" }}>← Back to hunts</button>}
         {/* Logo */}
         <div style={{ textAlign:"center",marginBottom:"36px" }}>
           <div style={{ width:"64px",height:"64px",borderRadius:"20px",background:`linear-gradient(135deg,${t.accent},${t.accentHover})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px",margin:"0 auto 16px",boxShadow:`0 4px 24px ${t.accent}55` }}>🔍</div>
@@ -447,51 +709,68 @@ function ClueCard({ clue, isPro, now, t }) {
   const showNew=isNew(clue.id,now)&&!timeLocked;
   const revDate=new Date(REVEAL_DATES[clue.id]);
   const msUntil=revDate-now;
+  const unlocked=!timeLocked&&!tierLocked;
   return (
     <div
-      onMouseEnter={e=>{ if(!tierLocked&&!timeLocked){e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 10px 36px ${t.accent}28`;} }}
+      onMouseEnter={e=>{ if(unlocked){e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 10px 36px ${t.accent}28`;} }}
       onMouseLeave={e=>{ e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"; }}
-      style={{ background:timeLocked?t.bgFuture:tierLocked?t.bgLocked:t.bgCard,border:`1.5px solid ${timeLocked?t.cardBorderFuture:tierLocked?t.cardBorderLocked:t.cardBorder}`,borderRadius:"14px",padding:"18px 22px",position:"relative",overflow:"hidden",opacity:timeLocked?.5:tierLocked?.72:1,transition:"transform .2s,box-shadow .2s" }}>
-      {!timeLocked&&!tierLocked&&<div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:`linear-gradient(90deg,transparent,${t.accent},transparent)` }} />}
-      {showNew&&<div style={{ position:"absolute",top:"12px",right:"12px",background:t.green,color:"#fff",fontSize:"9px",fontWeight:"800",letterSpacing:"1.5px",padding:"3px 8px",borderRadius:"10px",animation:"newPulse 1.5s ease-in-out infinite" }}>NEW</div>}
-      <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"12px" }}>
-        <span style={{ background:clue.tier==="pro"?`${t.accent}20`:`${t.text}0a`,border:`1px solid ${clue.tier==="pro"?t.accent:t.cardBorderLocked}`,color:clue.tier==="pro"?t.accent:t.textMuted,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",padding:"3px 10px",borderRadius:"20px" }}>
-          {clue.tier==="pro"?"⭐ PRO":"FREE"}
-        </span>
-        <div style={{ textAlign:"right",paddingRight:showNew?"46px":"0" }}>
-          <div style={{ color:t.accent,fontSize:"12px",fontWeight:"600" }}>Clue {clue.id}</div>
-          <div style={{ color:t.textMuted,fontSize:"11px" }}>{clue.day}, {clue.date}</div>
+      style={{ background:timeLocked?t.bgFuture:tierLocked?t.bgLocked:t.bgCard,border:`1.5px solid ${timeLocked?t.cardBorderFuture:tierLocked?t.cardBorderLocked:t.cardBorder}`,borderRadius:"16px",padding:0,position:"relative",overflow:"hidden",opacity:timeLocked?.45:tierLocked?.65:1,transition:"transform .2s,box-shadow .2s" }}>
+      {/* Top glow bar for revealed clues */}
+      {unlocked&&<div style={{ height:"3px",background:`linear-gradient(90deg,transparent,${t.accent},${t.accentHover},transparent)` }} />}
+      {showNew&&<div style={{ position:"absolute",top:"14px",right:"14px",background:t.green,color:"#fff",fontSize:"9px",fontWeight:"800",letterSpacing:"1.5px",padding:"3px 10px",borderRadius:"10px",animation:"newPulse 1.5s ease-in-out infinite",zIndex:2 }}>NEW</div>}
+
+      <div style={{ padding:"16px 18px",display:"flex",gap:"14px" }}>
+        {/* Clue number badge */}
+        <div style={{ width:"42px",height:"42px",borderRadius:"12px",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px",fontWeight:"800",fontFamily:"'DM Mono',monospace",
+          background:unlocked?`linear-gradient(135deg,${t.accent},${t.accentHover})`:timeLocked?`${t.textDim}18`:`${t.accent}15`,
+          color:unlocked?"#fff":t.textDim,
+          boxShadow:unlocked?`0 3px 12px ${t.accent}44`:"none",
+        }}>{clue.id}</div>
+
+        {/* Content */}
+        <div style={{ flex:1,minWidth:0 }}>
+          {/* Header row */}
+          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:unlocked?"10px":"6px" }}>
+            <div style={{ display:"flex",alignItems:"center",gap:"8px" }}>
+              <span style={{ color:unlocked?t.text:t.textMuted,fontSize:"13px",fontWeight:"600" }}>{clue.day}</span>
+              <span style={{ color:t.textDim,fontSize:"11px" }}>{clue.date}</span>
+            </div>
+            <span style={{ background:clue.tier==="pro"?`${t.accent}20`:`${t.text}08`,border:`1px solid ${clue.tier==="pro"?`${t.accent}55`:t.cardBorderLocked}`,color:clue.tier==="pro"?t.accent:t.textMuted,fontSize:"9px",letterSpacing:"1.5px",textTransform:"uppercase",padding:"2px 8px",borderRadius:"10px",fontWeight:"600" }}>
+              {clue.tier==="pro"?"⭐ PRO":"FREE"}
+            </span>
+          </div>
+
+          {/* Body */}
+          {timeLocked ? (
+            <div style={{ display:"flex",alignItems:"center",gap:"10px" }}>
+              <span style={{ fontSize:"16px",opacity:.5 }}>⏳</span>
+              <div>
+                <div style={{ color:t.textMuted,fontSize:"12px",fontWeight:"500" }}>Drops {clue.day} at 8 AM</div>
+                <div style={{ color:t.textDim,fontSize:"11px",fontFamily:"'DM Mono',monospace" }}>{fmtHMS(msUntil)}</div>
+              </div>
+            </div>
+          ):tierLocked?(
+            <div style={{ display:"flex",alignItems:"center",gap:"10px" }}>
+              <span style={{ fontSize:"18px" }}>🔒</span>
+              <div style={{ color:t.textDim,fontSize:"13px" }}>Upgrade to Pro to unlock</div>
+            </div>
+          ):clue.isPhoto?(
+            clue.photoUrl?(
+              <div style={{ borderRadius:"10px",overflow:"hidden",border:`1px solid ${t.accent}` }}>
+                <img src={clue.photoUrl} alt="photo clue" style={{ width:"100%",display:"block",maxHeight:"180px",objectFit:"cover" }} />
+                <div style={{ background:`${t.accent}15`,padding:"8px 14px",color:t.accent,fontSize:"11px",fontWeight:"600" }}>📸 Photo Clue</div>
+              </div>
+            ):(
+              <div style={{ background:`${t.accent}0c`,border:`1px dashed ${t.accent}44`,borderRadius:"10px",padding:"14px",textAlign:"center" }}>
+                <div style={{ fontSize:"20px",marginBottom:"4px" }}>📸</div>
+                <div style={{ color:t.accent,fontSize:"12px",fontWeight:"600" }}>Photo clue drops Thursday 8 AM</div>
+              </div>
+            )
+          ):(
+            <p style={{ color:t.textClue,fontSize:"15px",lineHeight:"1.7",fontFamily:"'DM Sans',sans-serif",fontWeight:"400",margin:0 }}>"{clue.text}"</p>
+          )}
         </div>
       </div>
-      {timeLocked ? (
-        <div style={{ display:"flex",alignItems:"center",gap:"14px",padding:"4px 0" }}>
-          <div style={{ fontSize:"20px",opacity:.5 }}>⏰</div>
-          <div>
-            <div style={{ color:t.textMuted,fontSize:"13px",fontWeight:"500",marginBottom:"2px" }}>Drops {clue.day} at 8:00 AM</div>
-            <div style={{ color:t.textDim,fontSize:"11px",fontFamily:"'DM Mono',monospace" }}>{fmtHMS(msUntil)} remaining</div>
-          </div>
-        </div>
-      ):tierLocked?(
-        <div style={{ textAlign:"center",padding:"12px 0" }}>
-          <div style={{ fontSize:"24px",marginBottom:"6px" }}>🔒</div>
-          <div style={{ color:t.textDim,fontSize:"13px" }}>Unlock with Pro membership</div>
-        </div>
-      ):clue.isPhoto?(
-        clue.photoUrl?(
-          <div style={{ borderRadius:"10px",overflow:"hidden",border:`1px solid ${t.accent}` }}>
-            <img src={clue.photoUrl} alt="photo clue" style={{ width:"100%",display:"block",maxHeight:"200px",objectFit:"cover" }} />
-            <div style={{ background:`${t.accent}15`,padding:"8px 14px",color:t.accent,fontSize:"12px",fontWeight:"600" }}>📸 Thursday Photo Clue</div>
-          </div>
-        ):(
-          <div style={{ background:`${t.accent}10`,border:`1px dashed ${t.accent}`,borderRadius:"10px",padding:"18px",textAlign:"center" }}>
-            <div style={{ fontSize:"22px",marginBottom:"6px" }}>📸</div>
-            <div style={{ color:t.accent,fontSize:"13px",fontWeight:"600" }}>Photo Clue — Thursday Morning</div>
-            <div style={{ color:t.textMuted,fontSize:"12px",marginTop:"4px" }}>Shown to Pro members at 8 AM</div>
-          </div>
-        )
-      ):(
-        <p style={{ color:t.textClue,fontSize:"15px",lineHeight:"1.75",fontFamily:"'DM Sans',sans-serif",fontWeight:"400",margin:0 }}>"{clue.text}"</p>
-      )}
     </div>
   );
 }
@@ -821,7 +1100,7 @@ Respond ONLY with JSON array, no markdown: [{"id":1,"clue":"..."},...,{"id":6,"c
 // ─── ROOT APP ──────────────────────────────────────────────────────────────
 export default function FinderSeekApp() {
   // Auth state
-  const [authScreen, setAuthScreen] = useState("welcome"); // welcome|email|login|phone|google|apple|setup|app
+  const [authScreen, setAuthScreen] = useState("browse"); // browse|welcome|email|login|phone|google|apple|setup|app
   const [user,       setUser]       = useState(null);  // null = not logged in
   const [isGuest,    setIsGuest]    = useState(false);
 
@@ -838,6 +1117,7 @@ export default function FinderSeekApp() {
   const [simOffset,  setSimOffset]  = useState(null);
   const [,setTick]                  = useState(0);
   const [editingProfile, setEditingProfile] = useState(false);
+  const [selectedHunt, setSelectedHunt] = useState(null); // hunt clicked from browser
 
   useEffect(()=>{ const id=setInterval(()=>setTick(n=>n+1),1000); return ()=>clearInterval(id); },[]);
 
@@ -855,19 +1135,49 @@ export default function FinderSeekApp() {
 
   const tabs = [["hunt","🏴‍☠️ Hunt"],["map","🗺️ Map"],["leaderboard","🏆 Hunters"],...(isAdmin?[["admin","🔐 Admin"]]:[])] ;
 
+  // ── Handle hunt selection from browser ──
+  const handleSelectHunt = (h) => {
+    setSelectedHunt(h);
+    setHunt({ weekOf: h.weekOf, prize: h.prize, clues: h.clues });
+    if (user) {
+      // Already logged in — go straight to hunt
+      setAuthScreen("app");
+      setActiveTab("hunt");
+    } else {
+      // Not logged in — show auth
+      setAuthScreen("welcome");
+    }
+  };
+
+  // After auth completes, go to hunt
+  const handleAuthDone = (u) => {
+    setUser(u);
+    setAuthScreen("setup");
+  };
+  const handleSetupDone = (u) => {
+    setUser(u);
+    setAuthScreen("app");
+    setActiveTab("hunt");
+    setEditingProfile(false);
+  };
+
   // ── AUTH ROUTING ──
-  if(authScreen==="google")  return <AuthSocial provider="google" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
-  if(authScreen==="apple")   return <AuthSocial provider="apple"  onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
-  if(authScreen==="phone")   return <AuthPhone  onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
-  if(authScreen==="email")   return <AuthEmail  mode="email" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
-  if(authScreen==="login")   return <AuthEmail  mode="login" onBack={()=>setAuthScreen("welcome")} onDone={u=>{setUser(u);setAuthScreen("setup");}} t={t} />;
-  if(authScreen==="setup"||editingProfile) return <ProfileSetup user={user||{}} onDone={u=>{setUser(u);setAuthScreen("app");setEditingProfile(false);}} t={t} />;
+  if(authScreen==="google")  return <AuthSocial provider="google" onBack={()=>setAuthScreen("welcome")} onDone={handleAuthDone} t={t} />;
+  if(authScreen==="apple")   return <AuthSocial provider="apple"  onBack={()=>setAuthScreen("welcome")} onDone={handleAuthDone} t={t} />;
+  if(authScreen==="phone")   return <AuthPhone  onBack={()=>setAuthScreen("welcome")} onDone={handleAuthDone} t={t} />;
+  if(authScreen==="email")   return <AuthEmail  mode="email" onBack={()=>setAuthScreen("welcome")} onDone={handleAuthDone} t={t} />;
+  if(authScreen==="login")   return <AuthEmail  mode="login" onBack={()=>setAuthScreen("welcome")} onDone={handleAuthDone} t={t} />;
+  if(authScreen==="setup"||editingProfile) return <ProfileSetup user={user||{}} onDone={handleSetupDone} t={t} />;
   if(authScreen==="welcome") return (
     <AuthWelcome
       onMethod={m=>setAuthScreen(m)}
-      onGuest={()=>{setIsGuest(true);setUser({name:"Guest",isGuest:true});setAuthScreen("app");}}
+      onGuest={()=>{setIsGuest(true);setUser({name:"Guest",isGuest:true});setAuthScreen("app");setActiveTab("hunt");}}
+      onBack={()=>setAuthScreen("browse")}
       t={t} isDark={isDark}
     />
+  );
+  if(authScreen==="browse") return (
+    <HuntBrowser onSelectHunt={handleSelectHunt} t={t} isDark={isDark} />
   );
 
   // ── MAIN APP ──
@@ -910,7 +1220,7 @@ export default function FinderSeekApp() {
             {user&&(
               <AccountMenu user={user} isPro={isPro} t={t} isDark={isDark}
                 onUpgrade={()=>setShowModal(true)}
-                onLogout={()=>{setUser(null);setIsGuest(false);setIsPro(false);setAuthScreen("welcome");}}
+                onLogout={()=>{setUser(null);setIsGuest(false);setIsPro(false);setAuthScreen("browse");setSelectedHunt(null);}}
                 onEditProfile={()=>setEditingProfile(true)}
               />
             )}
@@ -932,55 +1242,105 @@ export default function FinderSeekApp() {
 
         {/* HUNT TAB */}
         {activeTab==="hunt"&&(
-          <div style={{ display:"flex",flexDirection:"column",gap:"14px",animation:"slideIn .3s ease" }}>
+          <div style={{ display:"flex",flexDirection:"column",gap:"16px",animation:"slideIn .3s ease" }}>
             {huntOver?(
-              <div style={{ background:t.prizeBg,border:`2px solid ${t.accent}`,borderRadius:"16px",padding:"24px",textAlign:"center" }}>
-                <div style={{ fontSize:"40px",marginBottom:"10px" }}>🏁</div>
-                <div style={{ color:t.text,fontSize:"20px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"6px" }}>Hunt Has Ended</div>
+              <div style={{ background:t.prizeBg,border:`2px solid ${t.accent}`,borderRadius:"20px",padding:"32px 24px",textAlign:"center",position:"relative",overflow:"hidden" }}>
+                <div style={{ position:"absolute",inset:0,background:`radial-gradient(circle at 30% 20%,${t.accent}12,transparent 60%)`,pointerEvents:"none" }} />
+                <div style={{ fontSize:"48px",marginBottom:"12px" }}>🏁</div>
+                <div style={{ color:t.text,fontSize:"22px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"8px" }}>Hunt Has Ended</div>
                 <div style={{ color:t.textMuted,fontSize:"14px" }}>Check back Friday for the next hunt!</div>
               </div>
             ):(
               <>
-                <div style={{ background:t.prizeBg,border:`1px solid ${t.prizeBorder}`,borderRadius:"16px",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-                  <div>
-                    <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"3px" }}>This Week's Prize</div>
-                    <div style={{ color:t.text,fontSize:"19px",fontFamily:"'Playfair Display',serif",fontWeight:"700" }}>{hunt.prize}</div>
-                    <div style={{ color:t.textDim,fontSize:"11px",marginTop:"3px" }}>{hunt.weekOf} · Ends Friday 10AM</div>
-                  </div>
-                  <div style={{ fontSize:"34px",opacity:.85 }}>💰</div>
-                </div>
-                <div style={{ background:t.timerBg,border:`2px solid ${t.accent}`,borderRadius:"12px",padding:"16px 22px",textAlign:"center",boxShadow:`0 0 20px ${t.accent}22` }}>
-                  <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px" }}>Hunt Ends In</div>
-                  <div style={{ color:t.text,fontSize:"24px",fontFamily:"'Playfair Display',serif",fontWeight:"700",letterSpacing:"1px" }}>{fmtDHMS(HUNT_END-now)}</div>
-                  <div style={{ color:t.textDate,fontSize:"11px",marginTop:"5px" }}>Friday, March 13 · 10:00 AM</div>
-                </div>
-                <NextClueBanner now={now} t={t} />
-                <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"12px",padding:"12px 16px",display:"flex",alignItems:"center",gap:"14px" }}>
-                  <div style={{ flex:1 }}>
-                    <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"5px" }}>Clues Released</div>
-                    <div style={{ height:"5px",background:isDark?"#1a1a14":"#e8e0c8",borderRadius:"3px",overflow:"hidden" }}>
-                      <div style={{ height:"100%",width:`${(revealedCount/hunt.clues.length)*100}%`,background:`linear-gradient(90deg,${t.accent},${t.green})`,borderRadius:"3px",transition:"width 1s" }} />
+                {/* Prize hero card */}
+                <div style={{ background:t.prizeBg,border:`2px solid ${t.accent}`,borderRadius:"20px",padding:"24px",position:"relative",overflow:"hidden" }}>
+                  <div style={{ position:"absolute",inset:0,background:`radial-gradient(circle at 80% 20%,${t.accent}18,transparent 50%)`,pointerEvents:"none" }} />
+                  <div style={{ position:"absolute",top:"-20px",right:"-20px",fontSize:"80px",opacity:.08,transform:"rotate(15deg)",pointerEvents:"none" }}>💰</div>
+                  <div style={{ position:"relative" }}>
+                    <div style={{ display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px" }}>
+                      <span style={{ fontSize:"20px" }}>🏴‍☠️</span>
+                      <span style={{ color:t.accent,fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",fontWeight:"700" }}>This Week's Treasure</span>
                     </div>
+                    <div style={{ color:t.text,fontSize:"32px",fontFamily:"'Playfair Display',serif",fontWeight:"700",marginBottom:"4px" }}>{hunt.prize}</div>
+                    <div style={{ color:t.textMuted,fontSize:"12px" }}>{hunt.weekOf} · Hidden somewhere in your city</div>
                   </div>
-                  <div style={{ color:t.text,fontSize:"18px",fontWeight:"700",fontFamily:"'DM Mono',monospace",flexShrink:0 }}>{revealedCount}<span style={{ color:t.textMuted,fontSize:"12px" }}>/{hunt.clues.length}</span></div>
+                </div>
+
+                {/* Countdown timer — dramatic */}
+                <div style={{ background:`linear-gradient(135deg,${isDark?"#1a0500":"#fff5e6"},${isDark?"#2a1000":"#ffe8cc"})`,border:`2px solid ${t.accent}`,borderRadius:"16px",padding:"20px",textAlign:"center",position:"relative",overflow:"hidden",boxShadow:`0 0 40px ${t.accent}15` }}>
+                  <div style={{ position:"absolute",inset:0,background:`radial-gradient(circle at 50% 50%,${t.accent}0d,transparent 70%)`,pointerEvents:"none" }} />
+                  <div style={{ position:"relative" }}>
+                    <div style={{ color:t.accent,fontSize:"11px",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"10px",fontWeight:"600" }}>⏰ Hunt Ends In</div>
+                    <div style={{ color:t.text,fontSize:"34px",fontFamily:"'DM Mono',monospace",fontWeight:"700",letterSpacing:"3px",textShadow:isDark?`0 0 20px ${t.accent}44`:"none" }}>{fmtDHMS(HUNT_END-now)}</div>
+                    <div style={{ color:t.textDate,fontSize:"11px",marginTop:"8px" }}>Friday, March 13 · 10:00 AM</div>
+                  </div>
+                </div>
+
+                {/* Next clue + progress row */}
+                <div style={{ display:"flex",gap:"10px" }}>
+                  {/* Next clue mini */}
+                  {(()=>{
+                    const next=nextReveal(now);
+                    if(!next) return null;
+                    const ms=next-now;
+                    const clueId=Object.entries(REVEAL_DATES).find(([,d])=>new Date(d).getTime()===next.getTime())?.[0];
+                    const clue=DEFAULT_CLUES.find(c=>c.id===Number(clueId));
+                    if(!clue) return null;
+                    return (
+                      <div style={{ flex:1,background:t.nextBg,border:`1.5px solid ${t.nextBorder}`,borderRadius:"14px",padding:"14px 16px" }}>
+                        <div style={{ color:t.blue,fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"4px" }}>{clue.tier==="free"?"Next Free":"⭐ Next Pro"}</div>
+                        <div style={{ color:t.text,fontSize:"12px",fontWeight:"600",marginBottom:"6px" }}>Clue {clue.id} · {clue.day}</div>
+                        <div style={{ color:t.text,fontSize:"18px",fontFamily:"'DM Mono',monospace",fontWeight:"700",letterSpacing:"1px" }}>{fmtHMS(ms)}</div>
+                      </div>
+                    );
+                  })()}
+                  {/* Progress */}
+                  <div style={{ flex:1,background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"14px 16px",display:"flex",flexDirection:"column",justifyContent:"center" }}>
+                    <div style={{ color:t.textSubtle,fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px" }}>Clues Unlocked</div>
+                    <div style={{ display:"flex",gap:"4px",marginBottom:"6px" }}>
+                      {hunt.clues.map((c,i)=>(
+                        <div key={i} style={{ flex:1,height:"6px",borderRadius:"3px",background:isRevealed(c.id,now)?`linear-gradient(90deg,${t.accent},${t.green})`:isDark?"#1a1a14":"#e8e0c8",transition:"background .5s" }} />
+                      ))}
+                    </div>
+                    <div style={{ color:t.text,fontSize:"16px",fontWeight:"700",fontFamily:"'DM Mono',monospace" }}>{revealedCount}<span style={{ color:t.textMuted,fontSize:"11px",fontWeight:"400" }}> / {hunt.clues.length}</span></div>
+                  </div>
                 </div>
               </>
             )}
+
+            {/* Free clues section */}
             <div>
-              <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"9px",paddingLeft:"2px" }}>Free Clues · Fri–Mon</div>
+              <div style={{ display:"flex",alignItems:"center",gap:"8px",marginBottom:"12px",paddingLeft:"2px" }}>
+                <span style={{ fontSize:"16px" }}>🗺️</span>
+                <span style={{ color:t.textSubtle,fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",fontWeight:"600" }}>Free Clues · Fri–Mon</span>
+              </div>
               <div style={{ display:"flex",flexDirection:"column",gap:"10px" }}>{freeClues.map(c=><ClueCard key={c.id} clue={c} isPro={isPro} now={now} t={t} />)}</div>
             </div>
+
+            {/* Pro clues section */}
             <div>
-              <div style={{ color:t.accent,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"9px",paddingLeft:"2px",display:"flex",alignItems:"center",gap:"5px" }}><span>⭐</span>Pro Clues · Tue–Thu</div>
+              <div style={{ display:"flex",alignItems:"center",gap:"8px",marginBottom:"12px",paddingLeft:"2px" }}>
+                <span style={{ fontSize:"16px" }}>⭐</span>
+                <span style={{ color:t.accent,fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",fontWeight:"600" }}>Pro Clues · Tue–Thu</span>
+              </div>
               <div style={{ display:"flex",flexDirection:"column",gap:"10px" }}>{proClues.map(c=><ClueCard key={c.id} clue={c} isPro={isPro} now={now} t={t} />)}</div>
             </div>
+
             {!isPro&&<UpgradeBanner onUpgrade={()=>setShowModal(true)} t={t} />}
-            <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"16px 20px" }}>
-              <div style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"10px" }}>How It Works</div>
-              {[["🌱 Friday","Treasure planted · Clue 1 drops 8 AM"],["📜 Daily","New clue each morning at 8 AM"],["⭐ Tue–Thu","Pro members get 3 more targeted clues"],["📸 Thursday","Pro photo clue drops 8 AM"],["🏁 Fri 10AM","Hunt ends — prize rolls over"]].map(([time,desc])=>(
-                <div key={time} style={{ display:"flex",gap:"10px",marginBottom:"8px",alignItems:"flex-start" }}>
-                  <div style={{ color:t.accent,fontSize:"11px",minWidth:"84px",fontWeight:"600" }}>{time}</div>
-                  <div style={{ color:t.textMuted,fontSize:"12px",lineHeight:"1.5" }}>{desc}</div>
+
+            {/* How it works — compact */}
+            <div style={{ background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"16px",padding:"18px 20px" }}>
+              <div style={{ display:"flex",alignItems:"center",gap:"8px",marginBottom:"12px" }}>
+                <span style={{ fontSize:"16px" }}>📜</span>
+                <span style={{ color:t.textSubtle,fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",fontWeight:"600" }}>How It Works</span>
+              </div>
+              {[["🌱","Friday","Treasure planted · Clue 1 drops"],["📜","Daily","New clue each morning at 8 AM"],["⭐","Tue–Thu","3 extra Pro clues + photo"],["🏁","Fri 10AM","Hunt ends · prize rolls over"]].map(([icon,time,desc])=>(
+                <div key={time} style={{ display:"flex",gap:"12px",marginBottom:"10px",alignItems:"center" }}>
+                  <span style={{ fontSize:"16px",width:"24px",textAlign:"center" }}>{icon}</span>
+                  <div>
+                    <span style={{ color:t.accent,fontSize:"12px",fontWeight:"700" }}>{time}</span>
+                    <span style={{ color:t.textMuted,fontSize:"12px" }}> — {desc}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1083,7 +1443,7 @@ export default function FinderSeekApp() {
 
       {/* ── UPGRADE MODAL ── */}
       {showModal&&(
-        <div onClick={()=>setShowModal(false)} style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:999,padding:"20px" }}>
+        <div onClick={()=>setShowModal(false)} style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:"20px" }}>
           <div onClick={e=>e.stopPropagation()} style={{ background:t.modalBg,border:`2px solid ${t.accent}`,borderRadius:"20px",padding:"26px 22px",width:"100%",maxWidth:"420px",marginBottom:"16px" }}>
             <div style={{ textAlign:"center",marginBottom:"18px" }}>
               <div style={{ fontSize:"34px",marginBottom:"8px" }}>⭐</div>
