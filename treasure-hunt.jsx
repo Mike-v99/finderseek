@@ -710,21 +710,23 @@ function ClueCard({ clue, isPro, now, t }) {
   const revDate=new Date(REVEAL_DATES[clue.id]);
   const msUntil=revDate-now;
   const unlocked=!timeLocked&&!tierLocked;
+  const dayColors={"1":"#4caf50","2":"#5b8dee","3":"#9b59b6","4":"#e8c840","5":"#e87c33","6":"#e05555","7":"#e05555"};
+  const dc=dayColors[String(clue.id)]||t.accent;
   return (
     <div
-      onMouseEnter={e=>{ if(unlocked){e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 10px 36px ${t.accent}28`;} }}
+      onMouseEnter={e=>{ if(unlocked){e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 10px 36px ${dc}30`;} }}
       onMouseLeave={e=>{ e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"; }}
-      style={{ background:timeLocked?t.bgFuture:tierLocked?t.bgLocked:t.bgCard,border:`1.5px solid ${timeLocked?t.cardBorderFuture:tierLocked?t.cardBorderLocked:t.cardBorder}`,borderRadius:"16px",padding:0,position:"relative",overflow:"hidden",opacity:timeLocked?.45:tierLocked?.65:1,transition:"transform .2s,box-shadow .2s" }}>
+      style={{ background:timeLocked?t.bgFuture:tierLocked?t.bgLocked:t.bgCard,border:`1.5px solid ${timeLocked?t.cardBorderFuture:tierLocked?t.cardBorderLocked:dc}`,borderRadius:"16px",padding:0,position:"relative",overflow:"hidden",opacity:timeLocked?.45:tierLocked?.65:1,transition:"transform .2s,box-shadow .2s" }}>
       {/* Top glow bar for revealed clues */}
-      {unlocked&&<div style={{ height:"3px",background:`linear-gradient(90deg,transparent,${t.accent},${t.accentHover},transparent)` }} />}
-      {showNew&&<div style={{ position:"absolute",top:"14px",right:"14px",background:t.green,color:"#fff",fontSize:"9px",fontWeight:"800",letterSpacing:"1.5px",padding:"3px 10px",borderRadius:"10px",animation:"newPulse 1.5s ease-in-out infinite",zIndex:2 }}>NEW</div>}
+      {unlocked&&<div style={{ height:"3px",background:`linear-gradient(90deg,transparent,${dc},transparent)` }} />}
+      {showNew&&<div style={{ position:"absolute",top:"14px",right:"14px",background:dc,color:"#fff",fontSize:"9px",fontWeight:"800",letterSpacing:"1.5px",padding:"3px 10px",borderRadius:"10px",animation:"newPulse 1.5s ease-in-out infinite",zIndex:2 }}>NEW</div>}
 
       <div style={{ padding:"16px 18px",display:"flex",gap:"14px" }}>
         {/* Clue number badge */}
         <div style={{ width:"42px",height:"42px",borderRadius:"12px",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px",fontWeight:"800",fontFamily:"'DM Mono',monospace",
-          background:unlocked?`linear-gradient(135deg,${t.accent},${t.accentHover})`:timeLocked?`${t.textDim}18`:`${t.accent}15`,
+          background:unlocked?`linear-gradient(135deg,${dc},${dc}cc)`:timeLocked?`${t.textDim}18`:`${dc}15`,
           color:unlocked?"#fff":t.textDim,
-          boxShadow:unlocked?`0 3px 12px ${t.accent}44`:"none",
+          boxShadow:unlocked?`0 3px 12px ${dc}44`:"none",
         }}>{clue.id}</div>
 
         {/* Content */}
@@ -1298,9 +1300,9 @@ export default function FinderSeekApp() {
                   <div style={{ flex:1,background:t.surfaceBg,border:`1px solid ${t.surfaceBorder}`,borderRadius:"14px",padding:"14px 16px",display:"flex",flexDirection:"column",justifyContent:"center" }}>
                     <div style={{ color:t.textSubtle,fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px" }}>Clues Unlocked</div>
                     <div style={{ display:"flex",gap:"4px",marginBottom:"6px" }}>
-                      {hunt.clues.map((c,i)=>(
-                        <div key={i} style={{ flex:1,height:"6px",borderRadius:"3px",background:isRevealed(c.id,now)?`linear-gradient(90deg,${t.accent},${t.green})`:isDark?"#1a1a14":"#e8e0c8",transition:"background .5s" }} />
-                      ))}
+                      {(()=>{const dc=["#4caf50","#5b8dee","#9b59b6","#e8c840","#e87c33","#e05555","#e05555"];return hunt.clues.map((c,i)=>(
+                        <div key={i} style={{ flex:1,height:"6px",borderRadius:"3px",background:isRevealed(c.id,now)?dc[i]:isDark?"#1a1a14":"#e8e0c8",transition:"background .5s" }} />
+                      ))})()}
                     </div>
                     <div style={{ color:t.text,fontSize:"16px",fontWeight:"700",fontFamily:"'DM Mono',monospace" }}>{revealedCount}<span style={{ color:t.textMuted,fontSize:"11px",fontWeight:"400" }}> / {hunt.clues.length}</span></div>
                   </div>
