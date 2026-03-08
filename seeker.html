@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FinderSeek — Active Hunts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink:    #06050a;
+    --gold:   #c9890c;
+    --gold2:  #e8a820;
+    --cream:  #f5ead8;
+    --dim:    #c8b48a;
+    --muted:  #8a7a5a;
+    --border: rgba(201,137,12,0.2);
+    --card-bg: rgba(14,12,20,0.85);
+    --green:  #22c55e;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Karla', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG */
+  .bg-img {
+    position: fixed; inset: 0; z-index: 0;
+    background: url('pirate_sherlock.png') center 20% / cover no-repeat;
+    opacity: 0.2; filter: saturate(0.4) sepia(0.3);
+  }
+  .bg-vignette {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(6,5,10,0.5) 0%, rgba(6,5,10,0.85) 60%, rgba(6,5,10,0.98) 100%);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 180px 180px; opacity: 0.45;
+  }
+
+  /* NAV */
+  nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,5,10,0.7); backdrop-filter: blur(12px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+  .nav-logo-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--gold); display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .nav-logo-text { font-size: 17px; font-weight: 700; color: var(--cream); }
+  .nav-logo-text em { font-style: italic; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 19px; }
+  .nav-logo-sub { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-top: -2px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 12px; color: var(--green); font-family: 'DM Mono', monospace;
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  .btn-signin {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 13px; color: var(--dim); cursor: pointer;
+    font-family: 'Karla', sans-serif; transition: border-color .2s, color .2s;
+  }
+  .btn-signin:hover { border-color: var(--gold); color: var(--cream); }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 2;
+    text-align: center; padding: 56px 24px 48px;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 7vw, 58px);
+    font-weight: 600; line-height: 1.1; color: var(--cream);
+  }
+  .hero h1 .gold { color: var(--gold); font-style: italic; display: block; }
+  .hero-sub { font-size: 14px; color: var(--dim); margin-top: 12px; line-height: 1.6; max-width: 420px; margin-inline: auto; }
+
+  /* CTA BUTTONS */
+  .cta-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .btn-cta {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 14px 32px; border-radius: 12px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none; border: none;
+    font-family: 'Karla', sans-serif; transition: transform .2s, box-shadow .2s;
+    min-width: 160px;
+  }
+  .btn-cta span { font-size: 15px; font-weight: 700; margin-top: 2px; letter-spacing: 0; text-transform: none; }
+  .btn-hide { background: #1a2090; color: #e0e4ff; box-shadow: 0 4px 20px rgba(26,32,144,.4); }
+  .btn-hide:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,32,144,.6); }
+  .btn-find { background: var(--gold); color: #0a0800; box-shadow: 0 4px 20px rgba(201,137,12,.4); }
+  .btn-find:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,137,12,.6); }
+
+  .hero-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+  .hero-pill {
+    background: rgba(201,137,12,.07); border: 1px solid rgba(201,137,12,.15);
+    border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--muted);
+  }
+
+  /* MAIN CONTENT */
+  .main { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* SECTION HEADER */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
+  .hunts-badge {
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 12px; color: var(--green); font-family: 'DM Mono', monospace;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* SEARCH */
+  .search-wrap { position: relative; margin-bottom: 14px; }
+  .search-input {
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 16px 12px 40px;
+    font-size: 14px; color: var(--cream); font-family: 'Karla', sans-serif;
+    outline: none; transition: border-color .2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: rgba(201,137,12,.4); }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+
+  /* CITY FILTERS */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filter-pill {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; color: var(--dim); cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s;
+    font-family: 'Karla', sans-serif;
+  }
+  .filter-pill:hover, .filter-pill.active {
+    background: var(--gold); border-color: var(--gold); color: #0a0800; font-weight: 600;
+  }
+  .filter-pill.active { font-weight: 700; }
+
+  /* HUNT CARDS */
+  .hunt-cards { display: flex; flex-direction: column; gap: 12px; }
+  .hunt-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 20px 20px 16px;
+    cursor: pointer; text-decoration: none; color: inherit;
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+    display: block; backdrop-filter: blur(10px);
+  }
+  .hunt-card:hover {
+    border-color: rgba(201,137,12,.35);
+    box-shadow: 0 6px 30px rgba(0,0,0,.4);
+    transform: translateY(-1px);
+  }
+  .hunt-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+  .hunt-city { font-size: 18px; font-weight: 700; color: var(--cream); }
+  .hunt-prize { font-size: 18px; font-weight: 700; }
+  .prize-platinum { color: #e0d4ff; }
+  .prize-gold     { color: var(--gold2); }
+  .prize-silver   { color: #c0c8d8; }
+  .prize-starter  { color: var(--green); }
+
+  .hunt-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .hunt-meta-sep { opacity: 0.4; }
+
+  .tier-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 6px; padding: 3px 9px;
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .tier-platinum { background: rgba(139,92,246,.2); border: 1px solid rgba(139,92,246,.4); color: #c4b5fd; }
+  .tier-gold     { background: rgba(201,137,12,.15); border: 1px solid rgba(201,137,12,.35); color: var(--gold2); }
+  .tier-silver   { background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.3); color: #94a3b8; }
+  .tier-starter  { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: var(--green); }
+
+  .hunt-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .clues-section { flex: 1; }
+  .clues-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .clue-count { color: var(--dim); }
+  .progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .hunt-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 10px; }
+
+  .countdown-box {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 8px 14px; text-align: center; min-width: 130px;
+  }
+  .countdown-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .countdown-time { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'DM Mono', monospace; letter-spacing: 1px; }
+
+  .hunt-join { display: flex; justify-content: flex-end; margin-top: 12px; }
+  .join-btn {
+    font-size: 13px; font-weight: 600; color: var(--gold);
+    display: flex; align-items: center; gap: 5px;
+    text-decoration: none; transition: gap .2s;
+  }
+  .hunt-card:hover .join-btn { gap: 9px; }
+
+  /* PIRATE CTA */
+  .pirate-cta {
+    margin-top: 32px;
+    background: rgba(26,32,144,0.2); border: 1px solid rgba(26,32,144,0.4);
+    border-radius: 20px; padding: 32px 24px; text-align: center;
+    backdrop-filter: blur(10px);
+  }
+  .pirate-cta-icon { font-size: 32px; margin-bottom: 12px; }
+  .pirate-cta h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 8px; }
+  .pirate-cta p { font-size: 13px; color: var(--dim); margin-bottom: 20px; line-height: 1.6; }
+  .pirate-cta-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+  .pirate-cta-pill {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--dim);
+  }
+  .btn-pirate {
+    display: inline-block; background: #1a2090; color: #e0e4ff;
+    border-radius: 12px; padding: 14px 28px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+    box-shadow: 0 4px 20px rgba(26,32,144,.4);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-pirate:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,32,144,.6); }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .fade1 { animation: fadeUp .6s .05s both; }
+  .fade2 { animation: fadeUp .6s .15s both; }
+  .fade3 { animation: fadeUp .6s .25s both; }
+  .fade4 { animation: fadeUp .6s .35s both; }
+</style>
+</head>
+<body>
+<div class="bg-img"></div>
+<div class="bg-vignette"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">🔍</div>
+    <div>
+      <div class="nav-logo-text">Finder<em>Seek</em></div>
+      <div class="nav-logo-sub">finderseek.com</div>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="live-badge"><span class="live-dot"></span><span id="live-count">7</span> Live</div>
+    <button class="btn-signin">Sign In</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero fade1">
+  <h1>Real Money.<span class="gold">Hidden Treasure.</span></h1>
+  <p class="hero-sub">Hide cash in your city as a Pirate, or follow clues to find it as a Seeker. New hunts every Friday.</p>
+  <div class="cta-row">
+    <a href="pirate.html" class="btn-cta btn-hide">I WANT TO <span>Hide Treasure</span></a>
+    <a href="#hunts" class="btn-cta btn-find">I WANT TO <span>Find Treasure</span></a>
+  </div>
+  <div class="hero-pills">
+    <span class="hero-pill">Real Cash Prizes</span>
+    <span class="hero-pill">Free to Play</span>
+    <span class="hero-pill">Every Friday</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="hunts">
+
+  <div class="section-head fade2">
+    <div class="section-title">🗺️ Active Hunts</div>
+    <div class="hunts-badge"><span class="live-dot"></span><span id="hunt-count">7</span> hunts</div>
+  </div>
+
+  <div class="search-wrap fade2">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" id="search" placeholder="Search city or area…" oninput="filterHunts()"/>
+  </div>
+
+  <div class="filters fade3" id="filters">
+    <button class="filter-pill active" onclick="setFilter('all', this)">🌍 All</button>
+    <button class="filter-pill" onclick="setFilter('Houston, TX', this)">📍 Houston, TX</button>
+    <button class="filter-pill" onclick="setFilter('Dallas, TX', this)">📍 Dallas, TX</button>
+    <button class="filter-pill" onclick="setFilter('Austin, TX', this)">📍 Austin, TX</button>
+    <button class="filter-pill" onclick="setFilter('San Antonio, TX', this)">📍 San Antonio, TX</button>
+    <button class="filter-pill" onclick="setFilter('Tomball, TX', this)">📍 Tomball, TX</button>
+  </div>
+
+  <div class="hunt-cards fade4" id="hunt-cards"></div>
+
+  <!-- PIRATE CTA -->
+  <div class="pirate-cta fade4">
+    <div class="pirate-cta-icon">🏴‍☠️</div>
+    <h3>Become a Pirate</h3>
+    <p>Hide real cash in your city. Write clues. Watch seekers hunt. You set the prize.</p>
+    <div class="pirate-cta-pills">
+      <span class="pirate-cta-pill">💰 You set the prize</span>
+      <span class="pirate-cta-pill">📜 AI writes clues</span>
+      <span class="pirate-cta-pill">🗺️ Any city</span>
+    </div>
+    <a href="pirate.html" class="btn-pirate">Start Hiding Treasure →</a>
+  </div>
+
+</div>
+
+<script>
+const hunts = [
+  { id:"houston-1",   city:"Houston, TX",     area:"Museum District",  pirate:"SpaceCity_X",    prize:100, tier:"platinum", clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+55*60000 },
+  { id:"dallas-1",    city:"Dallas, TX",       area:"Bishop Arts",      pirate:"BigDTreasure",   prize:75,  tier:"gold",     clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+55*60000 },
+  { id:"dallas-2",    city:"Dallas, TX",       area:"Deep Ellum",       pirate:"LoneStarLoot",   prize:40,  tier:"silver",   clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
+  { id:"austin-1",    city:"Austin, TX",       area:"South Congress",   pirate:"KeepAustinHidden",prize:30, tier:"silver",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
+  { id:"sanantonio-1",city:"San Antonio, TX",  area:"Pearl District",   pirate:"AlamoPirate",    prize:25,  tier:"starter",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
+  { id:"tomball-1",   city:"Tomball, TX",      area:"Downtown Tomball", pirate:"CaptainTex",     prize:20,  tier:"starter",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
+];
+
+const tierColor = { platinum:"prize-platinum", gold:"prize-gold", silver:"prize-silver", starter:"prize-starter" };
+const tierLabel = { platinum:"💎 PLATINUM", gold:"🔥 GOLD", silver:"🥈 SILVER", starter:"🌱 STARTER" };
+const tierClass = { platinum:"tier-platinum", gold:"tier-gold", silver:"tier-silver", starter:"tier-starter" };
+
+let activeFilter = "all";
+let timers = {};
+
+function fmt(ms) {
+  if (ms <= 0) return "Ended";
+  const d = Math.floor(ms/86400000), h = Math.floor((ms%86400000)/3600000),
+        m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+  return `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+}
+
+function renderHunts() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = hunts.filter(h => {
+    const matchCity = activeFilter === 'all' || h.city === activeFilter;
+    const matchSearch = !q || h.city.toLowerCase().includes(q) || h.area.toLowerCase().includes(q);
+    return matchCity && matchSearch;
+  });
+
+  const container = document.getElementById('hunt-cards');
+  Object.values(timers).forEach(clearInterval);
+  timers = {};
+
+  container.innerHTML = filtered.map(h => `
+    <a class="hunt-card" href="hunt.html?id=${h.id}">
+      <div class="hunt-card-top">
+        <div class="hunt-city">${h.city}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="hunt-prize ${tierColor[h.tier]}">$${h.prize} Cash</div>
+          <div class="tier-badge ${tierClass[h.tier]}">${tierLabel[h.tier]}</div>
+        </div>
+      </div>
+      <div class="hunt-meta">
+        📍 ${h.area} <span class="hunt-meta-sep">·</span> 🏴‍☠️ ${h.pirate}
+      </div>
+      <div class="hunt-bottom">
+        <div class="clues-section">
+          <div class="clues-label"><span>CLUES</span><span class="clue-count">${h.clues}/${h.totalClues}</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${(h.clues/h.totalClues)*100}%"></div></div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-label">ENDS IN</div>
+          <div class="countdown-time" id="timer-${h.id}">${fmt(h.endMs - Date.now())}</div>
+        </div>
+      </div>
+      <div class="hunt-date">${h.date}</div>
+      <div class="hunt-join"><span class="join-btn">Join Hunt →</span></div>
+    </a>
+  `).join('');
+
+  document.getElementById('hunt-count').textContent = filtered.length;
+  document.getElementById('live-count').textContent = hunts.length;
+
+  filtered.forEach(h => {
+    timers[h.id] = setInterval(() => {
+      const el = document.getElementById('timer-' + h.id);
+      if (el) el.textContent = fmt(h.endMs - Date.now());
+    }, 1000);
+  });
+}
+
+function setFilter(city, el) {
+  activeFilter = city;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderHunts();
+}
+
+function filterHunts() { renderHunts(); }
+
+renderHunts();
+</script>
+</body>
+</html>
