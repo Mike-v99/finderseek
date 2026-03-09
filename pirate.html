@@ -1,1 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Become a Pirate — FinderSeek</title>
+<meta name="description" content="Hide treasure in your city. Set the prize. Watch seekers hunt. Become a FinderSeek Pirate."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:    #06050a;
+  --gold:   #c9890c;
+  --gold2:  #e8a820;
+  --red:    #8b1a1a;
+  --red2:   #c0392b;
+  --cream:  #f5ead8;
+  --dim:    #6a5a3a;
+  --muted:  #3a2e1e;
+  --card:   rgba(255,255,255,.03);
+  --border: rgba(201,137,12,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);
+  color:var(--cream);
+  font-family:'Karla',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px 200px;opacity:.5;
+}
+#cur{position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen;}
+#curl{position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.35;transition:width .15s,height .15s;}
 
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;
+  background:linear-gradient(180deg,rgba(6,5,10,.95) 0%,transparent 100%);
+  backdrop-filter:blur(8px);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 12px rgba(201,137,12,.4);}
+.nav-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);}
+.nav-back{font-size:13px;color:var(--dim);text-decoration:none;letter-spacing:.5px;transition:color .2s;}
+.nav-back:hover{color:var(--gold);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:2;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+}
+.skull{
+  font-size:72px;margin-bottom:24px;
+  animation:float 4s ease-in-out infinite;
+  display:block;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(139,26,26,.2);border:1px solid rgba(192,57,43,.3);
+  border-radius:24px;padding:5px 16px;margin-bottom:28px;
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;color:#e07070;
+  animation:fadeUp .8s .1s both;
+}
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,8vw,100px);
+  font-weight:700;line-height:1;
+  margin-bottom:16px;
+  background:linear-gradient(160deg,#fff8ef 20%,var(--gold) 60%,#c0392b 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .8s .2s both;
+}
+.hero h1 em{font-style:italic;font-weight:300;}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,3vw,26px);
+  font-weight:300;font-style:italic;
+  color:var(--dim);margin-bottom:20px;
+  animation:fadeUp .8s .3s both;
+}
+.hero-body{
+  font-size:15px;color:var(--dim);line-height:1.8;
+  max-width:480px;margin:0 auto 48px;
+  animation:fadeUp .8s .4s both;
+}
+.hero-body strong{color:var(--gold);}
+.cta-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0800;font-weight:700;font-size:15px;letter-spacing:.5px;
+  border:none;border-radius:14px;padding:16px 40px;
+  text-decoration:none;cursor:none;
+  box-shadow:0 4px 28px rgba(201,137,12,.5);
+  transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .8s .5s both;
+}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(201,137,12,.7);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SCROLL ARROW ── */
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;
+  letter-spacing:2px;text-align:center;
+  animation:fadeUp .8s .8s both;
+}
+.scroll-hint::after{content:'↓';display:block;font-size:18px;margin-top:4px;animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* ── SECTION BASE ── */
+section{position:relative;z-index:2;padding:80px 24px;}
+.section-inner{max-width:900px;margin:0 auto;}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+  margin-bottom:16px;opacity:.7;
+}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,60px);font-weight:600;line-height:1.1;
+  margin-bottom:16px;
+}
+.section-body{font-size:15px;color:var(--dim);line-height:1.8;max-width:580px;}
+
+/* ── HOW IT WORKS ── */
+.how-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;margin-top:48px;
+}
+.how-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:28px 24px;
+  transition:border-color .3s,transform .3s;
+  opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s,border-color .3s;
+}
+.how-card.visible{opacity:1;transform:translateY(0);}
+.how-card:hover{border-color:rgba(201,137,12,.5);transform:translateY(-4px);}
+.how-step{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:2px;color:var(--gold);margin-bottom:12px;opacity:.6;
+}
+.how-icon{font-size:32px;margin-bottom:12px;display:block;}
+.how-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px;}
+.how-text{font-size:13px;color:var(--dim);line-height:1.7;}
+
+/* ── PAYOUT OPTIONS ── */
+.payout-section{background:rgba(139,26,26,.06);border-top:1px solid rgba(192,57,43,.15);border-bottom:1px solid rgba(192,57,43,.15);}
+.payout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:48px;}
+.payout-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:32px 28px;position:relative;
+  opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;
+}
+.payout-card.visible{opacity:1;transform:translateY(0);}
+.payout-card.recommended{border-color:rgba(201,137,12,.5);}
+.recommended-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0800;font-size:10px;font-weight:700;letter-spacing:2px;
+  padding:4px 16px;border-radius:20px;white-space:nowrap;
+  font-family:'DM Mono',monospace;text-transform:uppercase;
+}
+.payout-icon{font-size:36px;margin-bottom:16px;display:block;}
+.payout-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:8px;}
+.payout-desc{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:20px;}
+.payout-pros{list-style:none;padding:0;}
+.payout-pros li{font-size:13px;color:var(--dim);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.payout-pros li::before{content:'✓ ';color:var(--gold);}
+.payout-pros li.con::before{content:'— ';color:var(--muted);}
+
+/* ── PIRATE RULES ── */
+.rules-list{
+  margin-top:40px;display:flex;flex-direction:column;gap:16px;
+}
+.rule{
+  display:flex;align-items:flex-start;gap:16px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px 24px;
+  opacity:0;transform:translateX(-16px);transition:opacity .5s,transform .5s;
+}
+.rule.visible{opacity:1;transform:translateX(0);}
+.rule-num{
+  font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;
+  color:var(--gold);opacity:.4;flex-shrink:0;line-height:1;
+}
+.rule-text{font-size:14px;color:var(--dim);line-height:1.7;padding-top:6px;}
+.rule-text strong{color:var(--cream);}
+
+/* ── SIGNUP FORM ── */
+.signup-section{background:linear-gradient(180deg,transparent,rgba(201,137,12,.04),transparent);}
+.form-card{
+  max-width:560px;margin:48px auto 0;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:24px;
+  padding:40px 36px;
+}
+.form-title{
+  font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;
+  margin-bottom:6px;text-align:center;
+}
+.form-sub{font-size:14px;color:var(--dim);text-align:center;margin-bottom:32px;}
+.field{margin-bottom:20px;}
+.field label{display:block;font-size:12px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:'DM Mono',monospace;}
+.field input,.field select,.field textarea{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 16px;color:var(--cream);font-size:14px;
+  font-family:'Karla',sans-serif;outline:none;
+  transition:border-color .2s,background .2s;cursor:none;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:rgba(201,137,12,.05);}
+.field select{appearance:none;cursor:none;}
+.field select option{background:#1a1208;color:var(--cream);}
+.field textarea{resize:vertical;min-height:90px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.payout-choice{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;
+}
+.payout-opt{
+  border:1.5px solid var(--border);border-radius:12px;padding:14px;
+  cursor:none;transition:border-color .2s,background .2s;text-align:center;
+}
+.payout-opt:hover{border-color:rgba(201,137,12,.4);}
+.payout-opt.selected{border-color:var(--gold);background:rgba(201,137,12,.08);}
+.payout-opt-icon{font-size:22px;display:block;margin-bottom:6px;}
+.payout-opt-label{font-size:12px;color:var(--dim);font-weight:600;}
+.payout-opt-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.submit-wrap{margin-top:28px;}
+.form-btn{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0800;font-weight:700;font-size:15px;letter-spacing:.5px;
+  border:none;border-radius:14px;padding:16px;
+  cursor:none;transition:transform .2s,box-shadow .2s;
+  font-family:'Karla',sans-serif;
+  box-shadow:0 4px 24px rgba(201,137,12,.4);
+}
+.form-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
+.form-confirm{
+  display:none;text-align:center;padding:24px;
+}
+.form-confirm.show{display:block;}
+.form-confirm-icon{font-size:48px;margin-bottom:16px;}
+.form-confirm h3{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:8px;}
+.form-confirm p{font-size:14px;color:var(--dim);}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:2;
+  text-align:center;padding:32px 24px;
+  border-top:1px solid rgba(255,255,255,.04);
+  font-size:11px;color:var(--muted);
+  font-family:'DM Mono',monospace;letter-spacing:1px;
+}
+footer a{color:var(--dim);text-decoration:none;}
+footer a:hover{color:var(--gold);}
+
+@media(max-width:560px){
+  .field-row{grid-template-columns:1fr;}
+  .payout-choice{grid-template-columns:1fr;}
+  .form-card{padding:28px 20px;}
+  nav{padding:16px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curl"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-icon">🔍</div>
+    <div class="nav-name">FinderSeek</div>
+  </a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <span class="skull">🏴‍☠️</span>
+  <div class="hero-badge">Now recruiting</div>
+  <h1>Become a <em>Pirate.</em></h1>
+  <p class="hero-sub">Hide treasure. Watch seekers hunt. Stay anonymous.</p>
+  <p class="hero-body">
+    Pirates are the heartbeat of FinderSeek. You set the prize,
+    write the clues, hide the envelope, and watch your city
+    come alive with <strong>real treasure hunters</strong>.
+    No experience needed — just a sense of adventure.
+  </p>
+  <a href="#signup" class="cta-btn">Apply to be a Pirate →</a>
+  <div class="scroll-hint">Scroll to learn more</div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">The process</div>
+    <h2 class="section-title">How it works</h2>
+    <p class="section-body">Four steps from signup to a city full of seekers chasing your treasure.</p>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-step">Step 01</div>
+        <span class="how-icon">📋</span>
+        <div class="how-title">Apply & Get Approved</div>
+        <div class="how-text">Fill out the form below. We review your city and approve Pirates on a rolling basis — one or two per city to start.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-step">Step 02</div>
+        <span class="how-icon">💰</span>
+        <div class="how-title">Set Your Prize</div>
+        <div class="how-text">Choose your prize amount (minimum $20). Write your clues, pick your hiding spot, and set your hunt live date.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-step">Step 03</div>
+        <span class="how-icon">✉️</span>
+        <div class="how-title">Hide the Envelope</div>
+        <div class="how-text">We send you a sealed envelope with a unique 6-digit code inside. You hide it somewhere in your city based on your clues.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-step">Step 04</div>
+        <span class="how-icon">🏆</span>
+        <div class="how-title">Seeker Claims It</div>
+        <div class="how-text">When a seeker finds the envelope and enters the code, the hunt closes. You pay out the prize — your identity stays hidden the whole time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PAYOUT OPTIONS ── -->
+<section class="payout-section">
+  <div class="section-inner">
+    <div class="section-label">Prize transfer</div>
+    <h2 class="section-title">Two ways to pay out</h2>
+    <p class="section-body">Choose the option that works best for you when you sign up.</p>
+    <div class="payout-grid">
+      <div class="payout-card recommended">
+        <div class="recommended-badge">⭐ Recommended</div>
+        <span class="payout-icon">🏦</span>
+        <div class="payout-title">Through FinderSeek</div>
+        <div class="payout-desc">Deposit your prize amount to FinderSeek before your hunt goes live. When a seeker claims the code, we pay them instantly via Zelle or Venmo. You stay completely anonymous.</div>
+        <ul class="payout-pros">
+          <li>Pirate stays 100% anonymous</li>
+          <li>Instant payout to seeker</li>
+          <li>Seeker trust is higher</li>
+          <li>Hunt verified as funded</li>
+          <li class="con">Requires upfront deposit</li>
+        </ul>
+      </div>
+      <div class="payout-card">
+        <span class="payout-icon">🤝</span>
+        <div class="payout-title">Honor System</div>
+        <div class="payout-desc">When the seeker claims the code, you receive a notification and pay them directly via Zelle or Venmo. The hunt closes automatically with a "Treasure Found" banner.</div>
+        <ul class="payout-pros">
+          <li>No upfront deposit needed</li>
+          <li>Direct between Pirate & Seeker</li>
+          <li class="con">Pirate identity shared with seeker</li>
+          <li class="con">Requires manual payout</li>
+          <li class="con">Lower seeker confidence</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PIRATE CODE ── -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">The pirate code</div>
+    <h2 class="section-title">Rules of the hunt</h2>
+    <p class="section-body">Every Pirate agrees to these rules when they apply.</p>
+    <div class="rules-list">
+      <div class="rule">
+        <div class="rule-num">1</div>
+        <div class="rule-text"><strong>The prize must be real.</strong> Minimum prize is $20. You must be able to pay out within 48 hours of a seeker claiming the code.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">2</div>
+        <div class="rule-text"><strong>Hide it safely.</strong> Envelopes must be hidden in publicly accessible locations. No private property, no dangerous locations, no places that require trespassing.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">3</div>
+        <div class="rule-text"><strong>Clues must be fair.</strong> Your clues must genuinely lead to the hiding spot. No impossible riddles — challenging is good, unsolvable is not.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">4</div>
+        <div class="rule-text"><strong>One active hunt at a time.</strong> Each Pirate can only have one live hunt per city per week. Seekers choose one hunt — make yours worth finding.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">5</div>
+        <div class="rule-text"><strong>If no one finds it, you retrieve it.</strong> If the hunt ends unclaimed, you retrieve the envelope and may re-hide or roll the prize over to the next week.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SIGNUP FORM ── -->
+<section class="signup-section" id="signup">
+  <div class="section-inner">
+    <div class="section-label">Ready to hide?</div>
+    <h2 class="section-title" style="text-align:center;">Apply to become<br><em>a Pirate</em></h2>
+
+    <div class="form-card">
+      <div id="form-body">
+        <div class="form-title">⚓ Pirate Application</div>
+        <div class="form-sub">We'll review your application and be in touch within 2–3 days.</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" id="fname" placeholder="Jack"/>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" id="lname" placeholder="Sparrow"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="pemail" placeholder="you@example.com"/>
+        </div>
+
+        <div class="field">
+          <label>Your City</label>
+          <input type="text" id="pcity" placeholder="Houston, TX"/>
+        </div>
+
+        <div class="field">
+          <label>Payout Method</label>
+          <div class="payout-choice">
+            <div class="payout-opt selected" id="opt-fs" onclick="selectPayout('finderseek')">
+              <span class="payout-opt-icon">🏦</span>
+              <div class="payout-opt-label">Through FinderSeek</div>
+              <div class="payout-opt-sub">Recommended · Anonymous</div>
+            </div>
+            <div class="payout-opt" id="opt-hs" onclick="selectPayout('honor')">
+              <span class="payout-opt-icon">🤝</span>
+              <div class="payout-opt-label">Honor System</div>
+              <div class="payout-opt-sub">Direct · No deposit</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Prize Amount You Plan to Offer</label>
+          <select id="prize">
+            <option value="">Select a range…</option>
+            <option>$20 – $50</option>
+            <option>$50 – $100</option>
+            <option>$100 – $250</option>
+            <option>$250 – $500</option>
+            <option>$500+</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Why do you want to be a Pirate? (optional)</label>
+          <textarea id="why" placeholder="Tell us a little about yourself and why you want to hide treasure in your city…"></textarea>
+        </div>
+
+        <div class="submit-wrap">
+          <button class="form-btn" onclick="submitPirate()">Send My Application →</button>
+        </div>
+      </div>
+
+      <div class="form-confirm" id="form-confirm">
+        <div class="form-confirm-icon">🏴‍☠️</div>
+        <h3>Application received!</h3>
+        <p>Welcome aboard. We'll review your application and reach out within 2–3 days. Keep your clues sharp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">finderseek.com</a> &nbsp;·&nbsp; the treasure is already out there
+</footer>
+
+<script>
+// ── Cursor ──
+const cur=document.getElementById('cur'),curl=document.getElementById('curl');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curl.style.left=rx+'px';curl.style.top=ry+'px';requestAnimationFrame(a);})();
+
+// ── Scroll reveal ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.15});
+document.querySelectorAll('.how-card,.payout-card,.rule').forEach(el=>obs.observe(el));
+
+// ── Stagger how cards ──
+document.querySelectorAll('.how-card').forEach((el,i)=>{
+  el.style.transitionDelay=`${i*0.1}s`;
+});
+
+// ── Payout selection ──
+let selectedPayout='finderseek';
+function selectPayout(val){
+  selectedPayout=val;
+  document.getElementById('opt-fs').classList.toggle('selected',val==='finderseek');
+  document.getElementById('opt-hs').classList.toggle('selected',val==='honor');
+}
+
+// ── Submit ──
+async function submitPirate(){
+  const fname=document.getElementById('fname').value.trim();
+  const lname=document.getElementById('lname').value.trim();
+  const email=document.getElementById('pemail').value.trim();
+  const city=document.getElementById('pcity').value.trim();
+  const prize=document.getElementById('prize').value;
+
+  if(!fname||!email||!city||!prize){
+    alert('Please fill in your name, email, city and prize range.');
+    return;
+  }
+
+  const btn=document.querySelector('.form-btn');
+  btn.textContent='Sending…';btn.disabled=true;
+
+  try{
+    const res=await fetch(
+      'https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/pirate_applications',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+          'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+          'Prefer':'return=minimal'
+        },
+        body:JSON.stringify({
+          first_name:fname,last_name:lname,
+          email,city,
+          payout_method:selectedPayout,
+          prize_range:prize,
+          why:document.getElementById('why').value.trim(),
+          status:'pending'
+        })
+      }
+    );
+    if(res.ok||res.status===409){
+      document.getElementById('form-body').style.display='none';
+      document.getElementById('form-confirm').classList.add('show');
+    } else {
+      btn.textContent='Send My Application →';btn.disabled=false;
+    }
+  }catch(e){
+    btn.textContent='Send My Application →';btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
