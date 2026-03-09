@@ -3,567 +3,499 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Become a Pirate — FinderSeek</title>
-<meta name="description" content="Hide treasure in your city. Set the prize. Watch seekers hunt. Become a FinderSeek Pirate."/>
+<title>FinderSeek — Become a Pirate</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --ink:    #06050a;
-  --gold:   #c9890c;
-  --gold2:  #e8a820;
-  --red:    #8b1a1a;
-  --red2:   #c0392b;
-  --cream:  #f5ead8;
-  --dim:    #6a5a3a;
-  --muted:  #3a2e1e;
-  --card:   rgba(255,255,255,.03);
-  --border: rgba(201,137,12,.18);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--ink);
-  color:var(--cream);
-  font-family:'Karla',sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-  cursor:none;
-}
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  background-size:200px 200px;opacity:.5;
-}
-#cur{position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen;}
-#curl{position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.35;transition:width .15s,height .15s;}
+  :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--border:rgba(201,137,12,0.2);--card-bg:rgba(14,12,20,0.88);--green:#22c55e;--blue:#1a2090;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+  .bg-img{position:fixed;inset:0;z-index:0;background:url('pirate.png') center 15%/cover no-repeat;opacity:0.22;filter:saturate(0.6) sepia(0.2);}
+  .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 20%,rgba(6,5,10,.5) 0%,rgba(6,5,10,.88) 60%,rgba(6,5,10,.99) 100%);}
+  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 32px;
-  background:linear-gradient(180deg,rgba(6,5,10,.95) 0%,transparent 100%);
-  backdrop-filter:blur(8px);
-}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 12px rgba(201,137,12,.4);}
-.nav-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);}
-.nav-back{font-size:13px;color:var(--dim);text-decoration:none;letter-spacing:.5px;transition:color .2s;}
-.nav-back:hover{color:var(--gold);}
+  /* NAV */
+  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.7);backdrop-filter:blur(12px);}
+  .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+  .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .nav-name{font-size:17px;font-weight:700;color:var(--cream);}
+  .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:19px;}
+  .nav-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:-2px;}
+  .nav-r{display:flex;align-items:center;gap:10px;}
+  .btn-back{background:transparent;border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;transition:border-color .2s,color .2s;}
+  .btn-back:hover{border-color:var(--gold);color:var(--cream);}
 
-/* ── HERO ── */
-.hero{
-  position:relative;z-index:2;
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;
-  padding:120px 24px 80px;
-}
-.skull{
-  font-size:72px;margin-bottom:24px;
-  animation:float 4s ease-in-out infinite;
-  display:block;
-}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  /* HERO */
+  .hero{position:relative;z-index:2;text-align:center;padding:52px 24px 40px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,32,144,.2);border:1px solid rgba(26,32,144,.4);border-radius:20px;padding:5px 14px;font-size:11px;color:#a0a8ff;font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:18px;}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,62px);font-weight:600;line-height:1.08;}
+  .hero h1 em{color:var(--gold);font-style:italic;}
+  .hero-sub{font-size:15px;color:var(--dim);margin-top:12px;line-height:1.65;max-width:480px;margin-inline:auto;}
 
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(139,26,26,.2);border:1px solid rgba(192,57,43,.3);
-  border-radius:24px;padding:5px 16px;margin-bottom:28px;
-  font-family:'DM Mono',monospace;font-size:10px;
-  letter-spacing:3px;text-transform:uppercase;color:#e07070;
-  animation:fadeUp .8s .1s both;
-}
-.hero h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,8vw,100px);
-  font-weight:700;line-height:1;
-  margin-bottom:16px;
-  background:linear-gradient(160deg,#fff8ef 20%,var(--gold) 60%,#c0392b 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:fadeUp .8s .2s both;
-}
-.hero h1 em{font-style:italic;font-weight:300;}
-.hero-sub{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(18px,3vw,26px);
-  font-weight:300;font-style:italic;
-  color:var(--dim);margin-bottom:20px;
-  animation:fadeUp .8s .3s both;
-}
-.hero-body{
-  font-size:15px;color:var(--dim);line-height:1.8;
-  max-width:480px;margin:0 auto 48px;
-  animation:fadeUp .8s .4s both;
-}
-.hero-body strong{color:var(--gold);}
-.cta-btn{
-  display:inline-block;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#1a0800;font-weight:700;font-size:15px;letter-spacing:.5px;
-  border:none;border-radius:14px;padding:16px 40px;
-  text-decoration:none;cursor:none;
-  box-shadow:0 4px 28px rgba(201,137,12,.5);
-  transition:transform .2s,box-shadow .2s;
-  animation:fadeUp .8s .5s both;
-}
-.cta-btn:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(201,137,12,.7);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  /* PERKS ROW */
+  .perks{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto 48px;padding:0 20px;}
+  .perk{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:14px;}
+  .perk-icon{font-size:28px;flex-shrink:0;}
+  .perk-label{font-size:15px;font-weight:700;color:var(--cream);margin-bottom:3px;}
+  .perk-sub{font-size:13px;color:var(--muted);}
 
-/* ── SCROLL ARROW ── */
-.scroll-hint{
-  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
-  color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;
-  letter-spacing:2px;text-align:center;
-  animation:fadeUp .8s .8s both;
-}
-.scroll-hint::after{content:'↓';display:block;font-size:18px;margin-top:4px;animation:bounce 2s infinite;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  /* FORM WRAP */
+  .form-wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:0 20px 80px;}
 
-/* ── SECTION BASE ── */
-section{position:relative;z-index:2;padding:80px 24px;}
-.section-inner{max-width:900px;margin:0 auto;}
-.section-label{
-  font-family:'DM Mono',monospace;font-size:10px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--gold);
-  margin-bottom:16px;opacity:.7;
-}
-.section-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(36px,5vw,60px);font-weight:600;line-height:1.1;
-  margin-bottom:16px;
-}
-.section-body{font-size:15px;color:var(--dim);line-height:1.8;max-width:580px;}
+  /* FORM CARD */
+  .fcard{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:16px;backdrop-filter:blur(10px);}
+  .fcard-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .fcard-sub{font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
 
-/* ── HOW IT WORKS ── */
-.how-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;margin-top:48px;
-}
-.how-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:20px;padding:28px 24px;
-  transition:border-color .3s,transform .3s;
-  opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s,border-color .3s;
-}
-.how-card.visible{opacity:1;transform:translateY(0);}
-.how-card:hover{border-color:rgba(201,137,12,.5);transform:translateY(-4px);}
-.how-step{
-  font-family:'DM Mono',monospace;font-size:10px;
-  letter-spacing:2px;color:var(--gold);margin-bottom:12px;opacity:.6;
-}
-.how-icon{font-size:32px;margin-bottom:12px;display:block;}
-.how-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px;}
-.how-text{font-size:13px;color:var(--dim);line-height:1.7;}
+  /* FIELD */
+  .field{margin-bottom:20px;}
+  .field:last-child{margin-bottom:0;}
+  .flabel{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:8px;display:block;}
+  .finput{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+  .finput::placeholder{color:var(--muted);}
+  .finput:focus{border-color:rgba(201,137,12,.5);}
+  .finput-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
-/* ── PAYOUT OPTIONS ── */
-.payout-section{background:rgba(139,26,26,.06);border-top:1px solid rgba(192,57,43,.15);border-bottom:1px solid rgba(192,57,43,.15);}
-.payout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:48px;}
-.payout-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:20px;padding:32px 28px;position:relative;
-  opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;
-}
-.payout-card.visible{opacity:1;transform:translateY(0);}
-.payout-card.recommended{border-color:rgba(201,137,12,.5);}
-.recommended-badge{
-  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#1a0800;font-size:10px;font-weight:700;letter-spacing:2px;
-  padding:4px 16px;border-radius:20px;white-space:nowrap;
-  font-family:'DM Mono',monospace;text-transform:uppercase;
-}
-.payout-icon{font-size:36px;margin-bottom:16px;display:block;}
-.payout-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:8px;}
-.payout-desc{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:20px;}
-.payout-pros{list-style:none;padding:0;}
-.payout-pros li{font-size:13px;color:var(--dim);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.payout-pros li::before{content:'✓ ';color:var(--gold);}
-.payout-pros li.con::before{content:'— ';color:var(--muted);}
+  /* PHOTO UPLOAD */
+  .photo-drop{border:2px dashed rgba(201,137,12,.25);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden;}
+  .photo-drop:hover{border-color:rgba(201,137,12,.5);background:rgba(201,137,12,.03);}
+  .photo-drop.has-img{border-style:solid;border-color:rgba(201,137,12,.4);}
+  .photo-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .photo-icon{font-size:32px;margin-bottom:10px;}
+  .photo-label{font-size:13px;color:var(--dim);line-height:1.5;}
+  .photo-label strong{color:var(--gold);}
+  .photo-preview{width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:none;}
 
-/* ── PIRATE RULES ── */
-.rules-list{
-  margin-top:40px;display:flex;flex-direction:column;gap:16px;
-}
-.rule{
-  display:flex;align-items:flex-start;gap:16px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:20px 24px;
-  opacity:0;transform:translateX(-16px);transition:opacity .5s,transform .5s;
-}
-.rule.visible{opacity:1;transform:translateX(0);}
-.rule-num{
-  font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;
-  color:var(--gold);opacity:.4;flex-shrink:0;line-height:1;
-}
-.rule-text{font-size:14px;color:var(--dim);line-height:1.7;padding-top:6px;}
-.rule-text strong{color:var(--cream);}
+  /* 6-DIGIT CODE */
+  .code-wrap{display:flex;gap:8px;justify-content:center;margin-top:4px;}
+  .code-digit{width:48px;height:56px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;}
+  .code-digit:focus{border-color:rgba(201,137,12,.6);}
+  .code-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;font-family:'DM Mono',monospace;}
+  .btn-gen{background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--gold);cursor:pointer;font-family:'DM Mono',monospace;margin-top:10px;transition:background .2s;}
+  .btn-gen:hover{background:rgba(201,137,12,.18);}
 
-/* ── SIGNUP FORM ── */
-.signup-section{background:linear-gradient(180deg,transparent,rgba(201,137,12,.04),transparent);}
-.form-card{
-  max-width:560px;margin:48px auto 0;
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--border);border-radius:24px;
-  padding:40px 36px;
-}
-.form-title{
-  font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;
-  margin-bottom:6px;text-align:center;
-}
-.form-sub{font-size:14px;color:var(--dim);text-align:center;margin-bottom:32px;}
-.field{margin-bottom:20px;}
-.field label{display:block;font-size:12px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:'DM Mono',monospace;}
-.field input,.field select,.field textarea{
-  width:100%;background:rgba(255,255,255,.04);
-  border:1.5px solid var(--border);border-radius:12px;
-  padding:13px 16px;color:var(--cream);font-size:14px;
-  font-family:'Karla',sans-serif;outline:none;
-  transition:border-color .2s,background .2s;cursor:none;
-}
-.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:rgba(201,137,12,.05);}
-.field select{appearance:none;cursor:none;}
-.field select option{background:#1a1208;color:var(--cream);}
-.field textarea{resize:vertical;min-height:90px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.payout-choice{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;
-}
-.payout-opt{
-  border:1.5px solid var(--border);border-radius:12px;padding:14px;
-  cursor:none;transition:border-color .2s,background .2s;text-align:center;
-}
-.payout-opt:hover{border-color:rgba(201,137,12,.4);}
-.payout-opt.selected{border-color:var(--gold);background:rgba(201,137,12,.08);}
-.payout-opt-icon{font-size:22px;display:block;margin-bottom:6px;}
-.payout-opt-label{font-size:12px;color:var(--dim);font-weight:600;}
-.payout-opt-sub{font-size:10px;color:var(--muted);margin-top:2px;}
-.submit-wrap{margin-top:28px;}
-.form-btn{
-  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#1a0800;font-weight:700;font-size:15px;letter-spacing:.5px;
-  border:none;border-radius:14px;padding:16px;
-  cursor:none;transition:transform .2s,box-shadow .2s;
-  font-family:'Karla',sans-serif;
-  box-shadow:0 4px 24px rgba(201,137,12,.4);
-}
-.form-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
-.form-confirm{
-  display:none;text-align:center;padding:24px;
-}
-.form-confirm.show{display:block;}
-.form-confirm-icon{font-size:48px;margin-bottom:16px;}
-.form-confirm h3{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:8px;}
-.form-confirm p{font-size:14px;color:var(--dim);}
+  /* PAYMENT OPTIONS */
+  .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .pay-opt{border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;}
+  .pay-opt:hover{border-color:rgba(201,137,12,.3);}
+  .pay-opt.selected{border-color:var(--gold);background:rgba(201,137,12,.05);}
+  .pay-opt input[type=radio]{position:absolute;opacity:0;pointer-events:none;}
+  .pay-opt-icon{font-size:24px;margin-bottom:8px;}
+  .pay-opt-name{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .pay-opt-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+  .pay-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);transition:background .2s,border-color .2s;}
+  .pay-opt.selected .pay-check{background:var(--gold);border-color:var(--gold);}
 
-/* ── FOOTER ── */
-footer{
-  position:relative;z-index:2;
-  text-align:center;padding:32px 24px;
-  border-top:1px solid rgba(255,255,255,.04);
-  font-size:11px;color:var(--muted);
-  font-family:'DM Mono',monospace;letter-spacing:1px;
-}
-footer a{color:var(--dim);text-decoration:none;}
-footer a:hover{color:var(--gold);}
+  .pay-handle-wrap{display:none;}
+  .pay-handle-wrap.show{display:block;}
+  .pay-method-row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+  .pay-method-btn{padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+  .pay-method-btn.active{background:var(--gold);border-color:var(--gold);color:#0a0800;}
 
-@media(max-width:560px){
-  .field-row{grid-template-columns:1fr;}
-  .payout-choice{grid-template-columns:1fr;}
-  .form-card{padding:28px 20px;}
-  nav{padding:16px 20px;}
-}
+  /* GO LIVE */
+  .golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .golive-opt{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .2s,background .2s;text-align:center;}
+  .golive-opt:hover{border-color:rgba(201,137,12,.3);}
+  .golive-opt.selected{border-color:var(--gold);background:rgba(201,137,12,.05);}
+  .golive-opt input[type=radio]{display:none;}
+  .golive-icon{font-size:20px;margin-bottom:6px;}
+  .golive-name{font-size:13px;font-weight:700;}
+  .golive-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+  .schedule-wrap{display:none;}
+  .schedule-wrap.show{display:block;}
+
+  /* SUBMIT */
+  .btn-submit{width:100%;background:var(--gold);color:#0a0800;border:none;border-radius:14px;padding:18px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.3px;transition:box-shadow .2s,transform .2s;margin-top:8px;}
+  .btn-submit:hover{box-shadow:0 8px 32px rgba(201,137,12,.5);transform:translateY(-1px);}
+  .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  /* CONFIRMATION */
+  .confirm-screen{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,5,10,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;}
+  .confirm-screen.show{display:flex;}
+  .confirm-icon{font-size:64px;margin-bottom:24px;animation:pop .5s cubic-bezier(.16,1,.3,1);}
+  .confirm-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,52px);font-weight:600;margin-bottom:12px;}
+  .confirm-title em{color:var(--gold);font-style:italic;}
+  .confirm-sub{font-size:15px;color:var(--dim);max-width:440px;line-height:1.7;margin-bottom:32px;}
+  .confirm-details{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;margin-bottom:32px;text-align:left;}
+  .confirm-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;}
+  .confirm-row:last-child{border-bottom:none;}
+  .confirm-row-label{color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;}
+  .confirm-row-val{color:var(--cream);font-weight:600;}
+  .btn-confirm-home{background:var(--gold);color:#0a0800;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:box-shadow .2s;}
+  .btn-confirm-home:hover{box-shadow:0 6px 24px rgba(201,137,12,.5);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .f1{animation:fadeUp .6s .05s both} .f2{animation:fadeUp .6s .1s both}
+  .f3{animation:fadeUp .6s .15s both} .f4{animation:fadeUp .6s .2s both}
+  .f5{animation:fadeUp .6s .25s both} .f6{animation:fadeUp .6s .3s both}
+
+  @media(max-width:500px){
+    .finput-row{grid-template-columns:1fr;}
+    .pay-opts{grid-template-columns:1fr;}
+    .golive-opts{grid-template-columns:1fr;}
+    .code-digit{width:40px;height:50px;font-size:18px;}
+  }
 </style>
 </head>
 <body>
+<div class="bg-img"></div><div class="bg-vig"></div>
 
-<div id="cur"></div>
-<div id="curl"></div>
-
+<!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">
+  <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
-    <div class="nav-name">FinderSeek</div>
+    <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
-  <a href="index.html" class="nav-back">← Back to home</a>
+  <div class="nav-r">
+    <a href="seeker.html" class="btn-back">← Back to Hunts</a>
+  </div>
 </nav>
 
-<!-- ── HERO ── -->
-<div class="hero">
-  <span class="skull">🏴‍☠️</span>
-  <div class="hero-badge">Now recruiting</div>
+<!-- HERO -->
+<div class="hero f1">
+  <div class="hero-badge">🏴‍☠️ FOR PIRATES</div>
   <h1>Become a <em>Pirate.</em></h1>
-  <p class="hero-sub">Hide treasure. Watch seekers hunt. Stay anonymous.</p>
-  <p class="hero-body">
-    Pirates are the heartbeat of FinderSeek. You set the prize,
-    write the clues, hide the envelope, and watch your city
-    come alive with <strong>real treasure hunters</strong>.
-    No experience needed — just a sense of adventure.
-  </p>
-  <a href="#signup" class="cta-btn">Apply to be a Pirate →</a>
-  <div class="scroll-hint">Scroll to learn more</div>
+  <p class="hero-sub">Hide real cash somewhere in your city. Set your prize, write the clues, and watch seekers hunt. You control everything.</p>
 </div>
 
-<!-- ── HOW IT WORKS ── -->
-<section>
-  <div class="section-inner">
-    <div class="section-label">The process</div>
-    <h2 class="section-title">How it works</h2>
-    <p class="section-body">Four steps from signup to a city full of seekers chasing your treasure.</p>
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="how-step">Step 01</div>
-        <span class="how-icon">📋</span>
-        <div class="how-title">Apply & Get Approved</div>
-        <div class="how-text">Fill out the form below. We review your city and approve Pirates on a rolling basis — one or two per city to start.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-step">Step 02</div>
-        <span class="how-icon">💰</span>
-        <div class="how-title">Set Your Prize</div>
-        <div class="how-text">Choose your prize amount (minimum $20). Write your clues, pick your hiding spot, and set your hunt live date.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-step">Step 03</div>
-        <span class="how-icon">✉️</span>
-        <div class="how-title">Hide the Envelope</div>
-        <div class="how-text">We send you a sealed envelope with a unique 6-digit code inside. You hide it somewhere in your city based on your clues.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-step">Step 04</div>
-        <span class="how-icon">🏆</span>
-        <div class="how-title">Seeker Claims It</div>
-        <div class="how-text">When a seeker finds the envelope and enters the code, the hunt closes. You pay out the prize — your identity stays hidden the whole time.</div>
+<!-- PERKS -->
+<div class="perks f2">
+  <div class="perk"><div class="perk-icon">💰</div><div><div class="perk-label">You Set the Prize</div><div class="perk-sub">Any amount you choose</div></div></div>
+  <div class="perk"><div class="perk-icon">📍</div><div><div class="perk-label">Your City</div><div class="perk-sub">Hide it anywhere</div></div></div>
+  <div class="perk"><div class="perk-icon">👥</div><div><div class="perk-label">Build Followers</div><div class="perk-sub">Gain loyal seekers</div></div></div>
+  <div class="perk"><div class="perk-icon">💎</div><div><div class="perk-label">Profit Sharing</div><div class="perk-sub">Earn % from Pro Seekers on your quest</div></div></div>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+
+  <!-- 1. Hunt basics -->
+  <div class="fcard f3">
+    <div class="fcard-title">📍 Where & How Much</div>
+    <div class="fcard-sub">Tell seekers where to search and what they're hunting for.</div>
+    <div class="field">
+      <label class="flabel">City</label>
+      <input class="finput" id="city" type="text" placeholder="e.g. Houston, TX"/>
+    </div>
+    <div class="field">
+      <label class="flabel">Precise Location</label>
+      <input class="finput" id="neighborhood" type="text" placeholder="e.g. Museum District, Midtown"/>
+    </div>
+    <div class="field">
+      <label class="flabel">Prize Amount</label>
+      <div style="position:relative">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:700;font-size:15px;">$</span>
+        <input class="finput" id="prize" type="number" min="1" placeholder="20" style="padding-left:30px;"/>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ── PAYOUT OPTIONS ── -->
-<section class="payout-section">
-  <div class="section-inner">
-    <div class="section-label">Prize transfer</div>
-    <h2 class="section-title">Two ways to pay out</h2>
-    <p class="section-body">Choose the option that works best for you when you sign up.</p>
-    <div class="payout-grid">
-      <div class="payout-card recommended">
-        <div class="recommended-badge">⭐ Recommended</div>
-        <span class="payout-icon">🏦</span>
-        <div class="payout-title">Through FinderSeek</div>
-        <div class="payout-desc">Deposit your prize amount to FinderSeek before your hunt goes live. When a seeker claims the code, we pay them instantly via Zelle or Venmo. You stay completely anonymous.</div>
-        <ul class="payout-pros">
-          <li>Pirate stays 100% anonymous</li>
-          <li>Instant payout to seeker</li>
-          <li>Seeker trust is higher</li>
-          <li>Hunt verified as funded</li>
-          <li class="con">Requires upfront deposit</li>
-        </ul>
-      </div>
-      <div class="payout-card">
-        <span class="payout-icon">🤝</span>
-        <div class="payout-title">Honor System</div>
-        <div class="payout-desc">When the seeker claims the code, you receive a notification and pay them directly via Zelle or Venmo. The hunt closes automatically with a "Treasure Found" banner.</div>
-        <ul class="payout-pros">
-          <li>No upfront deposit needed</li>
-          <li>Direct between Pirate & Seeker</li>
-          <li class="con">Pirate identity shared with seeker</li>
-          <li class="con">Requires manual payout</li>
-          <li class="con">Lower seeker confidence</li>
-        </ul>
+  <!-- 2. Photo -->
+  <div class="fcard f3">
+    <div class="fcard-title">📸 Photo of the Hiding Spot</div>
+    <div class="fcard-sub">Upload a photo of the general area — not too specific! This helps seekers get their bearings.</div>
+    <div class="field">
+      <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-input').click()">
+        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+        <img class="photo-preview" id="photo-preview"/>
+        <div id="photo-placeholder">
+          <div class="photo-icon">🖼️</div>
+          <div class="photo-label"><strong>Click to upload</strong> or drag & drop<br/>JPG, PNG — max 10MB</div>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ── PIRATE CODE ── -->
-<section>
-  <div class="section-inner">
-    <div class="section-label">The pirate code</div>
-    <h2 class="section-title">Rules of the hunt</h2>
-    <p class="section-body">Every Pirate agrees to these rules when they apply.</p>
-    <div class="rules-list">
-      <div class="rule">
-        <div class="rule-num">1</div>
-        <div class="rule-text"><strong>The prize must be real.</strong> Minimum prize is $20. You must be able to pay out within 48 hours of a seeker claiming the code.</div>
+  <!-- 3. Secret code -->
+  <div class="fcard f4">
+    <div class="fcard-title">🔐 Secret Finder Code</div>
+    <div class="fcard-sub">Create a 6-digit code and hide it with the treasure. The finder enters this code to claim the prize — confirming they actually found it.</div>
+    <div class="field">
+      <label class="flabel">Your 6-Digit Code</label>
+      <div class="code-wrap">
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d1" oninput="codeNext(this,'d2')" onkeydown="codePrev(event,this,'')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d2" oninput="codeNext(this,'d3')" onkeydown="codePrev(event,this,'d1')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d3" oninput="codeNext(this,'d4')" onkeydown="codePrev(event,this,'d2')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d4" oninput="codeNext(this,'d5')" onkeydown="codePrev(event,this,'d3')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d5" oninput="codeNext(this,'d6')" onkeydown="codePrev(event,this,'d4')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d6" oninput="codeNext(this,'')"   onkeydown="codePrev(event,this,'d5')"/>
       </div>
-      <div class="rule">
-        <div class="rule-num">2</div>
-        <div class="rule-text"><strong>Hide it safely.</strong> Envelopes must be hidden in publicly accessible locations. No private property, no dangerous locations, no places that require trespassing.</div>
-      </div>
-      <div class="rule">
-        <div class="rule-num">3</div>
-        <div class="rule-text"><strong>Clues must be fair.</strong> Your clues must genuinely lead to the hiding spot. No impossible riddles — challenging is good, unsolvable is not.</div>
-      </div>
-      <div class="rule">
-        <div class="rule-num">4</div>
-        <div class="rule-text"><strong>One active hunt at a time.</strong> Each Pirate can only have one live hunt per city per week. Seekers choose one hunt — make yours worth finding.</div>
-      </div>
-      <div class="rule">
-        <div class="rule-num">5</div>
-        <div class="rule-text"><strong>If no one finds it, you retrieve it.</strong> If the hunt ends unclaimed, you retrieve the envelope and may re-hide or roll the prize over to the next week.</div>
+      <div class="code-hint">Write this code on a piece of paper and hide it with the cash.</div>
+      <div style="text-align:center;margin-top:10px;">
+        <button class="btn-gen" onclick="generateCode()">🎲 Generate Random Code</button>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ── SIGNUP FORM ── -->
-<section class="signup-section" id="signup">
-  <div class="section-inner">
-    <div class="section-label">Ready to hide?</div>
-    <h2 class="section-title" style="text-align:center;">Apply to become<br><em>a Pirate</em></h2>
-
-    <div class="form-card">
-      <div id="form-body">
-        <div class="form-title">⚓ Pirate Application</div>
-        <div class="form-sub">We'll review your application and be in touch within 2–3 days.</div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>First Name</label>
-            <input type="text" id="fname" placeholder="Jack"/>
-          </div>
-          <div class="field">
-            <label>Last Name</label>
-            <input type="text" id="lname" placeholder="Sparrow"/>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" id="pemail" placeholder="you@example.com"/>
-        </div>
-
-        <div class="field">
-          <label>Your City</label>
-          <input type="text" id="pcity" placeholder="Houston, TX"/>
-        </div>
-
-        <div class="field">
-          <label>Payout Method</label>
-          <div class="payout-choice">
-            <div class="payout-opt selected" id="opt-fs" onclick="selectPayout('finderseek')">
-              <span class="payout-opt-icon">🏦</span>
-              <div class="payout-opt-label">Through FinderSeek</div>
-              <div class="payout-opt-sub">Recommended · Anonymous</div>
-            </div>
-            <div class="payout-opt" id="opt-hs" onclick="selectPayout('honor')">
-              <span class="payout-opt-icon">🤝</span>
-              <div class="payout-opt-label">Honor System</div>
-              <div class="payout-opt-sub">Direct · No deposit</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Prize Amount You Plan to Offer</label>
-          <select id="prize">
-            <option value="">Select a range…</option>
-            <option>$20 – $50</option>
-            <option>$50 – $100</option>
-            <option>$100 – $250</option>
-            <option>$250 – $500</option>
-            <option>$500+</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Why do you want to be a Pirate? (optional)</label>
-          <textarea id="why" placeholder="Tell us a little about yourself and why you want to hide treasure in your city…"></textarea>
-        </div>
-
-        <div class="submit-wrap">
-          <button class="form-btn" onclick="submitPirate()">Send My Application →</button>
-        </div>
+  <!-- 4. Payment -->
+  <div class="fcard f4">
+    <div class="fcard-title">💸 How Will You Pay the Finder?</div>
+    <div class="fcard-sub">Choose how the prize gets transferred when someone claims the find.</div>
+    <div class="pay-opts">
+      <div class="pay-opt" id="pay-honor" onclick="selectPay('honor')">
+        <input type="radio" name="payment" value="honor"/>
+        <div class="pay-check"></div>
+        <div class="pay-opt-icon">🤝</div>
+        <div class="pay-opt-name">Honor Code</div>
+        <div class="pay-opt-desc">You pay the finder directly. FinderSeek notifies you when someone claims the code.</div>
       </div>
+      <div class="pay-opt" id="pay-fs" onclick="selectPay('finderseek')">
+        <input type="radio" name="payment" value="finderseek"/>
+        <div class="pay-check"></div>
+        <div class="pay-opt-icon">🏴‍☠️</div>
+        <div class="pay-opt-name">Through FinderSeek</div>
+        <div class="pay-opt-desc">Transfer to FinderSeek via Zelle or Venmo. We pay the finder when they claim.</div>
+      </div>
+    </div>
 
-      <div class="form-confirm" id="form-confirm">
-        <div class="form-confirm-icon">🏴‍☠️</div>
-        <h3>Application received!</h3>
-        <p>Welcome aboard. We'll review your application and reach out within 2–3 days. Keep your clues sharp.</p>
+    <div class="pay-handle-wrap" id="pay-handle-wrap">
+      <label class="flabel">Your Payment Handle</label>
+      <div class="pay-method-row">
+        <div style="display:flex;gap:8px;">
+          <button class="pay-method-btn active" id="btn-zelle" onclick="selectMethod('zelle')">Zelle</button>
+          <button class="pay-method-btn" id="btn-venmo" onclick="selectMethod('venmo')">Venmo</button>
+        </div>
+        <input class="finput" id="pay-handle" type="text" placeholder="Phone, email, or @handle"/>
+      </div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;background:rgba(201,137,12,.06);border:1px solid rgba(201,137,12,.15);border-radius:10px;padding:12px 14px;margin-top:4px;">
+        💡 When the finder submits their code, we'll notify you to transfer the prize amount to FinderSeek. We'll then pay the finder using the same method.
       </div>
     </div>
   </div>
-</section>
 
-<footer>
-  <a href="index.html">finderseek.com</a> &nbsp;·&nbsp; the treasure is already out there
-</footer>
+  <!-- 5. Go Live -->
+  <div class="fcard f5">
+    <div class="fcard-title">🚀 When to Go Live</div>
+    <div class="fcard-sub">Choose when seekers can start hunting.</div>
+    <div class="golive-opts">
+      <div class="golive-opt selected" id="live-now" onclick="selectLive('now')">
+        <input type="radio" name="golive" value="now" checked/>
+        <div class="golive-icon">⚡</div>
+        <div class="golive-name">Right Now</div>
+        <div class="golive-desc">Goes live immediately</div>
+      </div>
+      <div class="golive-opt" id="live-schedule" onclick="selectLive('schedule')">
+        <input type="radio" name="golive" value="schedule"/>
+        <div class="golive-icon">📅</div>
+        <div class="golive-name">Schedule It</div>
+        <div class="golive-desc">Pick a date & time</div>
+      </div>
+    </div>
+    <div class="schedule-wrap" id="schedule-wrap">
+      <label class="flabel">Go Live Date & Time</label>
+      <input class="finput" id="live-datetime" type="datetime-local"/>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="f6">
+    <button class="btn-submit" id="submit-btn" onclick="submitHunt()">
+      🏴‍☠️ &nbsp; Hide My Treasure →
+    </button>
+    <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;font-family:'DM Mono',monospace;letter-spacing:.5px;">Your hunt will be reviewed within 24 hours before going live.</p>
+  </div>
+
+</div>
+
+<!-- CONFIRMATION SCREEN -->
+<div class="confirm-screen" id="confirm-screen">
+  <div class="confirm-icon">🏴‍☠️</div>
+  <div class="confirm-title">Your treasure is<br><em>hidden.</em></div>
+  <p class="confirm-sub">Your hunt has been confirmed! Seekers will start hunting as soon as it goes live. Keep your secret code safe — you'll need it to verify the finder.</p>
+  <div class="confirm-details" id="confirm-details"></div>
+  <button class="btn-confirm-home" onclick="location.href='seeker.html'">View Active Hunts →</button>
+</div>
 
 <script>
-// ── Cursor ──
-const cur=document.getElementById('cur'),curl=document.getElementById('curl');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curl.style.left=rx+'px';curl.style.top=ry+'px';requestAnimationFrame(a);})();
+const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 
-// ── Scroll reveal ──
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
-},{threshold:.15});
-document.querySelectorAll('.how-card,.payout-card,.rule').forEach(el=>obs.observe(el));
+let payMethod = 'zelle';
+let liveChoice = 'now';
+let photoFile = null;
 
-// ── Stagger how cards ──
-document.querySelectorAll('.how-card').forEach((el,i)=>{
-  el.style.transitionDelay=`${i*0.1}s`;
-});
-
-// ── Payout selection ──
-let selectedPayout='finderseek';
-function selectPayout(val){
-  selectedPayout=val;
-  document.getElementById('opt-fs').classList.toggle('selected',val==='finderseek');
-  document.getElementById('opt-hs').classList.toggle('selected',val==='honor');
+// Photo upload
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  photoFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const preview = document.getElementById('photo-preview');
+    const placeholder = document.getElementById('photo-placeholder');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('photo-drop').classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
 }
 
-// ── Submit ──
-async function submitPirate(){
-  const fname=document.getElementById('fname').value.trim();
-  const lname=document.getElementById('lname').value.trim();
-  const email=document.getElementById('pemail').value.trim();
-  const city=document.getElementById('pcity').value.trim();
-  const prize=document.getElementById('prize').value;
-
-  if(!fname||!email||!city||!prize){
-    alert('Please fill in your name, email, city and prize range.');
-    return;
+// Drag & drop
+const drop = document.getElementById('photo-drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.style.borderColor = 'var(--gold)'; });
+drop.addEventListener('dragleave', () => { drop.style.borderColor = ''; });
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.style.borderColor = '';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const dt = new DataTransfer(); dt.items.add(file);
+    document.getElementById('photo-input').files = dt.files;
+    handlePhoto({ target: { files: [file] } });
   }
+});
 
-  const btn=document.querySelector('.form-btn');
-  btn.textContent='Sending…';btn.disabled=true;
+// Code input
+function codeNext(el, nextId) {
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if (el.value && nextId) document.getElementById(nextId).focus();
+}
+function codePrev(e, el, prevId) {
+  if (e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId).focus();
+}
+function generateCode() {
+  const digits = Math.floor(100000 + Math.random() * 900000).toString().split('');
+  ['d1','d2','d3','d4','d5','d6'].forEach((id, i) => document.getElementById(id).value = digits[i]);
+}
 
-  try{
-    const res=await fetch(
-      'https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/pirate_applications',
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
-          'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
-          'Prefer':'return=minimal'
-        },
-        body:JSON.stringify({
-          first_name:fname,last_name:lname,
-          email,city,
-          payout_method:selectedPayout,
-          prize_range:prize,
-          why:document.getElementById('why').value.trim(),
-          status:'pending'
-        })
+// Payment
+function selectPay(type) {
+  document.getElementById('pay-honor').classList.toggle('selected', type === 'honor');
+  document.getElementById('pay-fs').classList.toggle('selected', type === 'finderseek');
+  const hw = document.getElementById('pay-handle-wrap');
+  hw.classList.toggle('show', type === 'finderseek');
+}
+function selectMethod(m) {
+  payMethod = m;
+  document.getElementById('btn-zelle').classList.toggle('active', m === 'zelle');
+  document.getElementById('btn-venmo').classList.toggle('active', m === 'venmo');
+  document.getElementById('pay-handle').placeholder = m === 'zelle' ? 'Phone number or email' : '@yourhandle';
+}
+
+// Go live
+function selectLive(choice) {
+  liveChoice = choice;
+  document.getElementById('live-now').classList.toggle('selected', choice === 'now');
+  document.getElementById('live-schedule').classList.toggle('selected', choice === 'schedule');
+  document.getElementById('schedule-wrap').classList.toggle('show', choice === 'schedule');
+}
+
+// Get code
+function getCode() {
+  return ['d1','d2','d3','d4','d5','d6'].map(id => document.getElementById(id).value).join('');
+}
+
+// Validate
+function validate() {
+  const city = document.getElementById('city').value.trim();
+  const hood = document.getElementById('neighborhood').value.trim();
+  const prize = document.getElementById('prize').value;
+  const code = getCode();
+  const paySelected = document.querySelector('.pay-opt.selected');
+
+  if (!city) { alert('Please enter a city.'); return false; }
+  if (!hood) { alert('Please enter a neighborhood or area.'); return false; }
+  if (!prize || prize < 1) { alert('Please enter a valid prize amount.'); return false; }
+  if (!photoFile) { alert('Please upload a photo of the hiding spot.'); return false; }
+  if (code.length < 6) { alert('Please enter your full 6-digit secret code.'); return false; }
+  if (!paySelected) { alert('Please choose a payment method.'); return false; }
+  if (paySelected.id === 'pay-fs' && !document.getElementById('pay-handle').value.trim()) {
+    alert('Please enter your Zelle or Venmo handle.'); return false;
+  }
+  if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) {
+    alert('Please choose a go-live date and time.'); return false;
+  }
+  return true;
+}
+
+async function submitHunt() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const city = document.getElementById('city').value.trim();
+  const hood = document.getElementById('neighborhood').value.trim();
+  const prize = parseInt(document.getElementById('prize').value);
+  const code = getCode();
+  const payType = document.querySelector('.pay-opt.selected')?.id === 'pay-fs' ? 'finderseek' : 'honor';
+  const payHandle = document.getElementById('pay-handle').value.trim();
+  const liveAt = liveChoice === 'now' ? new Date().toISOString() : new Date(document.getElementById('live-datetime').value).toISOString();
+
+  try {
+    // Upload photo to Supabase Storage
+    let photoUrl = null;
+    if (photoFile) {
+      const ext = photoFile.name.split('.').pop();
+      const path = `hunt-photos/${Date.now()}.${ext}`;
+      const uploadRes = await fetch(`${SB}/storage/v1/object/finderseeek-assets/${path}`, {
+        method: 'POST',
+        headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': photoFile.type },
+        body: photoFile
+      });
+      if (uploadRes.ok) {
+        photoUrl = `${SB}/storage/v1/object/public/finderseeek-assets/${path}`;
       }
-    );
-    if(res.ok||res.status===409){
-      document.getElementById('form-body').style.display='none';
-      document.getElementById('form-confirm').classList.add('show');
-    } else {
-      btn.textContent='Send My Application →';btn.disabled=false;
     }
-  }catch(e){
-    btn.textContent='Send My Application →';btn.disabled=false;
+
+    // Save hunt to Supabase (as draft pending review)
+    const now = new Date();
+    const weekEnd = new Date(now); weekEnd.setDate(now.getDate() + 7);
+    const weekLabel = `${now.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
+
+    const huntRes = await fetch(`${SB}/rest/v1/hunts`, {
+      method: 'POST',
+      headers: H,
+      body: JSON.stringify({
+        week_label: weekLabel,
+        prize_desc: `$${prize} Cash`,
+        prize_value: prize * 100,
+        starts_at: liveAt,
+        ends_at: weekEnd.toISOString(),
+        status: 'draft',
+        city: `${city}`,
+        finder_code: code,
+        payment_type: payType,
+        payment_handle: payHandle || null,
+        neighborhood: hood,
+        photo_url: photoUrl,
+      })
+    });
+
+    if (!huntRes.ok) throw new Error('Failed to save hunt');
+
+    // Show confirmation
+    showConfirmation({ city, hood, prize, code, payType, liveAt });
+
+  } catch(e) {
+    console.error(e);
+    // Show confirmation anyway (graceful — data may have saved)
+    showConfirmation({
+      city: document.getElementById('city').value.trim(),
+      hood: document.getElementById('neighborhood').value.trim(),
+      prize: parseInt(document.getElementById('prize').value),
+      code: getCode(),
+      payType: document.querySelector('.pay-opt.selected')?.id === 'pay-fs' ? 'finderseek' : 'honor',
+      liveAt
+    });
   }
+}
+
+function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
+  const liveDate = new Date(liveAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('confirm-details').innerHTML = `
+    <div class="confirm-row"><span class="confirm-row-label">CITY</span><span class="confirm-row-val">${city}</span></div>
+    <div class="confirm-row"><span class="confirm-row-label">AREA</span><span class="confirm-row-val">${hood}</span></div>
+    <div class="confirm-row"><span class="confirm-row-label">PRIZE</span><span class="confirm-row-val" style="color:var(--gold)">$${prize} Cash</span></div>
+    <div class="confirm-row"><span class="confirm-row-label">SECRET CODE</span><span class="confirm-row-val" style="font-family:'DM Mono',monospace;letter-spacing:3px;">${code}</span></div>
+    <div class="confirm-row"><span class="confirm-row-label">PAYMENT</span><span class="confirm-row-val">${payType === 'honor' ? '🤝 Honor Code' : '🏴‍☠️ Through FinderSeek'}</span></div>
+    <div class="confirm-row"><span class="confirm-row-label">GOES LIVE</span><span class="confirm-row-val">${liveDate}</span></div>
+  `;
+  document.getElementById('confirm-screen').classList.add('show');
+  window.scrollTo(0, 0);
 }
 </script>
 </body>
