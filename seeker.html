@@ -7,403 +7,256 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --ink:    #06050a;
-    --gold:   #c9890c;
-    --gold2:  #e8a820;
-    --cream:  #f5ead8;
-    --dim:    #c8b48a;
-    --muted:  #8a7a5a;
-    --border: rgba(201,137,12,0.2);
-    --card-bg: rgba(14,12,20,0.85);
-    --green:  #22c55e;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--ink);
-    color: var(--cream);
-    font-family: 'Karla', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  :root { --ink:#06050a; --gold:#c9890c; --gold2:#e8a820; --cream:#f5ead8; --dim:#c8b48a; --muted:#8a7a5a; --border:rgba(201,137,12,0.2); --card-bg:rgba(14,12,20,0.85); --green:#22c55e; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+  .bg-img{position:fixed;inset:0;z-index:0;background:url('pirate%20sherlock%20trans.png') center 20%/cover no-repeat;opacity:0.2;filter:saturate(0.4) sepia(0.3);}
+  .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(6,5,10,.5) 0%,rgba(6,5,10,.85) 60%,rgba(6,5,10,.98) 100%);}
+  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
 
-  /* BG */
-  .bg-img {
-    position: fixed; inset: 0; z-index: 0;
-    background: url('pirate_sherlock.png') center 20% / cover no-repeat;
-    opacity: 0.2; filter: saturate(0.4) sepia(0.3);
-  }
-  .bg-vignette {
-    position: fixed; inset: 0; z-index: 0;
-    background: radial-gradient(ellipse at 50% 30%, rgba(6,5,10,0.5) 0%, rgba(6,5,10,0.85) 60%, rgba(6,5,10,0.98) 100%);
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    background-size: 180px 180px; opacity: 0.45;
-  }
+  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.7);backdrop-filter:blur(12px);}
+  .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+  .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .nav-name{font-size:17px;font-weight:700;color:var(--cream);}
+  .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:19px;}
+  .nav-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:-2px;}
+  .nav-r{display:flex;align-items:center;gap:10px;}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  .btn-si{background:transparent;border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:border-color .2s,color .2s;}
+  .btn-si:hover{border-color:var(--gold);color:var(--cream);}
 
-  /* NAV */
-  nav {
-    position: relative; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(6,5,10,0.7); backdrop-filter: blur(12px);
-  }
-  .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-  .nav-logo-icon {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: var(--gold); display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  .nav-logo-text { font-size: 17px; font-weight: 700; color: var(--cream); }
-  .nav-logo-text em { font-style: italic; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 19px; }
-  .nav-logo-sub { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-top: -2px; }
-  .nav-right { display: flex; align-items: center; gap: 10px; }
-  .live-badge {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
-    border-radius: 20px; padding: 5px 12px;
-    font-size: 12px; color: var(--green); font-family: 'DM Mono', monospace;
-  }
-  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-  .btn-signin {
-    background: transparent; border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 16px;
-    font-size: 13px; color: var(--dim); cursor: pointer;
-    font-family: 'Karla', sans-serif; transition: border-color .2s, color .2s;
-  }
-  .btn-signin:hover { border-color: var(--gold); color: var(--cream); }
+  .hero{position:relative;z-index:2;text-align:center;padding:56px 24px 48px;}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,7vw,58px);font-weight:600;line-height:1.1;}
+  .hero h1 .g{color:var(--gold);font-style:italic;display:block;}
+  .hero-sub{font-size:14px;color:var(--dim);margin-top:12px;line-height:1.6;max-width:420px;margin-inline:auto;}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
+  .btn-cta{display:flex;flex-direction:column;align-items:center;padding:14px 32px;border-radius:12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;border:none;font-family:'Karla',sans-serif;transition:transform .2s,box-shadow .2s;min-width:160px;}
+  .btn-cta span{font-size:15px;font-weight:700;margin-top:2px;letter-spacing:0;text-transform:none;}
+  .btn-hide{background:#1a2090;color:#e0e4ff;box-shadow:0 4px 20px rgba(26,32,144,.4);}
+  .btn-hide:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
+  .btn-find{background:var(--gold);color:#0a0800;box-shadow:0 4px 20px rgba(201,137,12,.4);}
+  .btn-find:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
+  .hero-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
+  .hpill{background:rgba(201,137,12,.07);border:1px solid rgba(201,137,12,.15);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--muted);}
 
-  /* HERO */
-  .hero {
-    position: relative; z-index: 2;
-    text-align: center; padding: 56px 24px 48px;
-  }
-  .hero h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(38px, 7vw, 58px);
-    font-weight: 600; line-height: 1.1; color: var(--cream);
-  }
-  .hero h1 .gold { color: var(--gold); font-style: italic; display: block; }
-  .hero-sub { font-size: 14px; color: var(--dim); margin-top: 12px; line-height: 1.6; max-width: 420px; margin-inline: auto; }
+  .main{position:relative;z-index:2;max-width:700px;margin:0 auto;padding:0 20px 60px;}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .sec-title{font-size:16px;font-weight:700;}
+  .hbadge{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;}
+  .search-wrap{position:relative;margin-bottom:14px;}
+  .s-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 16px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+  .s-input::placeholder{color:var(--muted);}
+  .s-input:focus{border-color:rgba(201,137,12,.4);}
+  .s-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .fpill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--dim);cursor:pointer;transition:background .2s,border-color .2s,color .2s;font-family:'Karla',sans-serif;}
+  .fpill:hover,.fpill.active{background:var(--gold);border-color:var(--gold);color:#0a0800;font-weight:700;}
 
-  /* CTA BUTTONS */
-  .cta-row {
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-    margin-top: 28px;
-  }
-  .btn-cta {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 14px 32px; border-radius: 12px;
-    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
-    cursor: pointer; text-decoration: none; border: none;
-    font-family: 'Karla', sans-serif; transition: transform .2s, box-shadow .2s;
-    min-width: 160px;
-  }
-  .btn-cta span { font-size: 15px; font-weight: 700; margin-top: 2px; letter-spacing: 0; text-transform: none; }
-  .btn-hide { background: #1a2090; color: #e0e4ff; box-shadow: 0 4px 20px rgba(26,32,144,.4); }
-  .btn-hide:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,32,144,.6); }
-  .btn-find { background: var(--gold); color: #0a0800; box-shadow: 0 4px 20px rgba(201,137,12,.4); }
-  .btn-find:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,137,12,.6); }
+  .cards{display:flex;flex-direction:column;gap:12px;}
+  .hcard{background:var(--card-bg);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 20px 16px;cursor:pointer;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s,transform .15s;display:block;backdrop-filter:blur(10px);}
+  .hcard:hover{border-color:rgba(201,137,12,.35);box-shadow:0 6px 30px rgba(0,0,0,.4);transform:translateY(-1px);}
+  .hcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+  .hcity{font-size:18px;font-weight:700;}
+  .hprize-col{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .hprize{font-size:18px;font-weight:700;}
+  .pp{color:#e0d4ff;} .gp{color:var(--gold2);} .sp{color:#c0c8d8;} .stp{color:var(--green);}
+  .hmeta{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .tbadge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+  .tp{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;}
+  .tg{background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);color:var(--gold2);}
+  .ts{background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.3);color:#94a3b8;}
+  .tst{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+  .hbottom{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .clues-sec{flex:1;}
+  .clues-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;justify-content:space-between;}
+  .pbar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+  .pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--gold2));}
+  .hdate{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:10px;}
+  .cbox{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;text-align:center;min-width:130px;}
+  .clbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;}
+  .ctime{font-size:14px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;letter-spacing:1px;}
+  .hjoin{display:flex;justify-content:flex-end;margin-top:12px;}
+  .jbtn{font-size:13px;font-weight:600;color:var(--gold);display:flex;align-items:center;gap:5px;transition:gap .2s;}
+  .hcard:hover .jbtn{gap:9px;}
 
-  .hero-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
-  .hero-pill {
-    background: rgba(201,137,12,.07); border: 1px solid rgba(201,137,12,.15);
-    border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--muted);
-  }
+  .statebox{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;}
+  .statebox .si{font-size:32px;margin-bottom:12px;}
 
-  /* MAIN CONTENT */
-  .main { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; padding: 0 20px 60px; }
+  .pcta{margin-top:32px;background:rgba(26,32,144,.2);border:1px solid rgba(26,32,144,.4);border-radius:20px;padding:32px 24px;text-align:center;backdrop-filter:blur(10px);}
+  .pcta-icon{font-size:32px;margin-bottom:12px;}
+  .pcta h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:8px;}
+  .pcta p{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6;}
+  .pcta-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+  .ppill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--dim);}
+  .btn-pirate{display:inline-block;background:#1a2090;color:#e0e4ff;border-radius:12px;padding:14px 28px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(26,32,144,.4);transition:transform .2s,box-shadow .2s;}
+  .btn-pirate:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
 
-  /* SECTION HEADER */
-  .section-head {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .section-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
-  .hunts-badge {
-    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25);
-    border-radius: 20px; padding: 4px 12px;
-    font-size: 12px; color: var(--green); font-family: 'DM Mono', monospace;
-    display: flex; align-items: center; gap: 5px;
-  }
-
-  /* SEARCH */
-  .search-wrap { position: relative; margin-bottom: 14px; }
-  .search-input {
-    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px 16px 12px 40px;
-    font-size: 14px; color: var(--cream); font-family: 'Karla', sans-serif;
-    outline: none; transition: border-color .2s;
-  }
-  .search-input::placeholder { color: var(--muted); }
-  .search-input:focus { border-color: rgba(201,137,12,.4); }
-  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; }
-
-  /* CITY FILTERS */
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .filter-pill {
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 14px;
-    font-size: 12px; color: var(--dim); cursor: pointer;
-    transition: background .2s, border-color .2s, color .2s;
-    font-family: 'Karla', sans-serif;
-  }
-  .filter-pill:hover, .filter-pill.active {
-    background: var(--gold); border-color: var(--gold); color: #0a0800; font-weight: 600;
-  }
-  .filter-pill.active { font-weight: 700; }
-
-  /* HUNT CARDS */
-  .hunt-cards { display: flex; flex-direction: column; gap: 12px; }
-  .hunt-card {
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px; padding: 20px 20px 16px;
-    cursor: pointer; text-decoration: none; color: inherit;
-    transition: border-color .2s, box-shadow .2s, transform .15s;
-    display: block; backdrop-filter: blur(10px);
-  }
-  .hunt-card:hover {
-    border-color: rgba(201,137,12,.35);
-    box-shadow: 0 6px 30px rgba(0,0,0,.4);
-    transform: translateY(-1px);
-  }
-  .hunt-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
-  .hunt-city { font-size: 18px; font-weight: 700; color: var(--cream); }
-  .hunt-prize { font-size: 18px; font-weight: 700; }
-  .prize-platinum { color: #e0d4ff; }
-  .prize-gold     { color: var(--gold2); }
-  .prize-silver   { color: #c0c8d8; }
-  .prize-starter  { color: var(--green); }
-
-  .hunt-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
-  .hunt-meta-sep { opacity: 0.4; }
-
-  .tier-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    border-radius: 6px; padding: 3px 9px;
-    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    font-family: 'DM Mono', monospace;
-  }
-  .tier-platinum { background: rgba(139,92,246,.2); border: 1px solid rgba(139,92,246,.4); color: #c4b5fd; }
-  .tier-gold     { background: rgba(201,137,12,.15); border: 1px solid rgba(201,137,12,.35); color: var(--gold2); }
-  .tier-silver   { background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.3); color: #94a3b8; }
-  .tier-starter  { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: var(--green); }
-
-  .hunt-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .clues-section { flex: 1; }
-  .clues-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; display: flex; justify-content: space-between; }
-  .clue-count { color: var(--dim); }
-  .progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold2)); }
-  .hunt-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 10px; }
-
-  .countdown-box {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px; padding: 8px 14px; text-align: center; min-width: 130px;
-  }
-  .countdown-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
-  .countdown-time { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'DM Mono', monospace; letter-spacing: 1px; }
-
-  .hunt-join { display: flex; justify-content: flex-end; margin-top: 12px; }
-  .join-btn {
-    font-size: 13px; font-weight: 600; color: var(--gold);
-    display: flex; align-items: center; gap: 5px;
-    text-decoration: none; transition: gap .2s;
-  }
-  .hunt-card:hover .join-btn { gap: 9px; }
-
-  /* PIRATE CTA */
-  .pirate-cta {
-    margin-top: 32px;
-    background: rgba(26,32,144,0.2); border: 1px solid rgba(26,32,144,0.4);
-    border-radius: 20px; padding: 32px 24px; text-align: center;
-    backdrop-filter: blur(10px);
-  }
-  .pirate-cta-icon { font-size: 32px; margin-bottom: 12px; }
-  .pirate-cta h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 8px; }
-  .pirate-cta p { font-size: 13px; color: var(--dim); margin-bottom: 20px; line-height: 1.6; }
-  .pirate-cta-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-  .pirate-cta-pill {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--dim);
-  }
-  .btn-pirate {
-    display: inline-block; background: #1a2090; color: #e0e4ff;
-    border-radius: 12px; padding: 14px 28px;
-    font-size: 14px; font-weight: 700; text-decoration: none;
-    box-shadow: 0 4px 20px rgba(26,32,144,.4);
-    transition: transform .2s, box-shadow .2s;
-  }
-  .btn-pirate:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,32,144,.6); }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-  .fade1 { animation: fadeUp .6s .05s both; }
-  .fade2 { animation: fadeUp .6s .15s both; }
-  .fade3 { animation: fadeUp .6s .25s both; }
-  .fade4 { animation: fadeUp .6s .35s both; }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .f1{animation:fadeUp .6s .05s both} .f2{animation:fadeUp .6s .15s both}
+  .f3{animation:fadeUp .6s .25s both} .f4{animation:fadeUp .6s .35s both}
 </style>
 </head>
 <body>
-<div class="bg-img"></div>
-<div class="bg-vignette"></div>
+<div class="bg-img"></div><div class="bg-vig"></div>
 
-<!-- NAV -->
 <nav>
   <a class="nav-logo" href="index.html">
-    <div class="nav-logo-icon">🔍</div>
-    <div>
-      <div class="nav-logo-text">Finder<em>Seek</em></div>
-      <div class="nav-logo-sub">finderseek.com</div>
-    </div>
+    <div class="nav-icon">🔍</div>
+    <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
-  <div class="nav-right">
-    <div class="live-badge"><span class="live-dot"></span><span id="live-count">7</span> Live</div>
-    <button class="btn-signin">Sign In</button>
+  <div class="nav-r">
+    <div class="live-badge"><span class="dot"></span><span id="live-count">…</span> Live</div>
+    <button class="btn-si">Sign In</button>
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero fade1">
-  <h1>Real Money.<span class="gold">Hidden Treasure.</span></h1>
+<div class="hero f1">
+  <h1>Real Money.<span class="g">Hidden Treasure.</span></h1>
   <p class="hero-sub">Hide cash in your city as a Pirate, or follow clues to find it as a Seeker. New hunts every Friday.</p>
   <div class="cta-row">
     <a href="pirate.html" class="btn-cta btn-hide">I WANT TO <span>Hide Treasure</span></a>
     <a href="#hunts" class="btn-cta btn-find">I WANT TO <span>Find Treasure</span></a>
   </div>
   <div class="hero-pills">
-    <span class="hero-pill">Real Cash Prizes</span>
-    <span class="hero-pill">Free to Play</span>
-    <span class="hero-pill">Every Friday</span>
+    <span class="hpill">Real Cash Prizes</span>
+    <span class="hpill">Free to Play</span>
+    <span class="hpill">Every Friday</span>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main" id="hunts">
-
-  <div class="section-head fade2">
-    <div class="section-title">🗺️ Active Hunts</div>
-    <div class="hunts-badge"><span class="live-dot"></span><span id="hunt-count">7</span> hunts</div>
+  <div class="sec-head f2">
+    <div class="sec-title">🗺️ Active Hunts</div>
+    <div class="hbadge"><span class="dot"></span><span id="hunt-count">…</span> hunts</div>
+  </div>
+  <div class="search-wrap f2">
+    <span class="s-icon">🔍</span>
+    <input class="s-input" id="search" type="text" placeholder="Search city or area…" oninput="renderHunts()"/>
+  </div>
+  <div class="filters f3" id="filters">
+    <button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>
+  </div>
+  <div class="cards f4" id="cards">
+    <div class="statebox"><div class="si">⏳</div>Loading hunts…</div>
   </div>
 
-  <div class="search-wrap fade2">
-    <span class="search-icon">🔍</span>
-    <input class="search-input" type="text" id="search" placeholder="Search city or area…" oninput="filterHunts()"/>
-  </div>
-
-  <div class="filters fade3" id="filters">
-    <button class="filter-pill active" onclick="setFilter('all', this)">🌍 All</button>
-    <button class="filter-pill" onclick="setFilter('Houston, TX', this)">📍 Houston, TX</button>
-    <button class="filter-pill" onclick="setFilter('Dallas, TX', this)">📍 Dallas, TX</button>
-    <button class="filter-pill" onclick="setFilter('Austin, TX', this)">📍 Austin, TX</button>
-    <button class="filter-pill" onclick="setFilter('San Antonio, TX', this)">📍 San Antonio, TX</button>
-    <button class="filter-pill" onclick="setFilter('Tomball, TX', this)">📍 Tomball, TX</button>
-  </div>
-
-  <div class="hunt-cards fade4" id="hunt-cards"></div>
-
-  <!-- PIRATE CTA -->
-  <div class="pirate-cta fade4">
-    <div class="pirate-cta-icon">🏴‍☠️</div>
+  <div class="pcta f4">
+    <div class="pcta-icon">🏴‍☠️</div>
     <h3>Become a Pirate</h3>
     <p>Hide real cash in your city. Write clues. Watch seekers hunt. You set the prize.</p>
-    <div class="pirate-cta-pills">
-      <span class="pirate-cta-pill">💰 You set the prize</span>
-      <span class="pirate-cta-pill">📜 AI writes clues</span>
-      <span class="pirate-cta-pill">🗺️ Any city</span>
+    <div class="pcta-pills">
+      <span class="ppill">💰 You set the prize</span>
+      <span class="ppill">📜 AI writes clues</span>
+      <span class="ppill">🗺️ Any city</span>
     </div>
     <a href="pirate.html" class="btn-pirate">Start Hiding Treasure →</a>
   </div>
-
 </div>
 
 <script>
-const hunts = [
-  { id:"houston-1",   city:"Houston, TX",     area:"Museum District",  pirate:"SpaceCity_X",    prize:100, tier:"platinum", clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+55*60000 },
-  { id:"dallas-1",    city:"Dallas, TX",       area:"Bishop Arts",      pirate:"BigDTreasure",   prize:75,  tier:"gold",     clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+55*60000 },
-  { id:"dallas-2",    city:"Dallas, TX",       area:"Deep Ellum",       pirate:"LoneStarLoot",   prize:40,  tier:"silver",   clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-  { id:"austin-1",    city:"Austin, TX",       area:"South Congress",   pirate:"KeepAustinHidden",prize:30, tier:"silver",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-  { id:"sanantonio-1",city:"San Antonio, TX",  area:"Pearl District",   pirate:"AlamoPirate",    prize:25,  tier:"starter",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-  { id:"tomball-1",   city:"Tomball, TX",      area:"Downtown Tomball", pirate:"CaptainTex",     prize:20,  tier:"starter",  clues:3, totalClues:7, date:"March 6–13, 2026", endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-];
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
 
-const tierColor = { platinum:"prize-platinum", gold:"prize-gold", silver:"prize-silver", starter:"prize-starter" };
-const tierLabel = { platinum:"💎 PLATINUM", gold:"🔥 GOLD", silver:"🥈 SILVER", starter:"🌱 STARTER" };
-const tierClass = { platinum:"tier-platinum", gold:"tier-gold", silver:"tier-silver", starter:"tier-starter" };
+let allHunts = [], activeFilter = 'all', timers = {};
 
-let activeFilter = "all";
-let timers = {};
+function tier(cents) { const v=Math.round(cents/100); return v>=75?'platinum':v>=50?'gold':v>=30?'silver':'starter'; }
+const TIER_LABEL = { platinum:'💎 PLATINUM', gold:'🔥 GOLD', silver:'🥈 SILVER', starter:'🌱 STARTER' };
+const TIER_CSS   = { platinum:'tp', gold:'tg', silver:'ts', starter:'tst' };
+const PRIZE_CSS  = { platinum:'pp', gold:'gp', silver:'sp', starter:'stp' };
 
 function fmt(ms) {
-  if (ms <= 0) return "Ended";
-  const d = Math.floor(ms/86400000), h = Math.floor((ms%86400000)/3600000),
-        m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+  if(ms<=0)return'Ended';
+  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),
+        m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
   return `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
 }
 
-function renderHunts() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const filtered = hunts.filter(h => {
-    const matchCity = activeFilter === 'all' || h.city === activeFilter;
-    const matchSearch = !q || h.city.toLowerCase().includes(q) || h.area.toLowerCase().includes(q);
-    return matchCity && matchSearch;
-  });
+async function loadHunts() {
+  try {
+    const r = await fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc`, {headers:H});
+    const hunts = await r.json();
+    if(!Array.isArray(hunts)||hunts.length===0){
+      document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No active hunts right now.<br>Check back Friday!</div>';
+      document.getElementById('hunt-count').textContent='0';
+      document.getElementById('live-count').textContent='0';
+      return;
+    }
 
-  const container = document.getElementById('hunt-cards');
-  Object.values(timers).forEach(clearInterval);
-  timers = {};
+    // Fetch clue counts
+    const ids = hunts.map(h=>`"${h.id}"`).join(',');
+    const cr = await fetch(`${SB}/rest/v1/clues?select=hunt_id,tier&hunt_id=in.(${ids})`,{headers:H});
+    const clues = cr.ok ? await cr.json() : [];
 
-  container.innerHTML = filtered.map(h => `
-    <a class="hunt-card" href="hunt.html?id=${h.id}">
-      <div class="hunt-card-top">
-        <div class="hunt-city">${h.city}</div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <div class="hunt-prize ${tierColor[h.tier]}">$${h.prize} Cash</div>
-          <div class="tier-badge ${tierClass[h.tier]}">${tierLabel[h.tier]}</div>
-        </div>
-      </div>
-      <div class="hunt-meta">
-        📍 ${h.area} <span class="hunt-meta-sep">·</span> 🏴‍☠️ ${h.pirate}
-      </div>
-      <div class="hunt-bottom">
-        <div class="clues-section">
-          <div class="clues-label"><span>CLUES</span><span class="clue-count">${h.clues}/${h.totalClues}</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${(h.clues/h.totalClues)*100}%"></div></div>
-        </div>
-        <div class="countdown-box">
-          <div class="countdown-label">ENDS IN</div>
-          <div class="countdown-time" id="timer-${h.id}">${fmt(h.endMs - Date.now())}</div>
-        </div>
-      </div>
-      <div class="hunt-date">${h.date}</div>
-      <div class="hunt-join"><span class="join-btn">Join Hunt →</span></div>
-    </a>
-  `).join('');
+    allHunts = hunts.map(h => {
+      const hc = clues.filter(c=>c.hunt_id===h.id);
+      const t = tier(h.prize_value);
+      return { id:h.id, city:h.city, prizeDesc:h.prize_desc, weekLabel:h.week_label,
+               tier:t, totalClues:hc.length||7, freeClues:hc.filter(c=>c.tier==='free').length,
+               endsAt:new Date(h.ends_at) };
+    });
 
-  document.getElementById('hunt-count').textContent = filtered.length;
-  document.getElementById('live-count').textContent = hunts.length;
+    // City filter pills
+    const cities=[...new Set(allHunts.map(h=>h.city))];
+    document.getElementById('filters').innerHTML =
+      `<button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>` +
+      cities.map(c=>`<button class="fpill" onclick="setFilter('${c.replace(/'/g,"\\'")}',this)">📍 ${c}</button>`).join('');
 
-  filtered.forEach(h => {
-    timers[h.id] = setInterval(() => {
-      const el = document.getElementById('timer-' + h.id);
-      if (el) el.textContent = fmt(h.endMs - Date.now());
-    }, 1000);
-  });
+    renderHunts();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">⚠️</div>Could not load hunts.</div>';
+    document.getElementById('hunt-count').textContent='0';
+    document.getElementById('live-count').textContent='0';
+  }
 }
 
-function setFilter(city, el) {
-  activeFilter = city;
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+function renderHunts() {
+  const q=document.getElementById('search').value.toLowerCase();
+  const list=allHunts.filter(h=>(activeFilter==='all'||h.city===activeFilter)&&(!q||h.city.toLowerCase().includes(q)));
+  document.getElementById('hunt-count').textContent=list.length;
+  document.getElementById('live-count').textContent=allHunts.length;
+  Object.values(timers).forEach(clearInterval); timers={};
+  if(!list.length){
+    document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No hunts in that area yet.</div>';
+    return;
+  }
+  document.getElementById('cards').innerHTML=list.map(h=>`
+    <a class="hcard" href="hunt.html?id=${h.id}">
+      <div class="hcard-top">
+        <div class="hcity">${h.city}</div>
+        <div class="hprize-col">
+          <div class="hprize ${PRIZE_CSS[h.tier]}">${h.prizeDesc}</div>
+          <div class="tbadge ${TIER_CSS[h.tier]}">${TIER_LABEL[h.tier]}</div>
+        </div>
+      </div>
+      <div class="hmeta">📅 ${h.weekLabel}</div>
+      <div class="hbottom">
+        <div class="clues-sec">
+          <div class="clues-lbl"><span>CLUES</span><span>${h.freeClues}/${h.totalClues}</span></div>
+          <div class="pbar"><div class="pfill" style="width:${(h.freeClues/h.totalClues)*100}%"></div></div>
+        </div>
+        <div class="cbox">
+          <div class="clbl">ENDS IN</div>
+          <div class="ctime" id="t-${h.id}">${fmt(h.endsAt-Date.now())}</div>
+        </div>
+      </div>
+      <div class="hdate">${h.weekLabel}</div>
+      <div class="hjoin"><span class="jbtn">Join Hunt →</span></div>
+    </a>`).join('');
+  list.forEach(h=>{ timers[h.id]=setInterval(()=>{ const el=document.getElementById('t-'+h.id); if(el)el.textContent=fmt(h.endsAt-Date.now()); },1000); });
+}
+
+function setFilter(city,el){
+  activeFilter=city;
+  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   renderHunts();
 }
 
-function filterHunts() { renderHunts(); }
-
-renderHunts();
+loadHunts();
 </script>
 </body>
 </html>

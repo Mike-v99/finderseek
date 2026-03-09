@@ -7,467 +7,342 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --ink:    #06050a;
-    --gold:   #c9890c;
-    --gold2:  #e8a820;
-    --cream:  #f5ead8;
-    --dim:    #c8b48a;
-    --muted:  #8a7a5a;
-    --border: rgba(201,137,12,0.2);
-    --card-bg: rgba(14,12,20,0.9);
-    --green:  #22c55e;
-    --purple: #8b5cf6;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--ink); color: var(--cream);
-    font-family: 'Karla', sans-serif; min-height: 100vh; overflow-x: hidden;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    background-size: 180px 180px; opacity: 0.45;
-  }
+  :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--border:rgba(201,137,12,0.2);--card-bg:rgba(14,12,20,0.9);--green:#22c55e;--purple:#8b5cf6;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
 
-  /* NAV */
-  nav {
-    position: relative; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(6,5,10,0.85); backdrop-filter: blur(12px);
-  }
-  .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-  .nav-logo-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .nav-logo-text { font-size: 16px; font-weight: 700; color: var(--cream); }
-  .nav-logo-text em { font-style: italic; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 18px; }
-  .nav-logo-sub { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 1px; }
-  .nav-right { display: flex; align-items: center; gap: 8px; }
-  .btn-upgrade {
-    background: var(--gold); color: #0a0800;
-    border: none; border-radius: 20px; padding: 6px 16px;
-    font-size: 12px; font-weight: 700; cursor: pointer;
-    font-family: 'Karla', sans-serif; letter-spacing: 0.5px;
-    transition: box-shadow .2s;
-  }
-  .btn-upgrade:hover { box-shadow: 0 4px 18px rgba(201,137,12,.5); }
-  .avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #1a2090, var(--gold));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: white;
-  }
+  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.85);backdrop-filter:blur(12px);}
+  .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+  .nav-icon{width:32px;height:32px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .nav-name{font-size:16px;font-weight:700;color:var(--cream);}
+  .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
+  .nav-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;}
+  .nav-r{display:flex;align-items:center;gap:8px;}
+  .btn-up{background:var(--gold);color:#0a0800;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:box-shadow .2s;}
+  .btn-up:hover{box-shadow:0 4px 18px rgba(201,137,12,.5);}
+  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1a2090,var(--gold));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;}
+  .gold-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 
-  /* GOLD BAR */
-  .gold-bar { height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .tabs{display:flex;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:relative;z-index:9;}
+  .tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
+  .tab.active{color:var(--cream);border-bottom-color:var(--gold);}
+  .tab:hover:not(.active){color:var(--dim);}
+  .panel{display:none;} .panel.active{display:block;}
 
-  /* TABS */
-  .tabs {
-    display: flex; background: rgba(6,5,10,0.7); backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border); position: relative; z-index: 9;
-  }
-  .tab {
-    flex: 1; padding: 14px 8px; text-align: center;
-    font-size: 13px; font-weight: 600; color: var(--muted);
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: color .2s, border-color .2s;
-  }
-  .tab.active { color: var(--cream); border-bottom-color: var(--gold); }
-  .tab:hover:not(.active) { color: var(--dim); }
+  .main{position:relative;z-index:2;max-width:660px;margin:0 auto;padding:20px 16px 60px;}
 
-  /* TAB CONTENT */
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  .prize-banner{border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(201,137,12,.25);position:relative;background:var(--card-bg);}
+  .prize-bg{position:absolute;inset:0;background:url('pirate%20sherlock%20trans.png') right center/contain no-repeat;opacity:.15;}
+  .prize-inner{position:relative;z-index:1;padding:20px 22px;}
+  .prize-eye{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:8px;}
+  .prize-amt{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;line-height:1;}
+  .prize-meta{font-size:12px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;}
 
-  /* MAIN */
-  .main { position: relative; z-index: 2; max-width: 660px; margin: 0 auto; padding: 20px 16px 60px; }
+  .hunt-cd{background:rgba(20,10,5,.8);border:1px solid rgba(201,137,12,.2);border-radius:14px;padding:18px 20px;text-align:center;margin-bottom:14px;}
+  .hunt-cd-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:8px;}
+  .hunt-cd-time{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8vw,52px);font-weight:600;letter-spacing:2px;line-height:1;}
+  .hunt-cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:6px;letter-spacing:1px;}
 
-  /* PRIZE BANNER */
-  .prize-banner {
-    border-radius: 16px; overflow: hidden; margin-bottom: 14px;
-    border: 1px solid rgba(201,137,12,.25); position: relative;
-    background: var(--card-bg);
-  }
-  .prize-banner-bg {
-    position: absolute; inset: 0;
-    background: url('pirate_sherlock_trans.png') right center / contain no-repeat;
-    opacity: 0.15;
-  }
-  .prize-banner-inner { position: relative; z-index: 1; padding: 20px 22px; }
-  .prize-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-family: 'DM Mono', monospace; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .prize-amount { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 600; color: var(--cream); line-height: 1; }
-  .prize-meta { font-size: 12px; color: var(--muted); margin-top: 8px; font-family: 'DM Mono', monospace; }
+  .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+  .sbox{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;}
+  .slbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;}
+  .sval{font-size:15px;font-weight:700;}
+  .ssub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;}
+  .cdots{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
+  .cdot{width:18px;height:6px;border-radius:3px;}
+  .df{background:var(--green);} .dp{background:var(--purple);} .dl{background:rgba(255,255,255,.1);}
 
-  /* COUNTDOWN BOX */
-  .hunt-countdown {
-    background: rgba(20,10,5,0.8); border: 1px solid rgba(201,137,12,.2);
-    border-radius: 14px; padding: 18px 20px; text-align: center; margin-bottom: 14px;
-  }
-  .hunt-countdown-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-family: 'DM Mono', monospace; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .hunt-countdown-time { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 8vw, 52px); font-weight: 600; color: var(--cream); letter-spacing: 2px; line-height: 1; }
-  .hunt-countdown-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 6px; letter-spacing: 1px; }
+  .sec-hd{display:flex;align-items:center;gap:8px;margin:20px 0 12px;}
+  .sec-icon{font-size:16px;} .sec-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;}
+  .sec-range{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:auto;}
 
-  /* MINI STATS ROW */
-  .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .stat-box {
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 14px 16px;
-  }
-  .stat-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
-  .stat-value { font-size: 15px; font-weight: 700; color: var(--cream); }
-  .stat-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
-  .clue-dots { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-  .clue-dot { width: 18px; height: 6px; border-radius: 3px; }
-  .dot-free     { background: var(--green); }
-  .dot-pro      { background: var(--purple); }
-  .dot-locked   { background: rgba(255,255,255,0.1); }
+  .ccard{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;}
+  .ccard.locked{opacity:.55;}
+  .cnum{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+  .nf{background:var(--green);color:#0a1a0a;} .np{background:var(--purple);color:white;} .nl{background:rgba(255,255,255,.08);color:var(--muted);}
+  .cbody{flex:1;}
+  .chdr{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .cday{font-size:13px;font-weight:700;} .cdate{font-size:11px;color:var(--muted);}
+  .cbadge{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:6px;font-family:'DM Mono',monospace;}
+  .bfree{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+  .bpro{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#c4b5fd;}
+  .ctxt{font-size:14px;color:var(--dim);line-height:1.6;font-style:italic;}
+  .clocked{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .ctimer{font-size:12px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;margin-top:4px;}
 
-  /* SECTION HEADER */
-  .section-head { display: flex; align-items: center; gap: 8px; margin: 20px 0 12px; }
-  .section-icon { font-size: 16px; }
-  .section-title { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-family: 'DM Mono', monospace; }
-  .section-range { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-left: auto; }
+  .upgrade-box{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(201,137,12,.08));border:1px solid rgba(139,92,246,.3);border-radius:14px;padding:20px;text-align:center;margin-top:8px;}
+  .upgrade-box h4{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .upgrade-box p{font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.5;}
+  .btn-up2{background:var(--gold);color:#0a0800;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:box-shadow .2s;}
+  .btn-up2:hover{box-shadow:0 4px 20px rgba(201,137,12,.5);}
 
-  /* CLUE CARDS */
-  .clue-card {
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
-    display: flex; gap: 14px; align-items: flex-start;
-  }
-  .clue-card.locked { opacity: 0.55; }
-  .clue-num {
-    width: 34px; height: 34px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 700; flex-shrink: 0;
-  }
-  .num-free   { background: var(--green); color: #0a1a0a; }
-  .num-pro    { background: var(--purple); color: white; }
-  .num-locked { background: rgba(255,255,255,0.08); color: var(--muted); }
-  .clue-body { flex: 1; }
-  .clue-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .clue-day { font-size: 13px; font-weight: 700; color: var(--cream); }
-  .clue-date { font-size: 11px; color: var(--muted); }
-  .clue-badge {
-    margin-left: auto; font-size: 9px; font-weight: 700; letter-spacing: 1px;
-    padding: 2px 8px; border-radius: 6px; font-family: 'DM Mono', monospace;
-  }
-  .badge-free   { background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.3); color: var(--green); }
-  .badge-pro    { background: rgba(139,92,246,.15); border: 1px solid rgba(139,92,246,.3); color: #c4b5fd; }
-  .clue-text { font-size: 14px; color: var(--dim); line-height: 1.6; font-style: italic; }
-  .clue-locked-text { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .clue-timer { font-size: 12px; font-weight: 700; color: var(--gold); font-family: 'DM Mono', monospace; margin-top: 4px; }
+  .statebox{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+  .statebox .si{font-size:32px;margin-bottom:12px;}
 
-  /* UPGRADE BANNER */
-  .upgrade-banner {
-    background: linear-gradient(135deg, rgba(139,92,246,.12), rgba(201,137,12,.08));
-    border: 1px solid rgba(139,92,246,.3); border-radius: 14px;
-    padding: 20px; text-align: center; margin-top: 8px;
-  }
-  .upgrade-banner h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .upgrade-banner p { font-size: 12px; color: var(--dim); margin-bottom: 14px; line-height: 1.5; }
-  .btn-upgrade-full {
-    background: var(--gold); color: #0a0800;
-    border: none; border-radius: 10px; padding: 12px 24px;
-    font-size: 14px; font-weight: 700; cursor: pointer;
-    font-family: 'Karla', sans-serif; transition: box-shadow .2s;
-  }
-  .btn-upgrade-full:hover { box-shadow: 0 4px 20px rgba(201,137,12,.5); }
+  .map-ph{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:20px;}
 
-  /* MAP TAB */
-  .map-placeholder {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 16px; height: 380px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 10px; color: var(--muted);
-    font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1px;
-    margin-top: 20px;
-  }
+  .hunter-row{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;margin-bottom:8px;}
+  .hrank{font-size:14px;font-weight:700;color:var(--muted);width:24px;}
+  .hav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a2090,var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;}
+  .hname{font-size:14px;font-weight:600;} .hclues{font-size:11px;color:var(--muted);margin-top:2px;}
+  .hbadge{margin-left:auto;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace;}
 
-  /* HUNTERS TAB */
-  .hunter-row {
-    display: flex; align-items: center; gap: 12px;
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
-  }
-  .hunter-rank { font-size: 14px; font-weight: 700; color: var(--muted); width: 24px; }
-  .hunter-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #1a2090, var(--gold));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
-  }
-  .hunter-name { font-size: 14px; font-weight: 600; }
-  .hunter-clues { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .hunter-badge { margin-left: auto; font-size: 11px; color: var(--gold); font-family: 'DM Mono', monospace; }
+  .claim-box{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;margin-top:20px;}
+  .claim-box h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:10px;}
+  .claim-box p{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:16px;}
+  .btn-claim{background:var(--green);color:#0a1a0a;border:none;border-radius:10px;padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;}
 
-  /* CLAIM TAB */
-  .claim-info {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px; text-align: center; margin-top: 20px;
-  }
-  .claim-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 10px; }
-  .claim-info p { font-size: 13px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
-  .btn-claim {
-    background: var(--green); color: #0a1a0a;
-    border: none; border-radius: 10px; padding: 14px 28px;
-    font-size: 14px; font-weight: 700; cursor: pointer;
-    font-family: 'Karla', sans-serif;
-  }
-
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  .fade1{animation:fadeUp .5s .05s both}
-  .fade2{animation:fadeUp .5s .12s both}
-  .fade3{animation:fadeUp .5s .2s both}
-  .fade4{animation:fadeUp .5s .28s both}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .f1{animation:fadeUp .5s .05s both} .f2{animation:fadeUp .5s .12s both}
+  .f3{animation:fadeUp .5s .2s both}  .f4{animation:fadeUp .5s .28s both}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a class="nav-logo" href="seeker.html">
-    <div class="nav-logo-icon">🔍</div>
-    <div>
-      <div class="nav-logo-text">Finder<em>Seek</em></div>
-      <div class="nav-logo-sub">finderseek.com</div>
-    </div>
+    <div class="nav-icon">🔍</div>
+    <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
-  <div class="nav-right">
-    <button class="btn-upgrade">UPGRADE</button>
+  <div class="nav-r">
+    <button class="btn-up">UPGRADE</button>
     <div class="avatar">G</div>
   </div>
 </nav>
 <div class="gold-bar"></div>
 
-<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="showTab('hunt', this)">🏴‍☠️ Hunt</div>
-  <div class="tab" onclick="showTab('claim', this)">📍 Claim</div>
-  <div class="tab" onclick="showTab('map', this)">🗺️ Map</div>
-  <div class="tab" onclick="showTab('hunters', this)">🏆 Hunters</div>
+  <div class="tab active" onclick="showTab('hunt',this)">🏴‍☠️ Hunt</div>
+  <div class="tab" onclick="showTab('claim',this)">📍 Claim</div>
+  <div class="tab" onclick="showTab('map',this)">🗺️ Map</div>
+  <div class="tab" onclick="showTab('hunters',this)">🏆 Hunters</div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- HUNT TAB -->
-  <div class="tab-panel active" id="tab-hunt">
-
-    <!-- Prize banner -->
-    <div class="prize-banner fade1">
-      <div class="prize-banner-bg"></div>
-      <div class="prize-banner-inner">
-        <div class="prize-eyebrow">🏴‍☠️ THIS WEEK'S TREASURE</div>
-        <div class="prize-amount" id="prize-display">$100 Cash</div>
-        <div class="prize-meta" id="prize-meta">March 6–13, 2026 · Hidden somewhere in your city</div>
+  <!-- HUNT -->
+  <div class="panel active" id="panel-hunt">
+    <div class="prize-banner f1">
+      <div class="prize-bg"></div>
+      <div class="prize-inner">
+        <div class="prize-eye">🏴‍☠️ THIS WEEK'S TREASURE</div>
+        <div class="prize-amt" id="prize-amt">Loading…</div>
+        <div class="prize-meta" id="prize-meta">…</div>
       </div>
     </div>
-
-    <!-- Hunt countdown -->
-    <div class="hunt-countdown fade2">
-      <div class="hunt-countdown-label">⏰ HUNT ENDS IN</div>
-      <div class="hunt-countdown-time" id="main-countdown">—</div>
-      <div class="hunt-countdown-sub" id="end-label">Friday, March 13 · 10:00 AM</div>
+    <div class="hunt-cd f2">
+      <div class="hunt-cd-lbl">⏰ HUNT ENDS IN</div>
+      <div class="hunt-cd-time" id="main-cd">—</div>
+      <div class="hunt-cd-sub" id="end-lbl">—</div>
     </div>
-
-    <!-- Stats row -->
-    <div class="stats-row fade3">
-      <div class="stat-box">
-        <div class="stat-label">NEXT FREE</div>
-        <div class="stat-value">Clue 4 · Monday</div>
-        <div class="stat-sub" id="next-clue-timer">—</div>
+    <div class="stats-row f3">
+      <div class="sbox">
+        <div class="slbl">NEXT FREE CLUE</div>
+        <div class="sval" id="next-clue-lbl">—</div>
+        <div class="ssub" id="next-clue-cd">—</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-label">CLUES UNLOCKED</div>
-        <div class="clue-dots" id="clue-dots"></div>
-        <div class="stat-value" style="margin-top:8px"><span id="clues-count">3</span> / 7</div>
+      <div class="sbox">
+        <div class="slbl">CLUES UNLOCKED</div>
+        <div class="cdots" id="clue-dots"></div>
+        <div class="sval" style="margin-top:8px"><span id="clues-count">0</span> / <span id="clues-total">7</span></div>
       </div>
     </div>
-
-    <!-- Free Clues -->
-    <div class="section-head fade3">
-      <span class="section-icon">🗺️</span>
-      <span class="section-title">FREE CLUES</span>
-      <span class="section-range">FRI–MON</span>
-    </div>
-
-    <div class="fade4" id="free-clues"></div>
-
-    <!-- Pro Clues -->
-    <div class="section-head fade4">
-      <span class="section-icon">⭐</span>
-      <span class="section-title">PRO CLUES</span>
-      <span class="section-range">TUE–THU</span>
-    </div>
-
+    <div class="sec-hd f3"><span class="sec-icon">🗺️</span><span class="sec-lbl">FREE CLUES</span><span class="sec-range">FRI–MON</span></div>
+    <div id="free-clues" class="f4"></div>
+    <div class="sec-hd f4"><span class="sec-icon">⭐</span><span class="sec-lbl">PRO CLUES</span><span class="sec-range">TUE–THU</span></div>
     <div id="pro-clues"></div>
-
-    <div class="upgrade-banner">
+    <div class="upgrade-box">
       <h4>⭐ Unlock Pro Clues</h4>
-      <p>Get 4 more precise clues dropping Tuesday–Thursday. Pro seekers find treasure 3× faster.</p>
-      <button class="btn-upgrade-full">Upgrade to Pro →</button>
+      <p>Get precise clues dropping Tuesday–Thursday. Pro seekers find treasure 3× faster.</p>
+      <button class="btn-up2">Upgrade to Pro →</button>
     </div>
-
   </div>
 
-  <!-- CLAIM TAB -->
-  <div class="tab-panel" id="tab-claim">
-    <div class="claim-info">
+  <!-- CLAIM -->
+  <div class="panel" id="panel-claim">
+    <div class="claim-box">
       <h3>🎯 Found the Treasure?</h3>
-      <p>If you've physically found the hidden cash, take a photo with it and submit your claim. The Pirate will verify and release the funds to you.</p>
+      <p>If you've physically found the hidden cash, take a photo with it and submit your claim. The Pirate will verify and release the funds.</p>
       <button class="btn-claim">Submit Your Claim →</button>
     </div>
   </div>
 
-  <!-- MAP TAB -->
-  <div class="tab-panel" id="tab-map">
-    <div class="map-placeholder">
-      <span style="font-size:36px">🗺️</span>
-      <span>Map unlocks with clues</span>
-      <span style="font-size:11px;opacity:.6">Clue areas appear as you progress</span>
-    </div>
+  <!-- MAP -->
+  <div class="panel" id="panel-map">
+    <div class="map-ph"><span style="font-size:36px">🗺️</span><span>Map unlocks with clues</span><span style="font-size:11px;opacity:.6">Clue areas appear as you progress</span></div>
   </div>
 
-  <!-- HUNTERS TAB -->
-  <div class="tab-panel" id="tab-hunters">
-    <div style="margin-top:20px" id="hunters-list"></div>
+  <!-- HUNTERS -->
+  <div class="panel" id="panel-hunters">
+    <div style="margin-top:20px" id="hunters-list">
+      <div class="statebox"><div class="si">⏳</div>Loading hunters…</div>
+    </div>
   </div>
 
 </div>
 
 <script>
-// --- Hunt data (in real app, loaded by ?id= param) ---
-const params = new URLSearchParams(location.search);
-const huntId = params.get('id') || 'houston-1';
+const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
 
-const hunts = {
-  "houston-1":    { city:"Houston, TX",     prize:100, area:"Museum District",  pirate:"SpaceCity_X",    endMs: Date.now()+4*86400000+16*3600000+53*60000 },
-  "dallas-1":     { city:"Dallas, TX",      prize:75,  area:"Bishop Arts",      pirate:"BigDTreasure",   endMs: Date.now()+4*86400000+16*3600000+55*60000 },
-  "dallas-2":     { city:"Dallas, TX",      prize:40,  area:"Deep Ellum",       pirate:"LoneStarLoot",   endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-  "austin-1":     { city:"Austin, TX",      prize:30,  area:"South Congress",   pirate:"KeepAustinHidden",endMs:Date.now()+4*86400000+16*3600000+54*60000 },
-  "sanantonio-1": { city:"San Antonio, TX", prize:25,  area:"Pearl District",   pirate:"AlamoPirate",    endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-  "tomball-1":    { city:"Tomball, TX",     prize:20,  area:"Downtown Tomball", pirate:"CaptainTex",     endMs: Date.now()+4*86400000+16*3600000+54*60000 },
-};
+const params  = new URLSearchParams(location.search);
+const huntId  = params.get('id');
+let hunt = null, clues = [], mainTimer = null, nextTimer = null;
 
-const hunt = hunts[huntId] || hunts["houston-1"];
-
-const freeClues = [
-  { n:1, day:"Friday",   date:"Mar 6",  text:"The treasure rests in a Texas town that still remembers its roots — where old meets charming and locals know every face." },
-  { n:2, day:"Saturday", date:"Mar 7",  text:"Venture to the heart of the old town. The kind of place with covered porches and ghost signs on wood." },
-  { n:3, day:"Sunday",   date:"Mar 8",  text:"Seek the street named for a tree that stands tall in every forest. The treasure is near." },
-  { n:4, day:"Monday",   date:"Mar 9",  locked:true, dropsIn: true },
-];
-const proClues = [
-  { n:5, day:"Tuesday",   date:"Mar 10", pro:true, locked:true },
-  { n:6, day:"Wednesday", date:"Mar 11", pro:true, locked:true },
-  { n:7, day:"Thursday",  date:"Mar 12", pro:true, locked:true },
-];
-
-// Render prize
-document.getElementById('prize-display').textContent = `$${hunt.prize} Cash`;
-document.getElementById('prize-meta').textContent = `March 6–13, 2026 · Hidden somewhere in ${hunt.city}`;
-
-// Clue dots
-const dots = document.getElementById('clue-dots');
-[...freeClues,...proClues].forEach((c,i) => {
-  const d = document.createElement('div');
-  d.className = 'clue-dot ' + (c.locked ? 'dot-locked' : c.pro ? 'dot-pro' : 'dot-free');
-  dots.appendChild(d);
-});
-document.getElementById('clues-count').textContent = freeClues.filter(c=>!c.locked).length;
-
-// Free clues
-document.getElementById('free-clues').innerHTML = freeClues.map(c => `
-  <div class="clue-card ${c.locked ? 'locked' : ''}">
-    <div class="clue-num ${c.locked ? 'num-locked' : 'num-free'}">${c.n}</div>
-    <div class="clue-body">
-      <div class="clue-header">
-        <span class="clue-day">${c.day}</span>
-        <span class="clue-date">${c.date}</span>
-        <span class="clue-badge badge-free">FREE</span>
-      </div>
-      ${c.locked
-        ? `<div class="clue-locked-text">Drops ${c.day} at 8 AM</div><div class="clue-timer" id="next-drop">—</div>`
-        : `<div class="clue-text">"${c.text}"</div>`
-      }
-    </div>
-  </div>
-`).join('');
-
-// Pro clues
-document.getElementById('pro-clues').innerHTML = proClues.map(c => `
-  <div class="clue-card locked">
-    <div class="clue-num num-pro">${c.n}</div>
-    <div class="clue-body">
-      <div class="clue-header">
-        <span class="clue-day">${c.day}</span>
-        <span class="clue-date">${c.date}</span>
-        <span class="clue-badge badge-pro">PRO</span>
-      </div>
-      <div class="clue-locked-text">Upgrade to unlock</div>
-    </div>
-  </div>
-`).join('');
-
-// Hunters
-const hunters = [
-  { name:"SpeedSeeker22", clues:3, initials:"S" },
-  { name:"TreasureGhost",  clues:3, initials:"T" },
-  { name:"HiddenHawk",     clues:2, initials:"H" },
-  { name:"GoldFinder",     clues:2, initials:"G" },
-  { name:"UrbanExplorer",  clues:1, initials:"U" },
-];
-document.getElementById('hunters-list').innerHTML = hunters.map((h,i) => `
-  <div class="hunter-row">
-    <div class="hunter-rank">${i+1}</div>
-    <div class="hunter-avatar">${h.initials}</div>
-    <div>
-      <div class="hunter-name">${h.name}</div>
-      <div class="hunter-clues">${h.clues} clues unlocked</div>
-    </div>
-    <div class="hunter-badge">${h.clues}/7 clues</div>
-  </div>
-`).join('');
-
-// Timers
 function fmt(ms) {
-  if (ms <= 0) return "Ended";
-  const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000),
-        m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
+  if(ms<=0)return'Ended';
+  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),
+        m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
   return `${d}d  ${String(h).padStart(2,'0')}h  ${String(m).padStart(2,'0')}m  ${String(s).padStart(2,'0')}s`;
 }
 function fmtShort(ms) {
-  if (ms <= 0) return "Now";
-  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
+  if(ms<=0)return'Now';
+  const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
-// Monday 8am for next clue drop
-function nextMonday8am() {
-  const now=new Date(), d=now.getDay(), daysUntil=(1-d+7)%7||(now.getHours()<8?0:7);
-  const t=new Date(now); t.setDate(now.getDate()+daysUntil); t.setHours(8,0,0,0); return t;
+async function loadHunt() {
+  if(!huntId) { redirect(); return; }
+  try {
+    // Load hunt
+    const hr = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&status=eq.active`,{headers:H});
+    const hunts = await hr.json();
+    if(!hunts||!hunts.length){ redirect(); return; }
+    hunt = hunts[0];
+
+    // Load clues (free only — pro requires auth)
+    const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${huntId}&order=clue_number.asc`,{headers:H});
+    clues = cr.ok ? await cr.json() : [];
+
+    renderHunt();
+    loadLeaderboard();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('prize-amt').textContent = 'Error loading hunt';
+  }
 }
 
-setInterval(() => {
-  const el = document.getElementById('main-countdown');
-  if (el) el.textContent = fmt(hunt.endMs - Date.now());
-  const nt = document.getElementById('next-clue-timer');
-  if (nt) nt.textContent = fmtShort(nextMonday8am() - Date.now());
-  const nd = document.getElementById('next-drop');
-  if (nd) nd.textContent = fmtShort(nextMonday8am() - Date.now());
-}, 1000);
+function redirect() {
+  // If no valid hunt, try to load first active hunt
+  fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc&limit=1`,{headers:H})
+    .then(r=>r.json()).then(h=>{ if(h&&h[0]) location.href='hunt.html?id='+h[0].id; else location.href='seeker.html'; });
+}
 
-document.getElementById('main-countdown').textContent = fmt(hunt.endMs - Date.now());
-document.getElementById('next-clue-timer') && (document.getElementById('next-clue-timer').textContent = fmtShort(nextMonday8am() - Date.now()));
+function renderHunt() {
+  const now = Date.now();
+  const endsAt = new Date(hunt.ends_at);
 
-// Tabs
+  // Prize banner
+  document.getElementById('prize-amt').textContent = hunt.prize_desc;
+  document.getElementById('prize-meta').textContent = `${hunt.week_label} · Hidden somewhere in ${hunt.city}`;
+  document.title = `FinderSeek — ${hunt.prize_desc} · ${hunt.city}`;
+
+  // End label
+  const endDate = endsAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('end-lbl').textContent = `${endDate} · 10:00 AM`;
+
+  // Countdown
+  clearInterval(mainTimer);
+  mainTimer = setInterval(()=>{ document.getElementById('main-cd').textContent = fmt(endsAt-Date.now()); },1000);
+  document.getElementById('main-cd').textContent = fmt(endsAt-now);
+
+  // Clues
+  const revealed = clues.filter(c=>new Date(c.reveal_at)<=new Date());
+  const free = clues.filter(c=>c.tier==='free');
+  const pro  = clues.filter(c=>c.tier==='pro');
+  const revealedFree = free.filter(c=>new Date(c.reveal_at)<=new Date());
+
+  document.getElementById('clues-count').textContent = revealedFree.length;
+  document.getElementById('clues-total').textContent = clues.length || 7;
+
+  // Dots
+  const dotsEl = document.getElementById('clue-dots');
+  dotsEl.innerHTML = clues.map(c=>{
+    const isRevealed = new Date(c.reveal_at)<=new Date();
+    const cls = !isRevealed ? 'dl' : c.tier==='pro' ? 'dp' : 'df';
+    return `<div class="cdot ${cls}"></div>`;
+  }).join('');
+
+  // Next free clue
+  const nextFree = free.find(c=>new Date(c.reveal_at)>new Date());
+  if(nextFree) {
+    document.getElementById('next-clue-lbl').textContent = `Clue ${nextFree.clue_number} · ${nextFree.day_label}`;
+    clearInterval(nextTimer);
+    nextTimer = setInterval(()=>{
+      const el=document.getElementById('next-clue-cd');
+      if(el) el.textContent = fmtShort(new Date(nextFree.reveal_at)-Date.now());
+    },1000);
+    document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextFree.reveal_at)-now);
+  } else {
+    document.getElementById('next-clue-lbl').textContent = 'All free clues dropped';
+    document.getElementById('next-clue-cd').textContent = '';
+  }
+
+  // Free clues
+  document.getElementById('free-clues').innerHTML = free.map(c=>{
+    const isRevealed = new Date(c.reveal_at)<=new Date();
+    return `<div class="ccard ${!isRevealed?'locked':''}">
+      <div class="cnum ${isRevealed?'nf':'nl'}">${c.clue_number}</div>
+      <div class="cbody">
+        <div class="chdr">
+          <span class="cday">${c.day_label}</span>
+          <span class="cdate">${c.date_label}</span>
+          <span class="cbadge bfree">FREE</span>
+        </div>
+        ${isRevealed
+          ? `<div class="ctxt">"${c.clue_text}"</div>`
+          : `<div class="clocked">Drops ${c.day_label} at 8 AM</div>
+             <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>`}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pro clues (locked for non-pro)
+  document.getElementById('pro-clues').innerHTML = pro.map(c=>`
+    <div class="ccard locked">
+      <div class="cnum np">${c.clue_number}</div>
+      <div class="cbody">
+        <div class="chdr">
+          <span class="cday">${c.day_label}</span>
+          <span class="cdate">${c.date_label}</span>
+          <span class="cbadge bpro">PRO</span>
+        </div>
+        <div class="clocked">Upgrade to unlock</div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadLeaderboard() {
+  try {
+    const r = await fetch(`${SB}/rest/v1/leaderboard?order=rank.asc&limit=10`,{headers:H});
+    const data = r.ok ? await r.json() : [];
+    if(!data.length){
+      document.getElementById('hunters-list').innerHTML='<div class="statebox"><div class="si">🏆</div>No hunters yet — be the first!</div>';
+      return;
+    }
+    document.getElementById('hunters-list').innerHTML = data.map((h,i)=>`
+      <div class="hunter-row">
+        <div class="hrank">${i+1}</div>
+        <div class="hav">${(h.username||'?')[0].toUpperCase()}</div>
+        <div><div class="hname">${h.username}</div><div class="hclues">${h.city||'Unknown city'}</div></div>
+        <div class="hbadge">${h.finds_count} find${h.finds_count!==1?'s':''}</div>
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('hunters-list').innerHTML='<div class="statebox"><div class="si">🏆</div>No hunters yet.</div>';
+  }
+}
+
 function showTab(name, el) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
   el.classList.add('active');
 }
+
+loadHunt();
 </script>
 </body>
 </html>
