@@ -101,7 +101,7 @@
 
   /* CODE */
   .code-wrap{display:flex;gap:8px;justify-content:center;margin-top:4px;}
-  .code-digit{width:50px;height:58px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:12px;text-align:center;font-size:24px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;outline:none;transition:all .2s;}
+  .code-digit{width:68px;height:74px;background:rgba(239,68,68,.06);border:2px solid rgba(255,255,255,.5);border-radius:14px;text-align:center;font-size:28px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;outline:none;transition:all .2s;}
   .code-digit:focus{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.1);box-shadow:0 0 0 3px rgba(239,68,68,.12);}
   .code-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;font-family:'DM Mono',monospace;line-height:1.5;}
   .btn-gen{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:7px 16px;font-size:12px;color:#fca5a5;cursor:pointer;font-family:'DM Mono',monospace;margin-top:12px;transition:background .2s;letter-spacing:.5px;}
@@ -260,12 +260,18 @@
       <div><div class="fcard-title">Photo of the Hiding Spot</div><div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div></div>
     </div>
     <div class="fcard-body">
-      <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-input').click()">
-        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+      <input type="file" id="photo-input-gallery" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+      <input type="file" id="photo-input-camera" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)"/>
+      <div class="photo-drop" id="photo-drop">
         <img class="photo-preview" id="photo-preview"/>
         <div id="photo-placeholder">
-          <div class="photo-icon">🖼️</div>
-          <div class="photo-label"><strong>Click to upload</strong> or drag & drop<br/>JPG, PNG — max 10MB</div>
+          <div class="photo-icon">📸</div>
+          <div class="photo-label" style="margin-bottom:16px;">Snap a photo or choose from your gallery</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <button type="button" onclick="document.getElementById('photo-input-camera').click()" style="background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.35);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;color:#93c5fd;cursor:pointer;font-family:'Karla',sans-serif;display:flex;align-items:center;gap:7px;transition:background .2s;" onmouseover="this.style.background='rgba(147,197,253,.25)'" onmouseout="this.style.background='rgba(147,197,253,.15)'">📷 Take Photo</button>
+            <button type="button" onclick="document.getElementById('photo-input-gallery').click()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;display:flex;align-items:center;gap:7px;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">🖼️ Gallery</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:12px;">JPG, PNG — max 10MB</div>
         </div>
       </div>
     </div>
@@ -275,7 +281,7 @@
   <div class="fcard fc-red f4">
     <div class="fcard-hdr">
       <div class="fcard-hdr-icon">🔐</div>
-      <div><div class="fcard-title">Secret Finder Code</div><div class="fcard-sub">Hide this 6-digit code with the cash. Finder enters it to claim.</div></div>
+      <div><div class="fcard-title">Secret Finder Code</div><div class="fcard-sub">Finders will enter this code to claim the prize.</div></div>
     </div>
     <div class="fcard-body">
       <div class="code-wrap">
@@ -286,7 +292,7 @@
         <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="codeNext(this,'d6')" onkeydown="codePrev(event,this,'d4')"/>
         <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="codeNext(this,'')"   onkeydown="codePrev(event,this,'d5')"/>
       </div>
-      <div class="code-hint">Write this on paper and hide it with the cash.<br/>Keep it secret — don't share it anywhere!</div>
+
       <div style="text-align:center;margin-top:12px;">
         <button class="btn-gen" onclick="generateCode()">🎲 Generate Random Code</button>
       </div>
