@@ -166,6 +166,13 @@
   .f5{animation:fadeUp .55s .25s both} .f6{animation:fadeUp .55s .3s both}
   .f7{animation:fadeUp .55s .35s both}
 
+  .qt-opt{border:2px solid rgba(147,197,253,.15);border-radius:14px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(59,130,246,.04);}
+  .qt-opt:hover{border-color:rgba(147,197,253,.4);background:rgba(59,130,246,.1);}
+  .qt-opt.selected{border-color:#93c5fd;background:rgba(59,130,246,.15);box-shadow:0 0 20px rgba(59,130,246,.15);}
+  .qt-icon{font-size:28px;margin-bottom:8px;}
+  .qt-name{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:4px;line-height:1.3;}
+  .qt-opt.selected .qt-name{color:#93c5fd;}
+  .qt-desc{font-size:11px;color:var(--muted);}
   @media(max-width:500px){
     .perks{grid-template-columns:1fr;}
     .pay-opts{grid-template-columns:1fr;}
@@ -199,6 +206,27 @@
 </div>
 
 <div class="form-wrap">
+
+  <!-- QUEST TIME -->
+  <div class="fcard fc-blue f3">
+    <div class="fcard-hdr">
+      <div class="fcard-hdr-icon">⏱️</div>
+      <div><div class="fcard-title">Quest Duration</div><div class="fcard-sub">How long will seekers have to find your treasure?</div></div>
+    </div>
+    <div class="fcard-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="qt-opt" id="qt-blitz" onclick="selectTime('blitz')">
+          <div class="qt-icon">⚡</div><div class="qt-name">2 Hour Blitz</div><div class="qt-desc">Fast & furious</div>
+        </div>
+        <div class="qt-opt" id="qt-weekend" onclick="selectTime('weekend')">
+          <div class="qt-icon">🌊</div><div class="qt-name">Weekend Frenzy</div><div class="qt-desc">Fri–Sun hunt</div>
+        </div>
+        <div class="qt-opt" id="qt-calmseas" onclick="selectTime('calmseas')">
+          <div class="qt-icon">⛵</div><div class="qt-name">6 Days Calm Seas</div><div class="qt-desc">Full week quest</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- STEP 1 -->
   <div class="fcard fc-gold f3">
@@ -352,7 +380,7 @@ const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 
-let payMethod = 'zelle', liveChoice = 'now', photoFile = null;
+let payMethod = 'zelle', liveChoice = 'now', photoFile = null, questDuration = null;
 
 function handlePhoto(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -386,6 +414,11 @@ function codePrev(e, el, prevId) {
 function generateCode() {
   const d = Math.floor(100000 + Math.random() * 900000).toString().split('');
   ['d1','d2','d3','d4','d5','d6'].forEach((id, i) => document.getElementById(id).value = d[i]);
+}
+
+function selectTime(t) {
+  questDuration = t;
+  ['blitz','weekend','calmseas'].forEach(id => document.getElementById('qt-'+id).classList.toggle('selected', id === t));
 }
 
 function selectPay(type) {
