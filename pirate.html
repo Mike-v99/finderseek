@@ -900,7 +900,7 @@ async function doSignup() {
       body: JSON.stringify({ email, password: pass, data: { handle, phone } })
     });
     const d = await r.json();
-    if (d.error) { showAuthError(d.error.message || d.error); btn.disabled = false; btn.textContent = 'Create Pirate Account 🏴‍☠️'; return; }
+    if (d.error) { showAuthError(d.error.message || d.error?.msg || JSON.stringify(d.error)); btn.disabled = false; btn.textContent = 'Create Pirate Account 🏴‍☠️'; return; }
 
     if (d.access_token) {
       setToken(d.access_token);
@@ -941,7 +941,8 @@ async function doLogin() {
       body: JSON.stringify({ email, password: pass })
     });
     const d = await r.json();
-    if (d.error) { showAuthError(d.error_description || d.error); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    if (d.error) { showAuthError(d.error_description || d.error?.message || JSON.stringify(d.error)); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    if (!d.access_token) { showAuthError('No token returned. Raw: ' + JSON.stringify(d).slice(0,200)); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
 
     setToken(d.access_token);
     currentUser = d.user;
@@ -950,7 +951,7 @@ async function doLogin() {
     showAuthSuccess('✅ Welcome back, @' + (currentProfile?.handle || 'Pirate') + '!');
     setTimeout(() => closeAuthModal(), 1500);
   } catch(e) {
-    showAuthError('Something went wrong. Please try again.');
+    showAuthError('Error: ' + (e.message || e));
   }
   btn.disabled = false; btn.textContent = 'Sign In →';
 }
