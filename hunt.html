@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>FinderSeek — Hunt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&family=Oswald:wght@700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
@@ -45,7 +45,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 .hero-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
-.hero-prize{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,80px);font-weight:700;line-height:.95;color:var(--cream);margin-bottom:8px;position:relative;z-index:1;}
+.hero-prize{font-family:'Bangers',cursive;font-size:clamp(56px,13vw,96px);font-weight:400;line-height:.95;color:var(--cream);margin-bottom:8px;position:relative;z-index:1;letter-spacing:3px;text-shadow:0 4px 20px rgba(0,0,0,.7);}
 .hero-prize span{color:#4ade80;text-shadow:0 0 30px rgba(74,222,128,.4);}
 .hero-city{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:24px;}
 .hero-city strong{color:var(--dim);}
@@ -57,9 +57,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cd-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:14px;text-align:center;}
 .cd-blocks{display:flex;align-items:center;justify-content:center;gap:8px;}
 .cd-block{text-align:center;min-width:58px;}
-.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,9vw,54px);font-weight:600;line-height:1;color:var(--cream);
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px 10px;display:block;
-  transition:color .3s;}
+.cd-num{font-family:'Bangers',cursive;font-size:clamp(42px,10vw,68px);font-weight:400;line-height:1;color:var(--cream);
+  letter-spacing:3px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:6px 12px;display:block;
+  transition:color .3s;text-shadow:0 2px 12px rgba(0,0,0,.6);}
 .cd-unit{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:5px;}
 .cd-sep{font-family:'Cormorant Garamond',serif;font-size:36px;color:rgba(201,137,12,.4);margin-bottom:16px;line-height:1;}
 .cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:12px;letter-spacing:.5px;}
@@ -76,8 +77,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cdot{width:22px;height:6px;border-radius:3px;transition:background .3s;}
 .df{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.5);}
 .dl{background:rgba(255,255,255,.08);}
-.next-clue-val{font-size:20px;font-weight:800;color:#fbbf24;margin-top:6px;font-family:'DM Mono',monospace;
-  text-shadow:0 0 20px rgba(251,191,36,.4);}
+.next-clue-val{font-size:26px;font-weight:400;color:#fbbf24;margin-top:6px;font-family:'Bangers',cursive;
+  letter-spacing:3px;text-shadow:0 0 20px rgba(251,191,36,.5);}
 .next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
