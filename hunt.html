@@ -19,8 +19,9 @@ html{scroll-behavior:smooth;}
 body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
 /* PIRATE BACKGROUND */
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:url('pirate sherlock trans.png') center center/cover no-repeat;
-  opacity:.10;}
+  background:url('pirate sherlock trans.png') center center/contain no-repeat;
+  opacity:.10;
+  background-attachment:fixed;}
 
 /* GRAIN */
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
