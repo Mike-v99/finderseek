@@ -1539,6 +1539,8 @@ async function submitHunt() {
         neighborhood: hood,
         photo_url: photoUrl,
         pirate_id: currentUser?.id || null,
+        lat: selectedLat || null,
+        lng: selectedLng || null,
       })
     });
 
