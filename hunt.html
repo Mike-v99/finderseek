@@ -39,7 +39,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gold-bar{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:54px;}
 
 /* HERO SECTION */
-.hero{position:relative;overflow:hidden;padding:20px 20px 16px;}
+.hero{position:relative;overflow:hidden;padding:20px 16px 16px;}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%, rgba(201,137,12,.1) 0%, transparent 60%),
   radial-gradient(ellipse at 20% 80%, rgba(139,92,246,.06) 0%, transparent 50%);pointer-events:none;}
 
@@ -51,7 +51,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hero-city strong{color:var(--dim);}
 
 /* COUNTDOWN — redesigned */
-.cd-wrap{background:rgba(8,6,14,.9);border:1px solid rgba(201,137,12,.25);border-radius:16px;padding:14px 16px;margin:12px 16px 0;
+.cd-wrap{background:rgba(8,6,14,.9);border:1px solid rgba(201,137,12,.25);border-radius:16px;padding:14px 16px;margin:0;
   position:relative;overflow:hidden;}
 .cd-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.08),transparent 60%);pointer-events:none;}
 .cd-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;text-align:center;}
@@ -79,7 +79,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:12px;letter-spacing:.5px;}
 
 /* STATS ROW */
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 16px 0;}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 0;}
 .sbox{background:rgba(8,6,16,.95);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 14px;}
 .sbox-next{border-color:rgba(201,137,12,.35);box-shadow:0 4px 20px rgba(201,137,12,.1),inset 0 1px 0 rgba(201,137,12,.12);}
 .sbox-count{border-color:rgba(34,197,94,.35);box-shadow:0 4px 20px rgba(34,197,94,.08),inset 0 1px 0 rgba(34,197,94,.1);}
@@ -95,9 +95,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px;
-  position:sticky;top:53px;z-index:90;margin-top:0;backdrop-filter:blur(12px);
+.tabs-outer{position:sticky;top:53px;z-index:90;backdrop-filter:blur(12px);
   background:rgba(6,5,10,.6);border-bottom:1px solid rgba(255,255,255,.06);}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .tab{flex:1;padding:10px 6px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;
   border-radius:10px;border:1px solid transparent;transition:all .2s;letter-spacing:.5px;
   font-family:'DM Mono',monospace;position:relative;overflow:hidden;}
@@ -119,6 +119,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 /* MAIN CONTENT */
 .main{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:20px 16px 80px;}
+.center-wrap,.cd-outer,.stats-outer{max-width:680px;margin:0 auto;padding:0 16px;}
+.cd-outer{padding-top:12px;}
+.stats-outer{padding-top:10px;}
+.stats-row{max-width:none;padding:0;}
+.tabs{max-width:680px;margin:0 auto;padding:10px 16px;}
 
 /* SECTION HEADER */
 .sec-hd{display:flex;align-items:center;gap:16px;margin:24px 0 18px;position:relative;}
@@ -253,8 +258,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- HERO -->
 <div class="hero f1">
   <div class="hero-bg"></div>
-
-  <div style="position:relative;z-index:1;">
+  <div class="center-wrap" style="position:relative;z-index:1;">
     <div class="hero-eyebrow">THIS WEEK'S TREASURE</div>
     <div class="hero-prize" id="prize-amt"><span>Loading…</span></div>
     <div class="hero-city" id="prize-meta">…</div>
@@ -262,7 +266,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </div>
 
 <!-- COUNTDOWN -->
-<div class="cd-wrap f2">
+<div class="cd-outer f2"><div class="cd-wrap">
   <div class="cd-label">⏳ HUNT ENDS IN</div>
   <div class="cd-blocks">
     <div class="cd-block"><span class="cd-num" id="cd-d">00</span><div class="cd-unit">Days</div></div>
@@ -274,10 +278,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="cd-block"><span class="cd-num" id="cd-s">00</span><div class="cd-unit">Secs</div></div>
   </div>
   <div class="cd-sub" id="end-lbl">—</div>
-</div>
+</div></div>
 
 <!-- STATS -->
-<div class="stats-row f3">
+<div class="stats-outer f3"><div class="stats-row">
   <div class="sbox sbox-next">
     <div class="slbl">⏱ Next Clue Drops</div>
     <div class="sval" id="next-clue-lbl">—</div>
@@ -288,15 +292,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="sval" style="color:#4ade80;"><span id="clues-count">0</span><span style="font-size:18px;color:var(--muted);"> / <span id="clues-total">7</span></span></div>
     <div class="cdots" id="clue-dots"></div>
   </div>
-</div>
+</div></div>
 
 <!-- TABS -->
-<div class="tabs f4">
+<div class="tabs-outer f4"><div class="tabs">
   <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Hunt</div>
   <div class="tab" onclick="showTab('claim',this)"><span class="tab-icon">🎯</span>Claim</div>
   <div class="tab" onclick="showTab('map',this)"><span class="tab-icon">📍</span>Map</div>
   <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Hunters</div>
-</div>
+</div></div>
 
 <div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
 
