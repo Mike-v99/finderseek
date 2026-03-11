@@ -17,6 +17,10 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+/* PIRATE BACKGROUND */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:url('pirate sherlock trans.png') center 20%/55% no-repeat;
+  opacity:.06;}
 
 /* GRAIN */
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -42,7 +46,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hero-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
 .hero-prize{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,80px);font-weight:700;line-height:.95;color:var(--cream);margin-bottom:8px;position:relative;z-index:1;}
-.hero-prize span{color:var(--gold2);}
+.hero-prize span{color:#4ade80;text-shadow:0 0 30px rgba(74,222,128,.4);}
 .hero-city{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:24px;}
 .hero-city strong{color:var(--dim);}
 
@@ -62,15 +66,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 /* STATS ROW */
 .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 0;}
-.sbox{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;}
-.slbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;}
-.sval{font-size:22px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--cream);}
+.sbox{background:rgba(8,6,16,.95);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:18px 18px;}
+.sbox-next{border-color:rgba(201,137,12,.35);box-shadow:0 4px 20px rgba(201,137,12,.1),inset 0 1px 0 rgba(201,137,12,.12);}
+.sbox-count{border-color:rgba(34,197,94,.35);box-shadow:0 4px 20px rgba(34,197,94,.08),inset 0 1px 0 rgba(34,197,94,.1);}
+.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;}
+.sval{font-size:28px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--cream);line-height:1;}
 .ssub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
-.cdots{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
-.cdot{width:20px;height:5px;border-radius:3px;transition:background .3s;}
-.df{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.4);}
+.cdots{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.cdot{width:22px;height:6px;border-radius:3px;transition:background .3s;}
+.df{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.5);}
 .dl{background:rgba(255,255,255,.08);}
-.next-clue-val{font-size:14px;font-weight:700;color:var(--gold2);margin-top:4px;font-family:'DM Mono',monospace;}
+.next-clue-val{font-size:20px;font-weight:800;color:#fbbf24;margin-top:6px;font-family:'DM Mono',monospace;
+  text-shadow:0 0 20px rgba(251,191,36,.4);}
+.next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
 .tabs{display:flex;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.07);
@@ -92,8 +100,40 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 /* CLUE CARDS */
 .ccard{border-radius:16px;margin-bottom:12px;overflow:hidden;transition:transform .2s;}
 .ccard.revealed{background:linear-gradient(135deg,rgba(14,12,22,.98),rgba(10,8,16,.95));
-  border:1px solid rgba(201,137,12,.2);box-shadow:0 4px 24px rgba(0,0,0,.4);}
-.ccard.locked{background:rgba(10,8,16,.5);border:1px solid rgba(255,255,255,.05);}
+  box-shadow:0 4px 28px rgba(0,0,0,.5);}
+.ccard.locked{background:rgba(10,8,16,.5);border:1px solid rgba(255,255,255,.06);}
+/* Colorful left border per clue */
+.ccard-c1{border-left:3px solid #4ade80;border-top:1px solid rgba(74,222,128,.15);border-right:1px solid rgba(74,222,128,.08);border-bottom:1px solid rgba(74,222,128,.08);}
+.ccard-c2{border-left:3px solid #f59e0b;border-top:1px solid rgba(245,158,11,.15);border-right:1px solid rgba(245,158,11,.08);border-bottom:1px solid rgba(245,158,11,.08);}
+.ccard-c3{border-left:3px solid #a78bfa;border-top:1px solid rgba(167,139,250,.15);border-right:1px solid rgba(167,139,250,.08);border-bottom:1px solid rgba(167,139,250,.08);}
+.ccard-c4{border-left:3px solid #38bdf8;border-top:1px solid rgba(56,189,248,.15);border-right:1px solid rgba(56,189,248,.08);border-bottom:1px solid rgba(56,189,248,.08);}
+.ccard-c5{border-left:3px solid #f472b6;border-top:1px solid rgba(244,114,182,.15);border-right:1px solid rgba(244,114,182,.08);border-bottom:1px solid rgba(244,114,182,.08);}
+.ccard-c6{border-left:3px solid #fb923c;border-top:1px solid rgba(251,146,60,.15);border-right:1px solid rgba(251,146,60,.08);border-bottom:1px solid rgba(251,146,60,.08);}
+.ccard-c7{border-left:3px solid #34d399;border-top:1px solid rgba(52,211,153,.15);border-right:1px solid rgba(52,211,153,.08);border-bottom:1px solid rgba(52,211,153,.08);}
+.ccard-c8{border-left:3px solid #e879f9;border-top:1px solid rgba(232,121,249,.15);border-right:1px solid rgba(232,121,249,.08);border-bottom:1px solid rgba(232,121,249,.08);}
+.ccard-c9{border-left:3px solid #facc15;border-top:1px solid rgba(250,204,21,.15);border-right:1px solid rgba(250,204,21,.08);border-bottom:1px solid rgba(250,204,21,.08);}
+.ccard-c10{border-left:3px solid #4ade80;border-top:1px solid rgba(74,222,128,.15);border-right:1px solid rgba(74,222,128,.08);border-bottom:1px solid rgba(74,222,128,.08);}
+/* Matching num badge colors */
+.nf-1{background:linear-gradient(135deg,#16a34a,#4ade80);color:#0a1a0a;box-shadow:0 2px 14px rgba(74,222,128,.35);}
+.nf-2{background:linear-gradient(135deg,#b45309,#f59e0b);color:#1a0a00;box-shadow:0 2px 14px rgba(245,158,11,.35);}
+.nf-3{background:linear-gradient(135deg,#6d28d9,#a78bfa);color:#0a001a;box-shadow:0 2px 14px rgba(167,139,250,.35);}
+.nf-4{background:linear-gradient(135deg,#0369a1,#38bdf8);color:#00091a;box-shadow:0 2px 14px rgba(56,189,248,.35);}
+.nf-5{background:linear-gradient(135deg,#be185d,#f472b6);color:#1a0010;box-shadow:0 2px 14px rgba(244,114,182,.35);}
+.nf-6{background:linear-gradient(135deg,#c2410c,#fb923c);color:#1a0500;box-shadow:0 2px 14px rgba(251,146,60,.35);}
+.nf-7{background:linear-gradient(135deg,#059669,#34d399);color:#001a0e;box-shadow:0 2px 14px rgba(52,211,153,.35);}
+.nf-8{background:linear-gradient(135deg,#a21caf,#e879f9);color:#150018;box-shadow:0 2px 14px rgba(232,121,249,.35);}
+.nf-9{background:linear-gradient(135deg,#a16207,#facc15);color:#1a1000;box-shadow:0 2px 14px rgba(250,204,21,.35);}
+.nf-10{background:linear-gradient(135deg,#16a34a,#4ade80);color:#0a1a0a;box-shadow:0 2px 14px rgba(74,222,128,.35);}
+.ccard-glow-1{height:1px;background:linear-gradient(90deg,transparent,rgba(74,222,128,.5),transparent);margin:0 16px;}
+.ccard-glow-2{height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,.5),transparent);margin:0 16px;}
+.ccard-glow-3{height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,.5),transparent);margin:0 16px;}
+.ccard-glow-4{height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.5),transparent);margin:0 16px;}
+.ccard-glow-5{height:1px;background:linear-gradient(90deg,transparent,rgba(244,114,182,.5),transparent);margin:0 16px;}
+.ccard-glow-6{height:1px;background:linear-gradient(90deg,transparent,rgba(251,146,60,.5),transparent);margin:0 16px;}
+.ccard-glow-7{height:1px;background:linear-gradient(90deg,transparent,rgba(52,211,153,.5),transparent);margin:0 16px;}
+.ccard-glow-8{height:1px;background:linear-gradient(90deg,transparent,rgba(232,121,249,.5),transparent);margin:0 16px;}
+.ccard-glow-9{height:1px;background:linear-gradient(90deg,transparent,rgba(250,204,21,.5),transparent);margin:0 16px;}
+.ccard-glow-10{height:1px;background:linear-gradient(90deg,transparent,rgba(74,222,128,.5),transparent);margin:0 16px;}
 .ccard-inner{display:flex;gap:14px;padding:18px 20px;align-items:flex-start;}
 .cnum{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
   font-size:16px;font-weight:800;flex-shrink:0;font-family:'DM Mono',monospace;}
@@ -192,14 +232,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- STATS -->
 <div class="stats-row f3">
-  <div class="sbox">
-    <div class="slbl">Next Clue Drops</div>
+  <div class="sbox sbox-next">
+    <div class="slbl">⏱ Next Clue Drops</div>
     <div class="sval" id="next-clue-lbl">—</div>
     <div class="next-clue-val" id="next-clue-cd">—</div>
   </div>
-  <div class="sbox">
-    <div class="slbl">Clues Unlocked</div>
-    <div class="sval"><span id="clues-count">0</span> <span style="font-size:16px;color:var(--muted);">/ <span id="clues-total">7</span></span></div>
+  <div class="sbox sbox-count">
+    <div class="slbl">🔓 Clues Unlocked</div>
+    <div class="sval" style="color:#4ade80;"><span id="clues-count">0</span><span style="font-size:18px;color:var(--muted);"> / <span id="clues-total">7</span></span></div>
     <div class="cdots" id="clue-dots"></div>
   </div>
 </div>
@@ -365,11 +405,12 @@ function renderHunt() {
   document.getElementById('free-clues').innerHTML = clues.length ? clues.map((c,i) => {
     const isRevealed = new Date(c.reveal_at) <= new Date();
     const hasPhoto = c.is_photo && c.photo_url;
+    const cn = ((c.clue_number-1) % 10) + 1;
     if (isRevealed) {
-      return `<div class="ccard revealed" style="animation:fadeUp .4s ${i*0.06}s both;">
-        <div class="ccard-glow"></div>
+      return `<div class="ccard revealed ccard-c${cn}" style="animation:fadeUp .4s ${i*0.06}s both;">
+        <div class="ccard-glow-${cn}"></div>
         <div class="ccard-inner">
-          <div class="cnum nf">${c.clue_number}</div>
+          <div class="cnum nf-${cn}">${c.clue_number}</div>
           <div class="cbody">
             <div class="chdr">
               <span class="cday">${c.day_label}</span>
