@@ -319,8 +319,8 @@
   .persona-card.p-poetic.selected .persona-check{background:#ec4899;}
   .persona-card.p-rhymes.selected .persona-check{background:var(--green);}
 
-  .cg-card{background:rgba(10,8,20,.85);border:1px solid rgba(201,137,12,.18);border-radius:18px;padding:22px;margin-bottom:14px;}
-  .cg-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:10px;display:block;}
+  .cg-card{background:rgba(10,8,20,.85);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:22px;margin-bottom:14px;}
+  .cg-label{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--cream);font-family:'DM Mono',monospace;margin-bottom:10px;display:block;font-weight:700;}
   .cg-num-row{display:flex;align-items:center;gap:12px;}
   .cg-num-label{font-size:14px;color:var(--dim);flex:1;}
   .cg-num-ctrl{display:flex;align-items:center;gap:12px;}
@@ -989,21 +989,26 @@ async function generateClues() {
       rhymes: `Write every clue as a fun rhyming couplet or quatrain. Bouncy, catchy, and playful. The rhymes must be clean and satisfying.`
     };
 
-    const prompt = `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app.
+    const cityHint = document.getElementById('city').value.trim();
+
+    const prompt = `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app where real cash is hidden at a real physical location.
 
 The hiding spot is described as:
 "${desc}"
 
+${cityHint ? `City/Area: ${cityHint}` : ''}
 Location coordinates: ${clueGenLat ? `${clueGenLat}, ${clueGenLng}` : 'not provided'}
 
 STYLE: ${personaInstructions[selectedPersona] || personaInstructions.pirate}
 
-Write exactly ${clueCount} clues. Rules:
-- Vague like a riddle — never give directions
-- Build progressively, each clue slightly more specific
+Write exactly ${clueCount} clues. Critical rules:
+- Clues MUST reference real, specific details from the hiding spot description (landmarks, textures, colors, shapes, nearby objects)
+- If a business name, park name, or location name is mentioned in the description — reference it cleverly in the clues (disguised as a riddle, not literally)
+- Build progressively — clue 1 is the most vague (neighborhood/area feel), last clues are very specific (what you'd see standing right there)
 - Written in second person ("you", "your")
 - 1-3 sentences each
-- The last 3 clues should be the most specific (they accompany close-up photos)
+- Never give GPS directions — make it feel like a real treasure hunt
+- The final 3 clues should reference the closest physical details: colors, textures, shapes, what's nearby at ground level
 
 Return ONLY a JSON array (no markdown, no explanation):
 [
@@ -1669,9 +1674,7 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
             <button class="cg-num-btn plus" onclick="changeClueCount(1)">+</button>
           </div>
         </div>
-        <div class="cg-tier-info">
-          <div class="cg-tier-row"><div class="cg-tier-dot" style="background:var(--green)"></div><span style="color:var(--green);font-weight:700;">ALL FREE</span>&nbsp;— All clues visible to every Seeker</div>
-        </div>
+
       </div>
 
       <button class="btn-gen-clues" id="btn-gen-clues" onclick="generateClues()">
