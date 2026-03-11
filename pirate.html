@@ -678,13 +678,14 @@ async function reverseGeocode(lat, lng) {
 }
 
 function scrollToMap() {
-  // Small delay to let keyboard open, then scroll map into view
+  // Scroll so the search bar is near the top, keeping it visible above keyboard
   setTimeout(() => {
-    const mapEl = document.getElementById('map-container');
-    if (mapEl) {
-      mapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const searchEl = document.getElementById('map-search');
+    if (searchEl) {
+      const y = searchEl.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
-  }, 350);
+  }, 300);
 }
 
 function goToMyLocation() {
