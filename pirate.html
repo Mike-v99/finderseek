@@ -551,7 +551,7 @@ function validate() {
   if (!hood) { alert('Please enter a precise location.'); return false; }
   if (!prize || prize < 1) { alert('Please enter a valid prize amount.'); return false; }
   if (!photoFile) { alert('Please upload a photo of the hiding spot.'); return false; }
-  if (code.length < 6 || code.includes('')) { alert('Please complete your 6-digit secret code.'); return false; }
+  if (!/^[0-9]{6}$/.test(code)) { alert('Please complete your 6-digit secret code.'); return false; }
   if (!paySelected) { alert('Please choose a payment method.'); return false; }
   if (paySelected.id === 'pay-fs' && !document.getElementById('pay-handle').value.trim()) {
     alert('Please enter your Zelle or Venmo handle.'); return false;
