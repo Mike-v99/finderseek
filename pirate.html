@@ -25,8 +25,10 @@
 
   /* HERO */
   .hero{position:relative;z-index:2;text-align:center;padding:52px 24px 36px;}
-  .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);border-radius:20px;padding:5px 14px;font-size:11px;color:#fca5a5;font-family:'DM Mono',monospace;letter-spacing:1.5px;margin-bottom:18px;animation:fadeUp .5s both;}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.5);border-radius:24px;padding:8px 20px;font-size:14px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;letter-spacing:2px;margin-bottom:18px;animation:fadeUp .5s both;box-shadow:0 0 20px rgba(239,68,68,.2);}
   .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(62px,11vw,100px);font-weight:700;line-height:1.0;animation:fadeUp .5s .08s both;}
+  .hero h1 .desktop-title{display:inline;}
+  .hero h1 .mobile-title{display:none;}
   .hero h1 em{color:var(--gold);font-style:italic;}
   .hero-sub{display:none;}
 
@@ -179,6 +181,16 @@
     .golive-opts{grid-template-columns:1fr;}
     .code-digit{width:42px;height:52px;font-size:20px;}
   }
+
+  /* MAPS */
+  .map-search-wrap{position:relative;margin-bottom:12px;}
+  .map-search-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+  .map-search-input:focus{border-color:rgba(201,137,12,.5);}
+  .map-search-input::placeholder{color:var(--muted);}
+  .map-search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+  .map-container{width:100%;height:260px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.25);margin-bottom:12px;background:rgba(255,255,255,.03);}
+  .map-coords{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;padding:6px;background:rgba(255,255,255,.03);border-radius:8px;letter-spacing:.5px;}
+  .map-coords span{color:var(--gold);}
 </style>
 </head>
 <body>
@@ -193,16 +205,10 @@
 </nav>
 
 <div class="hero f1">
-  <div class="hero-badge">🏴‍☠️ FOR PIRATES</div>
-  <h1>Pirate's <em>Quest.</em></h1>
+  <h1><span class="desktop-title">Pirate's <em>Quest.</em></span><span class="mobile-title">Create <em>Request.</em></span></h1>
   <p class="hero-sub">Hide real cash somewhere in your city. Set your prize, write the clues, and watch seekers hunt. You control everything.</p>
 </div>
 
-<div class="perks f2">
-  <div class="perk p3"><div class="perk-icon">👥</div><div><div class="perk-label">Build Followers</div><div class="perk-sub">Gain loyal seekers</div></div></div>
-  <div class="perk p4"><div class="perk-icon">💎</div><div><div class="perk-label">Profit Sharing</div><div class="perk-sub">Earn % from Pro Seekers on your quest</div></div></div>
-  <div class="perk p1"><div class="perk-icon">💰</div><div><div class="perk-label">You Set the Prize</div><div class="perk-sub">Any amount you choose</div></div></div>
-  <div class="perk p2"><div class="perk-icon">📍</div><div><div class="perk-label">Any City</div><div class="perk-sub">Anywhere in the USA</div></div></div>
 </div>
 
 <div class="form-wrap">
@@ -228,31 +234,6 @@
     </div>
   </div>
 
-  <!-- STEP 1 -->
-  <div class="fcard fc-gold f3">
-    <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">📍</div>
-      <div><div class="fcard-title">Where & How Much</div><div class="fcard-sub">Tell seekers where to search and what's at stake.</div></div>
-    </div>
-    <div class="fcard-body">
-      <div class="field">
-        <label class="flabel">City</label>
-        <input class="finput" id="city" type="text" placeholder="e.g. Houston, TX"/>
-      </div>
-      <div class="field">
-        <label class="flabel">Precise Location</label>
-        <input class="finput" id="neighborhood" type="text" placeholder="e.g. Museum District, Midtown"/>
-      </div>
-      <div class="field">
-        <label class="flabel">Prize Amount</label>
-        <div style="position:relative">
-          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold2);font-weight:700;font-size:16px;">$</span>
-          <input class="finput" id="prize" type="number" min="1" placeholder="20" style="padding-left:30px;font-size:16px;font-weight:700;"/>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- STEP 2 -->
   <div class="fcard fc-blue f4">
     <div class="fcard-hdr">
@@ -272,6 +253,42 @@
             <button type="button" onclick="document.getElementById('photo-input-gallery').click()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;display:flex;align-items:center;gap:7px;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">🖼️ Gallery</button>
           </div>
           <div style="font-size:11px;color:var(--muted);margin-top:12px;">JPG, PNG — max 10MB</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="fcard fc-gold f3">
+    <div class="fcard-hdr">
+      <div class="fcard-hdr-icon">📍</div>
+      <div><div class="fcard-title">Where & How Much</div><div class="fcard-sub">Tell seekers where to search and what's at stake.</div></div>
+    </div>
+    <div class="fcard-body">
+      <div class="field">
+        <label class="flabel">📍 Search Location</label>
+        <div class="map-search-wrap">
+          <span class="map-search-icon">🔍</span>
+          <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)"/>
+        </div>
+        <div class="map-container" id="map-container">
+          <iframe id="map-iframe" width="100%" height="100%" frameborder="0" style="border:0;border-radius:12px;" allowfullscreen src="about:blank"></iframe>
+        </div>
+        <div class="map-coords" id="map-coords">📌 Drop a pin or search to set location</div>
+      </div>
+      <div class="field">
+        <label class="flabel">City</label>
+        <input class="finput" id="city" type="text" placeholder="e.g. Houston, TX"/>
+      </div>
+      <div class="field">
+        <label class="flabel">Precise Location / Notes</label>
+        <input class="finput" id="neighborhood" type="text" placeholder="e.g. Near the fountain, east side"/>
+      </div>
+      <div class="field">
+        <label class="flabel">Prize Amount</label>
+        <div style="position:relative">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold2);font-weight:700;font-size:16px;">$</span>
+          <input class="finput" id="prize" type="number" min="1" placeholder="20" style="padding-left:30px;font-size:16px;font-weight:700;"/>
         </div>
       </div>
     </div>
@@ -382,6 +399,43 @@
 </div>
 
 <script>
+
+// Google Maps location picker (uses OpenStreetMap/Nominatim — no API key needed)
+let selectedLat = null, selectedLng = null;
+let searchTimeout = null;
+
+function debounceSearch(val) {
+  clearTimeout(searchTimeout);
+  if (val.length < 3) return;
+  searchTimeout = setTimeout(() => searchLocation(val), 600);
+}
+
+async function searchLocation(query) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`);
+    const data = await res.json();
+    if (data && data.length > 0) {
+      const { lat, lon, display_name } = data[0];
+      selectedLat = parseFloat(lat);
+      selectedLng = parseFloat(lon);
+      updateMap(selectedLat, selectedLng);
+      // Auto-fill city if empty
+      const parts = display_name.split(',');
+      if (!document.getElementById('city').value && parts.length > 2) {
+        const city = parts.slice(-4, -2).join(',').trim();
+        document.getElementById('city').value = city;
+      }
+    }
+  } catch(e) { console.error('Location search failed', e); }
+}
+
+function updateMap(lat, lng) {
+  const zoom = 16;
+  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005},${lat-0.005},${lng+0.005},${lat+0.005}&layer=mapnik&marker=${lat},${lng}`;
+  document.getElementById('map-iframe').src = src;
+  document.getElementById('map-coords').innerHTML = `📌 <span>${lat.toFixed(5)}, ${lng.toFixed(5)}</span> — location set ✓`;
+}
+
 const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
