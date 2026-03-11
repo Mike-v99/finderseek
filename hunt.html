@@ -216,7 +216,7 @@ async function loadHunt() {
       url = `${SB}/rest/v1/hunts?id=eq.${huntId}&select=*`;
     } else {
       // No ID — load the most recent hunt
-      url = `${SB}/rest/v1/hunts?select=*&order=created_at.desc&limit=1`;
+      url = `${SB}/rest/v1/hunts?select=*&order=starts_at.desc&limit=1`;
     }
 
     const hr = await fetch(url, {headers:H});
@@ -289,11 +289,7 @@ function initHuntMap() {
   }
 }
 
-function redirect() {
-  // If no valid hunt, try to load first active hunt
-  fetch(`${SB}/rest/v1/hunts?status=in.(active,scheduled)&order=prize_value.desc&limit=1`,{headers:H})
-    .then(r=>r.json()).then(h=>{ if(h&&h[0]) location.href='hunt.html?id='+h[0].id; else location.href='seeker.html'; });
-}
+
 
 function renderHunt() {
   const now = Date.now();
