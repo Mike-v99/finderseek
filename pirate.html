@@ -193,7 +193,7 @@
 
   /* MAPS */
   .map-search-wrap{position:relative;margin-bottom:12px;}
-  .map-search-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+  .map-search-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 130px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
   .map-search-input:focus{border-color:rgba(201,137,12,.5);}
   .map-search-input::placeholder{color:var(--muted);}
   .map-search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
@@ -290,6 +290,7 @@
         <div class="map-search-wrap">
           <span class="map-search-icon">🔍</span>
           <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)"/>
+          <button type="button" onclick="goToMyLocation()" id="my-loc-btn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;font-family:'Karla',sans-serif;white-space:nowrap;transition:background .2s;" onmouseover="this.style.background='rgba(201,137,12,.28)'" onmouseout="this.style.background='rgba(201,137,12,.15)'">📍 My Location</button>
         </div>
         <div id="map-container" style="width:100%;height:280px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.25);position:relative;z-index:2;"></div>
         <div class="map-coords" id="map-coords">📌 Drop a pin or search to set location</div>
@@ -499,6 +500,39 @@ async function reverseGeocode(lat, lng) {
         document.getElementById('city').value = `${city}, ${state}`;
     }
   } catch(e) {}
+}
+
+function goToMyLocation() {
+  const btn = document.getElementById('my-loc-btn');
+  btn.textContent = '⏳ Locating…';
+  btn.style.pointerEvents = 'none';
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported by your browser.');
+    btn.textContent = '📍 My Location';
+    btn.style.pointerEvents = 'auto';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude, lng = pos.coords.longitude;
+      if (_mapReady && _map && _marker) {
+        _map.setView([lat, lng], 17);
+        _marker.setLatLng([lat, lng]);
+        selectedLat = lat; selectedLng = lng;
+        setCoords(lat, lng);
+        reverseGeocode(lat, lng);
+      } else {
+        initMap(lat, lng);
+      }
+      btn.textContent = '📍 My Location';
+      btn.style.pointerEvents = 'auto';
+    },
+    () => {
+      alert('Unable to retrieve your location. Please enable location access.');
+      btn.textContent = '📍 My Location';
+      btn.style.pointerEvents = 'auto';
+    }
+  );
 }
 
 function debounceSearch(val) {
