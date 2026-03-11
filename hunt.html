@@ -60,7 +60,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cd-num{font-family:'Bangers',cursive;font-size:clamp(42px,10vw,68px);font-weight:400;line-height:1;color:var(--cream);
   letter-spacing:3px;
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:6px 12px;display:block;
-  transition:color .3s;text-shadow:0 2px 12px rgba(0,0,0,.6);}
+  transition:color .4s, text-shadow .4s, border-color .4s;text-shadow:0 2px 12px rgba(0,0,0,.6);}
+/* Countdown urgency colors */
+.cd-wrap.phase-1 .cd-num{color:#ffffff;border-color:rgba(255,255,255,.15);text-shadow:0 0 20px rgba(255,255,255,.2);}
+.cd-wrap.phase-2 .cd-num{color:#fde047;border-color:rgba(253,224,71,.3);text-shadow:0 0 20px rgba(253,224,71,.4);}
+.cd-wrap.phase-2 .cd-sep{color:rgba(253,224,71,.5);}
+.cd-wrap.phase-3 .cd-num{color:#fb923c;border-color:rgba(251,146,60,.35);text-shadow:0 0 24px rgba(251,146,60,.5);}
+.cd-wrap.phase-3 .cd-sep{color:rgba(251,146,60,.6);}
+.cd-wrap.phase-4 .cd-num{color:#f87171;border-color:rgba(248,113,113,.4);text-shadow:0 0 28px rgba(248,113,113,.6);}
+.cd-wrap.phase-4 .cd-sep{color:rgba(248,113,113,.6);}
+@keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:.7}}
+.cd-wrap.phase-4 .cd-num{animation:urgentPulse 1.2s ease-in-out infinite;}
+.cd-wrap.phase-4{border-color:rgba(248,113,113,.3);box-shadow:0 0 30px rgba(248,113,113,.1);}
+.cd-wrap.phase-3{border-color:rgba(251,146,60,.25);}
+.cd-wrap.phase-2{border-color:rgba(253,224,71,.2);}
 .cd-unit{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:5px;}
 .cd-sep{font-family:'Cormorant Garamond',serif;font-size:36px;color:rgba(201,137,12,.4);margin-bottom:16px;line-height:1;}
 .cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:12px;letter-spacing:.5px;}
@@ -375,20 +388,39 @@ function renderHunt() {
 
   // Countdown
   clearInterval(mainTimer);
+  // Calculate total hunt duration for phase thresholds
+  const startsAt = new Date(hunt.starts_at);
+  const totalDuration = endsAt - startsAt;
+  const quarter = totalDuration / 4;
+
+  function setPhase() {
+    const remaining = endsAt - Date.now();
+    const wrap = document.querySelector('.cd-wrap');
+    wrap.classList.remove('phase-1','phase-2','phase-3','phase-4');
+    if (remaining <= 0)          wrap.classList.add('phase-4');
+    else if (remaining <= quarter)     wrap.classList.add('phase-4');   // last 25% → red
+    else if (remaining <= quarter * 2) wrap.classList.add('phase-3');   // 25-50% → orange
+    else if (remaining <= quarter * 3) wrap.classList.add('phase-2');   // 50-75% → yellow
+    else                               wrap.classList.add('phase-1');   // 75-100% → white
+  }
+
+  setPhase();
   updateCd(endsAt - now);
-  mainTimer = setInterval(() => updateCd(endsAt - Date.now()), 1000);
+  mainTimer = setInterval(() => { updateCd(endsAt - Date.now()); setPhase(); }, 1000);
 
   // Clue dots & count
-  const revealed = clues.filter(c => new Date(c.reveal_at) <= new Date());
+  // If hunt has ended, all clues are revealed
+  const huntEnded = new Date(hunt.ends_at) <= new Date();
+  const revealed = clues.filter(c => huntEnded || new Date(c.reveal_at) <= new Date());
   document.getElementById('clues-count').textContent = revealed.length;
   document.getElementById('clues-total').textContent = clues.length || 7;
   document.getElementById('clue-dots').innerHTML = clues.map(c => {
-    const r = new Date(c.reveal_at) <= new Date();
+    const r = huntEnded || new Date(c.reveal_at) <= new Date();
     return `<div class="cdot ${r?'df':'dl'}"></div>`;
   }).join('');
 
-  // Next clue
-  const nextClue = clues.find(c => new Date(c.reveal_at) > new Date());
+  // Next clue (only relevant if hunt is still active)
+  const nextClue = huntEnded ? null : clues.find(c => new Date(c.reveal_at) > new Date());
   if (nextClue) {
     document.getElementById('next-clue-lbl').textContent = 'Clue ' + nextClue.clue_number;
     clearInterval(nextTimer);
@@ -398,13 +430,14 @@ function renderHunt() {
     }, 1000);
     document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextClue.reveal_at) - now);
   } else {
-    document.getElementById('next-clue-lbl').textContent = clues.length ? 'All Revealed!' : 'Coming soon';
+    document.getElementById('next-clue-lbl').textContent = huntEnded ? '🏴‍☠️ Hunt Over' : (clues.length ? 'All Revealed!' : 'Coming soon');
     document.getElementById('next-clue-cd').textContent = '';
   }
 
   // Clue cards
+  const _huntEnded = huntEnded; // closure for map
   document.getElementById('free-clues').innerHTML = clues.length ? clues.map((c,i) => {
-    const isRevealed = new Date(c.reveal_at) <= new Date();
+    const isRevealed = _huntEnded || new Date(c.reveal_at) <= new Date();
     const hasPhoto = c.is_photo && c.photo_url;
     const cn = ((c.clue_number-1) % 10) + 1;
     if (isRevealed) {
