@@ -212,38 +212,53 @@ async function loadHunt() {
   try {
     let url;
     if (huntId) {
-      // Load specific hunt by ID — any status
       url = `${SB}/rest/v1/hunts?id=eq.${huntId}&select=*`;
     } else {
-      // No ID — load the most recent hunt
       url = `${SB}/rest/v1/hunts?select=*&order=starts_at.desc&limit=1`;
     }
 
     const hr = await fetch(url, {headers:H});
-    const hunts = await hr.json();
+    const raw = await hr.text();
+    console.log('Hunt response status:', hr.status, 'body:', raw);
 
-    if (!hunts || !hunts.length) {
-      document.getElementById('prize-amt').textContent = 'No active hunts right now';
+    let hunts;
+    try { hunts = JSON.parse(raw); } catch(pe) {
+      document.getElementById('prize-amt').textContent = 'Parse error';
+      document.getElementById('prize-meta').textContent = raw.slice(0,100);
+      return;
+    }
+
+    // Supabase may return error object instead of array
+    if (!Array.isArray(hunts)) {
+      console.error('Supabase error:', hunts);
+      document.getElementById('prize-amt').textContent = hunts?.message || 'DB error';
+      document.getElementById('prize-meta').textContent = JSON.stringify(hunts).slice(0,120);
+      return;
+    }
+
+    if (!hunts.length) {
+      document.getElementById('prize-amt').textContent = 'No hunts found';
       document.getElementById('prize-meta').textContent = 'Check back soon!';
       return;
     }
-    hunt = hunts[0];
 
-    // Update URL without reload if we loaded by latest
+    hunt = hunts[0];
+    console.log('Hunt loaded:', hunt.id, hunt.city, hunt.status);
+
     if (!huntId) {
       history.replaceState(null, '', `hunt.html?id=${hunt.id}`);
     }
 
-    // Load clues
     const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${hunt.id}&order=clue_number.asc`, {headers:H});
     clues = cr.ok ? await cr.json() : [];
+    console.log('Clues loaded:', clues.length);
 
     renderHunt();
     loadLeaderboard();
     initHuntMap();
   } catch(e) {
     console.error('loadHunt error:', e);
-    document.getElementById('prize-amt').textContent = 'Error loading hunt';
+    document.getElementById('prize-amt').textContent = 'Error: ' + e.message;
   }
 }
 
