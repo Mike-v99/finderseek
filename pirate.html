@@ -764,8 +764,8 @@ function liveSearch(val) {
 async function fetchSearchResults(query) {
   try {
     // Bias toward Texas using Houston coordinates as viewbox center
-    const lat = selectedLat || 29.7604, lng = selectedLng || -95.3698;
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1&countrycodes=us&viewbox=${lng-2},${lat+2},${lng+2},${lat-2}&bounded=0`;
+    const biasLat = selectedLat || 29.7604, biasLng = selectedLng || -95.3698;
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1&countrycodes=us&viewbox=${biasLng-2},${biasLat+2},${biasLng+2},${biasLat-2}&bounded=0`;
     const r = await fetch(url);
     const d = await r.json();
     searchResults = d || [];
