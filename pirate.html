@@ -283,44 +283,69 @@
   /* CLUE GENERATION SCREEN */
   .clue-gen-screen{display:none;position:fixed;inset:0;z-index:400;background:var(--ink);overflow-y:auto;}
   .clue-gen-screen.show{display:block;}
-  .cg-wrap{max-width:560px;margin:0 auto;padding:28px 20px 60px;}
-  .cg-header{text-align:center;margin-bottom:32px;}
-  .cg-icon{font-size:48px;margin-bottom:12px;}
-  .cg-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:6px;}
+  .cg-wrap{max-width:600px;margin:0 auto;padding:0 20px 80px;}
+  .cg-hero{text-align:center;padding:48px 20px 32px;position:relative;}
+  .cg-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.15),transparent 70%);pointer-events:none;}
+  .cg-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);border-radius:24px;padding:6px 16px;font-size:11px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:2px;margin-bottom:16px;}
+  .cg-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,8vw,56px);font-weight:700;line-height:1.05;margin-bottom:10px;}
   .cg-title em{color:var(--gold);font-style:italic;}
-  .cg-sub{font-size:14px;color:var(--muted);line-height:1.6;}
-  .cg-card{background:rgba(10,8,16,.85);border:1px solid rgba(201,137,12,.2);border-radius:18px;padding:24px;margin-bottom:16px;}
+  .cg-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto;}
+
+  /* PERSONA CARDS */
+  .persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  .persona-card{background:rgba(10,8,20,.9);border:2px solid rgba(255,255,255,.07);border-radius:18px;padding:20px 16px;cursor:pointer;transition:all .25s;text-align:center;position:relative;overflow:hidden;}
+  .persona-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;}
+  .persona-card.selected{transform:translateY(-3px);}
+  .persona-card.p-pirate{} 
+  .persona-card.p-pirate.selected{border-color:rgba(201,137,12,.7);box-shadow:0 8px 32px rgba(201,137,12,.25);}
+  .persona-card.p-pirate.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.12),transparent);opacity:1;}
+  .persona-card.p-gothic.selected{border-color:rgba(139,92,246,.7);box-shadow:0 8px 32px rgba(139,92,246,.25);}
+  .persona-card.p-gothic.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,.12),transparent);opacity:1;}
+  .persona-card.p-poetic.selected{border-color:rgba(236,72,153,.7);box-shadow:0 8px 32px rgba(236,72,153,.25);}
+  .persona-card.p-poetic.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(236,72,153,.12),transparent);opacity:1;}
+  .persona-card.p-rhymes.selected{border-color:rgba(34,197,94,.7);box-shadow:0 8px 32px rgba(34,197,94,.25);}
+  .persona-card.p-rhymes.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.12),transparent);opacity:1;}
+  .persona-emoji{font-size:38px;margin-bottom:10px;display:block;}
+  .persona-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;margin-bottom:4px;}
+  .persona-card.p-pirate .persona-name{color:var(--gold);}
+  .persona-card.p-gothic .persona-name{color:#c4b5fd;}
+  .persona-card.p-poetic .persona-name{color:#f9a8d4;}
+  .persona-card.p-rhymes .persona-name{color:var(--green);}
+  .persona-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+  .persona-ex{font-size:11px;font-style:italic;color:rgba(255,255,255,.25);margin-top:8px;line-height:1.4;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;}
+  .persona-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;}
+  .persona-card.selected .persona-check{display:flex;}
+  .persona-card.p-gothic.selected .persona-check{background:#8b5cf6;}
+  .persona-card.p-poetic.selected .persona-check{background:#ec4899;}
+  .persona-card.p-rhymes.selected .persona-check{background:var(--green);}
+
+  .cg-card{background:rgba(10,8,20,.85);border:1px solid rgba(201,137,12,.18);border-radius:18px;padding:22px;margin-bottom:14px;}
   .cg-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:10px;display:block;}
-  .cg-textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;resize:vertical;min-height:100px;transition:border-color .2s;line-height:1.6;}
-  .cg-textarea:focus{border-color:rgba(201,137,12,.4);}
-  .cg-textarea::placeholder{color:var(--muted);}
   .cg-num-row{display:flex;align-items:center;gap:12px;}
   .cg-num-label{font-size:14px;color:var(--dim);flex:1;}
-  .cg-num-ctrl{display:flex;align-items:center;gap:10px;}
-  .cg-num-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,137,12,.3);background:rgba(201,137,12,.1);color:var(--gold);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Karla',sans-serif;line-height:1;}
-  .cg-num-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--cream);min-width:28px;text-align:center;}
-  .cg-tier-info{background:rgba(255,255,255,.03);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--muted);line-height:1.8;}
+  .cg-num-ctrl{display:flex;align-items:center;gap:12px;}
+  .cg-num-btn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,137,12,.3);background:rgba(201,137,12,.1);color:var(--gold);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Karla',sans-serif;transition:all .2s;}
+  .cg-num-btn:hover{background:rgba(201,137,12,.25);}
+  .cg-num-val{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;color:var(--cream);min-width:36px;text-align:center;}
+  .cg-tier-info{background:rgba(255,255,255,.03);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--muted);}
   .cg-tier-row{display:flex;gap:8px;align-items:center;}
   .cg-tier-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .btn-gen-clues{width:100%;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:18px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;margin-top:8px;transition:all .2s;box-shadow:0 4px 20px rgba(201,137,12,.3);}
-  .btn-gen-clues:hover{box-shadow:0 8px 32px rgba(201,137,12,.5);transform:translateY(-1px);}
+  .btn-gen-clues{width:100%;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:16px;padding:20px;font-size:17px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;margin-top:4px;transition:all .2s;box-shadow:0 6px 28px rgba(201,137,12,.35);letter-spacing:.5px;}
+  .btn-gen-clues:hover{box-shadow:0 10px 40px rgba(201,137,12,.55);transform:translateY(-2px);}
   .btn-gen-clues:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-  .cg-generating{text-align:center;padding:40px 20px;}
-  .cg-gen-icon{font-size:48px;animation:spin 1.5s linear infinite;display:inline-block;}
+  .cg-generating{text-align:center;padding:60px 20px;}
+  .cg-gen-icon{font-size:56px;animation:spin 1.8s linear infinite;display:inline-block;}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .cg-gen-text{font-family:'Cormorant Garamond',serif;font-size:22px;margin-top:16px;color:var(--dim);}
-  .cg-gen-sub{font-size:13px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;}
-  .cg-clue-preview{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
-  .cg-clue-num{font-size:10px;letter-spacing:2px;font-family:'DM Mono',monospace;margin-bottom:6px;}
-  .cg-clue-tier-free{color:var(--green);}
-  .cg-clue-tier-silver{color:#c4b5fd;}
-  .cg-clue-tier-gold{color:var(--gold2);}
-  .cg-clue-text{font-size:14px;color:var(--dim);font-style:italic;line-height:1.6;}
-  .cg-photo-note{font-size:12px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px;}
-  .cg-success{text-align:center;padding:40px 20px;}
-  .cg-success-icon{font-size:64px;margin-bottom:16px;}
-  .cg-success-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:8px;color:var(--gold);}
-  .btn-view-hunt{display:inline-block;background:var(--gold);color:#0a0800;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;margin-top:16px;}
+  .cg-gen-text{font-family:'Cormorant Garamond',serif;font-size:26px;margin-top:20px;color:var(--cream);}
+  .cg-gen-sub{font-size:13px;color:var(--muted);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:1px;}
+  .cg-clue-preview{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;margin-bottom:10px;}
+  .cg-clue-num{font-size:10px;letter-spacing:2px;font-family:'DM Mono',monospace;margin-bottom:6px;color:var(--gold);}
+  .cg-clue-text{font-size:14px;color:var(--dim);font-style:italic;line-height:1.7;}
+  .cg-success{text-align:center;padding:48px 20px 20px;}
+  .cg-success-icon{font-size:72px;margin-bottom:16px;animation:bounceIn .6s both;}
+  @keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .cg-success-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:8px;color:var(--gold);}
+  .btn-view-hunt{display:inline-block;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:16px 36px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;margin-top:16px;box-shadow:0 6px 24px rgba(201,137,12,.4);}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -423,8 +448,9 @@
         <input class="finput" id="city" type="text" placeholder="e.g. Conroe, TX"/>
       </div>
       <div class="field">
-        <label class="flabel">Precise Location / Notes</label>
-        <input class="finput" id="neighborhood" type="text" placeholder="e.g. Near the fountain, east side"/>
+        <label class="flabel">📝 Describe the Hiding Spot</label>
+        <textarea class="finput" id="neighborhood" rows="4" placeholder="e.g. I hid it under the large flat grey rock near the base of the oak tree at the corner of the park, about 3 feet from the metal bench…" style="resize:vertical;line-height:1.6;"></textarea>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace;">The AI will use this to craft your clues — be specific!</div>
       </div>
       <div class="field">
         <label class="flabel">Prize Amount</label>
@@ -880,6 +906,13 @@ let clueGenHuntId = null;
 let clueGenPhoto = null;
 let clueGenLat = null, clueGenLng = null;
 let clueCount = 7;
+let selectedPersona = 'pirate';
+
+function selectPersona(persona) {
+  selectedPersona = persona;
+  document.querySelectorAll('.persona-card').forEach(el => el.classList.remove('selected'));
+  document.getElementById('persona-' + persona).classList.add('selected');
+}
 
 function openClueGen(huntId, photoUrl, lat, lng) {
   clueGenHuntId = huntId;
@@ -901,20 +934,27 @@ function updateTierPreview() {
 }
 
 async function generateClues() {
-  const desc = document.getElementById('cg-description').value.trim();
-  if (!desc) { alert('Please describe the hiding spot first.'); return; }
+  const desc = document.getElementById('neighborhood').value.trim();
+  if (!desc) { alert('Please go back and describe the hiding spot in the location field.'); return; }
   if (!clueGenHuntId) { alert('No hunt ID found.'); return; }
 
   document.getElementById('cg-form').style.display = 'none';
   document.getElementById('cg-generating').style.display = 'block';
 
-  const statusMsgs = [
-    'Consulting the ancient maps…',
-    'Decoding pirate riddles…',
-    'Weaving vague and poetic trails…',
-    'Hiding the breadcrumbs…',
-    'Sealing the treasure chest…'
-  ];
+  const personaStatusMsgs = {
+    pirate: ['Consulting the ancient maps…','Decoding pirate riddles…','Charting the hidden waters…','Burying the breadcrumbs…','Sealing the treasure chest…'],
+    gothic: ['Summoning the shadows…','Whispering to the dark…','Inscribing the cryptic runes…','Veiling the path in darkness…','Binding the mystery…'],
+    poetic: ['Gathering falling petals…','Weaving lyrical threads…','Breathing life into verses…','Painting the trail in words…','Composing your masterpiece…'],
+    rhymes: ['Finding the perfect rhyme…','Bouncing the verses around…','Stringing the rhythm together…','Setting the beat…','Dropping the final rhyme…']
+  };
+  const personaTitles = {
+    pirate: 'Crafting pirate riddles…',
+    gothic: 'Conjuring dark mysteries…',
+    poetic: 'Weaving poetic verses…',
+    rhymes: 'Composing your rhymes…'
+  };
+  const statusMsgs = personaStatusMsgs[selectedPersona] || personaStatusMsgs.pirate;
+  document.getElementById('cg-gen-text').textContent = personaTitles[selectedPersona] || 'Crafting your clues…';
   let si = 0;
   const statusEl = document.getElementById('cg-gen-status');
   const statusInterval = setInterval(() => {
@@ -928,23 +968,30 @@ async function generateClues() {
     // Last 3 are photo clues
     const photoStart = clueCount - 2; // clues n-2, n-1, n are photo clues
 
+    const personaInstructions = {
+      pirate: `Write in a classic pirate voice — seafaring metaphors, treasure maps, "ye", "arr", nautical imagery, adventure. Bold and swashbuckling.`,
+      gothic: `Write in a dark, gothic style — shadow, mystery, whispers, the uncanny, moonlight, ravens, forgotten things. Haunting and atmospheric.`,
+      poetic: `Write in a lyrical, poetic style — beautiful imagery, nature metaphors, soft and dreamlike language, almost like song lyrics. Graceful and evocative.`,
+      rhymes: `Write every clue as a fun rhyming couplet or quatrain. Bouncy, catchy, and playful. The rhymes must be clean and satisfying.`
+    };
+
     const prompt = `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app.
 
-The Pirate has hidden real cash and described the hiding spot as:
+The hiding spot is described as:
 "${desc}"
 
 Location coordinates: ${clueGenLat ? `${clueGenLat}, ${clueGenLng}` : 'not provided'}
 
-Write exactly ${clueCount} clues. They must be:
-- Vague and poetic — like riddles, not directions
-- Build progressively — each clue narrows in slightly more than the last
+STYLE: ${personaInstructions[selectedPersona] || personaInstructions.pirate}
+
+Write exactly ${clueCount} clues. Rules:
+- Vague like a riddle — never give directions
+- Build progressively, each clue slightly more specific
 - Written in second person ("you", "your")
-- Between 1-3 sentences each
-- Evocative, mysterious, fun
+- 1-3 sentences each
+- The last 3 clues should be the most specific (they accompany close-up photos)
 
-The last 3 clues (#${clueCount-2}, #${clueCount-1}, #${clueCount}) will accompany zoomed photos of the hiding spot, so they should be the most specific and reference what someone might see up close.
-
-Return ONLY a JSON array like this (no markdown, no explanation):
+Return ONLY a JSON array (no markdown, no explanation):
 [
   {"number": 1, "text": "clue text here"},
   {"number": 2, "text": "clue text here"},
@@ -958,7 +1005,9 @@ Return ONLY a JSON array like this (no markdown, no explanation):
         description: desc,
         clueCount,
         lat: clueGenLat,
-        lng: clueGenLng
+        lng: clueGenLng,
+        persona: selectedPersona,
+        prompt
       })
     });
 
@@ -1572,42 +1621,74 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
 
     <!-- STEP 1: Input form -->
     <div id="cg-form">
-      <div class="cg-header">
-        <div class="cg-icon">✍️</div>
-        <div class="cg-title">Write Your <em>Clues</em></div>
-        <p class="cg-sub">Describe the hiding spot in your own words — the AI will craft vague, poetic clues from your description.</p>
+      <div class="cg-hero">
+        <div class="cg-hero-bg"></div>
+        <div class="cg-badge">🔍 FINDERSEEEK AI</div>
+        <div class="cg-title">AI <em>Generated</em> Clues</div>
+        <p class="cg-sub">Choose your clue style, set the count, and let FinderSeek craft the perfect trail for your Seekers.</p>
       </div>
 
-      <div class="cg-card">
-        <span class="cg-label">📝 Describe the hiding spot</span>
-        <textarea class="cg-textarea" id="cg-description" placeholder="e.g. I hid it under a large flat rock near the base of the oak tree at the corner of the park, about 3 feet from the metal bench. The rock is brownish-grey and slightly mossy on one side…"></textarea>
+      <!-- PERSONA SELECTION -->
+      <div style="margin-bottom:14px;">
+        <span class="cg-label" style="margin-bottom:14px;">🎭 Choose Your Clue Persona</span>
+        <div class="persona-grid">
+          <div class="persona-card p-pirate selected" id="persona-pirate" onclick="selectPersona('pirate')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🏴‍☠️</span>
+            <div class="persona-name">Pirate</div>
+            <div class="persona-desc">Seafaring riddles, treasure maps & salty adventure</div>
+            <div class="persona-ex">"Where the tide of stone meets the forgotten shore…"</div>
+          </div>
+          <div class="persona-card p-gothic" id="persona-gothic" onclick="selectPersona('gothic')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🕯️</span>
+            <div class="persona-name">Gothic</div>
+            <div class="persona-desc">Dark, mysterious & haunting whispers</div>
+            <div class="persona-ex">"In the shadow that daylight dares not touch…"</div>
+          </div>
+          <div class="persona-card p-poetic" id="persona-poetic" onclick="selectPersona('poetic')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🌸</span>
+            <div class="persona-name">Poetic</div>
+            <div class="persona-desc">Lyrical, beautiful & dreamlike verses</div>
+            <div class="persona-ex">"Where nature exhales and stillness sings…"</div>
+          </div>
+          <div class="persona-card p-rhymes" id="persona-rhymes" onclick="selectPersona('rhymes')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🎵</span>
+            <div class="persona-name">Rhymes</div>
+            <div class="persona-desc">Fun, catchy clues that rhyme & bounce</div>
+            <div class="persona-ex">"Seek the place where branches grow, follow the path below…"</div>
+          </div>
+        </div>
       </div>
 
+      <!-- CLUE COUNT -->
       <div class="cg-card">
-        <span class="cg-label">🎯 How many clues?</span>
+        <span class="cg-label">🎯 How Many Clues?</span>
         <div class="cg-num-row">
-          <div class="cg-num-label">Choose between 3 and 10 clues</div>
+          <div class="cg-num-label" style="color:var(--dim);font-size:13px;">Between 3 and 10 clues</div>
           <div class="cg-num-ctrl">
             <button class="cg-num-btn" onclick="changeClueCount(-1)">−</button>
             <div class="cg-num-val" id="cg-count">7</div>
             <button class="cg-num-btn" onclick="changeClueCount(1)">+</button>
           </div>
         </div>
-        <div class="cg-tier-info" id="cg-tier-preview">
-          <div class="cg-tier-row"><div class="cg-tier-dot" style="background:var(--green)"></div><span style="color:var(--green);font-weight:700;">ALL FREE</span>&nbsp;— All clues are free for all Seekers</div>
+        <div class="cg-tier-info">
+          <div class="cg-tier-row"><div class="cg-tier-dot" style="background:var(--green)"></div><span style="color:var(--green);font-weight:700;">ALL FREE</span>&nbsp;— All clues visible to every Seeker</div>
         </div>
       </div>
 
       <button class="btn-gen-clues" id="btn-gen-clues" onclick="generateClues()">
-        🏴‍☠️ &nbsp; Generate My Clues
+        ✨ &nbsp; Generate My Clues
       </button>
     </div>
 
     <!-- STEP 2: Generating -->
     <div id="cg-generating" style="display:none;">
       <div class="cg-generating">
-        <div class="cg-gen-icon">⚙️</div>
-        <div class="cg-gen-text">Crafting your clues…</div>
+        <div class="cg-gen-icon">🔍</div>
+        <div class="cg-gen-text" id="cg-gen-text">Crafting your clues…</div>
         <div class="cg-gen-sub" id="cg-gen-status">Consulting the ancient maps…</div>
       </div>
     </div>
@@ -1617,9 +1698,10 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
       <div class="cg-success">
         <div class="cg-success-icon">🏴‍☠️</div>
         <div class="cg-success-title">Quest is Live!</div>
-        <p style="color:var(--dim);font-size:14px;line-height:1.7;margin-bottom:8px;">Your clues have been saved. Seekers can now find your treasure.</p>
+        <p style="color:var(--dim);font-size:15px;line-height:1.7;margin-bottom:4px;">Your clues have been crafted and saved.</p>
+        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;">Seekers can now hunt your treasure!</p>
         <div id="cg-clue-previews" style="text-align:left;margin:20px 0;"></div>
-        <a id="btn-view-hunt" class="btn-view-hunt" href="seeker.html">View Active Hunts →</a>
+        <a id="btn-view-hunt" class="btn-view-hunt" href="seeker.html">⚔️ &nbsp; View Active Hunts →</a>
       </div>
     </div>
 
