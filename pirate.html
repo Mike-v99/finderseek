@@ -305,12 +305,18 @@
   .persona-card.p-poetic.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(236,72,153,.12),transparent);opacity:1;}
   .persona-card.p-rhymes.selected{border-color:rgba(34,197,94,.7);box-shadow:0 8px 32px rgba(34,197,94,.25);}
   .persona-card.p-rhymes.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.12),transparent);opacity:1;}
+  .persona-card.p-hillbilly.selected{border-color:rgba(251,146,60,.7);box-shadow:0 8px 32px rgba(251,146,60,.25);}
+  .persona-card.p-hillbilly.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(251,146,60,.12),transparent);opacity:1;}
+  .persona-card.p-kid.selected{border-color:rgba(251,191,36,.7);box-shadow:0 8px 32px rgba(251,191,36,.25);}
+  .persona-card.p-kid.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(251,191,36,.12),transparent);opacity:1;}
   .persona-emoji{font-size:38px;margin-bottom:10px;display:block;}
   .persona-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;margin-bottom:4px;}
   .persona-card.p-pirate .persona-name{color:var(--gold);}
   .persona-card.p-gothic .persona-name{color:#c4b5fd;}
   .persona-card.p-poetic .persona-name{color:#f9a8d4;}
   .persona-card.p-rhymes .persona-name{color:var(--green);}
+  .persona-card.p-hillbilly .persona-name{color:#fb923c;}
+  .persona-card.p-kid .persona-name{color:#fbbf24;}
   .persona-desc{font-size:11px;color:var(--muted);line-height:1.5;}
   .persona-ex{font-size:11px;font-style:italic;color:rgba(255,255,255,.25);margin-top:8px;line-height:1.4;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;}
   .persona-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;}
@@ -318,6 +324,8 @@
   .persona-card.p-gothic.selected .persona-check{background:#8b5cf6;}
   .persona-card.p-poetic.selected .persona-check{background:#ec4899;}
   .persona-card.p-rhymes.selected .persona-check{background:var(--green);}
+  .persona-card.p-hillbilly.selected .persona-check{background:#fb923c;}
+  .persona-card.p-kid.selected .persona-check{background:#fbbf24;}
 
   .cg-card{background:rgba(10,8,20,.85);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:22px;margin-bottom:14px;}
   .cg-label{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--cream);font-family:'DM Mono',monospace;margin-bottom:10px;display:block;font-weight:700;}
@@ -959,13 +967,17 @@ async function generateClues() {
     pirate: ['Consulting the ancient maps…','Decoding pirate riddles…','Charting the hidden waters…','Burying the breadcrumbs…','Sealing the treasure chest…'],
     gothic: ['Summoning the shadows…','Whispering to the dark…','Inscribing the cryptic runes…','Veiling the path in darkness…','Binding the mystery…'],
     poetic: ['Gathering falling petals…','Weaving lyrical threads…','Breathing life into verses…','Painting the trail in words…','Composing your masterpiece…'],
-    rhymes: ['Finding the perfect rhyme…','Bouncing the verses around…','Stringing the rhythm together…','Setting the beat…','Dropping the final rhyme…']
+    rhymes: ['Finding the perfect rhyme…','Bouncing the verses around…','Stringing the rhythm together…','Setting the beat…','Dropping the final rhyme…'],
+    hillbilly: ['Puttin the boots on…','Checkin the barn…','Hollerin at the neighbors…','Feedin the chickens…','Hee-haw, almost done…'],
+    kid: ['Thinking real hard…','Counting on fingers…','Drawing a picture clue…','Asking for help…','Yay almost done! 🎉']
   };
   const personaTitles = {
     pirate: 'Crafting pirate riddles…',
     gothic: 'Conjuring dark mysteries…',
     poetic: 'Weaving poetic verses…',
-    rhymes: 'Composing your rhymes…'
+    rhymes: 'Composing your rhymes…',
+    hillbilly: 'Writin them country clues…',
+    kid: 'Making super fun clues! 🌟'
   };
   const statusMsgs = personaStatusMsgs[selectedPersona] || personaStatusMsgs.pirate;
   document.getElementById('cg-gen-text').textContent = personaTitles[selectedPersona] || 'Crafting your clues…';
@@ -986,7 +998,9 @@ async function generateClues() {
       pirate: `Write in a classic pirate voice — seafaring metaphors, treasure maps, "ye", "arr", nautical imagery, adventure. Bold and swashbuckling.`,
       gothic: `Write in a dark, gothic style — shadow, mystery, whispers, the uncanny, moonlight, ravens, forgotten things. Haunting and atmospheric.`,
       poetic: `Write in a lyrical, poetic style — beautiful imagery, nature metaphors, soft and dreamlike language, almost like song lyrics. Graceful and evocative.`,
-      rhymes: `Write every clue as a fun rhyming couplet or quatrain. Bouncy, catchy, and playful. The rhymes must be clean and satisfying.`
+      rhymes: `Write every clue as a fun rhyming couplet or quatrain. Bouncy, catchy, and playful. The rhymes must be clean and satisfying.`,
+      hillbilly: `Write in a Southern hillbilly country style — folksy dialect, yall, aint, fixin to, yonder, drawl. Warm, funny, and down-home charming.`,
+      kid: `Write like a cheerful 5-year-old explaining it to another 5-year-old — super simple words, silly comparisons, lots of excitement, short sentences. Use emojis occasionally. Make it fun and giggly.`
     };
 
     const cityHint = document.getElementById('city').value.trim();
@@ -1063,9 +1077,9 @@ Return ONLY a JSON array (no markdown, no explanation):
     document.getElementById('cg-review').style.display = 'block';
 
     // Persona badge colors
-    const personaBadge = { pirate:'🏴‍☠️ PIRATE CLUES', gothic:'🕯️ GOTHIC CLUES', poetic:'🌸 POETIC CLUES', rhymes:'🎵 RHYMING CLUES' };
-    const personaBadgeColors = { pirate:'rgba(201,137,12,.2)', gothic:'rgba(139,92,246,.2)', poetic:'rgba(236,72,153,.2)', rhymes:'rgba(34,197,94,.2)' };
-    const personaBadgeBorder = { pirate:'rgba(201,137,12,.5)', gothic:'rgba(139,92,246,.5)', poetic:'rgba(236,72,153,.5)', rhymes:'rgba(34,197,94,.5)' };
+    const personaBadge = { pirate:'🏴‍☠️ PIRATE CLUES', gothic:'🕯️ GOTHIC CLUES', poetic:'🌸 POETIC CLUES', rhymes:'🎵 RHYMING CLUES', hillbilly:'🤠 HILLBILLY CLUES', kid:'🧸 KID CLUES' };
+    const personaBadgeColors = { pirate:'rgba(201,137,12,.2)', gothic:'rgba(139,92,246,.2)', poetic:'rgba(236,72,153,.2)', rhymes:'rgba(34,197,94,.2)', hillbilly:'rgba(251,146,60,.2)', kid:'rgba(251,191,36,.2)' };
+    const personaBadgeBorder = { pirate:'rgba(201,137,12,.5)', gothic:'rgba(139,92,246,.5)', poetic:'rgba(236,72,153,.5)', rhymes:'rgba(34,197,94,.5)', hillbilly:'rgba(251,146,60,.5)', kid:'rgba(251,191,36,.5)' };
     const badge = document.getElementById('review-persona-badge');
     badge.textContent = personaBadge[selectedPersona] || '🏴‍☠️ PIRATE CLUES';
     badge.style.background = personaBadgeColors[selectedPersona];
@@ -1088,6 +1102,49 @@ Return ONLY a JSON array (no markdown, no explanation):
     alert('Clue generation failed: ' + e.message);
   }
 }
+async function approveClues() {
+  const clueRows = window._pendingClueRows;
+  if (!clueRows) return;
+  const btn = document.querySelector('.btn-approve');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const authHeaders = {
+      'apikey': KEY,
+      'Authorization': 'Bearer ' + (getToken() || KEY),
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    };
+    const saveRes = await fetch(`${SB}/rest/v1/clues`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify(clueRows)
+    });
+    if (!saveRes.ok) {
+      const err = await saveRes.json();
+      throw new Error('Save failed: ' + (err?.message || JSON.stringify(err)));
+    }
+    document.getElementById('cg-review').style.display = 'none';
+    document.getElementById('cg-success').style.display = 'block';
+    document.getElementById('btn-view-hunt').href = 'hunt.html?id=' + window._pendingHuntId;
+    document.getElementById('cg-clue-previews').innerHTML = clueRows.map(c => `
+      <div class="cg-clue-preview">
+        <div class="cg-clue-num cg-clue-tier-free">CLUE ${c.clue_number}</div>
+        <div class="cg-clue-text" style="color:#fff;font-style:normal;">"${c.clue_text}"</div>
+      </div>`).join('');
+  } catch(e) {
+    alert('Error saving clues: ' + e.message);
+    btn.disabled = false; btn.textContent = '✅  Approve & Go Live';
+  }
+}
+
+function backToForm() {
+  document.getElementById('cg-review').style.display = 'none';
+  document.getElementById('cg-form').style.display = 'block';
+  window._pendingClueRows = null;
+  // Scroll to top of clue gen screen
+  document.getElementById('clue-gen-screen').scrollTop = 0;
+}
+
 // ── END CLUE GENERATION ──────────────────────────────
 
 // ── CUSTOM DATE/TIME PICKER ──────────────────────────
@@ -1659,6 +1716,20 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
             <div class="persona-name">Rhymes</div>
             <div class="persona-desc">Fun, catchy clues that rhyme & bounce</div>
             <div class="persona-ex">"Seek the place where branches grow, follow the path below…"</div>
+          </div>
+          <div class="persona-card p-hillbilly" id="persona-hillbilly" onclick="selectPersona('hillbilly')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🤠</span>
+            <div class="persona-name">Hillbilly</div>
+            <div class="persona-desc">Folksy, Southern drawl & country charm</div>
+            <div class="persona-ex">"Well shoot, y'all — head on over yonder past the big ol' tree…"</div>
+          </div>
+          <div class="persona-card p-kid" id="persona-kid" onclick="selectPersona('kid')">
+            <div class="persona-check">✓</div>
+            <span class="persona-emoji">🧸</span>
+            <div class="persona-name">5 Year Old</div>
+            <div class="persona-desc">Super simple, silly & playful clues</div>
+            <div class="persona-ex">"Go find the big brown thing that looks like a sleeping giant…"</div>
           </div>
         </div>
       </div>
