@@ -538,13 +538,19 @@ function goToMyLocation() {
       btn.style.pointerEvents = 'auto';
       // Show inline instructions instead of alert
       coords.innerHTML = `
-        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 14px;text-align:left;line-height:1.7;">
-          <div style="font-size:13px;font-weight:700;color:#fca5a5;margin-bottom:4px;">📵 Location access is blocked</div>
-          <div style="font-size:12px;color:var(--muted);">
-            <b style="color:var(--dim);">iPhone:</b> Settings → Safari → Location → Allow<br/>
-            <b style="color:var(--dim);">Android:</b> Settings → Apps → Browser → Permissions → Location → Allow<br/>
-            <b style="color:var(--dim);">Or just search</b> your location in the bar above ↑
+        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px 16px;text-align:left;line-height:1.8;">
+          <div style="font-size:13px;font-weight:700;color:#fca5a5;margin-bottom:8px;">📵 Browser has cached a "blocked" decision</div>
+          <div style="font-size:12px;color:var(--dim);margin-bottom:10px;">Even after enabling in Settings, you need to clear the browser's cached permission:</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">
+            <b style="color:#93c5fd;">iPhone Safari:</b><br/>
+            Settings → Safari → scroll to <b>Settings for Websites</b> → Location → tap <b>finderseek.vercel.app</b> → Allow
           </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+            <b style="color:#93c5fd;">Chrome (iOS/Android):</b><br/>
+            Tap the <b>🔒 lock icon</b> in the address bar → Site Settings → Location → Allow → <b>reload the page</b>
+          </div>
+          <button onclick="goToMyLocation()" style="background:rgba(201,137,12,.2);border:1px solid rgba(201,137,12,.4);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;font-family:'Karla',sans-serif;margin-bottom:8px;">🔄 Try Again</button>
+          <div style="font-size:11px;color:var(--muted);">Or just <b style="color:var(--dim);">search your address</b> in the bar above ↑</div>
         </div>`;
     },
     { timeout: 8000, enableHighAccuracy: true }
