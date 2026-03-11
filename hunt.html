@@ -159,15 +159,8 @@
         <div class="sval" style="margin-top:8px"><span id="clues-count">0</span> / <span id="clues-total">7</span></div>
       </div>
     </div>
-    <div class="sec-hd f3"><span class="sec-icon">🗺️</span><span class="sec-lbl">FREE CLUES</span><span class="sec-range">FRI–MON</span></div>
+    <div class="sec-hd f3"><span class="sec-icon">📜</span><span class="sec-lbl">CLUES</span></div>
     <div id="free-clues" class="f4"></div>
-    <div class="sec-hd f4"><span class="sec-icon">⭐</span><span class="sec-lbl">PRO CLUES</span><span class="sec-range">TUE–THU</span></div>
-    <div id="pro-clues"></div>
-    <div class="upgrade-box">
-      <h4>⭐ Unlock Pro Clues</h4>
-      <p>Get precise clues dropping Tuesday–Thursday. Pro seekers find treasure 3× faster.</p>
-      <button class="btn-up2">Upgrade to Pro →</button>
-    </div>
   </div>
 
   <!-- CLAIM -->
@@ -219,7 +212,7 @@ async function loadHunt() {
   if(!huntId) { redirect(); return; }
   try {
     // Load hunt
-    const hr = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&status=eq.active`,{headers:H});
+    const hr = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&status=in.(active,scheduled)`,{headers:H});
     const hunts = await hr.json();
     if(!hunts||!hunts.length){ redirect(); return; }
     hunt = hunts[0];
@@ -281,7 +274,7 @@ function initHuntMap() {
 
 function redirect() {
   // If no valid hunt, try to load first active hunt
-  fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc&limit=1`,{headers:H})
+  fetch(`${SB}/rest/v1/hunts?status=in.(active,scheduled)&order=prize_value.desc&limit=1`,{headers:H})
     .then(r=>r.json()).then(h=>{ if(h&&h[0]) location.href='hunt.html?id='+h[0].id; else location.href='seeker.html'; });
 }
 
