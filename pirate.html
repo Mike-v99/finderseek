@@ -490,16 +490,34 @@ function setCoords(lat, lng) {
 
 async function reverseGeocode(lat, lng) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`);
     const d = await r.json();
     if (d.address) {
       const a = d.address;
-      // Pick the most meaningful place name in order of preference
-      const city = a.city || a.town || a.municipality || a.village || a.hamlet || a.suburb || a.county || '';
-      const state = a.state_code || a.state || '';
-      if (city) document.getElementById('city').value = `${city}, ${state}`;
+
+      // Build street address
+      const houseNum = a.house_number || '';
+      const road = a.road || a.pedestrian || a.path || '';
+      const streetAddr = [houseNum, road].filter(Boolean).join(' ');
+
+      // Build city — prefer actual city over suburb/neighborhood
+      const city = a.city || a.town || a.municipality || a.village || a.hamlet || '';
+      const suburb = a.suburb || a.neighbourhood || a.quarter || '';
+      const county = a.county || '';
+      const state = a.state || '';
+      const postcode = a.postcode || '';
+
+      // City field: real city + state
+      const cityDisplay = `${city || suburb || county}, ${state} ${postcode}`.trim().replace(/^,\s*/, '');
+      if (cityDisplay) document.getElementById('city').value = cityDisplay;
+
+      // Populate search bar with full address
+      if (streetAddr) {
+        const fullAddr = `${streetAddr}, ${city || suburb}, ${state}`;
+        document.getElementById('map-search').value = fullAddr;
+      }
     }
-  } catch(e) {}
+  } catch(e) { console.error('Reverse geocode failed', e); }
 }
 
 function goToMyLocation() {
