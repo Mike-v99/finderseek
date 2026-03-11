@@ -1297,9 +1297,12 @@ async function submitHunt() {
   const payHandle = document.getElementById('pay-handle').value.trim();
   const liveAt = liveChoice === 'now' ? new Date().toISOString() : new Date(document.getElementById('live-datetime').value).toISOString();
 
+  // Declare outside try so accessible after
+  let photoUrl = null;
+  let savedHuntId = null;
+
   try {
     // Upload photo if provided
-    let photoUrl = null;
     if (photoFile) {
       const ext = photoFile.name.split('.').pop();
       const path = `hunt-photos/${Date.now()}.${ext}`;
@@ -1319,7 +1322,6 @@ async function submitHunt() {
     // Status: scheduled if future, active if now
     const status = liveDate > now ? 'scheduled' : 'active';
 
-    // Always use auth token for insert
     const authHeaders = {
       'apikey': KEY,
       'Authorization': 'Bearer ' + (getToken() || KEY),
@@ -1355,7 +1357,9 @@ async function submitHunt() {
       return;
     }
 
-    console.log('Hunt saved:', huntData);
+    const saved = Array.isArray(huntData) ? huntData[0] : huntData;
+    savedHuntId = saved?.id;
+    console.log('Hunt saved! ID:', savedHuntId);
 
   } catch(e) {
     console.error('Submit error:', e);
@@ -1364,12 +1368,9 @@ async function submitHunt() {
     return;
   }
 
-  // Open clue generation screen with hunt data
-  const savedHunt = Array.isArray(huntData) ? huntData[0] : huntData;
-  openClueGen(savedHunt?.id, photoUrl, selectedLat, selectedLng);
+  // Open clue generation screen
   btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
-  // Also show confirmation in background
-  showConfirmation({ city, hood, prize, code, payType, liveAt });
+  openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
 }
 
 function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
