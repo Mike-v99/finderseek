@@ -4,13 +4,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { description, clueCount, lat, lng } = req.body;
+  const { description, clueCount, lat, lng, prompt: customPrompt } = req.body;
 
   if (!description || !clueCount) {
     return res.status(400).json({ error: 'Missing description or clueCount' });
   }
 
-  const prompt = `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app.
+  const prompt = customPrompt || `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app.
 
 The Pirate has hidden real cash and described the hiding spot as:
 "${description}"
@@ -41,7 +41,7 @@ Return ONLY a JSON array like this (no markdown, no explanation):
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 2000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
