@@ -398,7 +398,7 @@
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
           <div class="map-search-wrap" style="flex:1;margin-bottom:0;">
             <span class="map-search-icon">🔍</span>
-            <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)" onfocus="scrollToMap()" />
+            <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocation(this.value,true);}" onfocus="scrollToMap()" autocomplete="off" />
           </div>
           <button type="button" onclick="goToMyLocation()" id="my-loc-btn" style="background:#2196f3;flex-shrink:0;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:700;color:#ffffff;cursor:pointer;font-family:'Karla',sans-serif;white-space:nowrap;box-shadow:0 3px 14px rgba(33,150,243,.5);transition:all .2s;display:flex;align-items:center;gap:7px;" onmouseover="this.style.background='#1976d2'" onmouseout="this.style.background='#2196f3'"><span id="my-loc-txt">✈️ Current Location</span></button>
         </div>
@@ -745,11 +745,11 @@ function goToMyLocation() {
 
 function debounceSearch(val) {
   clearTimeout(searchTimeout);
-  if (val.length < 3) return;
-  searchTimeout = setTimeout(() => searchLocation(val), 600);
+  if (val.length < 5) return; // need at least 5 chars
+  searchTimeout = setTimeout(() => searchLocation(val, false), 2000); // 2 second pause
 }
 
-async function searchLocation(query) {
+async function searchLocation(query, explicit=false) {
   try {
     const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
     const d = await r.json();
@@ -770,8 +770,8 @@ async function searchLocation(query) {
 
       // Always update city from reverse geocode for accuracy
       reverseGeocode(lat, lng);
-      // Dismiss keyboard so map is fully visible
-      document.getElementById('map-search').blur();
+      // Only dismiss keyboard if user pressed Enter explicitly
+      if (explicit) document.getElementById('map-search').blur();
     }
   } catch(e) { console.error('Search failed', e); }
 }
