@@ -1058,7 +1058,10 @@ Return ONLY a JSON array (no markdown, no explanation):
       const num = c.number;
       const isPhotoClue = num >= (clueCount - 2);
       let tier = 'free';
-      const revealAt = new Date(now.getTime() + (num - 1) * 12 * 60 * 60 * 1000);
+      // Interval = hunt duration / (clueCount + 2)
+      const durationMs = durationHours * 60 * 60 * 1000;
+      const intervalMs = durationMs / (clueCount + 2);
+      const revealAt = new Date(liveDate.getTime() + (num - 1) * intervalMs);
       return {
         hunt_id: clueGenHuntId,
         clue_number: num,
