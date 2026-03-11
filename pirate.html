@@ -509,15 +509,25 @@ function debounceSearch(val) {
 
 async function searchLocation(query) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`);
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
     const d = await r.json();
     if (d && d.length > 0) {
       const lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
-      if (_mapReady) { flyTo(lat, lng); }
-      else { initMap(lat, lng); }
       const parts = d[0].display_name.split(',');
+      const cityVal = parts.slice(0, 2).join(',').trim();
+
+      if (_mapReady && _map && _marker) {
+        _map.setView([lat, lng], 17);
+        _marker.setLatLng([lat, lng]);
+        selectedLat = lat; selectedLng = lng;
+        setCoords(lat, lng);
+      } else {
+        // Map not ready yet — init at this location
+        initMap(lat, lng);
+      }
+
       if (!document.getElementById('city').value)
-        document.getElementById('city').value = parts.slice(0, 2).join(',').trim();
+        document.getElementById('city').value = cityVal;
     }
   } catch(e) { console.error('Search failed', e); }
 }
