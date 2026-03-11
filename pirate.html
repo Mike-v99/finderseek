@@ -193,7 +193,17 @@
   }
 
   /* MAPS */
-  .map-search-wrap{position:relative;margin-bottom:12px;}
+
+  .map-search-wrap{position:relative;flex:1;margin-bottom:0;}
+  .search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1a1520;border:1px solid rgba(201,137,12,.3);border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;}
+  .search-dropdown.show{display:block;}
+  .search-result{padding:12px 16px;font-size:13px;color:var(--dim);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;display:flex;align-items:center;gap:10px;}
+  .search-result:last-child{border-bottom:none;}
+  .search-result:hover,.search-result.active{background:rgba(201,137,12,.12);color:var(--cream);}
+  .search-result-icon{font-size:14px;flex-shrink:0;}
+  .search-result-main{font-weight:600;margin-bottom:2px;}
+  .search-result-sub{font-size:11px;color:var(--muted);}
+
   .map-search-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
   .map-search-input:focus{border-color:rgba(201,137,12,.5);}
   .map-search-input::placeholder{color:var(--muted);}
@@ -398,7 +408,8 @@
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
           <div class="map-search-wrap" style="flex:1;margin-bottom:0;">
             <span class="map-search-icon">🔍</span>
-            <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)" onfocus="scrollToMap()" autocomplete="off" />
+            <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="liveSearch(this.value)" onfocus="scrollToMap()" autocomplete="off" />
+          <div class="search-dropdown" id="search-dropdown"></div>
           </div>
           <button type="button" onclick="goToMyLocation()" id="my-loc-btn" style="background:#2196f3;flex-shrink:0;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:700;color:#ffffff;cursor:pointer;font-family:'Karla',sans-serif;white-space:nowrap;box-shadow:0 3px 14px rgba(33,150,243,.5);transition:all .2s;display:flex;align-items:center;gap:7px;" onmouseover="this.style.background='#1976d2'" onmouseout="this.style.background='#2196f3'"><span id="my-loc-txt">✈️ Current Location</span></button>
         </div>
@@ -743,52 +754,105 @@ function goToMyLocation() {
   );
 }
 
-function debounceSearch(val) {
+let searchResults = [];
+let selectedResultIdx = -1;
+
+function liveSearch(val) {
   clearTimeout(searchTimeout);
-  if (val.length < 5) return; // need at least 5 chars
-  searchTimeout = setTimeout(() => searchLocation(val, false), 2000); // 2 second pause
+  const dropdown = document.getElementById('search-dropdown');
+  if (val.length < 3) { dropdown.classList.remove('show'); return; }
+  // Start zooming map toward typed location immediately with progressive zoom
+  searchTimeout = setTimeout(() => fetchSearchResults(val), 400);
 }
 
-async function searchLocation(query, explicit=false) {
+async function fetchSearchResults(query) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1`);
     const d = await r.json();
-    if (d && d.length > 0) {
-      const lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
-      const parts = d[0].display_name.split(',');
-      const cityVal = parts.slice(0, 2).join(',').trim();
+    searchResults = d || [];
+    const dropdown = document.getElementById('search-dropdown');
 
-      if (_mapReady && _map && _marker) {
-        _map.setView([lat, lng], 17);
-        _marker.setLatLng([lat, lng]);
-        selectedLat = lat; selectedLng = lng;
-        setCoords(lat, lng);
+    if (!searchResults.length) { dropdown.classList.remove('show'); return; }
+
+    // Live zoom to first result as user types
+    const first = searchResults[0];
+    const lat = parseFloat(first.lat), lng = parseFloat(first.lon);
+    const bbox = first.boundingbox;
+    if (_mapReady && _map) {
+      if (bbox) {
+        // Zoom to bounding box for smooth progressive zoom
+        _map.fitBounds([[parseFloat(bbox[0]), parseFloat(bbox[2])],[parseFloat(bbox[1]), parseFloat(bbox[3])]], {animate:true, duration:0.8, maxZoom:16});
       } else {
-        // Map not ready yet — init at this location
-        initMap(lat, lng);
+        _map.setView([lat, lng], 14, {animate:true, duration:0.8});
       }
-
-      // Always update city from reverse geocode for accuracy
-      reverseGeocode(lat, lng);
-      // Only dismiss keyboard if user pressed Enter explicitly
-      if (explicit) document.getElementById('map-search').blur();
     }
+
+    // Show dropdown
+    dropdown.innerHTML = searchResults.map((r, i) => {
+      const parts = r.display_name.split(',');
+      const main = parts.slice(0,2).join(',').trim();
+      const sub = parts.slice(2,4).join(',').trim();
+      const icon = r.type === 'park' ? '🌳' : r.addresstype === 'road' ? '🛣️' : r.class === 'amenity' ? '📍' : '📌';
+      return `<div class="search-result" onclick="selectResult(${i})" onmouseover="highlightResult(${i})">
+        <div class="search-result-icon">${icon}</div>
+        <div><div class="search-result-main">${main}</div><div class="search-result-sub">${sub}</div></div>
+      </div>`;
+    }).join('');
+    dropdown.classList.add('show');
+    selectedResultIdx = -1;
+
   } catch(e) { console.error('Search failed', e); }
 }
 
-window.addEventListener('load', () => {
-  // Enter key on map search
-  document.getElementById('map-search').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const val = this.value.trim();
-      if (val.length > 0) {
-        clearTimeout(searchTimeout);
-        searchLocation(val, true);
-      }
-    }
-  });
+function highlightResult(idx) {
+  selectedResultIdx = idx;
+  document.querySelectorAll('.search-result').forEach((el,i) => el.classList.toggle('active', i===idx));
+}
 
+function selectResult(idx) {
+  const r = searchResults[idx];
+  if (!r) return;
+  const lat = parseFloat(r.lat), lng = parseFloat(r.lon);
+
+  if (_mapReady && _map && _marker) {
+    _map.setView([lat, lng], 17, {animate:true, duration:0.6});
+    _marker.setLatLng([lat, lng]);
+    selectedLat = lat; selectedLng = lng;
+    setCoords(lat, lng);
+  } else {
+    initMap(lat, lng);
+  }
+
+  // Fill search bar with selected address
+  const parts = r.display_name.split(',');
+  document.getElementById('map-search').value = parts.slice(0,3).join(',').trim();
+
+  // Close dropdown
+  document.getElementById('search-dropdown').classList.remove('show');
+
+  // Update city
+  reverseGeocode(lat, lng);
+  document.getElementById('map-search').blur();
+}
+
+// Keyboard navigation for dropdown
+document.addEventListener('keydown', function(e) {
+  const dropdown = document.getElementById('search-dropdown');
+  if (!dropdown.classList.contains('show')) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); highlightResult(Math.min(selectedResultIdx+1, searchResults.length-1)); }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); highlightResult(Math.max(selectedResultIdx-1, 0)); }
+  if (e.key === 'Enter')     { e.preventDefault(); if (selectedResultIdx >= 0) selectResult(selectedResultIdx); else if (searchResults.length) selectResult(0); }
+  if (e.key === 'Escape')    { dropdown.classList.remove('show'); }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.map-search-wrap')) {
+    document.getElementById('search-dropdown').classList.remove('show');
+  }
+});
+
+window.addEventListener('load', () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       p => initMap(p.coords.latitude, p.coords.longitude),
