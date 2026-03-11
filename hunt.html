@@ -162,6 +162,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .ctxt{font-size:15px;color:#fff;line-height:1.75;font-family:'Karla',sans-serif;}
 .clue-photo{width:100%;border-radius:10px;margin-top:12px;max-height:240px;object-fit:cover;
   border:1px solid rgba(255,255,255,.1);display:block;}
+/* Inline mini maps on last 3 clues */
+.clue-map-wrap{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.3);
+  position:relative;}
+.clue-map-label{position:absolute;top:8px;left:8px;z-index:500;background:rgba(6,5,10,.85);
+  border:1px solid rgba(201,137,12,.4);border-radius:6px;padding:3px 9px;
+  font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1px;color:var(--gold);font-weight:700;}
+.clue-map-label.zoom-close{color:#f87171;border-color:rgba(248,113,113,.4);}
+.clue-mini-map{width:100%;height:180px;display:block;}
+.final-clue-photo{width:100%;border-radius:12px;margin-top:10px;max-height:280px;object-fit:cover;
+  border:2px solid rgba(201,137,12,.4);box-shadow:0 6px 30px rgba(201,137,12,.2);display:block;}
+.final-map-full{width:100%;height:240px;border-radius:12px;margin-top:10px;display:block;
+  border:2px solid rgba(248,113,113,.4);box-shadow:0 6px 30px rgba(248,113,113,.15);}
+.x-marks-spot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:28px;z-index:500;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));}
 .clocked{font-size:12px;color:rgba(255,255,255,.2);font-family:'DM Mono',monospace;letter-spacing:.5px;}
 .ctimer{font-size:14px;font-weight:700;color:rgba(201,137,12,.5);font-family:'DM Mono',monospace;margin-top:5px;}
 .ccard-glow{height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.4),transparent);margin:0 20px;}
@@ -436,11 +450,37 @@ function renderHunt() {
 
   // Clue cards
   const _huntEnded = huntEnded; // closure for map
+  const _total = clues.length;
+  const _lat = hunt.lat;
+  const _lng = hunt.lng;
+  const _city = hunt.city;
+
+  // Map zoom levels for last 3 clues: antepenultimate=14, penultimate=16, final=18
+  const zoomForClue = (num) => {
+    if (num === _total)     return { zoom: 18, label: '3× ZOOM', cls: 'zoom-close' };
+    if (num === _total - 1) return { zoom: 16, label: '2× ZOOM', cls: '' };
+    if (num === _total - 2) return { zoom: 14, label: '1× ZOOM', cls: '' };
+    return null;
+  };
+
   document.getElementById('free-clues').innerHTML = clues.length ? clues.map((c,i) => {
     const isRevealed = _huntEnded || new Date(c.reveal_at) <= new Date();
     const hasPhoto = c.is_photo && c.photo_url;
     const cn = ((c.clue_number-1) % 10) + 1;
+    const mapInfo = zoomForClue(c.clue_number);
+    const isFinal = c.clue_number === _total;
+
     if (isRevealed) {
+      const mapHtml = mapInfo && (_lat || _city) ? `
+        <div class="clue-map-wrap">
+          <div class="clue-map-label ${mapInfo.cls}">${mapInfo.label}</div>
+          ${isFinal ? '<div class="x-marks-spot">🎯</div>' : ''}
+          <div id="cluemap-${c.clue_number}" class="clue-mini-map ${isFinal ? 'final-map-full' : ''}"></div>
+        </div>` : '';
+      const photoHtml = hasPhoto && isFinal
+        ? `<img class="final-clue-photo" src="${c.photo_url}" loading="lazy" alt="Hiding spot photo"/>`
+        : hasPhoto ? `<img class="clue-photo" src="${c.photo_url}" loading="lazy" alt="Hiding spot"/>` : '';
+
       return `<div class="ccard revealed ccard-c${cn}" style="animation:fadeUp .4s ${i*0.06}s both;">
         <div class="ccard-glow-${cn}"></div>
         <div class="ccard-inner">
@@ -450,9 +490,11 @@ function renderHunt() {
               <span class="cday">${c.day_label}</span>
               <span class="cdate">${c.date_label}</span>
               ${hasPhoto ? '<span class="photo-badge">📸 PHOTO</span>' : ''}
+              ${mapInfo ? `<span class="photo-badge" style="color:#4ade80;border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.1);">🗺 MAP</span>` : ''}
             </div>
             <div class="ctxt">${c.clue_text}</div>
-            ${hasPhoto ? `<img class="clue-photo" src="${c.photo_url}" loading="lazy" alt="Hiding spot"/>` : ''}
+            ${mapHtml}
+            ${photoHtml}
           </div>
         </div>
       </div>`;
@@ -472,6 +514,51 @@ function renderHunt() {
       </div>`;
     }
   }).join('') : '<div class="statebox"><div class="si">📜</div>Clues coming soon…</div>';
+
+  // Init mini maps after DOM renders
+  setTimeout(() => initClueMaps(clues, _lat, _lng, _city), 100);
+}
+
+function initClueMaps(clues, lat, lng, city) {
+  if (!window.L) return;
+  const total = clues.length;
+  const zoomLevels = { [total-2]: 14, [total-1]: 16, [total]: 18 };
+
+  const doInit = (clat, clng) => {
+    Object.entries(zoomLevels).forEach(([num, zoom]) => {
+      num = parseInt(num);
+      const el = document.getElementById('cluemap-' + num);
+      if (!el || el._mapInited) return;
+      el._mapInited = true;
+      const m = L.map(el, { zoomControl: false, scrollWheelZoom: false,
+        dragging: false, touchZoom: false, doubleClickZoom: false, keyboard: false });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
+      m.setView([clat, clng], zoom);
+      if (num === total) {
+        // Final clue: show precise marker area
+        L.circle([clat, clng], {
+          radius: 80, color: '#f87171', fillColor: '#f87171',
+          fillOpacity: 0.2, weight: 2, dashArray: '4 3'
+        }).addTo(m);
+      } else {
+        // Earlier clues: gold area circle, shrinking
+        const radius = num === total - 1 ? 300 : 800;
+        L.circle([clat, clng], {
+          radius, color: '#c9890c', fillColor: '#c9890c',
+          fillOpacity: 0.12, weight: 2, dashArray: '6 4'
+        }).addTo(m);
+      }
+    });
+  };
+
+  if (lat && lng) {
+    doInit(lat, lng);
+  } else if (city) {
+    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(city) + '&format=json&limit=1')
+      .then(r => r.json()).then(d => {
+        if (d && d[0]) doInit(parseFloat(d[0].lat), parseFloat(d[0].lon));
+      }).catch(() => {});
+  }
 }
 
 function initHuntMap() {
