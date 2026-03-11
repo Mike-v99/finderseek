@@ -53,8 +53,17 @@
 
   /* FORM CARD */
   .fcard{border-radius:20px;margin-bottom:14px;overflow:hidden;backdrop-filter:blur(12px);}
-  .fcard-hdr{padding:18px 24px 15px;display:flex;align-items:center;gap:12px;}
-  .fcard-hdr-icon{font-size:26px;}
+  .fcard-hdr{padding:18px 24px 15px;display:flex;align-items:center;gap:12px;position:relative;}
+  .fcard-hdr .fcard-num{flex-shrink:0;}
+  .fcard-hdr-center{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;margin-right:32px;}
+  .fcard-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'DM Mono',monospace;flex-shrink:0;border:2px solid;color:#ffffff !important;}
+  .fc-gold .fcard-num{border-color:var(--gold2);color:var(--gold2);background:rgba(201,137,12,.15);}
+  .fc-blue .fcard-num{border-color:#93c5fd;color:#93c5fd;background:rgba(59,130,246,.15);}
+  .fc-red .fcard-num{border-color:#fca5a5;color:#fca5a5;background:rgba(239,68,68,.15);}
+  .fc-purple .fcard-num{border-color:#c4b5fd;color:#c4b5fd;background:rgba(139,92,246,.15);}
+  .fc-green .fcard-num{border-color:#86efac;color:#86efac;background:rgba(34,197,94,.15);}
+  .fc-platinum .fcard-num{border-color:#ffb3be;color:#ffb3be;background:rgba(200,40,70,.15);}
+  .fcard-hdr-icon{font-size:22px;}
   .fcard-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;line-height:1.1;}
   .fcard-sub{display:none;}
   .fcard-body{background:rgba(6,5,10,.8);padding:22px 24px 26px;}
@@ -192,13 +201,13 @@
   .map-coords{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;padding:6px;background:rgba(255,255,255,.03);border-radius:8px;letter-spacing:.5px;}
   .map-coords span{color:var(--gold);}
 
-  .fc-platinum{border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 1px rgba(180,180,200,.15),inset 0 1px 0 rgba(255,255,255,.15);}
-  .fc-platinum .fcard-hdr{background:linear-gradient(160deg,rgba(210,215,225,.22) 0%,rgba(160,165,180,.12) 50%,rgba(200,205,220,.18) 100%);border-bottom:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);}
-  .fc-platinum .fcard-title{color:#f0f2f8;text-shadow:0 1px 3px rgba(0,0,0,.4);}
-  .fc-platinum .fcard-sub{color:rgba(220,225,240,.7);}
-  .fc-platinum .fcard-body{background:linear-gradient(180deg,rgba(30,32,42,.9) 0%,rgba(18,20,28,.95) 100%);}
-  .fc-platinum .photo-drop{border-color:rgba(255,255,255,.2);background:linear-gradient(135deg,rgba(200,205,220,.06),rgba(160,165,180,.03));}
-  .fc-platinum .photo-drop:hover{border-color:rgba(255,255,255,.4);background:rgba(200,205,220,.1);}
+  .fc-platinum{border:1px solid rgba(220,60,80,.5);box-shadow:0 0 24px rgba(220,60,80,.15),inset 0 1px 0 rgba(255,120,140,.2);}
+  .fc-platinum .fcard-hdr{background:linear-gradient(160deg,rgba(200,40,70,.35) 0%,rgba(240,80,100,.18) 50%,rgba(180,30,55,.28) 100%);border-bottom:1px solid rgba(220,60,80,.3);box-shadow:inset 0 1px 0 rgba(255,150,160,.15);}
+  .fc-platinum .fcard-title{color:#ffb3be;text-shadow:0 1px 6px rgba(200,40,70,.5);}
+  .fc-platinum .fcard-sub{color:rgba(255,160,175,.7);}
+  .fc-platinum .fcard-body{background:linear-gradient(180deg,rgba(40,10,18,.92) 0%,rgba(20,5,10,.97) 100%);}
+  .fc-platinum .photo-drop{border-color:rgba(220,60,80,.3);background:linear-gradient(135deg,rgba(200,40,70,.07),rgba(240,80,100,.03));}
+  .fc-platinum .photo-drop:hover{border-color:rgba(220,60,80,.6);background:rgba(200,40,70,.12);}
 </style>
 </head>
 <body>
@@ -224,8 +233,9 @@
   <!-- QUEST TIME -->
   <div class="fcard fc-blue f3">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">⏱️</div>
-      <div><div class="fcard-title">Quest Duration</div><div class="fcard-sub">How long will seekers have to find your treasure?</div></div>
+      <div class="fcard-num">1</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">⏱️</div>
+      <div><div class="fcard-title">Quest Duration</div><div class="fcard-sub">How long will seekers have to find your treasure?</div></div></div>
     </div>
     <div class="fcard-body">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
@@ -245,8 +255,9 @@
   <!-- STEP 2 -->
   <div class="fcard fc-platinum f4">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">📸</div>
-      <div><div class="fcard-title">Photo of the Hiding Spot</div><div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div></div>
+      <div class="fcard-num">2</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">📸</div>
+      <div><div class="fcard-title">Photo of the Hiding Spot</div><div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div></div></div>
     </div>
     <div class="fcard-body">
       <input type="file" id="photo-input-gallery" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
@@ -269,8 +280,9 @@
   <!-- STEP 1 -->
   <div class="fcard fc-gold f3">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">📍</div>
-      <div><div class="fcard-title">Where & How Much</div><div class="fcard-sub">Tell seekers where to search and what's at stake.</div></div>
+      <div class="fcard-num">3</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">📍</div>
+      <div><div class="fcard-title">Where & How Much</div><div class="fcard-sub">Tell seekers where to search and what's at stake.</div></div></div>
     </div>
     <div class="fcard-body">
       <div class="field">
@@ -279,9 +291,11 @@
           <span class="map-search-icon">🔍</span>
           <input class="map-search-input" id="map-search" type="text" placeholder="Search address, park, landmark…" oninput="debounceSearch(this.value)"/>
         </div>
-        <div class="map-container" id="map-container">
-          <iframe id="map-iframe" width="100%" height="100%" frameborder="0" style="border:0;border-radius:12px;" allowfullscreen src="about:blank"></iframe>
+        <div class="map-container" id="map-container" style="position:relative;z-index:2;overflow:hidden;border-radius:12px;">
+          <iframe id="map-iframe" width="100%" height="100%" frameborder="0" style="border:0;display:block;" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Houston,TX&z=14&output=embed"></iframe>
+          <div id="map-pin-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));z-index:10;">📍</div>
         </div>
+        <button type="button" onclick="openGoogleMaps()" style="width:100%;margin-top:8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#93c5fd;cursor:pointer;font-family:'Karla',sans-serif;transition:background .2s;" onmouseover="this.style.background='rgba(59,130,246,.22)'" onmouseout="this.style.background='rgba(59,130,246,.12)'">🗺️ Open in Google Maps to drop exact pin</button>
         <div class="map-coords" id="map-coords">📌 Drop a pin or search to set location</div>
       </div>
       <div class="field">
@@ -305,8 +319,9 @@
   <!-- STEP 3 -->
   <div class="fcard fc-red f4">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">🔐</div>
-      <div><div class="fcard-title">Secret Finder Code</div><div class="fcard-sub">Finders will enter this code to claim the prize.</div></div>
+      <div class="fcard-num">4</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">🔐</div>
+      <div><div class="fcard-title">Secret Finder Code</div><div class="fcard-sub">Finders will enter this code to claim the prize.</div></div></div>
     </div>
     <div class="fcard-body">
       <div class="code-wrap">
@@ -327,8 +342,9 @@
   <!-- STEP 4 -->
   <div class="fcard fc-purple f5">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">💸</div>
-      <div><div class="fcard-title">How You'll Pay the Finder</div><div class="fcard-sub">Choose how the prize gets to the winner.</div></div>
+      <div class="fcard-num">5</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">💸</div>
+      <div><div class="fcard-title">How You'll Pay the Finder</div><div class="fcard-sub">Choose how the prize gets to the winner.</div></div></div>
     </div>
     <div class="fcard-body">
       <div class="pay-opts">
@@ -362,8 +378,9 @@
   <!-- STEP 5 -->
   <div class="fcard fc-green f6">
     <div class="fcard-hdr">
-      <div class="fcard-hdr-icon">🚀</div>
-      <div><div class="fcard-title">When to Go Live</div><div class="fcard-sub">Choose when seekers can start hunting.</div></div>
+      <div class="fcard-num">6</div>
+      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">🚀</div>
+      <div><div class="fcard-title">When to Go Live</div><div class="fcard-sub">Choose when seekers can start hunting.</div></div></div>
     </div>
     <div class="fcard-body">
       <div class="golive-opts">
@@ -408,14 +425,27 @@
 
 <script>
 
-// Google Maps location picker (uses OpenStreetMap/Nominatim — no API key needed)
+// Map location picker
 let selectedLat = null, selectedLng = null;
 let searchTimeout = null;
+
+function updateMapIframe(lat, lng, label) {
+  const q = label ? encodeURIComponent(label) : `${lat},${lng}`;
+  document.getElementById('map-iframe').src = `https://maps.google.com/maps?q=${q}&z=16&output=embed`;
+  selectedLat = lat; selectedLng = lng;
+  document.getElementById('map-coords').innerHTML = `📌 <span>${lat.toFixed(5)}, ${lng.toFixed(5)}</span> — location set ✓`;
+}
+
+function openGoogleMaps() {
+  const lat = selectedLat || 29.7604;
+  const lng = selectedLng || -95.3698;
+  window.open(`https://maps.google.com/maps?q=${lat},${lng}&z=16`, '_blank');
+}
 
 function debounceSearch(val) {
   clearTimeout(searchTimeout);
   if (val.length < 3) return;
-  searchTimeout = setTimeout(() => searchLocation(val), 600);
+  searchTimeout = setTimeout(() => searchLocation(val), 700);
 }
 
 async function searchLocation(query) {
@@ -424,25 +454,26 @@ async function searchLocation(query) {
     const data = await res.json();
     if (data && data.length > 0) {
       const { lat, lon, display_name } = data[0];
-      selectedLat = parseFloat(lat);
-      selectedLng = parseFloat(lon);
-      updateMap(selectedLat, selectedLng);
-      // Auto-fill city if empty
+      updateMapIframe(parseFloat(lat), parseFloat(lon), display_name);
       const parts = display_name.split(',');
-      if (!document.getElementById('city').value && parts.length > 2) {
-        const city = parts.slice(-4, -2).join(',').trim();
-        document.getElementById('city').value = city;
+      if (!document.getElementById('city').value) {
+        document.getElementById('city').value = parts.slice(0, 2).join(',').trim();
       }
     }
-  } catch(e) { console.error('Location search failed', e); }
+  } catch(e) { console.error('Search failed', e); }
 }
 
-function updateMap(lat, lng) {
-  const zoom = 16;
-  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005},${lat-0.005},${lng+0.005},${lat+0.005}&layer=mapnik&marker=${lat},${lng}`;
-  document.getElementById('map-iframe').src = src;
-  document.getElementById('map-coords').innerHTML = `📌 <span>${lat.toFixed(5)}, ${lng.toFixed(5)}</span> — location set ✓`;
-}
+// On load, use geolocation to center map
+window.addEventListener('load', () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => updateMapIframe(pos.coords.latitude, pos.coords.longitude),
+      ()   => updateMapIframe(29.7604, -95.3698, 'Houston, TX')
+    );
+  } else {
+    updateMapIframe(29.7604, -95.3698, 'Houston, TX');
+  }
+});
 
 const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
