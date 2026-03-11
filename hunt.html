@@ -209,23 +209,40 @@ function fmtShort(ms) {
 }
 
 async function loadHunt() {
-  if(!huntId) { redirect(); return; }
   try {
-    // Load hunt
-    const hr = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&status=in.(active,scheduled)`,{headers:H});
+    let url;
+    if (huntId) {
+      // Load specific hunt by ID — any status
+      url = `${SB}/rest/v1/hunts?id=eq.${huntId}&select=*`;
+    } else {
+      // No ID — load the most recent hunt
+      url = `${SB}/rest/v1/hunts?select=*&order=created_at.desc&limit=1`;
+    }
+
+    const hr = await fetch(url, {headers:H});
     const hunts = await hr.json();
-    if(!hunts||!hunts.length){ redirect(); return; }
+
+    if (!hunts || !hunts.length) {
+      document.getElementById('prize-amt').textContent = 'No active hunts right now';
+      document.getElementById('prize-meta').textContent = 'Check back soon!';
+      return;
+    }
     hunt = hunts[0];
 
-    // Load clues (free only — pro requires auth)
-    const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${huntId}&order=clue_number.asc`,{headers:H});
+    // Update URL without reload if we loaded by latest
+    if (!huntId) {
+      history.replaceState(null, '', `hunt.html?id=${hunt.id}`);
+    }
+
+    // Load clues
+    const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${hunt.id}&order=clue_number.asc`, {headers:H});
     clues = cr.ok ? await cr.json() : [];
 
     renderHunt();
     loadLeaderboard();
     initHuntMap();
   } catch(e) {
-    console.error(e);
+    console.error('loadHunt error:', e);
     document.getElementById('prize-amt').textContent = 'Error loading hunt';
   }
 }
