@@ -1089,35 +1089,71 @@ async function submitHunt() {
   const liveAt = liveChoice === 'now' ? new Date().toISOString() : new Date(document.getElementById('live-datetime').value).toISOString();
 
   try {
+    // Upload photo if provided
     let photoUrl = null;
     if (photoFile) {
       const ext = photoFile.name.split('.').pop();
       const path = `hunt-photos/${Date.now()}.${ext}`;
       const up = await fetch(`${SB}/storage/v1/object/finderseeek-assets/${path}`, {
         method: 'POST',
-        headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': photoFile.type },
+        headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken()||KEY), 'Content-Type': photoFile.type },
         body: photoFile
       });
       if (up.ok) photoUrl = `${SB}/storage/v1/object/public/finderseeek-assets/${path}`;
     }
 
     const now = new Date();
-    const weekEnd = new Date(now); weekEnd.setDate(now.getDate() + 7);
-    const weekLabel = `${now.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
+    const liveDate = new Date(liveAt);
+    const weekEnd = new Date(liveDate); weekEnd.setDate(liveDate.getDate() + 7);
+    const weekLabel = `${liveDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
 
-    await fetch(`${SB}/rest/v1/hunts`, {
-      method: 'POST', headers: H,
+    // Status: scheduled if future, active if now
+    const status = liveDate > now ? 'scheduled' : 'active';
+
+    // Always use auth token for insert
+    const authHeaders = {
+      'apikey': KEY,
+      'Authorization': 'Bearer ' + (getToken() || KEY),
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    };
+
+    const huntRes = await fetch(`${SB}/rest/v1/hunts`, {
+      method: 'POST',
+      headers: authHeaders,
       body: JSON.stringify({
-        week_label: weekLabel, prize_desc: `$${prize} Cash`,
-        prize_value: prize * 100, starts_at: liveAt,
-        ends_at: weekEnd.toISOString(), status: 'active', city,
-        finder_code: code, payment_type: payType,
+        week_label: weekLabel,
+        prize_desc: `$${prize} Cash`,
+        prize_value: prize * 100,
+        starts_at: liveAt,
+        ends_at: weekEnd.toISOString(),
+        status: status,
+        city: city,
+        finder_code: code,
+        payment_type: payType,
         payment_handle: payHandle || null,
-        neighborhood: hood, photo_url: photoUrl,
+        neighborhood: hood,
+        photo_url: photoUrl,
         pirate_id: currentUser?.id || null,
       })
     });
-  } catch(e) { console.error(e); }
+
+    const huntData = await huntRes.json();
+    if (!huntRes.ok) {
+      console.error('Supabase error:', huntData);
+      btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
+      alert('Error saving quest: ' + (huntData?.message || huntData?.error || JSON.stringify(huntData)));
+      return;
+    }
+
+    console.log('Hunt saved:', huntData);
+
+  } catch(e) {
+    console.error('Submit error:', e);
+    btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
+    alert('Submission failed: ' + e.message);
+    return;
+  }
 
   showConfirmation({ city, hood, prize, code, payType, liveAt });
 }
