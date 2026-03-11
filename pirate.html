@@ -296,8 +296,8 @@
         <div class="map-coords" id="map-coords">📌 Drop a pin or search to set location</div>
       </div>
       <div class="field">
-        <label class="flabel">City</label>
-        <input class="finput" id="city" type="text" placeholder="e.g. Houston, TX"/>
+        <label class="flabel">City <span style="font-size:10px;color:var(--muted);letter-spacing:0;text-transform:none;font-family:'Karla',sans-serif;">(auto-filled — correct if wrong)</span></label>
+        <input class="finput" id="city" type="text" placeholder="e.g. Conroe, TX"/>
       </div>
       <div class="field">
         <label class="flabel">Precise Location / Notes</label>
@@ -490,31 +490,36 @@ function setCoords(lat, lng) {
 
 async function reverseGeocode(lat, lng) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`);
+    // Use zoom=16 to get street-level detail with postal city
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&zoom=16`);
     const d = await r.json();
     if (d.address) {
       const a = d.address;
 
-      // Build street address
+      // Street address parts
       const houseNum = a.house_number || '';
-      const road = a.road || a.pedestrian || a.path || '';
+      const road = a.road || a.pedestrian || a.path || a.footway || '';
       const streetAddr = [houseNum, road].filter(Boolean).join(' ');
 
-      // Build city — prefer actual city over suburb/neighborhood
-      const city = a.city || a.town || a.municipality || a.village || a.hamlet || '';
-      const suburb = a.suburb || a.neighbourhood || a.quarter || '';
-      const county = a.county || '';
+      // Use address_line fields Nominatim provides — postal city is most reliable
+      // Priority: city > town > municipality > village > hamlet > suburb
+      const city = a.city || a.town || a.municipality || a.village || a.hamlet || a.suburb || '';
       const state = a.state || '';
       const postcode = a.postcode || '';
 
-      // City field: real city + state
-      const cityDisplay = `${city || suburb || county}, ${state} ${postcode}`.trim().replace(/^,\s*/, '');
-      if (cityDisplay) document.getElementById('city').value = cityDisplay;
+      // Build short state code if possible (TX instead of Texas)
+      const stateShort = state.length > 2 ? state : state;
 
-      // Populate search bar with full address
+      const cityDisplay = `${city}, ${stateShort} ${postcode}`.trim();
+      if (city) document.getElementById('city').value = cityDisplay;
+
+      // Fill search bar with proper postal address
       if (streetAddr) {
-        const fullAddr = `${streetAddr}, ${city || suburb}, ${state}`;
-        document.getElementById('map-search').value = fullAddr;
+        document.getElementById('map-search').value = `${streetAddr}, ${city}, ${stateShort} ${postcode}`.trim();
+      } else if (d.display_name) {
+        // Fallback: use first parts of display name
+        const parts = d.display_name.split(',').slice(0, 3).join(',').trim();
+        document.getElementById('map-search').value = parts;
       }
     }
   } catch(e) { console.error('Reverse geocode failed', e); }
