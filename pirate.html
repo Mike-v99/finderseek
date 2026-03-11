@@ -1509,7 +1509,9 @@ async function submitHunt() {
 
     const now = new Date();
     const liveDate = new Date(liveAt);
-    const weekEnd = new Date(liveDate); weekEnd.setDate(liveDate.getDate() + 7);
+    // Duration based on selection
+    const durationHours = questDuration === 'blitz' ? 2 : questDuration === 'weekend' ? 72 : 144;
+    const weekEnd = new Date(liveDate.getTime() + durationHours * 60 * 60 * 1000);
     const weekLabel = `${liveDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
 
     // Status: scheduled if future, active if now
