@@ -107,8 +107,7 @@
     <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
   <div class="nav-r">
-    <button class="btn-up">UPGRADE</button>
-    <div class="avatar">G</div>
+<a href="seeker.html" style="font-size:13px;color:var(--dim);text-decoration:none;">← All Quests</a>
   </div>
 </nav>
 <div class="gold-bar"></div>
@@ -249,40 +248,35 @@ function renderHunt() {
   mainTimer = setInterval(()=>{ document.getElementById('main-cd').textContent = fmt(endsAt-Date.now()); },1000);
   document.getElementById('main-cd').textContent = fmt(endsAt-now);
 
-  // Clues
+  // All clues — no tier gating
   const revealed = clues.filter(c=>new Date(c.reveal_at)<=new Date());
-  const free = clues.filter(c=>c.tier==='free');
-  const pro  = clues.filter(c=>c.tier==='pro');
-  const revealedFree = free.filter(c=>new Date(c.reveal_at)<=new Date());
-
-  document.getElementById('clues-count').textContent = revealedFree.length;
+  document.getElementById('clues-count').textContent = revealed.length;
   document.getElementById('clues-total').textContent = clues.length || 7;
 
   // Dots
   const dotsEl = document.getElementById('clue-dots');
   dotsEl.innerHTML = clues.map(c=>{
     const isRevealed = new Date(c.reveal_at)<=new Date();
-    const cls = !isRevealed ? 'dl' : c.tier==='pro' ? 'dp' : 'df';
-    return `<div class="cdot ${cls}"></div>`;
+    return `<div class="cdot ${isRevealed?'df':'dl'}"></div>`;
   }).join('');
 
-  // Next free clue
-  const nextFree = free.find(c=>new Date(c.reveal_at)>new Date());
-  if(nextFree) {
-    document.getElementById('next-clue-lbl').textContent = `Clue ${nextFree.clue_number} · ${nextFree.day_label}`;
+  // Next clue countdown
+  const nextClue = clues.find(c=>new Date(c.reveal_at)>new Date());
+  if(nextClue) {
+    document.getElementById('next-clue-lbl').textContent = `Clue ${nextClue.clue_number} · ${nextClue.day_label}`;
     clearInterval(nextTimer);
     nextTimer = setInterval(()=>{
       const el=document.getElementById('next-clue-cd');
-      if(el) el.textContent = fmtShort(new Date(nextFree.reveal_at)-Date.now());
+      if(el) el.textContent = fmtShort(new Date(nextClue.reveal_at)-Date.now());
     },1000);
-    document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextFree.reveal_at)-now);
+    document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextClue.reveal_at)-now);
   } else {
-    document.getElementById('next-clue-lbl').textContent = 'All free clues dropped';
+    document.getElementById('next-clue-lbl').textContent = clues.length ? 'All clues revealed!' : 'No clues yet';
     document.getElementById('next-clue-cd').textContent = '';
   }
 
-  // Free clues
-  document.getElementById('free-clues').innerHTML = free.map(c=>{
+  // All clues
+  document.getElementById('free-clues').innerHTML = clues.length ? clues.map(c=>{
     const isRevealed = new Date(c.reveal_at)<=new Date();
     return `<div class="ccard ${!isRevealed?'locked':''}">
       <div class="cnum ${isRevealed?'nf':'nl'}">${c.clue_number}</div>
@@ -290,7 +284,6 @@ function renderHunt() {
         <div class="chdr">
           <span class="cday">${c.day_label}</span>
           <span class="cdate">${c.date_label}</span>
-          <span class="cbadge bfree">FREE</span>
         </div>
         ${isRevealed
           ? `<div class="ctxt">"${c.clue_text}"</div>`
@@ -298,21 +291,11 @@ function renderHunt() {
              <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>`}
       </div>
     </div>`;
-  }).join('');
+  }).join('') : '<div class="statebox"><div class="si">📜</div>Clues coming soon…</div>';
 
-  // Pro clues (locked for non-pro)
-  document.getElementById('pro-clues').innerHTML = pro.map(c=>`
-    <div class="ccard locked">
-      <div class="cnum np">${c.clue_number}</div>
-      <div class="cbody">
-        <div class="chdr">
-          <span class="cday">${c.day_label}</span>
-          <span class="cdate">${c.date_label}</span>
-          <span class="cbadge bpro">PRO</span>
-        </div>
-        <div class="clocked">Upgrade to unlock</div>
-      </div>
-    </div>`).join('');
+  // Hide pro section entirely
+  const proEl = document.getElementById('pro-clues');
+  if(proEl) proEl.innerHTML = '';
 }
 
 async function loadLeaderboard() {
