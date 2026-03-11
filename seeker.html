@@ -92,6 +92,21 @@
   .btn-pirate{display:inline-block;background:#1a2090;color:#e0e4ff;border-radius:12px;padding:14px 28px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(26,32,144,.4);transition:transform .2s,box-shadow .2s;}
   .btn-pirate:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
 
+  
+  .sec-divider{position:relative;z-index:2;max-width:700px;margin:0 auto;padding:0 20px;}
+  .sched-head{display:flex;align-items:center;justify-content:space-between;margin:32px 0 16px;}
+  .sched-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .sbadge{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:20px;padding:4px 12px;font-size:12px;color:#a5b4fc;font-family:'DM Mono',monospace;}
+  .hcard.scheduled{border-color:rgba(99,102,241,.25);opacity:.9;}
+  .hcard.scheduled:hover{border-color:rgba(99,102,241,.5);}
+  .sched-tag{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:1px;font-family:'DM Mono',monospace;}
+  .sort-row{display:flex;gap:8px;margin-bottom:16px;align-items:center;}
+  .sort-lbl{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap;}
+  .sort-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+  .sort-btn.active{background:rgba(201,137,12,.15);border-color:var(--gold);color:var(--gold);font-weight:700;}
+  .hhandle{font-size:12px;color:var(--muted);margin-top:2px;}
+  .hhandle span{color:var(--gold2);font-weight:600;}
+
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .f1{animation:fadeUp .6s .05s both} .f2{animation:fadeUp .6s .15s both}
@@ -160,7 +175,7 @@ const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
 
-let allHunts = [], activeFilter = 'all', timers = {};
+let allHunts = [], activeFilter = 'all', activeSort = 'prize', timers = {};
 
 function tier(cents) { const v=Math.round(cents/100); return v>=75?'platinum':v>=50?'gold':v>=30?'silver':'starter'; }
 const TIER_LABEL = { platinum:'💎 PLATINUM', gold:'🔥 GOLD', silver:'🥈 SILVER', starter:'🌱 STARTER' };
