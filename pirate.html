@@ -494,8 +494,9 @@ async function reverseGeocode(lat, lng) {
     const d = await r.json();
     if (d.address) {
       const a = d.address;
-      const city = a.city || a.town || a.village || a.county || '';
-      const state = a.state || '';
+      // Pick the most meaningful place name in order of preference
+      const city = a.city || a.town || a.municipality || a.village || a.hamlet || a.suburb || a.county || '';
+      const state = a.state_code || a.state || '';
       if (city) document.getElementById('city').value = `${city}, ${state}`;
     }
   } catch(e) {}
@@ -581,8 +582,8 @@ async function searchLocation(query) {
         initMap(lat, lng);
       }
 
-      if (!document.getElementById('city').value)
-        document.getElementById('city').value = cityVal;
+      // Always update city from reverse geocode for accuracy
+      reverseGeocode(lat, lng);
     }
   } catch(e) { console.error('Search failed', e); }
 }
