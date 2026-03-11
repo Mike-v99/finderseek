@@ -97,7 +97,18 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   .f1{animation:fadeUp .5s .05s both} .f2{animation:fadeUp .5s .12s both}
   .f3{animation:fadeUp .5s .2s both}  .f4{animation:fadeUp .5s .28s both}
+
+  /* Photo clues */
+  .clue-photo{width:100%;border-radius:10px;margin-top:10px;max-height:220px;object-fit:cover;border:1px solid rgba(255,255,255,.1);}
+  .photo-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;color:var(--gold);background:rgba(201,137,12,.12);border:1px solid rgba(201,137,12,.25);border-radius:6px;padding:2px 8px;margin-left:auto;}
+  /* Map */
+  #hunt-map{width:100%;height:340px;border-radius:16px;margin-top:12px;border:1px solid var(--border);overflow:hidden;}
+  .map-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:8px;letter-spacing:.5px;}
+  /* Clue text white */
+  .ctxt{font-size:14px;color:#fff !important;line-height:1.7;font-style:normal !important;}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
 
@@ -170,7 +181,8 @@
 
   <!-- MAP -->
   <div class="panel" id="panel-map">
-    <div class="map-ph"><span style="font-size:36px">🗺️</span><span>Map unlocks with clues</span><span style="font-size:11px;opacity:.6">Clue areas appear as you progress</span></div>
+    <div id="hunt-map"></div>
+    <div class="map-note">📍 General area only — exact location hidden in the clues</div>
   </div>
 
   <!-- HUNTERS -->
@@ -218,9 +230,52 @@ async function loadHunt() {
 
     renderHunt();
     loadLeaderboard();
+    initHuntMap();
   } catch(e) {
     console.error(e);
     document.getElementById('prize-amt').textContent = 'Error loading hunt';
+  }
+}
+
+function initHuntMap() {
+  const lat = hunt.lat || 29.7604;
+  const lng = hunt.lng || -95.3698;
+  const mapEl = document.getElementById('hunt-map');
+  if (!mapEl || !window.L) return;
+
+  const map = L.map('hunt-map', { zoomControl: true, scrollWheelZoom: false });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+
+  if (hunt.lat && hunt.lng) {
+    // Show blurred area circle — not exact pin
+    map.setView([lat, lng], 14);
+    L.circle([lat, lng], {
+      radius: 600,
+      color: '#c9890c',
+      fillColor: '#c9890c',
+      fillOpacity: 0.12,
+      weight: 2,
+      opacity: 0.5,
+      dashArray: '6 4'
+    }).addTo(map).bindPopup('💰 Treasure is hidden somewhere in this area');
+  } else {
+    // Fallback: geocode city name
+    map.setView([lat, lng], 11);
+    fetch(\`https://nominatim.openstreetmap.org/search?q=\${encodeURIComponent(hunt.city || 'Houston TX')}&format=json&limit=1\`)
+      .then(r => r.json()).then(d => {
+        if (d && d[0]) {
+          const clat = parseFloat(d[0].lat), clng = parseFloat(d[0].lon);
+          map.setView([clat, clng], 11);
+          L.circle([clat, clng], {
+            radius: 3000,
+            color: '#c9890c',
+            fillColor: '#c9890c',
+            fillOpacity: 0.1,
+            weight: 2,
+            dashArray: '6 4'
+          }).addTo(map).bindPopup(\`💰 Treasure hidden somewhere in \${hunt.city}\`);
+        }
+      }).catch(() => {});
   }
 }
 
@@ -278,15 +333,18 @@ function renderHunt() {
   // All clues
   document.getElementById('free-clues').innerHTML = clues.length ? clues.map(c=>{
     const isRevealed = new Date(c.reveal_at)<=new Date();
+    const hasPhoto = c.is_photo && c.photo_url;
     return `<div class="ccard ${!isRevealed?'locked':''}">
       <div class="cnum ${isRevealed?'nf':'nl'}">${c.clue_number}</div>
       <div class="cbody">
         <div class="chdr">
           <span class="cday">${c.day_label}</span>
           <span class="cdate">${c.date_label}</span>
+          ${hasPhoto && isRevealed ? '<span class="photo-badge">📸 PHOTO</span>' : ''}
         </div>
         ${isRevealed
-          ? `<div class="ctxt">"${c.clue_text}"</div>`
+          ? `<div class="ctxt">${c.clue_text}</div>
+             ${hasPhoto ? `<img class="clue-photo" src="${c.photo_url}" alt="Hiding spot photo" loading="lazy"/>` : ''}`
           : `<div class="clocked">Drops ${c.day_label} at 8 AM</div>
              <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>`}
       </div>
