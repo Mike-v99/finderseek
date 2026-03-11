@@ -856,13 +856,24 @@ document.addEventListener('click', function(e) {
 });
 
 window.addEventListener('load', () => {
+  // Init map immediately with Houston so it never shows black
+  initMap(29.7604, -95.3698);
+
+  // Then try to get real location and update
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      p => initMap(p.coords.latitude, p.coords.longitude),
-      ()  => initMap(29.7604, -95.3698)
-    );
-  } else {
-    initMap(29.7604, -95.3698);
+      p => {
+        if (_mapReady && _map && _marker) {
+          _map.setView([p.coords.latitude, p.coords.longitude], 15);
+          _marker.setLatLng([p.coords.latitude, p.coords.longitude]);
+          selectedLat = p.coords.latitude;
+          selectedLng = p.coords.longitude;
+          setCoords(p.coords.latitude, p.coords.longitude);
+          reverseGeocode(p.coords.latitude, p.coords.longitude);
+        }
+      },
+      () => {} // silent fail — already showing Houston
+    , { timeout: 5000 });
   }
 });
 
