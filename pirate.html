@@ -322,6 +322,8 @@
   .cg-success-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:8px;color:var(--gold);}
   .btn-view-hunt{display:inline-block;background:var(--gold);color:#0a0800;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;margin-top:16px;}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
 <div class="bg-img"></div><div class="bg-vig"></div>
@@ -591,16 +593,10 @@ let _map = null, _marker = null, _mapReady = false;
 let searchTimeout = null;
 
 function loadLeaflet(cb) {
+  // Leaflet already loaded in <head>
   if (window.L) { cb(); return; }
-  const css = document.createElement('link');
-  css.rel = 'stylesheet';
-  css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-  document.head.appendChild(css);
-  const js = document.createElement('script');
-  js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  js.onload = cb;
-  js.onerror = () => { document.getElementById('map-coords').textContent = '⚠️ Map unavailable — enter location manually below'; };
-  document.head.appendChild(js);
+  // Fallback just in case
+  setTimeout(() => { if (window.L) cb(); else document.getElementById('map-coords').textContent = '⚠️ Map failed to load'; }, 1000);
 }
 
 function initMap(lat, lng) {
