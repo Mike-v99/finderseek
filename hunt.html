@@ -95,21 +95,39 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
-.tabs{display:flex;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.07);
-  position:sticky;top:53px;z-index:90;margin-top:10px;}
-.tab{flex:1;padding:14px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;
-  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;letter-spacing:.5px;font-family:'DM Mono',monospace;}
-.tab.active{color:var(--cream);border-bottom-color:var(--gold);}
-.tab:hover:not(.active){color:var(--dim);}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px;
+  position:sticky;top:53px;z-index:90;margin-top:0;backdrop-filter:blur(12px);
+  background:rgba(6,5,10,.6);border-bottom:1px solid rgba(255,255,255,.06);}
+.tab{flex:1;padding:10px 6px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;
+  border-radius:10px;border:1px solid transparent;transition:all .2s;letter-spacing:.5px;
+  font-family:'DM Mono',monospace;position:relative;overflow:hidden;}
+.tab::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;border-radius:10px;}
+/* Hunt — teal */
+.tab:nth-child(1){color:#34d399;border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.08);}
+.tab:nth-child(1).active,.tab:nth-child(1):hover{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);box-shadow:0 0 16px rgba(52,211,153,.2);}
+/* Claim — red/coral */
+.tab:nth-child(2){color:#f87171;border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.08);}
+.tab:nth-child(2).active,.tab:nth-child(2):hover{background:rgba(248,113,113,.18);border-color:rgba(248,113,113,.5);box-shadow:0 0 16px rgba(248,113,113,.2);}
+/* Map — sky blue */
+.tab:nth-child(3){color:#38bdf8;border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.08);}
+.tab:nth-child(3).active,.tab:nth-child(3):hover{background:rgba(56,189,248,.18);border-color:rgba(56,189,248,.5);box-shadow:0 0 16px rgba(56,189,248,.2);}
+/* Hunters — gold */
+.tab:nth-child(4){color:#fbbf24;border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.08);}
+.tab:nth-child(4).active,.tab:nth-child(4):hover{background:rgba(251,191,36,.18);border-color:rgba(251,191,36,.5);box-shadow:0 0 16px rgba(251,191,36,.2);}
+.tab-icon{font-size:16px;display:block;margin-bottom:3px;}
 .panel{display:none;} .panel.active{display:block;}
 
 /* MAIN CONTENT */
 .main{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:20px 16px 80px;}
 
 /* SECTION HEADER */
-.sec-hd{display:flex;align-items:center;gap:10px;margin:24px 0 14px;}
-.sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);}
-.sec-lbl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;}
+.sec-hd{display:flex;align-items:center;gap:16px;margin:24px 0 18px;position:relative;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.4),transparent);}
+.sec-lbl{font-family:'Bangers',cursive;font-size:42px;font-weight:400;letter-spacing:4px;
+  background:linear-gradient(135deg,#fbbf24,#c9890c,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-shadow:none;filter:drop-shadow(0 0 12px rgba(201,137,12,.5));
+  line-height:1;}
 
 /* CLUE CARDS */
 .ccard{border-radius:16px;margin-bottom:12px;overflow:hidden;transition:transform .2s;}
@@ -274,10 +292,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- TABS -->
 <div class="tabs f4">
-  <div class="tab active" onclick="showTab('hunt',this)">🗺️ Hunt</div>
-  <div class="tab" onclick="showTab('claim',this)">🎯 Claim</div>
-  <div class="tab" onclick="showTab('map',this)">📍 Map</div>
-  <div class="tab" onclick="showTab('hunters',this)">🏆 Hunters</div>
+  <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Hunt</div>
+  <div class="tab" onclick="showTab('claim',this)"><span class="tab-icon">🎯</span>Claim</div>
+  <div class="tab" onclick="showTab('map',this)"><span class="tab-icon">📍</span>Map</div>
+  <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Hunters</div>
 </div>
 
 <div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
@@ -285,7 +303,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- HUNT PANEL -->
 <div class="panel active" id="panel-hunt">
   <div class="main">
-    <div class="sec-hd"><div class="sec-lbl">📜 Clues</div><div class="sec-line"></div></div>
+    <div class="sec-hd"><div class="sec-lbl">CLUES</div><div class="sec-line"></div></div>
     <div id="free-clues"></div>
   </div>
 </div>
@@ -305,7 +323,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- MAP PANEL -->
 <div class="panel" id="panel-map">
   <div class="main">
-    <div class="sec-hd"><div class="sec-lbl">📍 Area Map</div><div class="sec-line"></div></div>
+    <div class="sec-hd"><div class="sec-lbl">AREA MAP</div><div class="sec-line"></div></div>
     <div id="hunt-map"></div>
     <div class="map-note">General area only — exact location hidden in the clues</div>
   </div>
@@ -314,7 +332,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- HUNTERS PANEL -->
 <div class="panel" id="panel-hunters">
   <div class="main">
-    <div class="sec-hd"><div class="sec-lbl">🏆 Leaderboard</div><div class="sec-line"></div></div>
+    <div class="sec-hd"><div class="sec-lbl">LEADERBOARD</div><div class="sec-line"></div></div>
     <div id="hunters-list"></div>
   </div>
 </div>
