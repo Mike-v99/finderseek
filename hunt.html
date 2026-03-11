@@ -2,188 +2,254 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>FinderSeek — Hunt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<style>
-  :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--border:rgba(201,137,12,0.2);--card-bg:rgba(14,12,20,0.9);--green:#22c55e;--purple:#8b5cf6;}
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
-
-  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.85);backdrop-filter:blur(12px);}
-  .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
-  .nav-icon{width:32px;height:32px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:15px;}
-  .nav-name{font-size:16px;font-weight:700;color:var(--cream);}
-  .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
-  .nav-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;}
-  .nav-r{display:flex;align-items:center;gap:8px;}
-  .btn-up{background:var(--gold);color:#0a0800;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:box-shadow .2s;}
-  .btn-up:hover{box-shadow:0 4px 18px rgba(201,137,12,.5);}
-  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1a2090,var(--gold));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;}
-  .gold-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-
-  .tabs{display:flex;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:relative;z-index:9;}
-  .tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
-  .tab.active{color:var(--cream);border-bottom-color:var(--gold);}
-  .tab:hover:not(.active){color:var(--dim);}
-  .panel{display:none;} .panel.active{display:block;}
-
-  .main{position:relative;z-index:2;max-width:660px;margin:0 auto;padding:20px 16px 60px;}
-
-  .prize-banner{border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(201,137,12,.25);position:relative;background:var(--card-bg);}
-  .prize-bg{position:absolute;inset:0;background:url('pirate%20sherlock%20trans.png') right center/contain no-repeat;opacity:.15;}
-  .prize-inner{position:relative;z-index:1;padding:20px 22px;}
-  .prize-eye{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:8px;}
-  .prize-amt{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;line-height:1;}
-  .prize-meta{font-size:12px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;}
-
-  .hunt-cd{background:rgba(20,10,5,.8);border:1px solid rgba(201,137,12,.2);border-radius:14px;padding:18px 20px;text-align:center;margin-bottom:14px;}
-  .hunt-cd-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:8px;}
-  .hunt-cd-time{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8vw,52px);font-weight:600;letter-spacing:2px;line-height:1;}
-  .hunt-cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:6px;letter-spacing:1px;}
-
-  .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-  .sbox{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;}
-  .slbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;}
-  .sval{font-size:15px;font-weight:700;}
-  .ssub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;}
-  .cdots{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
-  .cdot{width:18px;height:6px;border-radius:3px;}
-  .df{background:var(--green);} .dp{background:var(--purple);} .dl{background:rgba(255,255,255,.1);}
-
-  .sec-hd{display:flex;align-items:center;gap:8px;margin:20px 0 12px;}
-  .sec-icon{font-size:16px;} .sec-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;}
-  .sec-range{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:auto;}
-
-  .ccard{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;}
-  .ccard.locked{opacity:.55;}
-  .cnum{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
-  .nf{background:var(--green);color:#0a1a0a;} .np{background:var(--purple);color:white;} .nl{background:rgba(255,255,255,.08);color:var(--muted);}
-  .cbody{flex:1;}
-  .chdr{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .cday{font-size:13px;font-weight:700;} .cdate{font-size:11px;color:var(--muted);}
-  .cbadge{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:6px;font-family:'DM Mono',monospace;}
-  .bfree{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);}
-  .bpro{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#c4b5fd;}
-  .ctxt{font-size:14px;color:var(--dim);line-height:1.6;font-style:italic;}
-  .clocked{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
-  .ctimer{font-size:12px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;margin-top:4px;}
-
-  .upgrade-box{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(201,137,12,.08));border:1px solid rgba(139,92,246,.3);border-radius:14px;padding:20px;text-align:center;margin-top:8px;}
-  .upgrade-box h4{font-size:16px;font-weight:700;margin-bottom:6px;}
-  .upgrade-box p{font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.5;}
-  .btn-up2{background:var(--gold);color:#0a0800;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:box-shadow .2s;}
-  .btn-up2:hover{box-shadow:0 4px 20px rgba(201,137,12,.5);}
-
-  .statebox{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
-  .statebox .si{font-size:32px;margin-bottom:12px;}
-
-  .map-ph{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:20px;}
-
-  .hunter-row{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;margin-bottom:8px;}
-  .hrank{font-size:14px;font-weight:700;color:var(--muted);width:24px;}
-  .hav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a2090,var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;}
-  .hname{font-size:14px;font-weight:600;} .hclues{font-size:11px;color:var(--muted);margin-top:2px;}
-  .hbadge{margin-left:auto;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace;}
-
-  .claim-box{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;margin-top:20px;}
-  .claim-box h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:10px;}
-  .claim-box p{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:16px;}
-  .btn-claim{background:var(--green);color:#0a1a0a;border:none;border-radius:10px;padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;}
-
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  .f1{animation:fadeUp .5s .05s both} .f2{animation:fadeUp .5s .12s both}
-  .f3{animation:fadeUp .5s .2s both}  .f4{animation:fadeUp .5s .28s both}
-
-  /* Photo clues */
-  .clue-photo{width:100%;border-radius:10px;margin-top:10px;max-height:220px;object-fit:cover;border:1px solid rgba(255,255,255,.1);}
-  .photo-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;color:var(--gold);background:rgba(201,137,12,.12);border:1px solid rgba(201,137,12,.25);border-radius:6px;padding:2px 8px;margin-left:auto;}
-  /* Map */
-  #hunt-map{width:100%;height:340px;border-radius:16px;margin-top:12px;border:1px solid var(--border);overflow:hidden;}
-  .map-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:8px;letter-spacing:.5px;}
-  /* Clue text white */
-  .ctxt{font-size:14px;color:#fff !important;line-height:1.7;font-style:normal !important;}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root {
+  --ink:#06050a; --gold:#c9890c; --gold2:#e8a820; --cream:#f5ead8;
+  --dim:#c8b48a; --muted:#8a7a5a; --green:#22c55e; --purple:#8b5cf6;
+  --border:rgba(201,137,12,0.2); --card:rgba(12,10,18,0.92);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:180px;opacity:.5;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;background:rgba(6,5,10,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,137,12,.15);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-icon{width:30px;height:30px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.nav-name{font-size:15px;font-weight:700;color:var(--cream);}
+.nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:17px;}
+.nav-back{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;transition:color .2s;}
+.nav-back:hover{color:var(--gold);}
+.gold-bar{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:53px;}
+
+/* HERO SECTION */
+.hero{position:relative;overflow:hidden;padding:40px 20px 0;min-height:260px;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%, rgba(201,137,12,.1) 0%, transparent 60%),
+  radial-gradient(ellipse at 20% 80%, rgba(139,92,246,.06) 0%, transparent 50%);pointer-events:none;}
+.hero-pirate{position:absolute;right:-10px;top:-10px;width:180px;opacity:.18;pointer-events:none;}
+.hero-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
+.hero-prize{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,80px);font-weight:700;line-height:.95;color:var(--cream);margin-bottom:8px;position:relative;z-index:1;}
+.hero-prize span{color:var(--gold2);}
+.hero-city{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:24px;}
+.hero-city strong{color:var(--dim);}
+
+/* COUNTDOWN — redesigned */
+.cd-wrap{background:rgba(8,6,14,.9);border:1px solid rgba(201,137,12,.25);border-radius:20px;padding:20px 24px;margin:0 20px 0;
+  position:relative;overflow:hidden;}
+.cd-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.08),transparent 60%);pointer-events:none;}
+.cd-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:14px;text-align:center;}
+.cd-blocks{display:flex;align-items:center;justify-content:center;gap:8px;}
+.cd-block{text-align:center;min-width:58px;}
+.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,9vw,54px);font-weight:600;line-height:1;color:var(--cream);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px 10px;display:block;
+  transition:color .3s;}
+.cd-unit{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:5px;}
+.cd-sep{font-family:'Cormorant Garamond',serif;font-size:36px;color:rgba(201,137,12,.4);margin-bottom:16px;line-height:1;}
+.cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:12px;letter-spacing:.5px;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 0;}
+.sbox{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;}
+.slbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;}
+.sval{font-size:22px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--cream);}
+.ssub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.cdots{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.cdot{width:20px;height:5px;border-radius:3px;transition:background .3s;}
+.df{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.4);}
+.dl{background:rgba(255,255,255,.08);}
+.next-clue-val{font-size:14px;font-weight:700;color:var(--gold2);margin-top:4px;font-family:'DM Mono',monospace;}
+
+/* TABS */
+.tabs{display:flex;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.07);
+  position:sticky;top:53px;z-index:90;margin-top:16px;}
+.tab{flex:1;padding:14px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;letter-spacing:.5px;font-family:'DM Mono',monospace;}
+.tab.active{color:var(--cream);border-bottom-color:var(--gold);}
+.tab:hover:not(.active){color:var(--dim);}
+.panel{display:none;} .panel.active{display:block;}
+
+/* MAIN CONTENT */
+.main{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:20px 16px 80px;}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:10px;margin:24px 0 14px;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);}
+.sec-lbl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;}
+
+/* CLUE CARDS */
+.ccard{border-radius:16px;margin-bottom:12px;overflow:hidden;transition:transform .2s;}
+.ccard.revealed{background:linear-gradient(135deg,rgba(14,12,22,.98),rgba(10,8,16,.95));
+  border:1px solid rgba(201,137,12,.2);box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.ccard.locked{background:rgba(10,8,16,.5);border:1px solid rgba(255,255,255,.05);}
+.ccard-inner{display:flex;gap:14px;padding:18px 20px;align-items:flex-start;}
+.cnum{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;flex-shrink:0;font-family:'DM Mono',monospace;}
+.nf{background:linear-gradient(135deg,#16a34a,var(--green));color:#0a1a0a;box-shadow:0 2px 12px rgba(34,197,94,.3);}
+.nl{background:rgba(255,255,255,.06);color:rgba(255,255,255,.25);}
+.cbody{flex:1;min-width:0;}
+.chdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cday{font-size:12px;font-weight:700;color:var(--dim);font-family:'DM Mono',monospace;letter-spacing:.5px;}
+.cdate{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.photo-badge{margin-left:auto;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;
+  color:var(--gold);background:rgba(201,137,12,.12);border:1px solid rgba(201,137,12,.25);border-radius:6px;padding:2px 8px;}
+.ctxt{font-size:15px;color:#fff;line-height:1.75;font-family:'Karla',sans-serif;}
+.clue-photo{width:100%;border-radius:10px;margin-top:12px;max-height:240px;object-fit:cover;
+  border:1px solid rgba(255,255,255,.1);display:block;}
+.clocked{font-size:12px;color:rgba(255,255,255,.2);font-family:'DM Mono',monospace;letter-spacing:.5px;}
+.ctimer{font-size:14px;font-weight:700;color:rgba(201,137,12,.5);font-family:'DM Mono',monospace;margin-top:5px;}
+.ccard-glow{height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.4),transparent);margin:0 20px;}
+
+/* LOCKED CLUE LOCK ICON */
+.lock-icon{font-size:18px;opacity:.25;margin-top:2px;}
+
+/* MAP */
+#hunt-map{width:100%;height:360px;border-radius:18px;border:1px solid rgba(201,137,12,.2);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.map-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:10px;letter-spacing:.5px;}
+
+/* HUNTERS */
+.hunter-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;padding:14px 16px;margin-bottom:8px;}
+.hrank{font-size:18px;font-weight:700;color:var(--muted);width:28px;font-family:'Cormorant Garamond',serif;}
+.hav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a2090,var(--gold));
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;flex-shrink:0;}
+.hname{font-size:14px;font-weight:700;}
+.hclues{font-size:11px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;}
+.hbadge{margin-left:auto;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace;}
+
+/* CLAIM */
+.claim-hero{text-align:center;padding:32px 20px;}
+.claim-icon{font-size:56px;margin-bottom:16px;}
+.claim-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:10px;color:var(--cream);}
+.claim-desc{font-size:14px;color:var(--dim);line-height:1.8;margin-bottom:28px;max-width:380px;margin-left:auto;margin-right:auto;}
+.btn-claim{background:linear-gradient(135deg,#16a34a,var(--green));color:#0a1a0a;border:none;border-radius:14px;
+  padding:18px 40px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;
+  box-shadow:0 6px 24px rgba(34,197,94,.35);transition:all .2s;letter-spacing:.5px;}
+.btn-claim:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(34,197,94,.5);}
+
+.statebox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 24px;
+  text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+.si{font-size:32px;margin-bottom:12px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 6px rgba(34,197,94,.3)}50%{box-shadow:0 0 14px rgba(34,197,94,.6)}}
+.f1{animation:fadeUp .5s .05s both}
+.f2{animation:fadeUp .5s .1s both}
+.f3{animation:fadeUp .5s .15s both}
+.f4{animation:fadeUp .5s .2s both}
+.f5{animation:fadeUp .5s .25s both}
+.revealed .cnum{animation:glowPulse 2.5s ease-in-out infinite;}
+</style>
 </head>
 <body>
 
 <nav>
   <a class="nav-logo" href="seeker.html">
     <div class="nav-icon">🔍</div>
-    <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
+    <div><div class="nav-name">Finder<em>Seek</em></div></div>
   </a>
-  <div class="nav-r">
-<a href="seeker.html" style="font-size:13px;color:var(--dim);text-decoration:none;">← All Quests</a>
-  </div>
+  <a class="nav-back" href="seeker.html">← All Quests</a>
 </nav>
 <div class="gold-bar"></div>
 
-<div class="tabs">
-  <div class="tab active" onclick="showTab('hunt',this)">🏴‍☠️ Hunt</div>
-  <div class="tab" onclick="showTab('claim',this)">📍 Claim</div>
-  <div class="tab" onclick="showTab('map',this)">🗺️ Map</div>
+<!-- HERO -->
+<div class="hero f1">
+  <div class="hero-bg"></div>
+  <img class="hero-pirate" src="pirate sherlock trans.png" alt=""/>
+  <div style="position:relative;z-index:1;">
+    <div class="hero-eyebrow">THIS WEEK'S TREASURE</div>
+    <div class="hero-prize" id="prize-amt"><span>Loading…</span></div>
+    <div class="hero-city" id="prize-meta">…</div>
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-wrap f2">
+  <div class="cd-label">⏳ HUNT ENDS IN</div>
+  <div class="cd-blocks">
+    <div class="cd-block"><span class="cd-num" id="cd-d">00</span><div class="cd-unit">Days</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-h">00</span><div class="cd-unit">Hours</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-m">00</span><div class="cd-unit">Mins</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-s">00</span><div class="cd-unit">Secs</div></div>
+  </div>
+  <div class="cd-sub" id="end-lbl">—</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row f3">
+  <div class="sbox">
+    <div class="slbl">Next Clue Drops</div>
+    <div class="sval" id="next-clue-lbl">—</div>
+    <div class="next-clue-val" id="next-clue-cd">—</div>
+  </div>
+  <div class="sbox">
+    <div class="slbl">Clues Unlocked</div>
+    <div class="sval"><span id="clues-count">0</span> <span style="font-size:16px;color:var(--muted);">/ <span id="clues-total">7</span></span></div>
+    <div class="cdots" id="clue-dots"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs f4">
+  <div class="tab active" onclick="showTab('hunt',this)">🗺️ Hunt</div>
+  <div class="tab" onclick="showTab('claim',this)">🎯 Claim</div>
+  <div class="tab" onclick="showTab('map',this)">📍 Map</div>
   <div class="tab" onclick="showTab('hunters',this)">🏆 Hunters</div>
 </div>
 
-<div class="main">
+<div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
 
-  <!-- HUNT -->
-  <div class="panel active" id="panel-hunt">
-    <div class="prize-banner f1">
-      <div class="prize-bg"></div>
-      <div class="prize-inner">
-        <div class="prize-eye">🏴‍☠️ THIS WEEK'S TREASURE</div>
-        <div class="prize-amt" id="prize-amt">Loading…</div>
-        <div class="prize-meta" id="prize-meta">…</div>
-      </div>
-    </div>
-    <div class="hunt-cd f2">
-      <div class="hunt-cd-lbl">⏰ HUNT ENDS IN</div>
-      <div class="hunt-cd-time" id="main-cd">—</div>
-      <div class="hunt-cd-sub" id="end-lbl">—</div>
-    </div>
-    <div class="stats-row f3">
-      <div class="sbox">
-        <div class="slbl">NEXT FREE CLUE</div>
-        <div class="sval" id="next-clue-lbl">—</div>
-        <div class="ssub" id="next-clue-cd">—</div>
-      </div>
-      <div class="sbox">
-        <div class="slbl">CLUES UNLOCKED</div>
-        <div class="cdots" id="clue-dots"></div>
-        <div class="sval" style="margin-top:8px"><span id="clues-count">0</span> / <span id="clues-total">7</span></div>
-      </div>
-    </div>
-    <div class="sec-hd f3"><span class="sec-icon">📜</span><span class="sec-lbl">CLUES</span></div>
-    <div id="free-clues" class="f4"></div>
+<!-- HUNT PANEL -->
+<div class="panel active" id="panel-hunt">
+  <div class="main">
+    <div class="sec-hd"><div class="sec-lbl">📜 Clues</div><div class="sec-line"></div></div>
+    <div id="free-clues"></div>
   </div>
+</div>
 
-  <!-- CLAIM -->
-  <div class="panel" id="panel-claim">
-    <div class="claim-box">
-      <h3>🎯 Found the Treasure?</h3>
-      <p>If you've physically found the hidden cash, take a photo with it and submit your claim. The Pirate will verify and release the funds.</p>
-      <button class="btn-claim">Submit Your Claim →</button>
+<!-- CLAIM PANEL -->
+<div class="panel" id="panel-claim">
+  <div class="main">
+    <div class="claim-hero">
+      <div class="claim-icon">🎯</div>
+      <div class="claim-title">Found the Treasure?</div>
+      <p class="claim-desc">If you've physically found the hidden cash, take a photo with it and submit your claim. The Pirate will verify and send your reward!</p>
+      <button class="btn-claim">📸 Submit Your Find →</button>
     </div>
   </div>
+</div>
 
-  <!-- MAP -->
-  <div class="panel" id="panel-map">
+<!-- MAP PANEL -->
+<div class="panel" id="panel-map">
+  <div class="main">
+    <div class="sec-hd"><div class="sec-lbl">📍 Area Map</div><div class="sec-line"></div></div>
     <div id="hunt-map"></div>
-    <div class="map-note">📍 General area only — exact location hidden in the clues</div>
+    <div class="map-note">General area only — exact location hidden in the clues</div>
   </div>
+</div>
 
-  <!-- HUNTERS -->
-  <div class="panel" id="panel-hunters">
-    <div style="margin-top:20px" id="hunters-list">
-      <div class="statebox"><div class="si">⏳</div>Loading hunters…</div>
-    </div>
+<!-- HUNTERS PANEL -->
+<div class="panel" id="panel-hunters">
+  <div class="main">
+    <div class="sec-hd"><div class="sec-lbl">🏆 Leaderboard</div><div class="sec-line"></div></div>
+    <div id="hunters-list"></div>
   </div>
+</div>
 
 </div>
 
@@ -192,74 +258,145 @@ const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
 
-const params  = new URLSearchParams(location.search);
-const huntId  = params.get('id');
+const params = new URLSearchParams(location.search);
+const huntId = params.get('id');
 let hunt = null, clues = [], mainTimer = null, nextTimer = null;
 
-function fmt(ms) {
-  if(ms<=0)return'Ended';
-  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),
-        m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-  return `${d}d  ${String(h).padStart(2,'0')}h  ${String(m).padStart(2,'0')}m  ${String(s).padStart(2,'0')}s`;
+function pad(n){return String(Math.floor(n)).padStart(2,'0');}
+
+function updateCd(ms) {
+  if (ms <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  const d = Math.floor(ms/86400000);
+  const h = Math.floor((ms%86400000)/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  const s = Math.floor((ms%60000)/1000);
+  document.getElementById('cd-d').textContent = pad(d);
+  document.getElementById('cd-h').textContent = pad(h);
+  document.getElementById('cd-m').textContent = pad(m);
+  document.getElementById('cd-s').textContent = pad(s);
 }
+
 function fmtShort(ms) {
-  if(ms<=0)return'Now';
+  if(ms<=0) return 'Now!';
   const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(h>0) return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  return `${pad(m)}m ${pad(s)}s`;
 }
 
 async function loadHunt() {
   try {
-    let url;
-    if (huntId) {
-      url = `${SB}/rest/v1/hunts?id=eq.${huntId}&select=*`;
-    } else {
-      url = `${SB}/rest/v1/hunts?select=*&order=starts_at.desc&limit=1`;
-    }
+    let url = huntId
+      ? `${SB}/rest/v1/hunts?id=eq.${huntId}&select=*`
+      : `${SB}/rest/v1/hunts?select=*&order=starts_at.desc&limit=1`;
 
     const hr = await fetch(url, {headers:H});
     const raw = await hr.text();
-    console.log('Hunt response status:', hr.status, 'body:', raw);
-
     let hunts;
-    try { hunts = JSON.parse(raw); } catch(pe) {
-      document.getElementById('prize-amt').textContent = 'Parse error';
-      document.getElementById('prize-meta').textContent = raw.slice(0,100);
+    try { hunts = JSON.parse(raw); } catch(e) {
+      document.getElementById('prize-amt').innerHTML = 'Parse error';
       return;
     }
-
-    // Supabase may return error object instead of array
-    if (!Array.isArray(hunts)) {
-      console.error('Supabase error:', hunts);
-      document.getElementById('prize-amt').textContent = hunts?.message || 'DB error';
-      document.getElementById('prize-meta').textContent = JSON.stringify(hunts).slice(0,120);
+    if (!Array.isArray(hunts) || !hunts.length) {
+      document.getElementById('prize-amt').innerHTML = Array.isArray(hunts) ? 'No hunts found' : (hunts?.message || 'DB error');
+      document.getElementById('prize-meta').textContent = '';
       return;
     }
-
-    if (!hunts.length) {
-      document.getElementById('prize-amt').textContent = 'No hunts found';
-      document.getElementById('prize-meta').textContent = 'Check back soon!';
-      return;
-    }
-
     hunt = hunts[0];
-    console.log('Hunt loaded:', hunt.id, hunt.city, hunt.status);
+    if (!huntId) history.replaceState(null,'',`hunt.html?id=${hunt.id}`);
 
-    if (!huntId) {
-      history.replaceState(null, '', `hunt.html?id=${hunt.id}`);
-    }
-
-    const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${hunt.id}&order=clue_number.asc`, {headers:H});
+    const cr = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${hunt.id}&order=clue_number.asc`,{headers:H});
     clues = cr.ok ? await cr.json() : [];
-    console.log('Clues loaded:', clues.length);
 
     renderHunt();
     loadLeaderboard();
     initHuntMap();
   } catch(e) {
-    console.error('loadHunt error:', e);
-    document.getElementById('prize-amt').textContent = 'Error: ' + e.message;
+    console.error(e);
+    document.getElementById('prize-amt').innerHTML = 'Error: ' + e.message;
   }
+}
+
+function renderHunt() {
+  const now = Date.now();
+  const endsAt = new Date(hunt.ends_at);
+
+  // Hero
+  document.getElementById('prize-amt').innerHTML = '<span>' + (hunt.prize_desc || 'Mystery Prize') + '</span>';
+  document.getElementById('prize-meta').innerHTML = '<strong>' + (hunt.city || '') + '</strong> · ' + (hunt.week_label || '');
+  document.title = 'FinderSeek — ' + (hunt.prize_desc||'Hunt') + ' · ' + (hunt.city||'');
+
+  // End label
+  const endDate = endsAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('end-lbl').textContent = 'Ends ' + endDate;
+
+  // Countdown
+  clearInterval(mainTimer);
+  updateCd(endsAt - now);
+  mainTimer = setInterval(() => updateCd(endsAt - Date.now()), 1000);
+
+  // Clue dots & count
+  const revealed = clues.filter(c => new Date(c.reveal_at) <= new Date());
+  document.getElementById('clues-count').textContent = revealed.length;
+  document.getElementById('clues-total').textContent = clues.length || 7;
+  document.getElementById('clue-dots').innerHTML = clues.map(c => {
+    const r = new Date(c.reveal_at) <= new Date();
+    return `<div class="cdot ${r?'df':'dl'}"></div>`;
+  }).join('');
+
+  // Next clue
+  const nextClue = clues.find(c => new Date(c.reveal_at) > new Date());
+  if (nextClue) {
+    document.getElementById('next-clue-lbl').textContent = 'Clue ' + nextClue.clue_number;
+    clearInterval(nextTimer);
+    nextTimer = setInterval(() => {
+      const el = document.getElementById('next-clue-cd');
+      if (el) el.textContent = fmtShort(new Date(nextClue.reveal_at) - Date.now());
+    }, 1000);
+    document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextClue.reveal_at) - now);
+  } else {
+    document.getElementById('next-clue-lbl').textContent = clues.length ? 'All Revealed!' : 'Coming soon';
+    document.getElementById('next-clue-cd').textContent = '';
+  }
+
+  // Clue cards
+  document.getElementById('free-clues').innerHTML = clues.length ? clues.map((c,i) => {
+    const isRevealed = new Date(c.reveal_at) <= new Date();
+    const hasPhoto = c.is_photo && c.photo_url;
+    if (isRevealed) {
+      return `<div class="ccard revealed" style="animation:fadeUp .4s ${i*0.06}s both;">
+        <div class="ccard-glow"></div>
+        <div class="ccard-inner">
+          <div class="cnum nf">${c.clue_number}</div>
+          <div class="cbody">
+            <div class="chdr">
+              <span class="cday">${c.day_label}</span>
+              <span class="cdate">${c.date_label}</span>
+              ${hasPhoto ? '<span class="photo-badge">📸 PHOTO</span>' : ''}
+            </div>
+            <div class="ctxt">${c.clue_text}</div>
+            ${hasPhoto ? `<img class="clue-photo" src="${c.photo_url}" loading="lazy" alt="Hiding spot"/>` : ''}
+          </div>
+        </div>
+      </div>`;
+    } else {
+      return `<div class="ccard locked" style="animation:fadeUp .4s ${i*0.06}s both;">
+        <div class="ccard-inner">
+          <div class="cnum nl">${c.clue_number}</div>
+          <div class="cbody">
+            <div class="chdr">
+              <span class="cday">${c.day_label}</span>
+              <span class="cdate">${c.date_label}</span>
+            </div>
+            <div class="clocked">🔒 Drops in</div>
+            <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+  }).join('') : '<div class="statebox"><div class="si">📜</div>Clues coming soon…</div>';
 }
 
 function initHuntMap() {
@@ -272,19 +409,12 @@ function initHuntMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
 
   if (hunt.lat && hunt.lng) {
-    // Show blurred area circle — not exact pin
     map.setView([lat, lng], 14);
     L.circle([lat, lng], {
-      radius: 600,
-      color: '#c9890c',
-      fillColor: '#c9890c',
-      fillOpacity: 0.12,
-      weight: 2,
-      opacity: 0.5,
-      dashArray: '6 4'
-    }).addTo(map).bindPopup('💰 Treasure is hidden somewhere in this area');
+      radius: 600, color: '#c9890c', fillColor: '#c9890c',
+      fillOpacity: 0.12, weight: 2, opacity: 0.5, dashArray: '6 4'
+    }).addTo(map).bindPopup('💰 Treasure hidden somewhere in this area');
   } else {
-    // Fallback: geocode city name
     map.setView([lat, lng], 11);
     fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(hunt.city || 'Houston TX') + '&format=json&limit=1')
       .then(r => r.json()).then(d => {
@@ -292,100 +422,23 @@ function initHuntMap() {
           const clat = parseFloat(d[0].lat), clng = parseFloat(d[0].lon);
           map.setView([clat, clng], 11);
           L.circle([clat, clng], {
-            radius: 3000,
-            color: '#c9890c',
-            fillColor: '#c9890c',
-            fillOpacity: 0.1,
-            weight: 2,
-            dashArray: '6 4'
+            radius: 3000, color: '#c9890c', fillColor: '#c9890c',
+            fillOpacity: 0.1, weight: 2, dashArray: '6 4'
           }).addTo(map).bindPopup('💰 Treasure hidden somewhere in ' + hunt.city);
         }
       }).catch(() => {});
   }
 }
 
-
-
-function renderHunt() {
-  const now = Date.now();
-  const endsAt = new Date(hunt.ends_at);
-
-  // Prize banner
-  document.getElementById('prize-amt').textContent = hunt.prize_desc;
-  document.getElementById('prize-meta').textContent = `${hunt.week_label} · Hidden somewhere in ${hunt.city}`;
-  document.title = `FinderSeek — ${hunt.prize_desc} · ${hunt.city}`;
-
-  // End label
-  const endDate = endsAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  document.getElementById('end-lbl').textContent = `${endDate} · 10:00 AM`;
-
-  // Countdown
-  clearInterval(mainTimer);
-  mainTimer = setInterval(()=>{ document.getElementById('main-cd').textContent = fmt(endsAt-Date.now()); },1000);
-  document.getElementById('main-cd').textContent = fmt(endsAt-now);
-
-  // All clues — no tier gating
-  const revealed = clues.filter(c=>new Date(c.reveal_at)<=new Date());
-  document.getElementById('clues-count').textContent = revealed.length;
-  document.getElementById('clues-total').textContent = clues.length || 7;
-
-  // Dots
-  const dotsEl = document.getElementById('clue-dots');
-  dotsEl.innerHTML = clues.map(c=>{
-    const isRevealed = new Date(c.reveal_at)<=new Date();
-    return `<div class="cdot ${isRevealed?'df':'dl'}"></div>`;
-  }).join('');
-
-  // Next clue countdown
-  const nextClue = clues.find(c=>new Date(c.reveal_at)>new Date());
-  if(nextClue) {
-    document.getElementById('next-clue-lbl').textContent = `Clue ${nextClue.clue_number} · ${nextClue.day_label}`;
-    clearInterval(nextTimer);
-    nextTimer = setInterval(()=>{
-      const el=document.getElementById('next-clue-cd');
-      if(el) el.textContent = fmtShort(new Date(nextClue.reveal_at)-Date.now());
-    },1000);
-    document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextClue.reveal_at)-now);
-  } else {
-    document.getElementById('next-clue-lbl').textContent = clues.length ? 'All clues revealed!' : 'No clues yet';
-    document.getElementById('next-clue-cd').textContent = '';
-  }
-
-  // All clues
-  document.getElementById('free-clues').innerHTML = clues.length ? clues.map(c=>{
-    const isRevealed = new Date(c.reveal_at)<=new Date();
-    const hasPhoto = c.is_photo && c.photo_url;
-    return `<div class="ccard ${!isRevealed?'locked':''}">
-      <div class="cnum ${isRevealed?'nf':'nl'}">${c.clue_number}</div>
-      <div class="cbody">
-        <div class="chdr">
-          <span class="cday">${c.day_label}</span>
-          <span class="cdate">${c.date_label}</span>
-          ${hasPhoto && isRevealed ? '<span class="photo-badge">📸 PHOTO</span>' : ''}
-        </div>
-        ${isRevealed
-          ? `<div class="ctxt">${c.clue_text}</div>
-             ${hasPhoto ? `<img class="clue-photo" src="${c.photo_url}" alt="Hiding spot photo" loading="lazy"/>` : ''}`
-          : `<div class="clocked">Drops ${c.day_label} at 8 AM</div>
-             <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>`}
-      </div>
-    </div>`;
-  }).join('') : '<div class="statebox"><div class="si">📜</div>Clues coming soon…</div>';
-
-  // Hide pro section entirely
-  const proEl = document.getElementById('pro-clues');
-  if(proEl) proEl.innerHTML = '';
-}
-
 async function loadLeaderboard() {
   try {
     const r = await fetch(`${SB}/rest/v1/leaderboard?order=rank.asc&limit=10`,{headers:H});
     const data = r.ok ? await r.json() : [];
-    if(!data.length){
+    if (!data.length) {
       document.getElementById('hunters-list').innerHTML='<div class="statebox"><div class="si">🏆</div>No hunters yet — be the first!</div>';
       return;
     }
-    document.getElementById('hunters-list').innerHTML = data.map((h,i)=>`
+    document.getElementById('hunters-list').innerHTML = data.map((h,i) => `
       <div class="hunter-row">
         <div class="hrank">${i+1}</div>
         <div class="hav">${(h.username||'?')[0].toUpperCase()}</div>
@@ -398,9 +451,9 @@ async function loadLeaderboard() {
 }
 
 function showTab(name, el) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
   el.classList.add('active');
 }
 
