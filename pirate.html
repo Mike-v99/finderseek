@@ -209,6 +209,51 @@
   .fc-platinum .fcard-body{background:linear-gradient(180deg,rgba(40,10,18,.92) 0%,rgba(20,5,10,.97) 100%);}
   .fc-platinum .photo-drop{border-color:rgba(220,60,80,.3);background:linear-gradient(135deg,rgba(200,40,70,.07),rgba(240,80,100,.03));}
   .fc-platinum .photo-drop:hover{border-color:rgba(220,60,80,.6);background:rgba(200,40,70,.12);}
+
+  /* TIME BLOCKED MODAL */
+  .time-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(6,5,10,.85);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:24px;}
+  .time-modal.show{display:flex;}
+  .time-modal-box{background:linear-gradient(160deg,rgba(239,68,68,.18),rgba(20,10,14,.97));border:1px solid rgba(239,68,68,.4);border-radius:24px;padding:36px 28px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(239,68,68,.2);}
+  .time-modal-icon{font-size:56px;margin-bottom:16px;}
+  .time-modal-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#fca5a5;margin-bottom:10px;}
+  .time-modal-body{font-size:15px;color:var(--dim);line-height:1.7;margin-bottom:8px;}
+  .time-modal-hours{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--gold2);background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);border-radius:12px;padding:12px 20px;margin:16px 0 20px;}
+  .time-modal-close{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:12px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;width:100%;}
+
+  /* AUTH MODAL */
+  .auth-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;}
+  .auth-modal.show{display:flex;}
+  .auth-box{background:linear-gradient(160deg,rgba(20,16,30,.98),rgba(10,8,16,.99));border:1px solid rgba(201,137,12,.3);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;}
+  .auth-logo{text-align:center;margin-bottom:20px;}
+  .auth-logo-icon{width:48px;height:48px;border-radius:12px;background:var(--gold);display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;}
+  .auth-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;}
+  .auth-title em{color:var(--gold);font-style:italic;}
+  .auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.5;}
+  .auth-tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:3px;margin-bottom:24px;}
+  .auth-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--muted);}
+  .auth-tab.active{background:var(--gold);color:#0a0800;}
+  .auth-field{margin-bottom:14px;}
+  .auth-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px;display:block;}
+  .auth-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+  .auth-input:focus{border-color:rgba(201,137,12,.5);}
+  .auth-input::placeholder{color:var(--muted);}
+  .auth-input-icon{position:relative;}
+  .auth-input-icon .auth-input{padding-left:38px;}
+  .auth-input-icon .aicon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;}
+  .auth-handle-note{font-size:11px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace;}
+  .auth-handle-note span{color:var(--gold);}
+  .auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;}
+  .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+  .auth-verify-note{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#86efac;line-height:1.6;margin-bottom:16px;}
+  .btn-auth{width:100%;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;margin-top:4px;transition:all .2s;box-shadow:0 4px 20px rgba(201,137,12,.3);}
+  .btn-auth:hover{box-shadow:0 8px 32px rgba(201,137,12,.5);transform:translateY(-1px);}
+  .btn-auth:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .auth-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:#fca5a5;margin-bottom:12px;display:none;}
+  .auth-error.show{display:block;}
+  .auth-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:#86efac;margin-bottom:12px;display:none;}
+  .auth-success.show{display:block;}
+  .nav-user{display:flex;align-items:center;gap:8px;background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--gold);font-weight:600;cursor:pointer;}
+  .nav-user .nav-avatar{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#0a0800;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
 </style>
 </head>
 <body>
@@ -219,7 +264,12 @@
     <div class="nav-icon">🔍</div>
     <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
-  <a href="seeker.html" class="btn-back">← Back to Hunts</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="nav-auth-area">
+      <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;">🏴‍☠️ Sign In</button>
+    </div>
+    <a href="seeker.html" class="btn-back">← Hunts</a>
+  </div>
 </nav>
 
 <div class="hero f1">
@@ -637,6 +687,157 @@ window.addEventListener('load', () => {
   }
 });
 
+// ── AUTH ──────────────────────────────────────────────
+let currentUser = null;
+let currentProfile = null;
+
+// Check session on load
+window.addEventListener('load', async () => {
+  try {
+    const r = await fetch(`${SB}/auth/v1/user`, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
+    });
+    if (r.ok) {
+      const u = await r.json();
+      if (u?.id) { currentUser = u; await loadProfile(u.id); updateNavAuth(); }
+    }
+  } catch(e) {}
+});
+
+function getToken() { return localStorage.getItem('fs_token'); }
+function setToken(t) { localStorage.setItem('fs_token', t); }
+function clearToken() { localStorage.removeItem('fs_token'); }
+
+async function loadProfile(uid) {
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() }
+    });
+    const d = await r.json();
+    if (d && d.length > 0) currentProfile = d[0];
+  } catch(e) {}
+}
+
+function updateNavAuth() {
+  const area = document.getElementById('nav-auth-area');
+  if (currentUser && currentProfile) {
+    area.innerHTML = `<div class="nav-user" onclick="doSignOut()">
+      <div class="nav-avatar">${(currentProfile.handle||'P')[0].toUpperCase()}</div>
+      <span>@${currentProfile.handle || 'Pirate'}</span>
+    </div>`;
+  } else if (currentUser) {
+    area.innerHTML = `<div class="nav-user" onclick="doSignOut()"><div class="nav-avatar">P</div><span>Pirate</span></div>`;
+  } else {
+    area.innerHTML = `<button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;">🏴‍☠️ Sign In</button>`;
+  }
+}
+
+function openAuthModal() { document.getElementById('auth-modal').classList.add('show'); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('show'); }
+
+function switchAuthTab(tab) {
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('signup-fields').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('login-fields').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.classList.add('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+function showAuthSuccess(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.classList.add('show');
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+async function doSignup() {
+  const handle = document.getElementById('auth-handle').value.trim();
+  const email  = document.getElementById('auth-email-signup').value.trim();
+  const phone  = document.getElementById('auth-phone').value.trim();
+  const pass   = document.getElementById('auth-pass-signup').value;
+
+  if (!handle) return showAuthError('Please choose a Pirate handle.');
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(handle)) return showAuthError('Handle must be 3-20 characters, letters/numbers/underscore only.');
+  if (!email) return showAuthError('Please enter your email.');
+  if (!phone) return showAuthError('Please enter your phone number.');
+  if (pass.length < 8) return showAuthError('Password must be at least 8 characters.');
+
+  const btn = document.getElementById('btn-signup');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    const r = await fetch(`${SB}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass, data: { handle, phone } })
+    });
+    const d = await r.json();
+    if (d.error) { showAuthError(d.error.message || d.error); btn.disabled = false; btn.textContent = 'Create Pirate Account 🏴‍☠️'; return; }
+
+    if (d.access_token) {
+      setToken(d.access_token);
+      currentUser = d.user;
+      // Save profile
+      await fetch(`${SB}/rest/v1/profiles`, {
+        method: 'POST',
+        headers: { ...H, 'Authorization': 'Bearer ' + d.access_token },
+        body: JSON.stringify({ id: d.user.id, handle, phone_number: phone })
+      });
+      await loadProfile(d.user.id);
+      updateNavAuth();
+      showAuthSuccess('✅ Account created! Welcome, @' + handle);
+      setTimeout(() => closeAuthModal(), 1800);
+    } else {
+      // Email confirmation required
+      showAuthSuccess('📧 Check your email to confirm your account, then sign in!');
+      setTimeout(() => switchAuthTab('login'), 2500);
+    }
+  } catch(e) {
+    showAuthError('Something went wrong. Please try again.');
+  }
+  btn.disabled = false; btn.textContent = 'Create Pirate Account 🏴‍☠️';
+}
+
+async function doLogin() {
+  const email = document.getElementById('auth-email-login').value.trim();
+  const pass  = document.getElementById('auth-pass-login').value;
+  if (!email || !pass) return showAuthError('Please enter email and password.');
+
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    const r = await fetch(`${SB}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const d = await r.json();
+    if (d.error) { showAuthError(d.error_description || d.error); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+
+    setToken(d.access_token);
+    currentUser = d.user;
+    await loadProfile(d.user.id);
+    updateNavAuth();
+    showAuthSuccess('✅ Welcome back, @' + (currentProfile?.handle || 'Pirate') + '!');
+    setTimeout(() => closeAuthModal(), 1500);
+  } catch(e) {
+    showAuthError('Something went wrong. Please try again.');
+  }
+  btn.disabled = false; btn.textContent = 'Sign In →';
+}
+
+async function doSignOut() {
+  clearToken(); currentUser = null; currentProfile = null;
+  updateNavAuth();
+}
+// ── END AUTH ──────────────────────────────────────────
+
 const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
@@ -721,11 +922,37 @@ function validate() {
   if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) {
     alert('Please choose a go-live date and time.'); return false;
   }
+
+  // Time safety check
+  let startTime;
+  if (liveChoice === 'now') {
+    startTime = new Date();
+  } else {
+    startTime = new Date(document.getElementById('live-datetime').value);
+  }
+  const hour = startTime.getHours();
+  if (hour < 8 || hour >= 18) {
+    showTimeBlockedModal();
+    return false;
+  }
+
   return true;
+}
+
+function showTimeBlockedModal() {
+  document.getElementById('time-blocked-modal').classList.add('show');
+}
+function closeTimeModal() {
+  document.getElementById('time-blocked-modal').classList.remove('show');
 }
 
 async function submitHunt() {
   if (!validate()) return;
+  // Gate behind auth
+  if (!currentUser) {
+    openAuthModal();
+    return;
+  }
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'Submitting your quest…';
 
@@ -759,10 +986,11 @@ async function submitHunt() {
       body: JSON.stringify({
         week_label: weekLabel, prize_desc: `$${prize} Cash`,
         prize_value: prize * 100, starts_at: liveAt,
-        ends_at: weekEnd.toISOString(), status: 'draft', city,
+        ends_at: weekEnd.toISOString(), status: 'active', city,
         finder_code: code, payment_type: payType,
         payment_handle: payHandle || null,
         neighborhood: hood, photo_url: photoUrl,
+        pirate_id: currentUser?.id || null,
       })
     });
   } catch(e) { console.error(e); }
@@ -784,5 +1012,95 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
   window.scrollTo(0, 0);
 }
 </script>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal" id="auth-modal">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔍</div>
+      <div class="auth-title">Pirate's <em>Den</em></div>
+      <p class="auth-sub">Create your Pirate account to hide treasure and build your crew.</p>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+      <div class="auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-success" class="auth-success"></div>
+
+    <!-- SIGN UP FIELDS -->
+    <div id="signup-fields">
+      <div class="auth-field">
+        <label class="auth-label">Your Pirate Handle</label>
+        <div class="auth-input-icon">
+          <span class="aicon">🏴‍☠️</span>
+          <input class="auth-input" id="auth-handle" type="text" placeholder="e.g. CaptainJack" maxlength="20"/>
+        </div>
+        <div class="auth-handle-note">This is your <span>public name</span> — visible to all Seekers</div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <div class="auth-input-icon">
+          <span class="aicon">📧</span>
+          <input class="auth-input" id="auth-email-signup" type="email" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Phone Number</label>
+        <div class="auth-input-icon">
+          <span class="aicon">📱</span>
+          <input class="auth-input" id="auth-phone" type="tel" placeholder="+1 (555) 000-0000"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="auth-input-icon">
+          <span class="aicon">🔒</span>
+          <input class="auth-input" id="auth-pass-signup" type="password" placeholder="Min 8 characters"/>
+        </div>
+      </div>
+      <div class="auth-verify-note">
+        ✅ We'll verify your email + phone before your first quest goes live.<br/>
+        📲 Link your Venmo or Zelle handle in your profile after signup.
+      </div>
+      <button class="btn-auth" id="btn-signup" onclick="doSignup()">Create Pirate Account 🏴‍☠️</button>
+    </div>
+
+    <!-- LOGIN FIELDS -->
+    <div id="login-fields" style="display:none;">
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <div class="auth-input-icon">
+          <span class="aicon">📧</span>
+          <input class="auth-input" id="auth-email-login" type="email" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="auth-input-icon">
+          <span class="aicon">🔒</span>
+          <input class="auth-input" id="auth-pass-login" type="password" placeholder="Your password"/>
+        </div>
+      </div>
+      <button class="btn-auth" id="btn-login" onclick="doLogin()">Sign In →</button>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <button onclick="closeAuthModal()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:underline;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIME BLOCKED MODAL -->
+<div class="time-modal" id="time-blocked-modal">
+  <div class="time-modal-box">
+    <div class="time-modal-icon">⏰</div>
+    <div class="time-modal-title">Quest Hours Only</div>
+    <div class="time-modal-body">For everyone's safety, quests can only start during daylight hours.</div>
+    <div class="time-modal-hours">8:00 AM — 6:00 PM</div>
+    <div class="time-modal-body" style="font-size:13px;margin-bottom:20px;">Please schedule your quest within these hours or choose <strong style="color:var(--cream);">Right Now</strong> if it's currently between 8am and 6pm.</div>
+    <button class="time-modal-close" onclick="closeTimeModal()">Got It 👍</button>
+  </div>
+</div>
 </body>
 </html>
