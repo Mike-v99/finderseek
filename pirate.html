@@ -254,6 +254,21 @@
   .auth-success.show{display:block;}
   .nav-user{display:flex;align-items:center;gap:8px;background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--gold);font-weight:600;cursor:pointer;}
   .nav-user .nav-avatar{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#0a0800;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+
+  /* CUSTOM DATE/TIME PICKER */
+  .dt-picker{background:rgba(255,255,255,.04);border:1px solid rgba(201,137,12,.25);border-radius:14px;padding:16px;margin-top:10px;}
+  .dt-row{display:flex;gap:10px;margin-bottom:12px;}
+  .dt-col{flex:1;}
+  .dt-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px;display:block;}
+  .dt-select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(201,137,12,.2);border-radius:10px;padding:11px 12px;font-size:15px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;text-align:center;}
+  .dt-select:focus{border-color:rgba(201,137,12,.5);}
+  .dt-select option{background:#1a1520;color:var(--cream);}
+  .dt-time-row{display:flex;align-items:center;gap:8px;justify-content:center;}
+  .dt-time-sep{font-size:22px;font-weight:700;color:var(--gold);padding-bottom:2px;}
+  .dt-ampm{display:flex;gap:6px;margin-left:4px;}
+  .dt-ampm-btn{padding:10px 14px;border-radius:10px;border:1px solid rgba(201,137,12,.25);background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+  .dt-ampm-btn.active{background:rgba(201,137,12,.2);border-color:var(--gold);color:var(--gold);}
+  .dt-preview{text-align:center;margin-top:12px;padding:10px;background:rgba(201,137,12,.08);border-radius:10px;font-family:'DM Mono',monospace;font-size:13px;color:var(--gold2);}
 </style>
 </head>
 <body>
@@ -449,7 +464,49 @@
       </div>
       <div class="schedule-wrap" id="schedule-wrap">
         <label class="flabel">Go Live Date & Time</label>
-        <input class="finput" id="live-datetime" type="datetime-local"/>
+        <div class="dt-picker">
+          <div class="dt-row">
+            <div class="dt-col">
+              <span class="dt-label">Month</span>
+              <select class="dt-select" id="dt-month" onchange="updateDtPreview()">
+                <option value="0">January</option><option value="1">February</option>
+                <option value="2">March</option><option value="3">April</option>
+                <option value="4">May</option><option value="5">June</option>
+                <option value="6">July</option><option value="7">August</option>
+                <option value="8">September</option><option value="9">October</option>
+                <option value="10">November</option><option value="11">December</option>
+              </select>
+            </div>
+            <div class="dt-col">
+              <span class="dt-label">Day</span>
+              <select class="dt-select" id="dt-day" onchange="updateDtPreview()"></select>
+            </div>
+            <div class="dt-col">
+              <span class="dt-label">Year</span>
+              <select class="dt-select" id="dt-year" onchange="updateDtPreview();updateDtDays()"></select>
+            </div>
+          </div>
+          <div style="margin-bottom:6px;"><span class="dt-label" style="text-align:center;display:block;">Time (8am – 6pm)</span></div>
+          <div class="dt-time-row">
+            <select class="dt-select" id="dt-hour" onchange="updateDtPreview()" style="max-width:80px;">
+              <option>8</option><option>9</option><option>10</option><option>11</option>
+              <option>12</option><option>1</option><option>2</option><option>3</option>
+              <option>4</option><option>5</option>
+            </select>
+            <span class="dt-time-sep">:</span>
+            <select class="dt-select" id="dt-min" onchange="updateDtPreview()" style="max-width:80px;">
+              <option value="00">00</option><option value="15">15</option>
+              <option value="30">30</option><option value="45">45</option>
+            </select>
+            <div class="dt-ampm">
+              <button type="button" class="dt-ampm-btn active" id="dt-am" onclick="setAmPm('AM')">AM</button>
+              <button type="button" class="dt-ampm-btn" id="dt-pm" onclick="setAmPm('PM')">PM</button>
+            </div>
+          </div>
+          <div class="dt-preview" id="dt-preview">📅 Select a date above</div>
+        </div>
+        <!-- Hidden input for validation compatibility -->
+        <input type="hidden" id="live-datetime"/>
       </div>
     </div>
   </div>
@@ -686,6 +743,72 @@ window.addEventListener('load', () => {
     initMap(29.7604, -95.3698);
   }
 });
+
+
+// ── CUSTOM DATE/TIME PICKER ──────────────────────────
+let dtAmPm = 'AM';
+
+function initDatePicker() {
+  const now = new Date();
+  const yearSel = document.getElementById('dt-year');
+  for (let y = now.getFullYear(); y <= now.getFullYear() + 1; y++) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    yearSel.appendChild(o);
+  }
+  document.getElementById('dt-month').value = now.getMonth();
+  updateDtDays();
+  document.getElementById('dt-day').value = now.getDate();
+  updateDtPreview();
+}
+
+function updateDtDays() {
+  const month = parseInt(document.getElementById('dt-month').value);
+  const year  = parseInt(document.getElementById('dt-year').value) || new Date().getFullYear();
+  const days  = new Date(year, month + 1, 0).getDate();
+  const daySel = document.getElementById('dt-day');
+  const prev = daySel.value;
+  daySel.innerHTML = '';
+  for (let d = 1; d <= days; d++) {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d;
+    daySel.appendChild(o);
+  }
+  daySel.value = Math.min(prev || 1, days);
+}
+
+function setAmPm(val) {
+  dtAmPm = val;
+  document.getElementById('dt-am').classList.toggle('active', val === 'AM');
+  document.getElementById('dt-pm').classList.toggle('active', val === 'PM');
+  updateDtPreview();
+}
+
+function updateDtPreview() {
+  const month = parseInt(document.getElementById('dt-month').value);
+  const day   = parseInt(document.getElementById('dt-day').value);
+  const year  = parseInt(document.getElementById('dt-year').value);
+  const hour  = parseInt(document.getElementById('dt-hour').value);
+  const min   = document.getElementById('dt-min').value;
+
+  if (!year) return;
+
+  // Convert to 24h for datetime-local
+  let h24 = hour;
+  if (dtAmPm === 'PM' && hour !== 12) h24 = hour + 12;
+  if (dtAmPm === 'AM' && hour === 12) h24 = 0;
+
+  const d = new Date(year, month, day, h24, parseInt(min));
+  const iso = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}T${String(h24).padStart(2,'0')}:${min}`;
+  document.getElementById('live-datetime').value = iso;
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('dt-preview').textContent = `📅 ${days[d.getDay()]}, ${months[month]} ${day}, ${year} at ${hour}:${min} ${dtAmPm}`;
+}
+
+window.addEventListener('load', () => { initDatePicker(); });
+// ── END DATE PICKER ──────────────────────────────────
 
 // ── AUTH ──────────────────────────────────────────────
 let currentUser = null;
