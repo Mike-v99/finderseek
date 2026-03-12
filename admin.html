@@ -251,6 +251,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
+const NOTIFY_SECRET = 'fs-notify-2026'; // must match NOTIFY_SECRET env var in Vercel
 
 // ── ADMIN PASSWORD ────────────────────────────────────
 const ADMIN_PASS = 'finderseek2026'; // Change this!
@@ -534,9 +535,19 @@ async function approveHunt(id) {
       body: JSON.stringify({ status: 'active' })
     });
     if (!r.ok) throw new Error('Update failed');
+    // Fire notifications — pirate gets "hunt live" email, city seekers get "new hunt" email
+    fireNotify('hunt_approved', id).catch(()=>{});
     showToast('✅ Hunt approved and live!', 'success');
     await loadAll();
   } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+function fireNotify(event, huntId, extra = {}) {
+  return fetch('/api/notify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+    body: JSON.stringify({ event, huntId, ...extra })
+  });
 }
 
 async function rejectHunt(id) {
