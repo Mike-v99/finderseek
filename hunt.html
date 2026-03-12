@@ -256,6 +256,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hclues{font-size:11px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;}
 .hbadge{margin-left:auto;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace;}
 
+/* HUNTERS PANEL */
+.hunters-wrap{padding:20px;}
+.hunters-section-title{font-family:'Bangers',cursive;font-size:16px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.hunters-section-title span{font-family:'DM Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);border-radius:10px;padding:2px 8px;color:var(--dim);}
+.follow-bar{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:18px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.follow-bar-left{}
+.follow-bar-title{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:3px;}
+.follow-bar-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.btn-follow{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border:none;border-radius:12px;padding:10px 22px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;white-space:nowrap;box-shadow:0 4px 16px rgba(26,32,144,.35);}
+.btn-follow:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,32,144,.5);}
+.btn-follow.following{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;box-shadow:none;}
+.btn-follow.following:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;}
+.hunt-follower-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;transition:background .15s;}
+.hunt-follower-row:hover{background:rgba(255,255,255,.03);}
+.hf-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#0a1a0a;flex-shrink:0;}
+.hf-name{font-size:14px;font-weight:700;color:var(--cream);}
+.hf-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.hf-badge{margin-left:auto;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;border-radius:10px;padding:3px 10px;}
+.hfb-winner{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#4ade80;}
+.hfb-hunting{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.hunters-divider{border:none;border-top:1px solid rgba(255,255,255,.05);margin:20px 0;}
+.hunters-list-wrap{display:flex;flex-direction:column;gap:2px;}
+
 /* CLAIM */
 .claim-wrap{padding:24px 0 40px;}
 .claim-hero{text-align:center;padding:20px 20px 28px;position:relative;}
@@ -535,10 +558,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- HUNTERS PANEL -->
 <div class="panel" id="panel-hunters">
   <div class="main">
-    <div style="text-align:center;padding:48px 20px;">
-      <div style="font-size:52px;margin-bottom:16px;">🏆</div>
-      <div style="font-family:'Bangers',cursive;font-size:36px;letter-spacing:3px;color:var(--cream);margin-bottom:10px;">COMING SOON</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;max-width:300px;margin:0 auto;">See who's on the hunt in real time. Hunter leaderboards are on the way.</p>
+    <div class="hunters-wrap">
+
+      <!-- FOLLOW THIS HUNT -->
+      <div class="follow-bar" id="follow-bar">
+        <div class="follow-bar-left">
+          <div class="follow-bar-title">Join the Hunt</div>
+          <div class="follow-bar-sub" id="follow-count-sub">— hunters on this trail</div>
+        </div>
+        <button class="btn-follow" id="btn-follow" onclick="toggleFollow()">🔍 I'm Hunting This</button>
+      </div>
+
+      <!-- HUNTERS ON THIS HUNT -->
+      <div class="hunters-section-title">On This Hunt <span id="this-hunt-count">0</span></div>
+      <div class="hunters-list-wrap" id="this-hunt-list">
+        <div class="statebox"><div class="si">🔍</div>No hunters yet — be the first!</div>
+      </div>
+
+      <hr class="hunters-divider"/>
+
+      <!-- GLOBAL LEADERBOARD -->
+      <div class="hunters-section-title">All-Time Leaderboard <span id="leaderboard-count">0</span></div>
+      <div class="hunters-list-wrap" id="hunters-list">
+        <div class="statebox"><div class="si">🏆</div>Loading leaderboard…</div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -838,23 +882,121 @@ function initHuntMap() {
 }
 
 async function loadLeaderboard() {
+  // Load both in parallel
+  await Promise.all([loadHuntFollowers(), loadGlobalLeaderboard()]);
+}
+
+async function loadHuntFollowers() {
+  if (!hunt?.id) return;
   try {
-    const r = await fetch(`${SB}/rest/v1/leaderboard?order=rank.asc&limit=10`,{headers:H});
+    const r = await fetch(
+      `${SB}/rest/v1/hunt_followers?hunt_id=eq.${hunt.id}&select=joined_at,profiles(id,username,city,finds_count)&order=joined_at.asc`,
+      { headers: H }
+    );
+    const rows = r.ok ? await r.json() : [];
+    const list = document.getElementById('this-hunt-list');
+    const countEl = document.getElementById('this-hunt-count');
+    const subEl = document.getElementById('follow-count-sub');
+
+    countEl.textContent = rows.length;
+    subEl.textContent = `${rows.length} hunter${rows.length !== 1 ? 's' : ''} on this trail`;
+
+    if (!rows.length) {
+      list.innerHTML = '<div class="statebox"><div class="si">🔍</div>No hunters yet — be the first!</div>';
+    } else {
+      list.innerHTML = rows.map(row => {
+        const p = row.profiles;
+        const name = p?.username || 'Hunter';
+        const isWinner = hunt.winner_id === p?.id;
+        const joinDate = new Date(row.joined_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        const badge = isWinner
+          ? `<span class="hf-badge hfb-winner">🏆 Winner</span>`
+          : `<span class="hf-badge hfb-hunting">🔍 Hunting</span>`;
+        return `<div class="hunt-follower-row">
+          <div class="hf-avatar">${name[0].toUpperCase()}</div>
+          <div>
+            <div class="hf-name">${name}</div>
+            <div class="hf-meta">Joined ${joinDate} · ${p?.finds_count || 0} lifetime finds</div>
+          </div>
+          ${badge}
+        </div>`;
+      }).join('');
+    }
+
+    // Update follow button state
+    updateFollowBtn(rows);
+  } catch(e) {
+    document.getElementById('this-hunt-list').innerHTML =
+      '<div class="statebox"><div class="si">🔍</div>Could not load hunters.</div>';
+  }
+}
+
+async function loadGlobalLeaderboard() {
+  try {
+    const r = await fetch(`${SB}/rest/v1/leaderboard?order=rank.asc&limit=10`, { headers: H });
     const data = r.ok ? await r.json() : [];
+    const list = document.getElementById('hunters-list');
+    document.getElementById('leaderboard-count').textContent = data.length;
     if (!data.length) {
-      document.getElementById('hunters-list').innerHTML='<div class="statebox"><div class="si">🏆</div>No hunters yet — be the first!</div>';
+      list.innerHTML = '<div class="statebox"><div class="si">🏆</div>No hunters yet — be the first!</div>';
       return;
     }
-    document.getElementById('hunters-list').innerHTML = data.map((h,i) => `
-      <div class="hunter-row">
-        <div class="hrank">${i+1}</div>
-        <div class="hav">${(h.username||'?')[0].toUpperCase()}</div>
-        <div><div class="hname">${h.username}</div><div class="hclues">${h.city||'Unknown city'}</div></div>
-        <div class="hbadge">${h.finds_count} find${h.finds_count!==1?'s':''}</div>
+    const medals = ['🥇','🥈','🥉'];
+    list.innerHTML = data.map((h, i) => `
+      <div class="hunt-follower-row">
+        <div class="hf-avatar" style="background:linear-gradient(135deg,#1a2090,${i===0?'#e8a820':i===1?'#94a3b8':'#b45309'})">${medals[i] || (i+1)}</div>
+        <div>
+          <div class="hf-name">${h.username}</div>
+          <div class="hf-meta">${h.city || 'Unknown city'}</div>
+        </div>
+        <span class="hf-badge hfb-hunting" style="color:var(--gold);border-color:rgba(201,137,12,.25);">
+          ${h.finds_count} find${h.finds_count !== 1 ? 's' : ''}
+        </span>
       </div>`).join('');
   } catch(e) {
-    document.getElementById('hunters-list').innerHTML='<div class="statebox"><div class="si">🏆</div>No hunters yet.</div>';
+    document.getElementById('hunters-list').innerHTML =
+      '<div class="statebox"><div class="si">🏆</div>No hunters yet.</div>';
   }
+}
+
+// ── FOLLOW / UNFOLLOW ─────────────────────────────────
+let isFollowing = false;
+
+function updateFollowBtn(rows) {
+  if (!currentUser) return;
+  isFollowing = rows.some(r => r.profiles?.id === currentUser.id);
+  const btn = document.getElementById('btn-follow');
+  if (!btn) return;
+  if (isFollowing) {
+    btn.textContent = '✅ Following — Leave Hunt';
+    btn.classList.add('following');
+  } else {
+    btn.textContent = '🔍 I\'m Hunting This';
+    btn.classList.remove('following');
+  }
+}
+
+async function toggleFollow() {
+  if (!currentUser) { openAuthModal(() => toggleFollow()); return; }
+  if (!hunt?.id) return;
+  const btn = document.getElementById('btn-follow');
+  btn.disabled = true;
+  try {
+    if (isFollowing) {
+      await fetch(`${SB}/rest/v1/hunt_followers?hunt_id=eq.${hunt.id}&user_id=eq.${currentUser.id}`, {
+        method: 'DELETE',
+        headers: { ...H, 'Authorization': 'Bearer ' + getToken() }
+      });
+    } else {
+      await fetch(`${SB}/rest/v1/hunt_followers`, {
+        method: 'POST',
+        headers: { ...H, 'Authorization': 'Bearer ' + getToken(), 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ hunt_id: hunt.id, user_id: currentUser.id })
+      });
+    }
+    await loadHuntFollowers();
+  } catch(e) { console.error(e); }
+  finally { btn.disabled = false; }
 }
 
 function showTab(name, el) {
@@ -862,6 +1004,7 @@ function showTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   el.classList.add('active');
+  if (name === 'hunters') loadLeaderboard();
 }
 
 
