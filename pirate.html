@@ -1284,14 +1284,31 @@ async function loadProfile(uid) {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() }
     });
     const d = await r.json();
-    if (d && d.length > 0) currentProfile = d[0];
+    if (d && d.length > 0) { currentProfile = d[0]; checkBanned(); }
   } catch(e) {}
+}
+
+function checkBanned() {
+  if (!currentProfile?.is_banned) return;
+  // Clear session
+  clearToken(); currentUser = null; currentProfile = null;
+  // Show full-screen ban wall
+  document.body.insertAdjacentHTML('beforeend', `
+    <div style="position:fixed;inset:0;z-index:9999;background:rgba(6,5,10,.98);display:flex;align-items:center;justify-content:center;padding:24px;">
+      <div style="background:linear-gradient(160deg,rgba(30,10,10,.99),rgba(10,8,16,.99));border:1px solid rgba(239,68,68,.35);border-radius:24px;padding:40px 36px;max-width:420px;width:100%;text-align:center;">
+        <div style="font-size:52px;margin-bottom:16px;">🚫</div>
+        <div style="font-family:'Bangers',cursive;font-size:36px;letter-spacing:3px;color:#f87171;margin-bottom:10px;">ACCOUNT BANNED</div>
+        <div style="font-size:13px;color:#8a7a5a;font-family:'DM Mono',monospace;line-height:1.8;margin-bottom:28px;">Your account has been suspended for violating FinderSeek's community guidelines. If you believe this is a mistake, contact us at <strong style="color:#c8b48a;">hello@finderseek.com</strong></div>
+        <a href="seeker.html" style="display:inline-block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c8b48a;border-radius:12px;padding:12px 28px;font-size:13px;font-weight:700;font-family:'Karla',sans-serif;text-decoration:none;">← Back to Home</a>
+      </div>
+    </div>
+  `);
 }
 
 function updateNavAuth() {
   const area = document.getElementById('nav-auth-area');
   if (currentUser && currentProfile) {
-    area.innerHTML = `<div class="nav-user" onclick="doSignOut()">
+    area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'">
       <div class="nav-avatar">${(currentProfile.handle||'P')[0].toUpperCase()}</div>
       <span>@${currentProfile.handle || 'Pirate'}</span>
     </div>`;
@@ -1522,6 +1539,11 @@ async function submitHunt() {
   // Gate behind auth
   if (!currentUser) {
     openAuthModal();
+    return;
+  }
+  // Block banned users
+  if (currentProfile?.is_banned) {
+    checkBanned();
     return;
   }
   const btn = document.getElementById('submit-btn');
