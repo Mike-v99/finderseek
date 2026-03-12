@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>FinderSeek — Pirate's Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
 <style>
   :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--border:rgba(201,137,12,0.2);--card-bg:rgba(10,8,16,0.82);--green:#22c55e;}
   html{overflow-x:hidden;}
@@ -25,24 +25,32 @@
   .btn-back:hover{border-color:var(--gold);color:var(--cream);}
 
   /* HERO */
-  .hero{position:relative;z-index:2;text-align:center;padding:52px 24px 36px;}
-  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.5);border-radius:24px;padding:8px 20px;font-size:14px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;letter-spacing:2px;margin-bottom:18px;animation:fadeUp .5s both;box-shadow:0 0 20px rgba(239,68,68,.2);}
-  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(62px,11vw,100px);font-weight:700;line-height:1.0;animation:fadeUp .5s .08s both;}
+  .hero{position:relative;z-index:2;text-align:center;padding:52px 24px 36px;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.09) 0%,rgba(201,137,12,.04) 40%,transparent 70%);pointer-events:none;}
+  .hero-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:24px;padding:8px 22px;font-size:10px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;letter-spacing:3px;margin-bottom:22px;animation:fadeUp .5s both;box-shadow:0 0 30px rgba(239,68,68,.12),inset 0 1px 0 rgba(255,255,255,.05);}
+  .hero-badge::before,.hero-badge::after{content:'⚓';font-size:11px;opacity:.6;}
+  .hero h1{font-family:'Bangers',cursive;font-size:clamp(64px,14vw,118px);font-weight:400;line-height:.9;animation:fadeUp .5s .08s both;letter-spacing:4px;text-shadow:0 6px 32px rgba(0,0,0,.8);}
   .hero h1 .desktop-title{display:inline;}
   .hero h1 .mobile-title{display:none;}
-  .hero h1 em{color:var(--gold);font-style:italic;}
-  .hero-sub{display:none;}
+  .hero h1 em{color:var(--gold);font-style:normal;text-shadow:0 0 50px rgba(201,137,12,.5),0 4px 20px rgba(0,0,0,.6);}
+  .hero-sub{display:block;font-size:16px;color:var(--dim);max-width:380px;margin:18px auto 0;line-height:1.75;animation:fadeUp .5s .15s both;font-weight:500;}
+  .hero-steps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:20px;animation:fadeUp .5s .22s both;}
+  .hero-step{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;}
+  .hero-step-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.5;}
+  .hero-step-sep{color:rgba(255,255,255,.15);margin:0 2px;}
+  .hero-step strong{color:var(--dim);}
 
   /* PERKS */
-  .perks{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:32px auto 44px;padding:0 20px;animation:fadeUp .5s .18s both;}
-  .perk{border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:14px;border:1px solid;}
-  .perk-icon{font-size:26px;flex-shrink:0;}
-  .perk-label{font-size:15px;font-weight:700;margin-bottom:3px;}
-  .perk-sub{font-size:12px;opacity:.7;line-height:1.4;}
-  .p1{background:rgba(201,137,12,.1);border-color:rgba(201,137,12,.3);} .p1 .perk-label{color:var(--gold2);}
-  .p2{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);} .p2 .perk-label{color:#93c5fd;}
-  .p3{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);}  .p3 .perk-label{color:#86efac;}
-  .p4{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);} .p4 .perk-label{color:#c4b5fd;}
+  .perks{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:620px;margin:28px auto 36px;padding:0 20px;animation:fadeUp .5s .28s both;}
+  .perk{border-radius:14px;padding:16px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;border:1px solid;position:relative;overflow:hidden;}
+  .perk::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.05),transparent 60%);pointer-events:none;}
+  .perk-icon{font-size:22px;}
+  .perk-label{font-size:12px;font-weight:800;letter-spacing:.2px;}
+  .perk-sub{font-size:10px;opacity:.6;line-height:1.4;}
+  .p1{background:rgba(201,137,12,.1);border-color:rgba(201,137,12,.3);box-shadow:0 4px 16px rgba(201,137,12,.07);} .p1 .perk-label{color:var(--gold2);}
+  .p2{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.25);box-shadow:0 4px 16px rgba(59,130,246,.07);} .p2 .perk-label{color:#93c5fd;}
+  .p3{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);box-shadow:0 4px 16px rgba(34,197,94,.07);} .p3 .perk-label{color:#86efac;}
+  .p4{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.25);box-shadow:0 4px 16px rgba(139,92,246,.07);} .p4 .perk-label{color:#c4b5fd;}
 
   /* STEP LABEL */
   .step-label{position:relative;z-index:2;display:flex;align-items:center;gap:10px;max-width:620px;margin:0 auto 8px;padding:0 20px;}
@@ -53,46 +61,47 @@
   .form-wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:0 20px 80px;}
 
   /* FORM CARD */
-  .fcard{border-radius:20px;margin-bottom:14px;overflow:hidden;backdrop-filter:blur(12px);}
-  .fcard-hdr{padding:18px 24px 15px;display:flex;align-items:center;gap:12px;position:relative;}
+  .fcard{border-radius:20px;margin-bottom:16px;overflow:hidden;backdrop-filter:blur(14px);}
+  .fcard-hdr{padding:20px 24px 17px;display:flex;align-items:center;gap:14px;position:relative;}
   .fcard-hdr .fcard-num{flex-shrink:0;}
-  .fcard-hdr-center{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;margin-right:32px;}
-  .fcard-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'DM Mono',monospace;flex-shrink:0;border:2px solid;color:#ffffff !important;}
-  .fc-gold .fcard-num{border-color:var(--gold2);color:var(--gold2);background:rgba(201,137,12,.15);}
-  .fc-blue .fcard-num{border-color:#93c5fd;color:#93c5fd;background:rgba(59,130,246,.15);}
-  .fc-red .fcard-num{border-color:#fca5a5;color:#fca5a5;background:rgba(239,68,68,.15);}
-  .fc-purple .fcard-num{border-color:#c4b5fd;color:#c4b5fd;background:rgba(139,92,246,.15);}
-  .fc-green .fcard-num{border-color:#86efac;color:#86efac;background:rgba(34,197,94,.15);}
-  .fc-platinum .fcard-num{border-color:#ffb3be;color:#ffb3be;background:rgba(200,40,70,.15);}
-  .fcard-hdr-icon{font-size:22px;}
-  .fcard-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;line-height:1.1;}
-  .fcard-sub{display:none;}
-  .fcard-body{background:rgba(6,5,10,.8);padding:22px 24px 26px;}
+  .fcard-hdr-center{display:flex;align-items:center;gap:12px;flex:1;}
+  .fcard-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;font-family:'Bangers',cursive;letter-spacing:1px;flex-shrink:0;border:2px solid;color:#ffffff !important;}
+  .fc-gold .fcard-num{border-color:var(--gold2);background:rgba(201,137,12,.2);}
+  .fc-blue .fcard-num{border-color:#93c5fd;background:rgba(59,130,246,.2);}
+  .fc-red .fcard-num{border-color:#fca5a5;background:rgba(239,68,68,.2);}
+  .fc-purple .fcard-num{border-color:#c4b5fd;background:rgba(139,92,246,.2);}
+  .fc-green .fcard-num{border-color:#86efac;background:rgba(34,197,94,.2);}
+  .fc-platinum .fcard-num{border-color:#ffb3be;background:rgba(200,40,70,.2);}
+  .fcard-hdr-icon{font-size:24px;flex-shrink:0;}
+  .fcard-hdr-text{flex:1;}
+  .fcard-title{font-family:'Bangers',cursive;font-size:26px;font-weight:400;line-height:1.1;letter-spacing:2px;}
+  .fcard-sub{display:block;font-size:11px;opacity:.6;margin-top:2px;font-family:'DM Mono',monospace;letter-spacing:.3px;}
+  .fcard-body{background:rgba(6,5,10,.82);padding:22px 24px 26px;}
 
-  .fc-gold{border:1px solid rgba(201,137,12,.35);}
-  .fc-gold .fcard-hdr{background:linear-gradient(135deg,rgba(201,137,12,.28),rgba(232,168,32,.12));border-bottom:1px solid rgba(201,137,12,.25);}
+  .fc-gold{border:1px solid rgba(201,137,12,.4);}
+  .fc-gold .fcard-hdr{background:linear-gradient(135deg,rgba(201,137,12,.3),rgba(232,168,32,.14));border-bottom:1px solid rgba(201,137,12,.2);}
   .fc-gold .fcard-title{color:var(--gold2);}
-  .fc-gold .fcard-sub{color:rgba(232,168,32,.65);}
+  .fc-gold .fcard-sub{color:rgba(232,168,32,.7);}
 
-  .fc-blue{border:1px solid rgba(99,102,241,.35);}
-  .fc-blue .fcard-hdr{background:linear-gradient(135deg,rgba(59,130,246,.22),rgba(99,102,241,.12));border-bottom:1px solid rgba(99,102,241,.25);}
+  .fc-blue{border:1px solid rgba(99,102,241,.4);}
+  .fc-blue .fcard-hdr{background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(99,102,241,.14));border-bottom:1px solid rgba(99,102,241,.2);}
   .fc-blue .fcard-title{color:#93c5fd;}
-  .fc-blue .fcard-sub{color:rgba(147,197,253,.65);}
+  .fc-blue .fcard-sub{color:rgba(147,197,253,.7);}
 
-  .fc-red{border:1px solid rgba(239,68,68,.35);}
-  .fc-red .fcard-hdr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(220,38,38,.1));border-bottom:1px solid rgba(239,68,68,.25);}
+  .fc-red{border:1px solid rgba(239,68,68,.4);}
+  .fc-red .fcard-hdr{background:linear-gradient(135deg,rgba(239,68,68,.22),rgba(220,38,38,.12));border-bottom:1px solid rgba(239,68,68,.2);}
   .fc-red .fcard-title{color:#fca5a5;}
-  .fc-red .fcard-sub{color:rgba(252,165,165,.65);}
+  .fc-red .fcard-sub{color:rgba(252,165,165,.7);}
 
-  .fc-purple{border:1px solid rgba(139,92,246,.35);}
-  .fc-purple .fcard-hdr{background:linear-gradient(135deg,rgba(139,92,246,.22),rgba(167,139,250,.12));border-bottom:1px solid rgba(139,92,246,.25);}
+  .fc-purple{border:1px solid rgba(139,92,246,.4);}
+  .fc-purple .fcard-hdr{background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(167,139,250,.14));border-bottom:1px solid rgba(139,92,246,.2);}
   .fc-purple .fcard-title{color:#c4b5fd;}
-  .fc-purple .fcard-sub{color:rgba(196,181,253,.65);}
+  .fc-purple .fcard-sub{color:rgba(196,181,253,.7);}
 
-  .fc-green{border:1px solid rgba(34,197,94,.35);}
-  .fc-green .fcard-hdr{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(16,185,129,.1));border-bottom:1px solid rgba(34,197,94,.25);}
+  .fc-green{border:1px solid rgba(34,197,94,.4);}
+  .fc-green .fcard-hdr{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(16,185,129,.12));border-bottom:1px solid rgba(34,197,94,.2);}
   .fc-green .fcard-title{color:#86efac;}
-  .fc-green .fcard-sub{color:rgba(134,239,172,.65);}
+  .fc-green .fcard-sub{color:rgba(134,239,172,.7);}
 
   /* FIELDS */
   .field{margin-bottom:18px;}
@@ -150,11 +159,11 @@
   .schedule-wrap{display:none;} .schedule-wrap.show{display:block;}
 
   /* SUBMIT */
-  .submit-wrap{position:relative;}
-  .btn-submit{width:100%;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:16px;padding:20px;font-size:17px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.3px;transition:all .25s;margin-top:8px;box-shadow:0 4px 24px rgba(201,137,12,.3);}
-  .btn-submit:hover{box-shadow:0 10px 40px rgba(201,137,12,.55);transform:translateY(-2px);}
-  .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
-  .submit-note{text-align:center;font-size:11px;color:var(--muted);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.5px;}
+  .submit-wrap{position:relative;margin-top:8px;}
+  .btn-submit{width:100%;background:linear-gradient(135deg,#b87800,#e8a820,#c9890c);color:#0a0800;border:none;border-radius:18px;padding:24px;font-size:20px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:4px;transition:all .25s;box-shadow:0 8px 36px rgba(201,137,12,.45),inset 0 1px 0 rgba(255,255,255,.2);}
+  .btn-submit:hover{box-shadow:0 14px 50px rgba(201,137,12,.65),inset 0 1px 0 rgba(255,255,255,.2);transform:translateY(-3px);}
+  .btn-submit:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+  .submit-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;font-family:'DM Mono',monospace;letter-spacing:.5px;}
 
   /* CONFIRM */
   .confirm-screen{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,5,10,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;overflow-y:auto;}
@@ -186,10 +195,12 @@
   .qt-opt.selected .qt-name{color:#93c5fd;}
   .qt-desc{font-size:11px;color:var(--muted);}
   @media(max-width:500px){
-    .perks{grid-template-columns:1fr;}
+    .perks{grid-template-columns:1fr 1fr;}
     .pay-opts{grid-template-columns:1fr;}
     .golive-opts{grid-template-columns:1fr;}
     .code-digit{width:42px;height:52px;font-size:20px;}
+    .hero h1{letter-spacing:2px;}
+    .hero-steps{display:none;}
   }
 
   /* MAPS */
@@ -382,27 +393,43 @@
   </a>
   <div style="display:flex;align-items:center;gap:10px;">
     <div id="nav-auth-area">
-      <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;">🏴‍☠️ Sign In</button>
+      <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,137,12,.4);">🏴‍☠️ Sign In</button>
     </div>
     <a href="seeker.html" class="btn-back">← Hunts</a>
   </div>
 </nav>
 
 <div class="hero f1">
-  <h1><span class="desktop-title">Pirate's <em>Quest.</em></span><span class="mobile-title">Create <em>Request.</em></span></h1>
-  <p class="hero-sub">Hide real cash somewhere in your city. Set your prize, write the clues, and watch seekers hunt. You control everything.</p>
+  <div class="hero-badge">PIRATE MODE ACTIVATED</div>
+  <h1><span class="desktop-title">Pirate's <em>Quest</em></span><span class="mobile-title">Hide <em>Treasure</em></span></h1>
+  <p class="hero-sub">Hide real cash. Set AI clues. Watch seekers hunt.</p>
+  <div class="hero-steps">
+    <span class="hero-step"><span class="hero-step-dot"></span> <strong>Set duration</strong></span>
+    <span class="hero-step-sep">→</span>
+    <span class="hero-step"><span class="hero-step-dot"></span> <strong>Upload photo</strong></span>
+    <span class="hero-step-sep">→</span>
+    <span class="hero-step"><span class="hero-step-dot"></span> <strong>Drop a pin</strong></span>
+    <span class="hero-step-sep">→</span>
+    <span class="hero-step"><span class="hero-step-dot"></span> <strong>AI clues</strong></span>
+    <span class="hero-step-sep">→</span>
+    <span class="hero-step"><span class="hero-step-dot"></span> <strong>Go live</strong></span>
+  </div>
 </div>
 
+<div style="position:relative;z-index:2;max-width:620px;margin:0 auto;padding:0 20px;">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,137,12,.35),transparent);margin-bottom:28px;"></div>
 </div>
-
 <div class="form-wrap">
 
   <!-- QUEST TIME -->
   <div class="fcard fc-blue f3">
     <div class="fcard-hdr">
       <div class="fcard-num">1</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">⏱️</div>
-      <div><div class="fcard-title">Quest Duration</div><div class="fcard-sub">How long will seekers have to find your treasure?</div></div></div>
+      <div class="fcard-hdr-icon">⏱️</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">Quest Duration</div>
+        <div class="fcard-sub">How long will seekers have to find your treasure?</div>
+      </div>
     </div>
     <div class="fcard-body">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
@@ -423,8 +450,11 @@
   <div class="fcard fc-platinum f4">
     <div class="fcard-hdr">
       <div class="fcard-num">2</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">📸</div>
-      <div><div class="fcard-title">Photo of the Hiding Spot</div><div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div></div></div>
+      <div class="fcard-hdr-icon">📸</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">Photo of Hiding Spot</div>
+        <div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div>
+      </div>
     </div>
     <div class="fcard-body">
       <input type="file" id="photo-input-gallery" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
@@ -448,8 +478,11 @@
   <div class="fcard fc-gold f3">
     <div class="fcard-hdr">
       <div class="fcard-num">3</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">📍</div>
-      <div><div class="fcard-title">Where & How Much</div><div class="fcard-sub">Tell seekers where to search and what's at stake.</div></div></div>
+      <div class="fcard-hdr-icon">📍</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">Where & How Much</div>
+        <div class="fcard-sub">Pin the location and set your prize amount.</div>
+      </div>
     </div>
     <div class="fcard-body">
       <div class="field">
@@ -488,8 +521,11 @@
   <div class="fcard fc-red f4">
     <div class="fcard-hdr">
       <div class="fcard-num">4</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">🔐</div>
-      <div><div class="fcard-title">Secret Finder Code</div><div class="fcard-sub">Finders will enter this code to claim the prize.</div></div></div>
+      <div class="fcard-hdr-icon">🔐</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">Secret Finder Code</div>
+        <div class="fcard-sub">Finders enter this 6-digit code to claim the prize.</div>
+      </div>
     </div>
     <div class="fcard-body">
       <div class="code-wrap">
@@ -511,8 +547,11 @@
   <div class="fcard fc-purple f5">
     <div class="fcard-hdr">
       <div class="fcard-num">5</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">💸</div>
-      <div><div class="fcard-title">How You'll Pay the Finder</div><div class="fcard-sub">Choose how the prize gets to the winner.</div></div></div>
+      <div class="fcard-hdr-icon">💸</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">How You'll Pay the Finder</div>
+        <div class="fcard-sub">Choose how the prize gets to the winner.</div>
+      </div>
     </div>
     <div class="fcard-body">
       <div class="pay-opts">
@@ -547,8 +586,11 @@
   <div class="fcard fc-green f6">
     <div class="fcard-hdr">
       <div class="fcard-num">6</div>
-      <div class="fcard-hdr-center"><div class="fcard-hdr-icon">🚀</div>
-      <div><div class="fcard-title">When to Go Live</div><div class="fcard-sub">Choose when seekers can start hunting.</div></div></div>
+      <div class="fcard-hdr-icon">🚀</div>
+      <div class="fcard-hdr-text">
+        <div class="fcard-title">When to Go Live</div>
+        <div class="fcard-sub">Choose when seekers can start hunting.</div>
+      </div>
     </div>
     <div class="fcard-body">
       <div class="golive-opts">
@@ -617,9 +659,9 @@
   <!-- SUBMIT -->
   <div class="submit-wrap f7">
     <button class="btn-submit" id="submit-btn" onclick="submitHunt()">
-      🏴‍☠️ &nbsp;&nbsp; Hide My Treasure →
+      🏴‍☠️ &nbsp; BURY MY TREASURE →
     </button>
-    <p class="submit-note">Your hunt will be reviewed within 24 hours before going live.</p>
+    <p class="submit-note">⚓ Your quest will be reviewed and go live within 24 hours</p>
   </div>
 
 </div>
@@ -1256,7 +1298,7 @@ function updateNavAuth() {
   } else if (currentUser) {
     area.innerHTML = `<div class="nav-user" onclick="doSignOut()"><div class="nav-avatar">P</div><span>Pirate</span></div>`;
   } else {
-    area.innerHTML = `<button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;">🏴‍☠️ Sign In</button>`;
+    area.innerHTML = `<button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,137,12,.4);">🏴‍☠️ Sign In</button>`;
   }
 }
 
