@@ -243,8 +243,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .lock-icon{font-size:18px;opacity:.25;margin-top:2px;}
 
 /* MAP */
-#hunt-map{width:100%;height:360px;border-radius:18px;border:1px solid rgba(201,137,12,.2);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+#hunt-map{width:100%;height:380px;border-radius:18px;border:1px solid rgba(201,137,12,.2);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.map-outer{position:relative;}
+.map-legend{position:absolute;bottom:14px;left:14px;z-index:500;background:rgba(6,5,10,.88);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;}
+.map-legend-row{display:flex;align-items:center;gap:7px;}
+.mleg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.mleg-dot.gold{background:#c9890c;box-shadow:0 0 6px rgba(201,137,12,.6);}
+.mleg-dot.red{background:#f87171;box-shadow:0 0 6px rgba(248,113,113,.6);}
+.mleg-lbl{font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;white-space:nowrap;}
 .map-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:10px;letter-spacing:.5px;}
+/* Clue mini maps */
 
 /* HUNTERS */
 .hunter-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(255,255,255,.06);
@@ -550,8 +558,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <div class="panel" id="panel-map">
   <div class="main">
     <div class="sec-hd"><div class="sec-lbl">AREA MAP</div><div class="sec-line"></div></div>
-    <div id="hunt-map"></div>
-    <div class="map-note">General area only — exact location hidden in the clues</div>
+    <div class="map-outer">
+      <div id="hunt-map"></div>
+      <div class="map-legend" id="map-legend">
+        <div class="map-legend-row"><div class="mleg-dot gold"></div><div class="mleg-lbl" id="mleg-radius-lbl">Search area</div></div>
+        <div class="map-legend-row"><div class="mleg-dot red"></div><div class="mleg-lbl">Final zone (last clue)</div></div>
+      </div>
+    </div>
+    <div class="map-note" id="map-note">General area only — exact location revealed in clues</div>
   </div>
 </div>
 
@@ -820,21 +834,31 @@ function initClueMaps(clues, lat, lng, city) {
       if (!el || el._mapInited) return;
       el._mapInited = true;
       const m = L.map(el, { zoomControl: false, scrollWheelZoom: false,
-        dragging: false, touchZoom: false, doubleClickZoom: false, keyboard: false });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
+        dragging: false, touchZoom: false, doubleClickZoom: false, keyboard: false, attributionControl: false });
+      // Dark tiles on mini maps too
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19, subdomains: 'abcd'
+      }).addTo(m);
       m.setView([clat, clng], zoom);
       if (num === total) {
-        // Final clue: show precise marker area
+        // Final clue: tight red zone + 🎯 marker
         L.circle([clat, clng], {
-          radius: 80, color: '#f87171', fillColor: '#f87171',
-          fillOpacity: 0.2, weight: 2, dashArray: '4 3'
+          radius: 80, color: '#f87171', fillColor: '#ef4444',
+          fillOpacity: 0.25, weight: 2
+        }).addTo(m);
+        L.divIcon && L.marker([clat, clng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div style="font-size:22px;filter:drop-shadow(0 2px 6px rgba(248,113,113,.8));">🎯</div>`,
+            iconSize: [28, 28], iconAnchor: [14, 14]
+          })
         }).addTo(m);
       } else {
         // Earlier clues: gold area circle, shrinking
         const radius = num === total - 1 ? 300 : 800;
         L.circle([clat, clng], {
-          radius, color: '#c9890c', fillColor: '#c9890c',
-          fillOpacity: 0.12, weight: 2, dashArray: '6 4'
+          radius, color: '#e8a820', fillColor: '#c9890c',
+          fillOpacity: 0.1, weight: 2, dashArray: '8 5', opacity: 0.8
         }).addTo(m);
       }
     });
@@ -851,32 +875,83 @@ function initClueMaps(clues, lat, lng, city) {
 }
 
 function initHuntMap() {
-  const lat = hunt.lat || 29.7604;
-  const lng = hunt.lng || -95.3698;
   const mapEl = document.getElementById('hunt-map');
   if (!mapEl || !window.L) return;
+  if (mapEl._mapInited) return;
+  mapEl._mapInited = true;
 
-  const map = L.map('hunt-map', { zoomControl: true, scrollWheelZoom: false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+  const map = L.map('hunt-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false });
+
+  // Dark tile layer via CartoDB Dark Matter
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, subdomains: 'abcd'
+  }).addTo(map);
+
+  // Custom gold marker icon
+  const goldIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);
+      border:3px solid #0a0800;box-shadow:0 0 0 2px #c9890c,0 4px 16px rgba(201,137,12,.5);
+      display:flex;align-items:center;justify-content:center;font-size:15px;">💰</div>`,
+    iconSize: [32, 32], iconAnchor: [16, 16]
+  });
+
+  // Figure out current search radius based on revealed clues
+  const total = clues.length;
+  const revealed = clues.filter(c => new Date(c.reveal_at) <= new Date()).length;
+  let radius = 2000; // default before any clues
+  let radiusLabel = '~2km search area';
+  if (total > 0) {
+    const progress = revealed / total;
+    if (progress >= 1)         { radius = 80;   radiusLabel = '80m · Final zone!'; }
+    else if (progress >= 0.75) { radius = 300;  radiusLabel = '300m search area'; }
+    else if (progress >= 0.5)  { radius = 600;  radiusLabel = '600m search area'; }
+    else if (progress >= 0.25) { radius = 1200; radiusLabel = '1.2km search area'; }
+    else                       { radius = 2000; radiusLabel = '2km search area'; }
+  }
+
+  // Update legend
+  const legendLbl = document.getElementById('mleg-radius-lbl');
+  if (legendLbl) legendLbl.textContent = radiusLabel;
+  const noteEl = document.getElementById('map-note');
+  if (noteEl) noteEl.textContent = revealed >= total && total > 0
+    ? '🎯 Final clue revealed — search the red zone!'
+    : `${revealed}/${total} clues revealed — area narrows as more drop`;
+
+  const doInit = (lat, lng) => {
+    const isFinal = radius <= 80;
+    const zoom = radius <= 80 ? 18 : radius <= 300 ? 16 : radius <= 600 ? 14 : radius <= 1200 ? 13 : 12;
+    map.setView([lat, lng], zoom);
+
+    // Main search circle — gold
+    const circle = L.circle([lat, lng], {
+      radius,
+      color: '#e8a820', fillColor: '#c9890c',
+      fillOpacity: isFinal ? 0.05 : 0.08,
+      weight: isFinal ? 1 : 2,
+      dashArray: isFinal ? null : '8 5',
+      opacity: 0.7
+    }).addTo(map);
+    circle.bindPopup(`<div style="font-family:monospace;font-size:12px;color:#0a0800;">💰 Treasure hidden in this area<br/>${radiusLabel}</div>`);
+
+    // Final zone red pulse circle
+    if (isFinal) {
+      L.circle([lat, lng], {
+        radius: 80, color: '#f87171', fillColor: '#ef4444',
+        fillOpacity: 0.18, weight: 2
+      }).addTo(map);
+      L.marker([lat, lng], { icon: goldIcon }).addTo(map)
+        .bindPopup('<div style="font-family:monospace;font-size:12px;">🎯 Very close now!</div>');
+    }
+  };
 
   if (hunt.lat && hunt.lng) {
-    map.setView([lat, lng], 14);
-    L.circle([lat, lng], {
-      radius: 600, color: '#c9890c', fillColor: '#c9890c',
-      fillOpacity: 0.12, weight: 2, opacity: 0.5, dashArray: '6 4'
-    }).addTo(map).bindPopup('💰 Treasure hidden somewhere in this area');
-  } else {
-    map.setView([lat, lng], 11);
-    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(hunt.city || 'Houston TX') + '&format=json&limit=1')
+    doInit(hunt.lat, hunt.lng);
+  } else if (hunt.city) {
+    map.setView([29.7604, -95.3698], 11);
+    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(hunt.city) + '&format=json&limit=1')
       .then(r => r.json()).then(d => {
-        if (d && d[0]) {
-          const clat = parseFloat(d[0].lat), clng = parseFloat(d[0].lon);
-          map.setView([clat, clng], 11);
-          L.circle([clat, clng], {
-            radius: 3000, color: '#c9890c', fillColor: '#c9890c',
-            fillOpacity: 0.1, weight: 2, dashArray: '6 4'
-          }).addTo(map).bindPopup('💰 Treasure hidden somewhere in ' + hunt.city);
-        }
+        if (d?.[0]) doInit(parseFloat(d[0].lat), parseFloat(d[0].lon));
       }).catch(() => {});
   }
 }
@@ -1005,6 +1080,12 @@ function showTab(name, el) {
   document.getElementById('panel-' + name).classList.add('active');
   el.classList.add('active');
   if (name === 'hunters') loadLeaderboard();
+  if (name === 'map') {
+    // Reset and reinit so radius reflects latest revealed clues
+    const mapEl = document.getElementById('hunt-map');
+    if (mapEl) mapEl._mapInited = false;
+    setTimeout(initHuntMap, 50);
+  }
 }
 
 
