@@ -988,7 +988,7 @@ function updateNavAuth() {
   if (!area) return;
   if (currentUser) {
     const name = currentProfile?.username || 'Hunter';
-    area.innerHTML = `<div class="nav-user" onclick="doSignOut()">
+    area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'">
       <div class="nav-avatar">${name[0].toUpperCase()}</div>
       <span>${name}</span>
     </div>`;
