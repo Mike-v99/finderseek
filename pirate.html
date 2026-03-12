@@ -371,6 +371,7 @@
   @keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
   .cg-success-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:8px;color:var(--gold);}
   .btn-view-hunt{display:inline-block;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:16px 36px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;margin-top:16px;box-shadow:0 6px 24px rgba(201,137,12,.4);}
+.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -384,6 +385,7 @@
     <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
   </a>
   <div style="display:flex;align-items:center;gap:10px;">
+    <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
     <div id="nav-auth-area">
       <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,137,12,.4);">🏴‍☠️ Sign In</button>
     </div>
@@ -1112,12 +1114,16 @@ function checkBanned() {
 
 function updateNavAuth() {
   const area = document.getElementById('nav-auth-area');
+  const upgradeBtn = document.getElementById('nav-upgrade-btn');
   if (currentUser && currentProfile) {
     area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'"><div class="nav-avatar">${(currentProfile.handle||'P')[0].toUpperCase()}</div><span>@${currentProfile.handle || 'Pirate'}</span></div>`;
+    if (upgradeBtn) upgradeBtn.style.display = currentProfile?.is_pro ? 'none' : 'inline-flex';
   } else if (currentUser) {
     area.innerHTML = `<div class="nav-user" onclick="doSignOut()"><div class="nav-avatar">P</div><span>Pirate</span></div>`;
+    if (upgradeBtn) upgradeBtn.style.display = 'inline-flex';
   } else {
     area.innerHTML = `<button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,137,12,.4);">🏴‍☠️ Sign In</button>`;
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
   }
 }
 
