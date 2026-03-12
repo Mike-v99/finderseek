@@ -186,9 +186,12 @@
     .body{font-size:13px;margin-bottom:20px;}
     .sub{margin-bottom:12px;}
   }
+.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
+#upgrade-fixed{position:fixed;top:16px;right:20px;z-index:200;}
 </style>
 </head>
 <body>
+<div id="upgrade-fixed"><a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a></div>
 <div style="position:fixed;inset:0;z-index:0;background:url('pirate.png') center 20%/cover no-repeat;opacity:0.3;filter:saturate(0.6) sepia(0.3);"></div>
 <div style="position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at center, rgba(6,5,10,0.55) 0%, rgba(6,5,10,0.82) 60%, rgba(6,5,10,0.96) 100%);"></div>
 <canvas id="bg"></canvas>
@@ -323,6 +326,21 @@ async function submit(){
   }
 }
 document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
+</script>
+<script>
+(async()=>{
+  const SB='https://qeiuycuasjkopxfkmggp.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+  const tok=localStorage.getItem('fs_token'); if(!tok) return;
+  try{
+    const ur=await fetch(`${SB}/auth/v1/user`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
+    if(!ur.ok) return;
+    const u=await ur.json(); if(!u?.id) return;
+    const pr=await fetch(`${SB}/rest/v1/profiles?id=eq.${u.id}&select=is_pro`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
+    const pd=await pr.json();
+    const btn=document.getElementById('nav-upgrade-btn');
+    if(btn) btn.style.display=(pd?.[0]?.is_pro)?'none':'inline-flex';
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
