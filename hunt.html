@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -38,9 +38,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gold-bar{display:none;}
 
 /* HERO SECTION */
-.hero{position:relative;padding:20px 16px 16px;z-index:2;
-  background:radial-gradient(ellipse at 70% 50%, rgba(201,137,12,.1) 0%, transparent 60%),
-  radial-gradient(ellipse at 20% 80%, rgba(139,92,246,.06) 0%, transparent 50%);}
+.hero{padding:20px 16px 16px;}
 
 .hero-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
 .hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
@@ -304,7 +302,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- HERO -->
 <div class="hero f1">
-  <div class="center-wrap" style="position:relative;z-index:1;">
+  <div class="center-wrap">
     <div class="hero-eyebrow">THIS WEEK'S TREASURE</div>
     <div class="hero-prize" id="prize-amt"><span>Loading…</span></div>
     <div class="hero-city" id="prize-meta">…</div>
