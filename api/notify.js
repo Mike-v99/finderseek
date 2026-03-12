@@ -12,7 +12,7 @@
 //   hunt.html     → event: 'chat_message'
 
 const RESEND_URL = 'https://api.resend.com/emails';
-const FROM       = 'FinderSeek <notifications@finderseek.com>';
+const FROM = 'FinderSeek <notifications@mylocalpaws.com>';
 const SITE_URL   = 'https://finderseek.com';
 
 // ── Colours / styles used in all emails ──────────────────────────
