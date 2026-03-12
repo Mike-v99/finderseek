@@ -232,14 +232,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hbadge{margin-left:auto;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace;}
 
 /* CLAIM */
-.claim-hero{text-align:center;padding:32px 20px;}
-.claim-icon{font-size:56px;margin-bottom:16px;}
-.claim-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:10px;color:var(--cream);}
-.claim-desc{font-size:14px;color:var(--dim);line-height:1.8;margin-bottom:28px;max-width:380px;margin-left:auto;margin-right:auto;}
-.btn-claim{background:linear-gradient(135deg,#16a34a,var(--green));color:#0a1a0a;border:none;border-radius:14px;
-  padding:18px 40px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;
-  box-shadow:0 6px 24px rgba(34,197,94,.35);transition:all .2s;letter-spacing:.5px;}
-.btn-claim:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(34,197,94,.5);}
+.claim-wrap{padding:24px 0 40px;}
+.claim-hero{text-align:center;padding:20px 20px 28px;position:relative;}
+.claim-hero::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:400px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.07) 0%,transparent 70%);pointer-events:none;}
+.claim-icon{font-size:52px;margin-bottom:14px;display:block;}
+.claim-title{font-family:'Bangers',cursive;font-size:42px;letter-spacing:3px;margin-bottom:10px;color:var(--cream);}
+.claim-title em{color:#4ade80;font-style:normal;}
+.claim-desc{font-size:14px;color:var(--dim);line-height:1.8;margin-bottom:0;max-width:360px;margin-inline:auto;}
+
+/* CODE ENTRY */
+.code-entry-card{background:rgba(10,8,18,.9);border:1px solid rgba(34,197,94,.2);border-radius:20px;padding:28px 24px;margin-bottom:14px;backdrop-filter:blur(12px);}
+.code-entry-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--green);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.code-entry-label::before{content:'';width:20px;height:1px;background:var(--green);opacity:.4;}
+.code-entry-label::after{content:'';flex:1;height:1px;background:var(--green);opacity:.4;}
+.claim-digits{display:flex;gap:8px;justify-content:center;margin-bottom:20px;}
+.claim-digit{width:52px;height:60px;background:rgba(34,197,94,.05);border:2px solid rgba(34,197,94,.25);border-radius:12px;text-align:center;font-size:26px;font-weight:700;color:#4ade80;font-family:'DM Mono',monospace;outline:none;transition:all .2s;caret-color:#4ade80;}
+.claim-digit:focus{border-color:rgba(34,197,94,.7);background:rgba(34,197,94,.1);box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+.claim-digit.error{border-color:rgba(239,68,68,.7);background:rgba(239,68,68,.08);color:#fca5a5;animation:shake .4s ease;}
+.claim-digit.success{border-color:rgba(34,197,94,.9);background:rgba(34,197,94,.15);color:#4ade80;}
+.btn-submit-claim{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:14px;padding:18px;font-size:18px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:3px;box-shadow:0 6px 28px rgba(34,197,94,.35);transition:all .2s;}
+.btn-submit-claim:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(34,197,94,.55);}
+.btn-submit-claim:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.claim-error-msg{text-align:center;font-size:13px;color:#fca5a5;font-family:'DM Mono',monospace;margin-top:12px;min-height:20px;letter-spacing:.5px;}
+
+/* CLAIM HINTS */
+.claim-hints{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+.claim-hints-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:12px;}
+.claim-hint{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:8px;}
+.claim-hint:last-child{margin-bottom:0;}
+.claim-hint-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
+
+/* SUCCESS SCREEN */
+.claim-success{display:none;text-align:center;padding:32px 20px;}
+.claim-success.show{display:block;}
+.claim-success-boom{font-size:80px;margin-bottom:16px;animation:bounceIn .6s both;}
+.claim-success-title{font-family:'Bangers',cursive;font-size:52px;letter-spacing:4px;margin-bottom:12px;background:linear-gradient(135deg,#4ade80,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;}
+.claim-success-sub{font-size:15px;color:var(--dim);line-height:1.8;max-width:360px;margin-inline:auto;margin-bottom:24px;}
+.claim-success-detail{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:16px;padding:20px 24px;max-width:360px;margin-inline:auto;margin-bottom:24px;text-align:left;}
+.claim-success-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;}
+.claim-success-row:last-child{border-bottom:none;}
+.csrlbl{color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.csrval{color:#4ade80;font-weight:700;}
+.btn-back-hunts{display:inline-block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;text-decoration:none;font-family:'Karla',sans-serif;transition:all .2s;}
+.btn-back-hunts:hover{background:rgba(34,197,94,.2);transform:translateY(-1px);}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
 
 .statebox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 24px;
   text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
@@ -326,11 +364,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- CLAIM PANEL -->
 <div class="panel" id="panel-claim">
   <div class="main">
-    <div class="claim-hero">
-      <div class="claim-icon">🎯</div>
-      <div class="claim-title">Found the Treasure?</div>
-      <p class="claim-desc">If you've physically found the hidden cash, take a photo with it and submit your claim. The Pirate will verify and send your reward!</p>
-      <button class="btn-claim">📸 Submit Your Find →</button>
+    <div class="claim-wrap">
+
+      <!-- DEFAULT STATE -->
+      <div id="claim-form-state">
+        <div class="claim-hero">
+          <span class="claim-icon">🔐</span>
+          <div class="claim-title">Found <em>It?</em></div>
+          <p class="claim-desc">Enter the 6-digit code you found at the hiding spot to claim your prize.</p>
+        </div>
+
+        <div class="code-entry-card">
+          <div class="code-entry-label">Enter Your 6-Digit Code</div>
+          <div class="claim-digits">
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c1" oninput="claimNext(this,'c2')" onkeydown="claimPrev(event,this,'')"/>
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c2" oninput="claimNext(this,'c3')" onkeydown="claimPrev(event,this,'c1')"/>
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c3" oninput="claimNext(this,'c4')" onkeydown="claimPrev(event,this,'c2')"/>
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c4" oninput="claimNext(this,'c5')" onkeydown="claimPrev(event,this,'c3')"/>
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c5" oninput="claimNext(this,'c6')" onkeydown="claimPrev(event,this,'c4')"/>
+            <input class="claim-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="c6" oninput="claimNext(this,'')"   onkeydown="claimPrev(event,this,'c5')"/>
+          </div>
+          <button class="btn-submit-claim" id="btn-submit-claim" onclick="submitClaim()">🏆 CLAIM MY PRIZE</button>
+          <div class="claim-error-msg" id="claim-error"></div>
+        </div>
+
+        <div class="claim-hints">
+          <div class="claim-hints-title">How to find the code</div>
+          <div class="claim-hint"><span class="claim-hint-icon">📍</span>Follow the final clue map — it zooms to within 260ft of the hiding spot</div>
+          <div class="claim-hint"><span class="claim-hint-icon">📸</span>The last clue includes a photo of the exact hiding location</div>
+          <div class="claim-hint"><span class="claim-hint-icon">🔢</span>Look for a small card or note with a 6-digit number written on it</div>
+          <div class="claim-hint"><span class="claim-hint-icon">⚡</span>First person to submit the correct code wins — move fast!</div>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="claim-success" id="claim-success">
+        <div class="claim-success-boom">🏆</div>
+        <div class="claim-success-title">YOU WON!</div>
+        <p class="claim-success-sub">Congratulations! You found the treasure. The Pirate has been notified and will send your prize shortly.</p>
+        <div class="claim-success-detail">
+          <div class="claim-success-row"><span class="csrlbl">Prize</span><span class="csrval" id="cs-prize">—</span></div>
+          <div class="claim-success-row"><span class="csrlbl">Hunt</span><span class="csrval" id="cs-city">—</span></div>
+          <div class="claim-success-row"><span class="csrlbl">Status</span><span class="csrval">✅ Confirmed</span></div>
+        </div>
+        <a href="seeker.html" class="btn-back-hunts">← Back to All Hunts</a>
+      </div>
+
     </div>
   </div>
 </div>
@@ -653,6 +732,82 @@ function showTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   el.classList.add('active');
+}
+
+
+// ── CLAIM PRIZE ──────────────────────────────────────────────
+
+function claimNext(el, nextId) {
+  el.value = el.value.replace(/[^0-9]/g,'');
+  if (el.value && nextId) document.getElementById(nextId)?.focus();
+  clearClaimError();
+}
+
+function claimPrev(e, el, prevId) {
+  if (e.key === 'Backspace' && !el.value && prevId) {
+    document.getElementById(prevId)?.focus();
+  }
+}
+
+function clearClaimError() {
+  document.querySelectorAll('.claim-digit').forEach(d => d.classList.remove('error'));
+  document.getElementById('claim-error').textContent = '';
+}
+
+function getClaimCode() {
+  return ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id)?.value || '').join('');
+}
+
+function showClaimError(msg) {
+  document.querySelectorAll('.claim-digit').forEach(d => d.classList.add('error'));
+  document.getElementById('claim-error').textContent = msg;
+  setTimeout(() => document.querySelectorAll('.claim-digit').forEach(d => d.classList.remove('error')), 1200);
+}
+
+async function submitClaim() {
+  const code = getClaimCode();
+  if (code.length < 6) { showClaimError('⚠️ Enter all 6 digits'); return; }
+  if (!hunt) { showClaimError('⚠️ Hunt not loaded yet'); return; }
+
+  const btn = document.getElementById('btn-submit-claim');
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking…';
+
+  try {
+    // Fetch the hunt's finder_code from Supabase
+    const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}&select=finder_code,prize_desc,city,status,winner_id`, { headers: H });
+    const data = await r.json();
+    const h = Array.isArray(data) ? data[0] : data;
+
+    if (!h) { showClaimError('⚠️ Could not verify. Try again.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
+    if (h.winner_id) { showClaimError('😔 This treasure has already been claimed!'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
+    if (h.status !== 'active') { showClaimError('⌛ This hunt has ended.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
+
+    if (String(h.finder_code).trim() !== String(code).trim()) {
+      showClaimError('❌ Wrong code — keep searching!');
+      btn.disabled = false; btn.textContent = '🏆 CLAIM MY PRIZE';
+      return;
+    }
+
+    // ✅ Code is correct — mark hunt as won
+    await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ winner_id: null, found_at: new Date().toISOString(), status: 'ended' })
+    });
+
+    // Show success screen
+    document.getElementById('claim-form-state').style.display = 'none';
+    document.getElementById('cs-prize').textContent = h.prize_desc || hunt.prize_desc || '—';
+    document.getElementById('cs-city').textContent = h.city || hunt.city || '—';
+    const s = document.getElementById('claim-success');
+    s.classList.add('show');
+    s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(e) {
+    showClaimError('⚠️ Network error — try again');
+    btn.disabled = false; btn.textContent = '🏆 CLAIM MY PRIZE';
+  }
 }
 
 loadHunt();
