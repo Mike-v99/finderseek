@@ -38,7 +38,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gold-bar{display:none;}
 
 /* HERO SECTION */
-.hero{padding:20px 16px 16px;}
+.hero{position:relative;padding:20px 16px 16px;}
 
 .hero-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
 .hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
@@ -92,7 +92,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
-.tabs-outer{position:sticky;top:53px;z-index:90;}
+.tabs-outer{position:relative;z-index:2;padding:8px 0;}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .tab{flex:1;padding:16px 8px;text-align:center;font-size:13px;font-weight:800;cursor:pointer;
   border-radius:14px;border:2px solid transparent;transition:all .25s;letter-spacing:1px;
