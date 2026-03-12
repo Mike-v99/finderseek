@@ -1,942 +1,380 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>FinderSeek — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Karla:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --ink:    #06050a;
-  --ink2:   #0e0c15;
-  --gold:   #c9890c;
-  --gold2:  #e8a820;
-  --cream:  #f5ead8;
-  --dim:    #c8b48a;
-  --muted:  #8a7a5a;
-  --border: rgba(201,137,12,0.18);
-  --red:    #c0392b;
-  --green:  #27ae60;
-  --blue:   #2980b9;
-  --card:   rgba(255,255,255,0.03);
+:root{
+  --ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;
+  --dim:#c8b48a;--muted:#8a7a5a;--green:#22c55e;
+  --card:rgba(12,10,18,.92);--border:rgba(201,137,12,.2);
+  --red:#ef4444;--amber:#f59e0b;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.07;}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:180px;opacity:.5;}
 
-/* ── Layout ── */
-.shell { display:flex; min-height:100vh; }
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;background:rgba(6,5,10,.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(201,137,12,.15);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-brand{font-size:16px;font-weight:800;color:var(--cream);}
+.nav-brand em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
+.nav-badge{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);border-radius:20px;
+  padding:4px 12px;font-size:10px;font-weight:700;color:#fca5a5;font-family:'DM Mono',monospace;letter-spacing:1px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+#admin-status{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
 
-/* ── Sidebar ── */
-.sidebar {
-  width: 220px; flex-shrink:0;
-  background: var(--ink2);
-  border-right: 1px solid var(--border);
-  display:flex; flex-direction:column;
-  position:sticky; top:0; height:100vh;
-  overflow-y:auto;
-}
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.logo-row { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
-.logo-icon {
-  width:34px;height:34px;border-radius:9px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  display:flex;align-items:center;justify-content:center;font-size:16px;
-  box-shadow:0 4px 14px rgba(201,137,12,.4);flex-shrink:0;
-}
-.logo-name {
-  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;
-  background:linear-gradient(90deg,var(--gold),var(--gold2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.admin-badge {
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--muted);
-}
-.nav { flex:1; padding:16px 10px; display:flex;flex-direction:column;gap:2px; }
-.nav-item {
-  display:flex;align-items:center;gap:10px;
-  padding:9px 12px;border-radius:8px;cursor:pointer;
-  font-size:13px;font-weight:500;color:var(--dim);
-  transition:all .15s;border:none;background:none;width:100%;text-align:left;
-}
-.nav-item:hover { background:rgba(201,137,12,.08); color:var(--cream); }
-.nav-item.active { background:rgba(201,137,12,.12); color:var(--gold); }
-.nav-item .icon { font-size:15px; width:18px; text-align:center; flex-shrink:0; }
-.nav-section {
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--muted);padding:12px 12px 4px;
-}
-.sidebar-footer {
-  padding:16px;border-top:1px solid var(--border);
-  font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);
-  letter-spacing:.5px;
-}
-.status-dot { display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;animation:blink 2s infinite; }
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* LOGIN GATE */
+.login-gate{position:fixed;inset:0;z-index:200;background:rgba(6,5,10,.97);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid var(--border);border-radius:24px;padding:40px 36px;max-width:380px;width:100%;}
+.login-title{font-family:'Bangers',cursive;font-size:38px;letter-spacing:3px;margin-bottom:6px;color:var(--cream);}
+.login-title em{color:var(--gold);font-style:normal;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px;font-family:'DM Mono',monospace;}
+.login-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px;display:block;}
+.login-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;margin-bottom:14px;}
+.login-input:focus{border-color:rgba(201,137,12,.5);}
+.login-input::placeholder{color:var(--muted);}
+.btn-login{width:100%;background:linear-gradient(135deg,#b45309,var(--gold2));color:#0a0800;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 20px rgba(201,137,12,.4);transition:all .2s;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.55);}
+.login-err{font-size:12px;color:#fca5a5;font-family:'DM Mono',monospace;margin-top:10px;display:none;}
+.login-err.show{display:block;}
 
-/* ── Main ── */
-.main { flex:1; display:flex;flex-direction:column; overflow:hidden; }
-.topbar {
-  height:54px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;background:rgba(14,12,21,.6);backdrop-filter:blur(8px);
-  position:sticky;top:0;z-index:10;
-}
-.page-title { font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream); }
-.topbar-right { display:flex;align-items:center;gap:12px; }
-.topbar-btn {
-  background:rgba(201,137,12,.1);border:1px solid var(--border);
-  color:var(--gold);font-size:12px;font-weight:600;font-family:'Karla',sans-serif;
-  border-radius:8px;padding:6px 14px;cursor:pointer;transition:all .15s;
-}
-.topbar-btn:hover { background:rgba(201,137,12,.2); }
-.topbar-btn.primary {
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#1a0800;border-color:transparent;
-}
-.topbar-btn.primary:hover { opacity:.9; }
+/* MAIN LAYOUT */
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
 
-.content { flex:1;overflow-y:auto;padding:28px; }
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+.stat-card{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:18px 20px;}
+.stat-val{font-family:'Bangers',cursive;font-size:36px;letter-spacing:2px;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;}
+.stat-pending .stat-val{color:#fbbf24;}
+.stat-active .stat-val{color:#4ade80;}
+.stat-done .stat-val{color:#94a3b8;}
+.stat-rejected .stat-val{color:#f87171;}
 
-/* ── Stat Cards ── */
-.stats-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px; }
-.stat-card {
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:18px 20px;position:relative;overflow:hidden;
-}
-.stat-card::before {
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-.stat-label { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px; }
-.stat-value { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--cream);line-height:1; }
-.stat-sub { font-size:12px;color:var(--muted);margin-top:5px; }
-.stat-trend { font-size:11px;margin-top:4px; }
-.stat-trend.up { color:var(--green); }
-.stat-trend.neutral { color:var(--muted); }
+/* TABS */
+.admin-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:0;}
+.atab{padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;font-family:'Karla',sans-serif;letter-spacing:.5px;margin-bottom:-1px;}
+.atab.active{color:var(--gold);border-color:var(--gold);}
+.atab:hover:not(.active){color:var(--dim);}
+.atab-count{display:inline-block;background:rgba(255,255,255,.08);border-radius:10px;padding:1px 7px;font-size:10px;margin-left:6px;font-family:'DM Mono',monospace;}
+.atab.active .atab-count{background:rgba(201,137,12,.2);color:var(--gold);}
 
-/* ── Section ── */
-.section { margin-bottom:28px; }
-.section-header {
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:14px;
-}
-.section-title {
-  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;
-}
-.section-action {
-  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;
-  color:var(--gold);cursor:pointer;text-decoration:none;
-  transition:opacity .15s;
-}
-.section-action:hover { opacity:.7; }
+/* HUNT REVIEW CARDS */
+.review-grid{display:grid;gap:16px;}
+.rcard{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;transition:border-color .2s;}
+.rcard:hover{border-color:rgba(201,137,12,.2);}
+.rcard-top{display:grid;grid-template-columns:200px 1fr;gap:0;}
+.rcard-photo{width:200px;height:200px;object-fit:cover;display:block;background:rgba(255,255,255,.04);}
+.rcard-photo-empty{width:200px;height:200px;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--muted);flex-direction:column;gap:8px;}
+.rcard-photo-empty span{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);}
+.rcard-info{padding:20px 24px;display:flex;flex-direction:column;justify-content:space-between;}
+.rcard-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.rcard-title{font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:var(--cream);line-height:1;}
+.rcard-prize{font-family:'Bangers',cursive;font-size:22px;letter-spacing:2px;color:#4ade80;}
+.status-pill{border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.sp-draft{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.sp-active{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#4ade80;}
+.sp-ended{background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.2);color:#94a3b8;}
+.sp-cancelled{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171;}
+.rcard-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:16px;}
+.rmeta-item{font-size:12px;}
+.rmeta-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;}
+.rmeta-val{color:var(--cream);font-weight:600;}
+.rmeta-val.code{font-family:'DM Mono',monospace;color:#fbbf24;font-size:18px;letter-spacing:3px;}
+.rmeta-val.payment{color:#4ade80;}
+.rcard-neighborhood{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--dim);line-height:1.7;font-style:italic;margin-bottom:16px;}
+.rcard-actions{display:flex;gap:10px;align-items:center;}
+.btn-approve{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(34,197,94,.3);transition:all .2s;letter-spacing:.5px;}
+.btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(34,197,94,.5);}
+.btn-reject{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;letter-spacing:.5px;}
+.btn-reject:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);}
+.btn-view{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:12px;padding:11px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;text-decoration:none;}
+.btn-view:hover{border-color:rgba(255,255,255,.2);color:var(--cream);}
+.action-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:4px;}
 
-/* ── Table ── */
-.table-wrap {
-  background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;
-}
-table { width:100%;border-collapse:collapse; }
-th {
-  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--muted);padding:12px 16px;
-  text-align:left;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);
-}
-td { padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(201,137,12,.06);vertical-align:middle; }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:rgba(201,137,12,.04); }
-.empty-row td { text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:32px; }
+/* PHOTO LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);align-items:center;justify-content:center;padding:20px;}
+.lightbox.show{display:flex;}
+.lightbox img{max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain;}
+.lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--cream);font-size:28px;cursor:pointer;opacity:.7;}
+.lightbox-close:hover{opacity:1;}
 
-/* ── Badges ── */
-.badge {
-  display:inline-block;padding:3px 10px;border-radius:6px;
-  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.5px;font-weight:500;
-}
-.badge-active { background:rgba(39,174,96,.15);color:#4cd47a;border:1px solid rgba(39,174,96,.25); }
-.badge-draft  { background:rgba(201,137,12,.12);color:var(--gold);border:1px solid var(--border); }
-.badge-ended  { background:rgba(138,122,90,.1);color:var(--muted);border:1px solid rgba(138,122,90,.2); }
-.badge-free   { background:rgba(41,128,185,.12);color:#5dade2;border:1px solid rgba(41,128,185,.2); }
-.badge-pro    { background:rgba(201,137,12,.12);color:var(--gold);border:1px solid var(--border); }
-.badge-pending{ background:rgba(201,137,12,.1);color:var(--gold);border:1px solid var(--border); }
-.badge-confirmed{ background:rgba(39,174,96,.15);color:#4cd47a;border:1px solid rgba(39,174,96,.25); }
+/* EMPTY / LOADING */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-msg{font-size:14px;font-family:'DM Mono',monospace;line-height:1.8;}
+.loading-pulse{animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .35s both;}
 
-/* ── Hunt Card ── */
-.hunt-card {
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:20px;margin-bottom:12px;display:flex;align-items:flex-start;
-  justify-content:space-between;gap:16px;transition:border-color .15s;
-}
-.hunt-card:hover { border-color:rgba(201,137,12,.35); }
-.hunt-card-left { flex:1; }
-.hunt-week { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:4px; }
-.hunt-prize { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--cream);margin-bottom:4px; }
-.hunt-city { font-size:13px;color:var(--dim); }
-.hunt-actions { display:flex;gap:8px;flex-shrink:0;align-items:flex-start; }
-.hunt-btn {
-  padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;
-  cursor:pointer;border:1px solid;transition:all .15s;font-family:'Karla',sans-serif;
-}
-.hunt-btn-view { background:transparent;border-color:var(--border);color:var(--dim); }
-.hunt-btn-view:hover { border-color:var(--gold);color:var(--gold); }
-.hunt-btn-end { background:transparent;border-color:rgba(192,57,43,.3);color:#e74c3c; }
-.hunt-btn-end:hover { background:rgba(192,57,43,.1); }
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,16,30,.97);border:1px solid var(--border);border-radius:14px;padding:12px 24px;font-size:13px;font-family:'DM Mono',monospace;color:var(--cream);z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+.toast.success{border-color:rgba(34,197,94,.4);color:#4ade80;}
+.toast.error{border-color:rgba(239,68,68,.4);color:#fca5a5;}
 
-/* ── Waitlist ── */
-.waitlist-row { display:flex;align-items:center;justify-content:space-between; }
-.waitlist-email { font-size:13px;color:var(--cream); }
-.waitlist-time { font-family:'DM Mono',monospace;font-size:10px;color:var(--muted); }
-
-/* ── Publish Form ── */
-.form-panel {
-  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;
-}
-.form-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
-.form-group { display:flex;flex-direction:column;gap:6px; }
-.form-group.full { grid-column:1/-1; }
-.form-label { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted); }
-.form-input, .form-select, .form-textarea {
-  background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
-  padding:10px 12px;color:var(--cream);font-size:13px;font-family:'Karla',sans-serif;
-  outline:none;transition:border-color .15s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--gold); }
-.form-textarea { resize:vertical;min-height:80px; }
-.form-select option { background:#0e0c15; }
-.clue-row {
-  background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:10px;
-  padding:14px;margin-bottom:10px;
-}
-.clue-header { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
-.clue-day { font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--gold); }
-.submit-row { display:flex;gap:10px;justify-content:flex-end;margin-top:20px; }
-
-/* ── Page visibility ── */
-.page { display:none; }
-.page.active { display:block; }
-
-/* ── Login screen ── */
-.login-screen {
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:var(--ink);
-}
-.login-card {
-  background:var(--card);border:1px solid var(--border);border-radius:18px;
-  padding:40px 36px;width:100%;max-width:380px;text-align:center;
-}
-.login-title { font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;margin-bottom:6px; }
-.login-sub { font-size:13px;color:var(--muted);margin-bottom:28px; }
-.login-error { color:#e74c3c;font-size:12px;margin-bottom:12px;display:none; }
-
-/* ── Notification ── */
-.notif {
-  position:fixed;bottom:24px;right:24px;z-index:999;
-  background:rgba(39,174,96,.15);border:1px solid rgba(39,174,96,.3);
-  color:#4cd47a;padding:12px 20px;border-radius:10px;
-  font-size:13px;font-family:'DM Mono',monospace;
-  transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;
-}
-.notif.show { transform:translateY(0);opacity:1; }
-
-@media(max-width:700px){
-  .sidebar{display:none;}
-  .form-grid{grid-template-columns:1fr;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
+@media(max-width:600px){
+  .rcard-top{grid-template-columns:1fr;}
+  .rcard-photo,.rcard-photo-empty{width:100%;height:180px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- Login Screen -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div style="display:flex;justify-content:center;margin-bottom:20px;">
-      <div class="logo-icon" style="width:48px;height:48px;border-radius:13px;font-size:22px;">🔍</div>
-    </div>
-    <div class="login-title">FinderSeek Admin</div>
-    <div class="login-sub">Enter your password to continue</div>
-    <div class="login-error" id="loginError">Incorrect password</div>
-    <div class="form-group" style="margin-bottom:14px;text-align:left;">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <button class="topbar-btn primary" style="width:100%;padding:11px;" onclick="doLogin()">Enter Dashboard →</button>
+<!-- LOGIN GATE -->
+<div class="login-gate" id="login-gate">
+  <div class="login-box">
+    <div class="login-title">ADMIN <em>Panel</em></div>
+    <div class="login-sub">FinderSeek internal review dashboard</div>
+    <label class="login-label">Password</label>
+    <input class="login-input" id="admin-pass" type="password" placeholder="Enter admin password" onkeydown="if(e.key==='Enter'||event.key==='Enter')checkLogin()"/>
+    <button class="btn-login" onclick="checkLogin()">Enter Dashboard →</button>
+    <div class="login-err" id="login-err">Incorrect password. Try again.</div>
   </div>
 </div>
 
-<!-- Main Shell (hidden until login) -->
-<div class="shell" id="mainShell" style="display:none;">
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-icon">🔍</div>
+    <div><div class="nav-brand">Finder<em>Seek</em></div></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-badge">⚙️ ADMIN</div>
+    <div id="admin-status">Loading…</div>
+  </div>
+</nav>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-row">
-        <div class="logo-icon">🔍</div>
-        <div class="logo-name">FinderSeek</div>
-      </div>
-      <div class="admin-badge">Admin Panel</div>
-    </div>
-    <nav class="nav">
-      <div class="nav-section">Overview</div>
-      <button class="nav-item active" onclick="showPage('dashboard',this)">
-        <span class="icon">📊</span> Dashboard
-      </button>
-      <button class="nav-item" onclick="showPage('waitlist',this)">
-        <span class="icon">📋</span> Waitlist
-      </button>
-      <div class="nav-section">Hunts</div>
-      <button class="nav-item" onclick="showPage('hunts',this)">
-        <span class="icon">🗺️</span> Active Hunts
-      </button>
-      <button class="nav-item" onclick="showPage('publish',this)">
-        <span class="icon">✏️</span> Publish Hunt
-      </button>
-      <button class="nav-item" onclick="showPage('clues',this)">
-        <span class="icon">📜</span> Clue Manager
-      </button>
-      <div class="nav-section">Players</div>
-      <button class="nav-item" onclick="showPage('leaderboard',this)">
-        <span class="icon">🏆</span> Leaderboard
-      </button>
-      <button class="nav-item" onclick="showPage('reports',this)">
-        <span class="icon">🎯</span> Find Reports
-      </button>
-      <div class="nav-section">Settings</div>
-      <button class="nav-item" onclick="showPage('settings',this)">
-        <span class="icon">⚙️</span> Settings
-      </button>
-    </nav>
-    <div class="sidebar-footer">
-      <span class="status-dot"></span>Supabase connected<br/>
-      <span style="opacity:.5;font-size:9px;">finderseek.com</span>
-    </div>
-  </aside>
+<div class="wrap">
 
-  <!-- Main Content -->
-  <div class="main">
-    <div class="topbar">
-      <div class="page-title" id="pageTitle">Dashboard</div>
-      <div class="topbar-right">
-        <button class="topbar-btn" onclick="syncData()">↻ Refresh</button>
-        <button class="topbar-btn primary" onclick="showPage('publish', document.querySelector('[onclick*=publish]'))">+ New Hunt</button>
-      </div>
-    </div>
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card stat-pending"><div class="stat-val" id="s-pending">—</div><div class="stat-lbl">Pending Review</div></div>
+    <div class="stat-card stat-active"><div class="stat-val" id="s-active">—</div><div class="stat-lbl">Active Hunts</div></div>
+    <div class="stat-card stat-done"><div class="stat-val" id="s-ended">—</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat-card stat-rejected"><div class="stat-val" id="s-cancelled">—</div><div class="stat-lbl">Rejected</div></div>
+  </div>
 
-    <div class="content">
+  <!-- TABS -->
+  <div class="admin-tabs">
+    <div class="atab active" onclick="switchTab('draft',this)">🕐 Pending Review <span class="atab-count" id="tc-draft">—</span></div>
+    <div class="atab" onclick="switchTab('active',this)">✅ Active <span class="atab-count" id="tc-active">—</span></div>
+    <div class="atab" onclick="switchTab('ended',this)">🏁 Completed <span class="atab-count" id="tc-ended">—</span></div>
+    <div class="atab" onclick="switchTab('cancelled',this)">❌ Rejected <span class="atab-count" id="tc-cancelled">—</span></div>
+  </div>
 
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Waitlist</div>
-            <div class="stat-value" id="stat-waitlist">—</div>
-            <div class="stat-sub">email signups</div>
-            <div class="stat-trend neutral" id="stat-waitlist-trend">Loading…</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Active Hunts</div>
-            <div class="stat-value" id="stat-hunts">—</div>
-            <div class="stat-sub">this week</div>
-            <div class="stat-trend neutral" id="stat-hunts-trend">Loading…</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Users</div>
-            <div class="stat-value" id="stat-users">—</div>
-            <div class="stat-sub">registered accounts</div>
-            <div class="stat-trend neutral">via Supabase Auth</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Find Reports</div>
-            <div class="stat-value" id="stat-reports">—</div>
-            <div class="stat-sub">total submissions</div>
-            <div class="stat-trend neutral" id="stat-reports-trend">Loading…</div>
-          </div>
-        </div>
+  <div class="review-grid" id="review-grid">
+    <div class="empty-state loading-pulse"><div class="empty-icon">⏳</div><div class="empty-msg">Loading hunts…</div></div>
+  </div>
 
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">Active Hunts</div>
-            <a class="section-action" onclick="showPage('hunts', document.querySelectorAll('.nav-item')[3])">View all →</a>
-          </div>
-          <div id="dash-hunts-list">
-            <div class="hunt-card">
-              <div class="hunt-card-left">
-                <div class="hunt-week">Loading…</div>
-                <div class="hunt-prize">—</div>
-              </div>
-            </div>
-          </div>
-        </div>
+</div>
 
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">Recent Waitlist Signups</div>
-            <a class="section-action" onclick="showPage('waitlist', document.querySelectorAll('.nav-item')[1])">View all →</a>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Email</th><th>Signed Up</th></tr></thead>
-              <tbody id="dash-waitlist-tbody">
-                <tr><td colspan="2" style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:24px;">Loading…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+<!-- PHOTO LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightbox-img" src="" alt="Hunt photo"/>
+</div>
 
-      <!-- WAITLIST -->
-      <div class="page" id="page-waitlist">
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">Waitlist Signups</div>
-            <button class="topbar-btn" onclick="exportWaitlist()">↓ Export CSV</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Email</th><th>Signed Up</th><th>Action</th></tr></thead>
-              <tbody id="waitlist-tbody">
-                <tr><td colspan="3" style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:32px;">Loading…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- HUNTS -->
-      <div class="page" id="page-hunts">
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">Hunt History</div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Week</th><th>City</th><th>Prize</th><th>Status</th><th>Clues</th><th>Action</th></tr></thead>
-              <tbody id="hunts-tbody">
-                <tr class="empty-row"><td colspan="6">Loading hunts…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- PUBLISH HUNT -->
-      <div class="page" id="page-publish">
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">Publish New Hunt</div>
-          </div>
-          <div class="form-panel">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">Week Label</label>
-                <input class="form-input" id="pub-week" placeholder="March 6–13, 2026"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">City</label>
-                <input class="form-input" id="pub-city" placeholder="Tomball, TX"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Prize Description</label>
-                <input class="form-input" id="pub-prize" placeholder="$20 Cash"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Prize Value ($)</label>
-                <input class="form-input" id="pub-value" type="number" placeholder="20"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Starts At (local)</label>
-                <input class="form-input" id="pub-start" type="datetime-local"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Ends At (local)</label>
-                <input class="form-input" id="pub-end" type="datetime-local"/>
-              </div>
-            </div>
-
-            <div style="margin-top:24px;margin-bottom:14px;">
-              <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Clues</div>
-              <div id="clues-builder"></div>
-            </div>
-
-            <div class="submit-row">
-              <button class="hunt-btn hunt-btn-view" onclick="saveDraft()">Save Draft</button>
-              <button class="topbar-btn primary" onclick="publishHunt()">Publish Hunt →</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CLUE MANAGER -->
-      <div class="page" id="page-clues">
-        <div class="section">
-          <div class="section-header"><div class="section-title">Clue Manager</div></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Hunt</th><th>Day</th><th>#</th><th>Tier</th><th>Reveal At</th><th>Clue</th></tr></thead>
-              <tbody id="clues-tbody">
-                <tr class="empty-row"><td colspan="6">Loading clues…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- LEADERBOARD -->
-      <div class="page" id="page-leaderboard">
-        <div class="section">
-          <div class="section-header"><div class="section-title">Leaderboard</div></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Rank</th><th>Username</th><th>City</th><th>Finds</th><th>Streak</th><th>Pro</th></tr></thead>
-              <tbody id="lb-tbody">
-                <tr class="empty-row"><td colspan="6">Loading leaderboard…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- FIND REPORTS -->
-      <div class="page" id="page-reports">
-        <div class="section">
-          <div class="section-header"><div class="section-title">Find Reports</div></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Hunt</th><th>User</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead>
-              <tbody id="reports-tbody">
-                <tr class="empty-row"><td colspan="5">Loading reports…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="page" id="page-settings">
-        <div class="section">
-          <div class="section-header"><div class="section-title">Settings</div></div>
-          <div class="form-panel">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">Supabase URL</label>
-                <input class="form-input" id="set-url" placeholder="https://xxxx.supabase.co"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Supabase Anon Key</label>
-                <input class="form-input" id="set-key" type="password" placeholder="eyJhbGci…"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Admin Password</label>
-                <input class="form-input" id="set-pw" type="password" placeholder="New password"/>
-              </div>
-            </div>
-            <div class="submit-row">
-              <button class="topbar-btn primary" onclick="saveSettings()">Save Settings →</button>
-            </div>
-          </div>
-          <div style="margin-top:20px;padding:16px;background:rgba(201,137,12,.06);border:1px solid var(--border);border-radius:10px;">
-            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--gold);margin-bottom:8px;">QUICK LINKS</div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--dim);font-size:13px;text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:7px;">Supabase Dashboard ↗</a>
-              <a href="/" target="_blank" style="color:var(--dim);font-size:13px;text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:7px;">Coming Soon Page ↗</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /shell -->
-
-<div class="notif" id="notif"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Config ────────────────────────────────────────────────────────────────────
-const SUPABASE_URL = localStorage.getItem('fs_url') || 'https://qeiuycuasjkopxfkmggp.supabase.co';
-const SUPABASE_KEY = localStorage.getItem('fs_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const ADMIN_PW     = localStorage.getItem('fs_pw') || 'finderseek2026';
+const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-function doLogin() {
-  const val = document.getElementById('pwInput').value;
-  const stored = localStorage.getItem('fs_pw') || 'finderseek2026';
-  if (val === stored) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainShell').style.display   = 'flex';
-    initDashboard();
+// ── ADMIN PASSWORD ────────────────────────────────────
+const ADMIN_PASS = 'finderseek2026'; // Change this!
+
+function checkLogin() {
+  const val = document.getElementById('admin-pass').value;
+  if (val === ADMIN_PASS) {
+    document.getElementById('login-gate').style.display = 'none';
+    localStorage.setItem('fs_admin', '1');
+    loadAll();
   } else {
-    document.getElementById('loginError').style.display = 'block';
-  }
-}
-document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-
-// ── Navigation ────────────────────────────────────────────────────────────────
-const pageTitles = {
-  dashboard:'Dashboard', waitlist:'Waitlist Signups', hunts:'Hunt History',
-  publish:'Publish Hunt', clues:'Clue Manager', leaderboard:'Leaderboard',
-  reports:'Find Reports', settings:'Settings'
-};
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  document.getElementById('pageTitle').textContent = pageTitles[id] || id;
-  if (id === 'waitlist') loadWaitlist();
-  if (id === 'hunts')    loadHunts();
-  if (id === 'clues')    loadClues();
-  if (id === 'leaderboard') loadLeaderboard();
-  if (id === 'reports')  loadReports();
-  if (id === 'settings') { document.getElementById('set-url').value = localStorage.getItem('fs_url')||''; document.getElementById('set-key').value = localStorage.getItem('fs_key')||''; }
-}
-
-// ── API Helper ────────────────────────────────────────────────────────────────
-async function sb(table, params = '') {
-  const url = localStorage.getItem('fs_url') || SUPABASE_URL;
-  const key  = localStorage.getItem('fs_key') || SUPABASE_KEY;
-  const res  = await fetch(`${url}/rest/v1/${table}${params}`, {
-    headers: {
-      'apikey': key,
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
-    }
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
-async function sbPost(table, body) {
-  const url = localStorage.getItem('fs_url') || SUPABASE_URL;
-  const key  = localStorage.getItem('fs_key') || SUPABASE_KEY;
-  const res  = await fetch(`${url}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
-async function sbPatch(table, filter, body) {
-  const url = localStorage.getItem('fs_url') || SUPABASE_URL;
-  const key  = localStorage.getItem('fs_key') || SUPABASE_KEY;
-  const res  = await fetch(`${url}/rest/v1/${table}?${filter}`, {
-    method: 'PATCH',
-    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
-
-// ── Format ────────────────────────────────────────────────────────────────────
-function fmtDate(d) {
-  if (!d) return '—';
-  const dt = new Date(d);
-  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' ' +
-    dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-}
-function fmtShort(d) {
-  if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
-
-// ── Dashboard Init ─────────────────────────────────────────────────────────────
-async function initDashboard() {
-  buildClueBuilder();
-  // Waitlist count
-  try {
-    const wl = await sb('waitlist','?select=*&order=created_at.desc');
-    document.getElementById('stat-waitlist').textContent = wl.length;
-    document.getElementById('stat-waitlist-trend').textContent = wl.length === 0 ? 'No signups yet' : `Latest: ${fmtShort(wl[0]?.created_at)}`;
-    // Recent 5
-    const tbody = document.getElementById('dash-waitlist-tbody');
-    if (wl.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:12px;padding:24px;">No signups yet — share the landing page!</td></tr>';
-    } else {
-      tbody.innerHTML = wl.slice(0,5).map(r => `
-        <tr>
-          <td class="waitlist-email">${r.email}</td>
-          <td class="waitlist-time">${fmtShort(r.created_at)}</td>
-        </tr>`).join('');
-    }
-  } catch(e) { document.getElementById('stat-waitlist').textContent = 'Error'; }
-
-  // Hunts
-  try {
-    const hunts = await sb('hunts','?select=*&order=created_at.desc');
-    const active = hunts.filter(h=>h.status==='active');
-    document.getElementById('stat-hunts').textContent = active.length;
-    document.getElementById('stat-hunts-trend').textContent = `${hunts.length} total hunts`;
-    const dashHunts = document.getElementById('dash-hunts-list');
-    if (hunts.length === 0) {
-      dashHunts.innerHTML = '<div style="color:var(--muted);font-family:\'DM Mono\',monospace;font-size:12px;padding:20px;text-align:center;border:1px solid var(--border);border-radius:12px;">No hunts yet — publish your first one!</div>';
-    } else {
-      dashHunts.innerHTML = hunts.slice(0,3).map(h => `
-        <div class="hunt-card">
-          <div class="hunt-card-left">
-            <div class="hunt-week">${h.week_label || '—'} · ${h.city || '—'}</div>
-            <div class="hunt-prize">${h.prize_desc || '—'}</div>
-            <div class="hunt-city" style="margin-top:4px;"><span class="badge badge-${h.status}">${h.status}</span></div>
-          </div>
-          <div class="hunt-actions">
-            ${h.status==='active' ? `<button class="hunt-btn hunt-btn-end" onclick="endHunt('${h.id}')">End Hunt</button>` : ''}
-          </div>
-        </div>`).join('');
-    }
-  } catch(e) { document.getElementById('stat-hunts').textContent = 'Error'; }
-
-  // Users
-  try {
-    const profiles = await sb('profiles','?select=*');
-    document.getElementById('stat-users').textContent = profiles.length;
-  } catch(e) { document.getElementById('stat-users').textContent = '—'; }
-
-  // Reports
-  try {
-    const reports = await sb('find_reports','?select=*');
-    document.getElementById('stat-reports').textContent = reports.length;
-    const pending = reports.filter(r=>r.status==='pending').length;
-    document.getElementById('stat-reports-trend').textContent = pending > 0 ? `⚠️ ${pending} pending review` : 'None pending';
-  } catch(e) { document.getElementById('stat-reports').textContent = '—'; }
-}
-
-// ── Waitlist ──────────────────────────────────────────────────────────────────
-async function loadWaitlist() {
-  const tbody = document.getElementById('waitlist-tbody');
-  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:12px;padding:32px;">Loading…</td></tr>';
-  try {
-    const wl = await sb('waitlist','?select=*&order=created_at.desc');
-    if (wl.length === 0) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="3">No signups yet</td></tr>';
-    } else {
-      tbody.innerHTML = wl.map(r => `
-        <tr>
-          <td class="waitlist-email">${r.email}</td>
-          <td class="waitlist-time">${fmtDate(r.created_at)}</td>
-          <td><span class="badge badge-active">Active</span></td>
-        </tr>`).join('');
-    }
-  } catch(e) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="3">Error loading: ${e.message}</td></tr>`;
+    document.getElementById('login-err').classList.add('show');
+    document.getElementById('admin-pass').value = '';
   }
 }
 
-function exportWaitlist() {
-  const rows = document.querySelectorAll('#waitlist-tbody tr');
-  let csv = 'email,signed_up\n';
-  rows.forEach(r => {
-    const cells = r.querySelectorAll('td');
-    if (cells.length >= 2) csv += `${cells[0].textContent},${cells[1].textContent}\n`;
-  });
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'finderseek-waitlist.csv';
-  a.click();
-  notify('CSV exported!');
-}
-
-// ── Hunts ─────────────────────────────────────────────────────────────────────
-async function loadHunts() {
-  const tbody = document.getElementById('hunts-tbody');
-  tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Loading…</td></tr>';
-  try {
-    const hunts = await sb('hunts','?select=*,clues(count)&order=created_at.desc');
-    if (!hunts.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No hunts yet</td></tr>'; return; }
-    tbody.innerHTML = hunts.map(h => `
-      <tr>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${h.week_label||'—'}</td>
-        <td>${h.city||'—'}</td>
-        <td style="color:var(--gold);font-weight:600;">${h.prize_desc||'—'}</td>
-        <td><span class="badge badge-${h.status}">${h.status}</span></td>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${h.clues?.[0]?.count ?? '—'}</td>
-        <td>
-          ${h.status==='active' ? `<button class="hunt-btn hunt-btn-end" onclick="endHunt('${h.id}')">End</button>` : ''}
-          ${h.status==='draft'  ? `<button class="hunt-btn hunt-btn-view" onclick="activateHunt('${h.id}')">Activate</button>` : ''}
-        </td>
-      </tr>`).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error: ${e.message}</td></tr>`;
+window.addEventListener('load', () => {
+  if (localStorage.getItem('fs_admin') === '1') {
+    document.getElementById('login-gate').style.display = 'none';
+    loadAll();
   }
-}
+});
 
-async function endHunt(id) {
-  if (!confirm('Mark this hunt as ended?')) return;
+// ── DATA ──────────────────────────────────────────────
+let allHunts = {}, currentTab = 'draft';
+
+async function loadAll() {
+  document.getElementById('admin-status').textContent = 'Syncing…';
   try {
-    await sbPatch('hunts', `id=eq.${id}`, { status: 'ended' });
-    notify('Hunt ended ✓');
-    loadHunts(); initDashboard();
-  } catch(e) { notify('Error: ' + e.message); }
-}
+    const r = await fetch(`${SB}/rest/v1/hunts?select=*&order=created_at.desc`, { headers: H });
+    const hunts = await r.json();
+    if (!Array.isArray(hunts)) throw new Error('Bad response');
 
-async function activateHunt(id) {
-  try {
-    await sbPatch('hunts', `id=eq.${id}`, { status: 'active' });
-    notify('Hunt activated ✓');
-    loadHunts();
-  } catch(e) { notify('Error: ' + e.message); }
-}
+    allHunts = { draft:[], active:[], ended:[], cancelled:[] };
+    hunts.forEach(h => { if (allHunts[h.status]) allHunts[h.status].push(h); });
 
-// ── Clues ─────────────────────────────────────────────────────────────────────
-async function loadClues() {
-  const tbody = document.getElementById('clues-tbody');
-  tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Loading…</td></tr>';
-  try {
-    const clues = await sb('clues','?select=*,hunts(week_label)&order=reveal_at.asc');
-    if (!clues.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No clues yet</td></tr>'; return; }
-    tbody.innerHTML = clues.map(c => `
-      <tr>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${c.hunts?.week_label||'—'}</td>
-        <td>${c.day_label||'—'}</td>
-        <td style="font-family:'DM Mono',monospace;">${c.clue_number}</td>
-        <td><span class="badge badge-${c.tier}">${c.tier}</span></td>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${fmtDate(c.reveal_at)}</td>
-        <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim);font-size:12px;">${c.clue_text||'—'}</td>
-      </tr>`).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error: ${e.message}</td></tr>`;
-  }
-}
+    // Update stats
+    document.getElementById('s-pending').textContent   = allHunts.draft.length;
+    document.getElementById('s-active').textContent    = allHunts.active.length;
+    document.getElementById('s-ended').textContent     = allHunts.ended.length;
+    document.getElementById('s-cancelled').textContent = allHunts.cancelled.length;
 
-// ── Leaderboard ───────────────────────────────────────────────────────────────
-async function loadLeaderboard() {
-  const tbody = document.getElementById('lb-tbody');
-  tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Loading…</td></tr>';
-  try {
-    const lb = await sb('profiles','?select=*&order=finds_count.desc&limit=50');
-    if (!lb.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No players yet</td></tr>'; return; }
-    tbody.innerHTML = lb.map((p,i) => `
-      <tr>
-        <td style="font-family:'DM Mono',monospace;color:var(--gold);">#${i+1}</td>
-        <td style="font-weight:600;">${p.username||'—'}</td>
-        <td style="color:var(--dim);">${p.city||'—'}</td>
-        <td style="font-family:'DM Mono',monospace;color:var(--gold);">${p.finds_count||0}</td>
-        <td style="font-family:'DM Mono',monospace;">${p.streak||0}</td>
-        <td>${p.is_pro ? '<span class="badge badge-pro">PRO</span>' : '<span class="badge badge-free">Free</span>'}</td>
-      </tr>`).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error: ${e.message}</td></tr>`;
-  }
-}
-
-// ── Find Reports ──────────────────────────────────────────────────────────────
-async function loadReports() {
-  const tbody = document.getElementById('reports-tbody');
-  tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Loading…</td></tr>';
-  try {
-    const reports = await sb('find_reports','?select=*,hunts(week_label),profiles(username)&order=submitted_at.desc');
-    if (!reports.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No find reports yet</td></tr>'; return; }
-    tbody.innerHTML = reports.map(r => `
-      <tr>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.hunts?.week_label||'—'}</td>
-        <td>${r.profiles?.username||'—'}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;">${fmtDate(r.submitted_at)}</td>
-        <td><span class="badge badge-${r.status}">${r.status}</span></td>
-        <td>
-          ${r.status==='pending' ? `
-            <button class="hunt-btn hunt-btn-view" onclick="confirmReport('${r.id}')" style="font-size:11px;padding:4px 8px;">✓ Confirm</button>
-            <button class="hunt-btn hunt-btn-end" onclick="rejectReport('${r.id}')" style="font-size:11px;padding:4px 8px;margin-left:4px;">✗ Reject</button>
-          ` : '—'}
-        </td>
-      </tr>`).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Error: ${e.message}</td></tr>`;
-  }
-}
-
-async function confirmReport(id) {
-  try { await sbPatch('find_reports', `id=eq.${id}`, { status: 'confirmed', reviewed_at: new Date().toISOString() }); notify('Report confirmed ✓'); loadReports(); }
-  catch(e) { notify('Error: ' + e.message); }
-}
-async function rejectReport(id) {
-  try { await sbPatch('find_reports', `id=eq.${id}`, { status: 'rejected', reviewed_at: new Date().toISOString() }); notify('Report rejected'); loadReports(); }
-  catch(e) { notify('Error: ' + e.message); }
-}
-
-// ── Publish Hunt ──────────────────────────────────────────────────────────────
-const DAYS = [
-  {day:'Friday',date:'Mar 6',tier:'free',offset:0},
-  {day:'Saturday',date:'Mar 7',tier:'free',offset:1},
-  {day:'Sunday',date:'Mar 8',tier:'free',offset:2},
-  {day:'Monday',date:'Mar 9',tier:'free',offset:3},
-  {day:'Tuesday',date:'Mar 10',tier:'pro',offset:4},
-  {day:'Wednesday',date:'Mar 11',tier:'pro',offset:5},
-  {day:'Thursday',date:'Mar 12',tier:'pro',offset:6},
-];
-function buildClueBuilder() {
-  const el = document.getElementById('clues-builder');
-  el.innerHTML = DAYS.map((d,i) => `
-    <div class="clue-row">
-      <div class="clue-header">
-        <span class="clue-day">Clue ${i+1} — ${d.day}</span>
-        <span class="badge badge-${d.tier}" style="font-size:9px;">${d.tier}</span>
-      </div>
-      <div class="form-group">
-        <textarea class="form-textarea" id="clue-${i}" placeholder="${d.day} clue text…" style="min-height:60px;"></textarea>
-      </div>
-    </div>`).join('');
-}
-
-async function publishHunt(asDraft = false) {
-  const week  = document.getElementById('pub-week').value.trim();
-  const city  = document.getElementById('pub-city').value.trim();
-  const prize = document.getElementById('pub-prize').value.trim();
-  const value = parseInt(document.getElementById('pub-value').value) || 0;
-  const start = document.getElementById('pub-start').value;
-  const end   = document.getElementById('pub-end').value;
-  if (!week || !city || !prize || !start || !end) { notify('Please fill in all hunt fields'); return; }
-  try {
-    const hunts = await sbPost('hunts', {
-      week_label: week, city, prize_desc: prize,
-      prize_value: value * 100,
-      starts_at: new Date(start).toISOString(),
-      ends_at: new Date(end).toISOString(),
-      status: asDraft ? 'draft' : 'active'
+    // Update tab counts
+    ['draft','active','ended','cancelled'].forEach(s => {
+      document.getElementById('tc-'+s).textContent = allHunts[s].length;
     });
-    const huntId = hunts[0]?.id;
-    if (!huntId) throw new Error('Hunt not created');
-    const startDate = new Date(start);
-    const clueInserts = DAYS.map((d,i) => {
-      const revealAt = new Date(startDate);
-      revealAt.setDate(startDate.getDate() + d.offset);
-      revealAt.setHours(8,0,0,0);
-      return {
-        hunt_id: huntId, clue_number: i+1,
-        tier: d.tier, day_label: d.day, date_label: d.date,
-        reveal_at: revealAt.toISOString(),
-        clue_text: document.getElementById('clue-'+i).value.trim() || null
-      };
+
+    document.getElementById('admin-status').textContent = `Last synced ${new Date().toLocaleTimeString()}`;
+    renderTab(currentTab);
+  } catch(e) {
+    document.getElementById('admin-status').textContent = 'Error loading';
+    showToast('Failed to load hunts: ' + e.message, 'error');
+  }
+}
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const hunts = allHunts[tab] || [];
+  const grid = document.getElementById('review-grid');
+  if (!hunts.length) {
+    const msgs = { draft:'No hunts pending review', active:'No active hunts', ended:'No completed hunts', cancelled:'No rejected hunts' };
+    const icons = { draft:'🕐', active:'✅', ended:'🏁', cancelled:'❌' };
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">${icons[tab]}</div><div class="empty-msg">${msgs[tab]}</div></div>`;
+    return;
+  }
+  grid.innerHTML = hunts.map((h, i) => buildCard(h, i)).join('');
+}
+
+function buildCard(h, i) {
+  const photo = h.photo_url
+    ? `<img class="rcard-photo" src="${h.photo_url}" alt="Hunt photo" onclick="openLightbox('${h.photo_url}')" style="cursor:zoom-in;" title="Click to enlarge"/>`
+    : `<div class="rcard-photo-empty">📷<span>No photo</span></div>`;
+
+  const statusClass = { draft:'sp-draft', active:'sp-active', ended:'sp-ended', cancelled:'sp-cancelled' };
+  const statusLabel = { draft:'⏳ Pending', active:'✅ Active', ended:'🏁 Ended', cancelled:'❌ Rejected' };
+
+  const startsAt = h.starts_at ? new Date(h.starts_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  const endsAt   = h.ends_at   ? new Date(h.ends_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  const createdAt = h.created_at ? new Date(h.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+
+  const payIcon = h.payment_type === 'zelle' ? '💚' : h.payment_type === 'venmo' ? '💙' : h.payment_type === 'cash' ? '💵' : '💳';
+
+  const actions = h.status === 'draft' ? `
+    <button class="btn-approve" onclick="approveHunt('${h.id}')">✅ Approve & Go Live</button>
+    <button class="btn-reject"  onclick="rejectHunt('${h.id}')">❌ Reject</button>
+    <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 Preview</a>
+  ` : h.status === 'active' ? `
+    <button class="btn-reject" onclick="rejectHunt('${h.id}')">⏸ Deactivate</button>
+    <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 View Live</a>
+  ` : `
+    <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 View Hunt</a>
+  `;
+
+  return `<div class="rcard fade-in" style="animation-delay:${i*.05}s;" id="rcard-${h.id}">
+    <div class="rcard-top">
+      ${photo}
+      <div class="rcard-info">
+        <div>
+          <div class="rcard-header">
+            <div>
+              <div class="rcard-title">${h.city || 'Unknown City'}</div>
+              <div class="rcard-prize">${h.prize_desc || '—'}</div>
+            </div>
+            <div class="status-pill ${statusClass[h.status]}">${statusLabel[h.status]}</div>
+          </div>
+          <div class="rcard-meta">
+            <div class="rmeta-item"><div class="rmeta-lbl">Submitted</div><div class="rmeta-val">${createdAt}</div></div>
+            <div class="rmeta-item"><div class="rmeta-lbl">Goes Live</div><div class="rmeta-val">${startsAt}</div></div>
+            <div class="rmeta-item"><div class="rmeta-lbl">Ends</div><div class="rmeta-val">${endsAt}</div></div>
+            <div class="rmeta-item"><div class="rmeta-lbl">Payment</div><div class="rmeta-val payment">${payIcon} ${h.payment_type || '—'} ${h.payment_handle ? '· @'+h.payment_handle : ''}</div></div>
+            <div class="rmeta-item"><div class="rmeta-lbl">Finder Code</div><div class="rmeta-val code">${h.finder_code || '——'}</div></div>
+            <div class="rmeta-item"><div class="rmeta-lbl">Hunt ID</div><div class="rmeta-val" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">${h.id.slice(0,8)}…</div></div>
+          </div>
+          ${h.neighborhood ? `<div class="rcard-neighborhood">"${h.neighborhood}"</div>` : ''}
+        </div>
+        <div class="rcard-actions">${actions}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────
+async function approveHunt(id) {
+  if (!confirm('Approve this hunt and make it go live?')) return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'active' })
     });
-    await sbPost('clues', clueInserts);
-    notify(asDraft ? 'Draft saved ✓' : 'Hunt published! 🎉');
-    showPage('hunts', document.querySelectorAll('.nav-item')[3]);
-    loadHunts();
-  } catch(e) { notify('Error: ' + e.message); }
-}
-function saveDraft() { publishHunt(true); }
-
-// ── Settings ──────────────────────────────────────────────────────────────────
-function saveSettings() {
-  const url = document.getElementById('set-url').value.trim();
-  const key = document.getElementById('set-key').value.trim();
-  const pw  = document.getElementById('set-pw').value.trim();
-  if (url) localStorage.setItem('fs_url', url);
-  if (key) localStorage.setItem('fs_key', key);
-  if (pw)  localStorage.setItem('fs_pw', pw);
-  notify('Settings saved ✓');
+    if (!r.ok) throw new Error('Update failed');
+    showToast('✅ Hunt approved and live!', 'success');
+    await loadAll();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
-// ── Refresh ───────────────────────────────────────────────────────────────────
-function syncData() { initDashboard(); notify('Data refreshed ✓'); }
-
-// ── Notification ──────────────────────────────────────────────────────────────
-function notify(msg) {
-  const el = document.getElementById('notif');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3000);
+async function rejectHunt(id) {
+  const reason = prompt('Reason for rejection (optional):');
+  if (reason === null) return; // cancelled
+  try {
+    const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'cancelled' })
+    });
+    if (!r.ok) throw new Error('Update failed');
+    showToast('❌ Hunt rejected.', 'error');
+    await loadAll();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
+
+// ── LIGHTBOX ──────────────────────────────────────────
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── AUTO REFRESH ──────────────────────────────────────
+setInterval(() => {
+  if (localStorage.getItem('fs_admin') === '1') loadAll();
+}, 30000); // refresh every 30s
 </script>
 </body>
 </html>
