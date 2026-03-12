@@ -16,11 +16,12 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;padding-top:54px;}
-/* PIRATE BACKGROUND */
+body{background:#000;color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;padding-top:54px;}
+/* FULL PAGE DARK OVERLAY — uniform background, no seams */
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:url('pirate sherlock trans.png') center top/cover no-repeat;
-  opacity:.10;}
+  background:url('pirate sherlock trans.png') center top/cover no-repeat,
+  linear-gradient(180deg,rgba(6,5,10,.82) 0%,rgba(6,5,10,.88) 100%);
+  opacity:1;}
 
 /* GRAIN */
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -39,7 +40,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gold-bar{display:none;}
 
 /* HERO SECTION */
-.hero{position:relative;padding:20px 16px 16px;}
+.hero{position:relative;padding:20px 16px 16px;background:transparent;}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%, rgba(201,137,12,.1) 0%, transparent 60%),
   radial-gradient(ellipse at 20% 80%, rgba(139,92,246,.06) 0%, transparent 50%);pointer-events:none;}
 
