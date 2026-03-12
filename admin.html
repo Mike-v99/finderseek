@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -126,11 +126,52 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .toast.success{border-color:rgba(34,197,94,.4);color:#4ade80;}
 .toast.error{border-color:rgba(239,68,68,.4);color:#fca5a5;}
 
-@media(max-width:600px){
-  .rcard-top{grid-template-columns:1fr;}
-  .rcard-photo,.rcard-photo-empty{width:100%;height:180px;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-}
+/* PROFILES TABLE */
+.profiles-toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;}
+.p-search{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+.p-search:focus{border-color:rgba(201,137,12,.4);}
+.p-search::placeholder{color:var(--muted);}
+.p-filter{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--dim);font-family:'Karla',sans-serif;cursor:pointer;outline:none;}
+.p-filter:focus{border-color:rgba(201,137,12,.4);}
+.profiles-table{width:100%;border-collapse:collapse;}
+.profiles-table th{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;padding:8px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06);}
+.profiles-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle;}
+.profiles-table tr:last-child td{border-bottom:none;}
+.profiles-table tr:hover td{background:rgba(255,255,255,.02);}
+.prow-banned td{opacity:.45;}
+.p-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#0a1a0a;flex-shrink:0;}
+.p-avatar.banned{background:linear-gradient(135deg,#7f1d1d,#ef4444);}
+.p-name{font-weight:700;color:var(--cream);}
+.p-email{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.p-user-cell{display:flex;align-items:center;gap:10px;}
+.p-badge{border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;}
+.pb-active{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.pb-banned{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;}
+.pb-pro{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24;}
+.p-stat{font-family:'DM Mono',monospace;font-size:12px;color:var(--dim);}
+.p-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.btn-ban{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn-ban:hover{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.5);}
+.btn-unban{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn-unban:hover{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.5);}
+.btn-note{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+.btn-note:hover{border-color:rgba(255,255,255,.2);color:var(--cream);}
+.p-note{font-size:11px;color:#fbbf24;font-family:'DM Mono',monospace;margin-top:2px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* BAN MODAL */
+.ban-modal{display:none;position:fixed;inset:0;z-index:400;background:rgba(6,5,10,.88);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:20px;}
+.ban-modal.show{display:flex;}
+.ban-box{background:linear-gradient(160deg,rgba(30,10,10,.99),rgba(10,8,16,.99));border:1px solid rgba(239,68,68,.3);border-radius:20px;padding:32px 28px;max-width:420px;width:100%;}
+.ban-title{font-family:'Bangers',cursive;font-size:30px;letter-spacing:3px;color:#f87171;margin-bottom:6px;}
+.ban-sub{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:20px;line-height:1.6;}
+.ban-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px;display:block;}
+.ban-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;margin-bottom:20px;transition:border-color .2s;}
+.ban-input:focus{border-color:rgba(239,68,68,.4);}
+.ban-actions{display:flex;gap:10px;}
+.btn-confirm-ban{flex:1;background:linear-gradient(135deg,#7f1d1d,#ef4444);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+.btn-confirm-ban:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(239,68,68,.4);}
+.btn-cancel-ban{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+.btn-cancel-ban:hover{border-color:rgba(255,255,255,.2);color:var(--cream);}
 </style>
 </head>
 <body>
@@ -174,6 +215,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="atab" onclick="switchTab('active',this)">✅ Active <span class="atab-count" id="tc-active">—</span></div>
     <div class="atab" onclick="switchTab('ended',this)">🏁 Completed <span class="atab-count" id="tc-ended">—</span></div>
     <div class="atab" onclick="switchTab('cancelled',this)">❌ Rejected <span class="atab-count" id="tc-cancelled">—</span></div>
+    <div class="atab" onclick="switchTab('profiles',this)">👤 Users <span class="atab-count" id="tc-profiles">—</span></div>
   </div>
 
   <div class="review-grid" id="review-grid">
@@ -186,6 +228,20 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">×</button>
   <img id="lightbox-img" src="" alt="Hunt photo"/>
+</div>
+
+<!-- BAN MODAL -->
+<div class="ban-modal" id="ban-modal">
+  <div class="ban-box">
+    <div class="ban-title">🚫 BAN USER</div>
+    <div class="ban-sub" id="ban-sub">Banning <strong></strong>. This will prevent them from submitting hunts or claiming prizes.</div>
+    <label class="ban-label">Reason for ban</label>
+    <input class="ban-input" id="ban-reason" placeholder="e.g. Fake hiding spot, spam, inappropriate content…"/>
+    <div class="ban-actions">
+      <button class="btn-confirm-ban" onclick="confirmBan()">🚫 Confirm Ban</button>
+      <button class="btn-cancel-ban" onclick="closeBanModal()">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -219,17 +275,24 @@ window.addEventListener('load', () => {
 });
 
 // ── DATA ──────────────────────────────────────────────
-let allHunts = {}, currentTab = 'draft';
+let allHunts = {}, allProfiles = [], filteredProfiles = [], currentTab = 'draft';
 
 async function loadAll() {
   document.getElementById('admin-status').textContent = 'Syncing…';
   try {
-    const r = await fetch(`${SB}/rest/v1/hunts?select=*&order=created_at.desc`, { headers: H });
-    const hunts = await r.json();
+    const [huntsRes, profilesRes] = await Promise.all([
+      fetch(`${SB}/rest/v1/hunts?select=*&order=created_at.desc`, { headers: H }),
+      fetch(`${SB}/rest/v1/profiles?select=*&order=created_at.desc`, { headers: H }),
+    ]);
+    const hunts    = await huntsRes.json();
+    const profiles = await profilesRes.json();
     if (!Array.isArray(hunts)) throw new Error('Bad response');
 
     allHunts = { draft:[], active:[], ended:[], cancelled:[] };
     hunts.forEach(h => { if (allHunts[h.status]) allHunts[h.status].push(h); });
+
+    allProfiles = Array.isArray(profiles) ? profiles : [];
+    filteredProfiles = [...allProfiles];
 
     // Update stats
     document.getElementById('s-pending').textContent   = allHunts.draft.length;
@@ -241,12 +304,13 @@ async function loadAll() {
     ['draft','active','ended','cancelled'].forEach(s => {
       document.getElementById('tc-'+s).textContent = allHunts[s].length;
     });
+    document.getElementById('tc-profiles').textContent = allProfiles.length;
 
     document.getElementById('admin-status').textContent = `Last synced ${new Date().toLocaleTimeString()}`;
     renderTab(currentTab);
   } catch(e) {
     document.getElementById('admin-status').textContent = 'Error loading';
-    showToast('Failed to load hunts: ' + e.message, 'error');
+    showToast('Failed to load: ' + e.message, 'error');
   }
 }
 
@@ -259,8 +323,9 @@ function switchTab(tab, el) {
 }
 
 function renderTab(tab) {
-  const hunts = allHunts[tab] || [];
   const grid = document.getElementById('review-grid');
+  if (tab === 'profiles') { renderProfiles(); return; }
+  const hunts = allHunts[tab] || [];
   if (!hunts.length) {
     const msgs = { draft:'No hunts pending review', active:'No active hunts', ended:'No completed hunts', cancelled:'No rejected hunts' };
     const icons = { draft:'🕐', active:'✅', ended:'🏁', cancelled:'❌' };
@@ -268,6 +333,142 @@ function renderTab(tab) {
     return;
   }
   grid.innerHTML = hunts.map((h, i) => buildCard(h, i)).join('');
+}
+
+// ── PROFILES ──────────────────────────────────────────
+function renderProfiles() {
+  const grid = document.getElementById('review-grid');
+  const q = (document.getElementById('p-search-val') || {value:''}).value?.toLowerCase() || '';
+  const filter = (document.getElementById('p-filter-val') || {value:'all'}).value || 'all';
+  let list = allProfiles.filter(p => {
+    if (filter === 'banned' && !p.is_banned) return false;
+    if (filter === 'active' && p.is_banned) return false;
+    if (q && !(p.username||'').toLowerCase().includes(q) && !(p.city||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  grid.innerHTML = `
+    <div class="profiles-toolbar">
+      <input class="p-search" id="p-search-val" placeholder="🔍 Search name or city…" oninput="renderProfiles()" value="${q}"/>
+      <select class="p-filter" id="p-filter-val" onchange="renderProfiles()">
+        <option value="all" ${filter==='all'?'selected':''}>All Users</option>
+        <option value="active" ${filter==='active'?'selected':''}>Active Only</option>
+        <option value="banned" ${filter==='banned'?'selected':''}>Banned Only</option>
+      </select>
+    </div>
+    ${!list.length ? `<div class="empty-state"><div class="empty-icon">👤</div><div class="empty-msg">No users found</div></div>` : `
+    <div style="background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;">
+      <table class="profiles-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>City</th>
+            <th>Finds</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th>Note</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${list.map(p => buildProfileRow(p)).join('')}
+        </tbody>
+      </table>
+    </div>`}
+  `;
+}
+
+function buildProfileRow(p) {
+  const name = p.username || 'Unknown';
+  const initials = name[0].toUpperCase();
+  const joinDate = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  const isBanned = !!p.is_banned;
+  const statusBadge = isBanned
+    ? `<span class="p-badge pb-banned">🚫 Banned</span>`
+    : `<span class="p-badge pb-active">✅ Active</span>`;
+  const actionBtn = isBanned
+    ? `<button class="btn-unban" onclick="unbanUser('${p.id}','${name.replace(/'/g,"\\'")}')">✅ Unban</button>`
+    : `<button class="btn-ban" onclick="openBanModal('${p.id}','${name.replace(/'/g,"\\'")}')">🚫 Ban</button>`;
+
+  return `<tr class="${isBanned?'prow-banned':''}">
+    <td>
+      <div class="p-user-cell">
+        <div class="p-avatar ${isBanned?'banned':''}">${initials}</div>
+        <div>
+          <div class="p-name">${name}</div>
+          <div class="p-email">${p.id.slice(0,8)}…</div>
+        </div>
+      </div>
+    </td>
+    <td class="p-stat">${p.city || '—'}</td>
+    <td class="p-stat">${p.finds_count || 0}</td>
+    <td class="p-date">${joinDate}</td>
+    <td>${statusBadge}</td>
+    <td><div class="p-note" title="${p.admin_note||''}">${p.admin_note || '—'}</div></td>
+    <td style="display:flex;gap:6px;align-items:center;">
+      ${actionBtn}
+      <button class="btn-note" onclick="editNote('${p.id}','${(p.admin_note||'').replace(/'/g,"\\'")}')">📝</button>
+    </td>
+  </tr>`;
+}
+
+// ── BAN / UNBAN ───────────────────────────────────────
+let banTargetId = null;
+
+function openBanModal(id, name) {
+  banTargetId = id;
+  document.getElementById('ban-sub').innerHTML = `Banning <strong>${name}</strong>. They won't be able to submit hunts or claim prizes.`;
+  document.getElementById('ban-reason').value = '';
+  document.getElementById('ban-modal').classList.add('show');
+}
+function closeBanModal() {
+  document.getElementById('ban-modal').classList.remove('show');
+  banTargetId = null;
+}
+
+async function confirmBan() {
+  if (!banTargetId) return;
+  const reason = document.getElementById('ban-reason').value.trim();
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${banTargetId}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ is_banned: true, admin_note: reason || 'Banned by admin' })
+    });
+    if (!r.ok) throw new Error('Update failed');
+    showToast('🚫 User banned.', 'error');
+    closeBanModal();
+    await loadAll();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+async function unbanUser(id, name) {
+  if (!confirm(`Unban ${name}?`)) return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ is_banned: false, admin_note: '' })
+    });
+    if (!r.ok) throw new Error('Update failed');
+    showToast('✅ User unbanned.', 'success');
+    await loadAll();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+async function editNote(id, currentNote) {
+  const note = prompt('Admin note for this user:', currentNote);
+  if (note === null) return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ admin_note: note })
+    });
+    if (!r.ok) throw new Error('Update failed');
+    showToast('📝 Note saved.', 'success');
+    await loadAll();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 function buildCard(h, i) {
