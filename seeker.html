@@ -3,277 +3,259 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FinderSeek — Active Hunts</title>
+<title>FinderSeek — Real Money. Find Local Treasures.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
 <style>
-  :root { --ink:#06050a; --gold:#c9890c; --gold2:#e8a820; --cream:#f5ead8; --dim:#c8b48a; --muted:#8a7a5a; --border:rgba(201,137,12,0.2); --card-bg:rgba(14,12,20,0.85); --green:#22c55e; }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
-  .bg-img{position:fixed;inset:0;z-index:0;background:url('pirate%20sherlock%20trans.png') center 5%/cover no-repeat;opacity:0.2;filter:saturate(0.4) sepia(0.3);}
-  .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(6,5,10,.5) 0%,rgba(6,5,10,.85) 60%,rgba(6,5,10,.98) 100%);}
-  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
+:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--green:#22c55e;--border:rgba(201,137,12,0.2);--card:rgba(10,8,18,0.88);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.7);backdrop-filter:blur(12px);}
-  .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
-  .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
-  .nav-name{font-size:17px;font-weight:700;color:var(--cream);}
-  .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:19px;}
-  .nav-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:-2px;}
-  .nav-r{display:flex;align-items:center;gap:10px;}
-  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;}
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-  .btn-si{background:transparent;border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:border-color .2s,color .2s;}
-  .btn-si:hover{border-color:var(--gold);color:var(--cream);}
+.bg-img{position:fixed;inset:0;z-index:0;background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.12;}
+.bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.5;}
 
-  .hero{position:relative;z-index:2;text-align:center;padding:56px 24px 48px;}
-  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,7vw,58px);font-weight:600;line-height:1.1;}
-  .hero h1 .g{color:var(--gold);font-style:italic;display:block;}
-  .hero-sub{font-size:14px;color:var(--dim);margin-top:12px;line-height:1.6;max-width:420px;margin-inline:auto;}
-  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
-  .btn-cta{display:flex;flex-direction:column;align-items:center;padding:14px 32px;border-radius:12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;border:none;font-family:'Karla',sans-serif;transition:transform .2s,box-shadow .2s;min-width:160px;}
-  .btn-cta span{font-size:15px;font-weight:700;margin-top:2px;letter-spacing:0;text-transform:none;}
-  .btn-hide{background:#1a2090;color:#e0e4ff;box-shadow:0 4px 20px rgba(26,32,144,.4);}
-  .btn-hide:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
-  .btn-find{background:var(--gold);color:#0a0800;box-shadow:0 4px 20px rgba(201,137,12,.4);}
-  .btn-find:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
-  .btn-how{background:#7c3aed;color:#fff;border:1px solid rgba(167,139,250,.5);box-shadow:0 4px 24px rgba(124,58,237,.6);}
-  .btn-how:hover{transform:translateY(-2px);background:#8b5cf6;box-shadow:0 8px 36px rgba(139,92,246,.8);}
-  .hero-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
-  .hpill{background:rgba(201,137,12,.07);border:1px solid rgba(201,137,12,.15);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--muted);}
+nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid rgba(201,137,12,.12);background:rgba(6,5,10,.8);backdrop-filter:blur(16px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:36px;height:36px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,137,12,.4);}
+.nav-name{font-size:18px;font-weight:800;color:var(--cream);}
+.nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:20px;}
+.nav-r{display:flex;align-items:center;gap:10px;}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--green);font-family:'DM Mono',monospace;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+.btn-pirate-nav{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border:none;border-radius:20px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;transition:box-shadow .2s,transform .2s;}
+.btn-pirate-nav:hover{box-shadow:0 6px 24px rgba(26,32,144,.6);transform:translateY(-1px);}
 
-  .main{position:relative;z-index:2;max-width:700px;margin:0 auto;padding:0 20px 60px;}
-  .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-  .sec-title{font-size:16px;font-weight:700;}
-  .hbadge{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;}
-  .search-wrap{position:relative;margin-bottom:14px;}
-  .s-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 16px 12px 40px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
-  .s-input::placeholder{color:var(--muted);}
-  .s-input:focus{border-color:rgba(201,137,12,.4);}
-  .s-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;}
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-  .fpill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--dim);cursor:pointer;transition:background .2s,border-color .2s,color .2s;font-family:'Karla',sans-serif;}
-  .fpill:hover,.fpill.active{background:var(--gold);border-color:var(--gold);color:#0a0800;font-weight:700;}
+/* HERO */
+.hero{position:relative;z-index:2;text-align:center;padding:64px 24px 52px;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,137,12,.06) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);border-radius:20px;padding:5px 18px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:24px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'✦';font-size:8px;opacity:.6;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,8vw,72px);font-weight:700;line-height:1.05;margin-bottom:6px;}
+.hero h1 .line2{color:var(--gold);font-style:italic;display:block;}
+.hero-sub{font-size:16px;color:var(--dim);margin-top:18px;line-height:1.8;max-width:360px;margin-inline:auto;}
+.hero-sub strong{color:var(--cream);font-weight:700;}
 
-  .cards{display:flex;flex-direction:column;gap:12px;}
-  .hcard{background:var(--card-bg);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 20px 16px;cursor:pointer;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s,transform .15s;display:block;backdrop-filter:blur(10px);}
-  .hcard:hover{border-color:rgba(201,137,12,.35);box-shadow:0 6px 30px rgba(0,0,0,.4);transform:translateY(-1px);}
-  .hcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
-  .hcity{font-size:18px;font-weight:700;}
-  .hprize-col{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-  .hprize{font-size:18px;font-weight:700;}
-  .pp{color:#e0d4ff;} .gp{color:var(--gold2);} .sp{color:#c0c8d8;} .stp{color:var(--green);}
-  .hmeta{font-size:12px;color:var(--muted);margin-bottom:14px;}
-  .tbadge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;}
-  .tp{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;}
-  .tg{background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);color:var(--gold2);}
-  .ts{background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.3);color:#94a3b8;}
-  .tst{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);}
-  .hbottom{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .clues-sec{flex:1;}
-  .clues-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;justify-content:space-between;}
-  .pbar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
-  .pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--gold2));}
-  .hdate{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:10px;}
-  .cbox{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;text-align:center;min-width:130px;}
-  .clbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;}
-  .ctime{font-size:14px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;letter-spacing:1px;}
-  .hjoin{display:flex;justify-content:flex-end;margin-top:12px;}
-  .jbtn{font-size:13px;font-weight:600;color:var(--gold);display:flex;align-items:center;gap:5px;transition:gap .2s;}
-  .hcard:hover .jbtn{gap:9px;}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+.btn-cta{display:flex;flex-direction:column;align-items:center;padding:16px 28px;border-radius:14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;border:none;font-family:'Karla',sans-serif;transition:transform .2s,box-shadow .2s;min-width:150px;position:relative;overflow:hidden;}
+.btn-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);pointer-events:none;}
+.btn-cta span{font-size:16px;font-weight:800;margin-top:4px;letter-spacing:0;text-transform:none;}
+.btn-hide{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;box-shadow:0 6px 28px rgba(26,32,144,.5);}
+.btn-hide:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,32,144,.7);}
+.btn-find{background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.5);}
+.btn-find:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(201,137,12,.7);}
+.btn-how{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#f3e8ff;border:1px solid rgba(167,139,250,.3);box-shadow:0 6px 28px rgba(124,58,237,.5);}
+.btn-how:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,.7);}
 
-  .statebox{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;}
-  .statebox .si{font-size:32px;margin-bottom:12px;}
+.stat-strip{display:flex;justify-content:center;margin-top:40px;max-width:480px;margin-inline:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
+.stat-item{flex:1;text-align:center;padding:16px 8px;position:relative;}
+.stat-item+.stat-item::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:rgba(255,255,255,.07);}
+.stat-num{font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:var(--gold2);display:block;}
+.stat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;display:block;}
 
-  .pcta{margin-top:32px;background:rgba(26,32,144,.2);border:1px solid rgba(26,32,144,.4);border-radius:20px;padding:32px 24px;text-align:center;backdrop-filter:blur(10px);}
-  .pcta-icon{font-size:32px;margin-bottom:12px;}
-  .pcta h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:8px;}
-  .pcta p{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6;}
-  .pcta-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
-  .ppill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--dim);}
-  .btn-pirate{display:inline-block;background:#1a2090;color:#e0e4ff;border-radius:12px;padding:14px 28px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(26,32,144,.4);transition:transform .2s,box-shadow .2s;}
-  .btn-pirate:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
+/* HUNTS */
+.main{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 16px 80px;}
 
-  
-  .sec-divider{position:relative;z-index:2;max-width:700px;margin:0 auto;padding:0 20px;}
-  .sched-head{display:flex;align-items:center;justify-content:space-between;margin:32px 0 16px;}
-  .sched-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
-  .sbadge{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:20px;padding:4px 12px;font-size:12px;color:#a5b4fc;font-family:'DM Mono',monospace;}
-  .hcard.scheduled{border-color:rgba(99,102,241,.25);opacity:.9;}
-  .hcard.scheduled:hover{border-color:rgba(99,102,241,.5);}
-  .sched-tag{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:1px;font-family:'DM Mono',monospace;}
-  .sort-row{display:flex;gap:8px;margin-bottom:16px;align-items:center;}
-  .sort-lbl{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap;}
-  .sort-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
-  .sort-btn.active{background:rgba(201,137,12,.15);border-color:var(--gold);color:var(--gold);font-weight:700;}
-  .hhandle{font-size:12px;color:var(--muted);margin-top:2px;}
-  .hhandle span{color:var(--gold2);font-weight:600;}
+.section-banner{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(201,137,12,.04));border:1px solid rgba(34,197,94,.15);border-radius:18px;padding:20px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.section-banner-left{display:flex;align-items:center;gap:14px;}
+.section-banner-icon{font-size:32px;}
+.section-banner-title{font-family:'Bangers',cursive;font-size:30px;letter-spacing:3px;background:linear-gradient(135deg,#4ade80,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.section-banner-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;letter-spacing:.5px;}
+.hbadge{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .f1{animation:fadeUp .6s .05s both} .f2{animation:fadeUp .6s .15s both}
-  .f3{animation:fadeUp .6s .25s both} .f4{animation:fadeUp .6s .35s both}
+.search-wrap{position:relative;margin-bottom:12px;}
+.s-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px 14px 44px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s,background .2s;}
+.s-input::placeholder{color:var(--muted);}
+.s-input:focus{border-color:rgba(201,137,12,.4);background:rgba(255,255,255,.06);}
+.s-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.fpill{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--dim);cursor:pointer;transition:all .2s;font-family:'Karla',sans-serif;font-weight:600;}
+.fpill:hover{border-color:rgba(201,137,12,.3);color:var(--cream);}
+.fpill.active{background:var(--gold);border-color:var(--gold);color:#0a0800;font-weight:700;}
+
+.cards{display:flex;flex-direction:column;gap:14px;}
+.hcard{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:0;cursor:pointer;text-decoration:none;color:inherit;transition:border-color .25s,box-shadow .25s,transform .2s;display:block;overflow:hidden;backdrop-filter:blur(12px);}
+.hcard:hover{border-color:rgba(201,137,12,.4);box-shadow:0 8px 40px rgba(0,0,0,.5);transform:translateY(-2px);}
+.hcard-accent{height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),transparent);}
+.hcard-body{padding:20px 22px 0;}
+.hcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.hcity{font-size:20px;font-weight:800;}
+.hprize-col{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.hprize{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;}
+.pp{color:#e0d4ff;text-shadow:0 0 20px rgba(192,132,252,.4);}
+.gp{color:var(--gold2);text-shadow:0 0 20px rgba(232,168,32,.4);}
+.sp{color:#c0c8d8;}
+.stp{color:#4ade80;text-shadow:0 0 20px rgba(74,222,128,.35);}
+.tbadge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.tp{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;}
+.tg{background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);color:var(--gold2);}
+.ts{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8;}
+.tst{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.hmeta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;margin-bottom:16px;}
+.hcard-mid{display:flex;align-items:center;gap:14px;margin-bottom:0;}
+.clues-sec{flex:1;}
+.clues-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:7px;display:flex;justify-content:space-between;}
+.pbar{height:5px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--gold2));}
+.cbox{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 16px;text-align:center;min-width:130px;flex-shrink:0;}
+.clbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.ctime{font-size:13px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;letter-spacing:1px;}
+.hcard-foot{border-top:1px solid rgba(255,255,255,.05);padding:12px 22px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;}
+.hcard-foot-city{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.jbtn{font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:5px;transition:gap .2s,color .2s;}
+.hcard:hover .jbtn{gap:10px;color:var(--gold2);}
+
+.statebox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+.si{font-size:32px;margin-bottom:12px;}
+
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,137,12,.3),transparent);margin:36px 0;}
+
+.pcta{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(26,32,144,.2),rgba(45,58,219,.08));border:1px solid rgba(45,58,219,.3);border-radius:22px;padding:40px 28px;text-align:center;}
+.pcta::before{content:'🏴\200D☠️';position:absolute;font-size:140px;right:-15px;bottom:-25px;opacity:.05;pointer-events:none;line-height:1;}
+.pcta-icon{font-size:40px;margin-bottom:16px;}
+.pcta h3{font-family:'Bangers',cursive;font-size:40px;letter-spacing:4px;margin-bottom:10px;background:linear-gradient(135deg,#e0e4ff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pcta p{font-size:14px;color:var(--dim);margin-bottom:24px;line-height:1.8;max-width:400px;margin-inline:auto;}
+.pcta-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;}
+.ppill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--dim);}
+.btn-pirate{display:inline-block;background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border-radius:14px;padding:16px 40px;font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 6px 28px rgba(26,32,144,.5);transition:transform .2s,box-shadow .2s;}
+.btn-pirate:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,32,144,.7);}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.f1{animation:fadeUp .6s .05s both}
+.f2{animation:fadeUp .6s .12s both}
+.f3{animation:fadeUp .6s .2s both}
+.f4{animation:fadeUp .6s .3s both}
+.f5{animation:fadeUp .6s .38s both}
 </style>
 </head>
 <body>
-<div class="bg-img"></div><div class="bg-vig"></div>
+<div class="bg-img"></div>
+<div class="bg-vig"></div>
 
 <nav>
-  <a class="nav-logo" href="index.html">
+  <a class="nav-logo" href="#">
     <div class="nav-icon">🔍</div>
-    <div><div class="nav-name">Finder<em>Seek</em></div><div class="nav-sub">finderseek.com</div></div>
+    <div><div class="nav-name">Finder<em>Seek</em></div></div>
   </a>
   <div class="nav-r">
-    <div class="live-badge"><span class="dot"></span><span id="live-count">…</span> Live</div>
-    <button class="btn-si">Sign In</button>
+    <div class="live-badge"><span class="dot"></span><span id="live-count">—</span> LIVE</div>
+    <a href="pirate.html" class="btn-pirate-nav">🏴‍☠️ Hide Treasure</a>
   </div>
 </nav>
 
-<div class="hero f1">
-  <h1>Real Money.<span class="g">Find Local Treasures.</span></h1>
-  <p class="hero-sub">Join local treasure hunts.<br>Hide the treasure or be the seeker!</p>
-  <div class="cta-row">
-    <a href="pirate.html" class="btn-cta btn-hide">I WANT TO <span>Hide Treasure</span></a>
-    <a href="#hunts" class="btn-cta btn-find">I WANT TO <span>Find Treasure</span></a>
-    <a href="how-it-works.html" class="btn-cta btn-how">📜 <span>How It Works</span></a>
+<div class="hero">
+  <div class="hero-eyebrow f1">Real Cash Prizes · Local Treasure Hunts</div>
+  <h1 class="f1">Real Money.<span class="line2">Find Local Treasures.</span></h1>
+  <p class="hero-sub f2">Join local treasure hunts.<br><strong>Hide the treasure or be the seeker!</strong></p>
+  <div class="cta-row f3">
+    <a href="pirate.html" class="btn-cta btn-hide">I WANT TO <span>🏴‍☠️ Hide Treasure</span></a>
+    <a href="#hunts" class="btn-cta btn-find">I WANT TO <span>🔍 Find Treasure</span></a>
+    <a href="how-it-works.html" class="btn-cta btn-how">LEARN <span>📜 How It Works</span></a>
   </div>
-  <div class="hero-pills">
-    <span class="hpill">Real Cash Prizes</span>
-    <span class="hpill">Free to Play</span>
-    <span class="hpill">Every Friday</span>
+  <div class="stat-strip f4">
+    <div class="stat-item"><span class="stat-num" id="stat-hunts">—</span><span class="stat-lbl">Active Hunts</span></div>
+    <div class="stat-item"><span class="stat-num">$20</span><span class="stat-lbl">Avg Prize</span></div>
+    <div class="stat-item"><span class="stat-num">FREE</span><span class="stat-lbl">To Play</span></div>
+    <div class="stat-item"><span class="stat-num">📍</span><span class="stat-lbl">Real Locations</span></div>
   </div>
 </div>
 
 <div class="main" id="hunts">
-  <div class="sec-head f2">
-    <div class="sec-title">🗺️ Active Hunts</div>
-    <div class="hbadge"><span class="dot"></span><span id="hunt-count">…</span> hunts</div>
+  <div class="section-banner f5">
+    <div class="section-banner-left">
+      <div class="section-banner-icon">🎯</div>
+      <div>
+        <div class="section-banner-title">ACTIVE HUNTS</div>
+        <div class="section-banner-sub">Click any hunt to start seeking</div>
+      </div>
+    </div>
+    <div class="hbadge"><span class="dot"></span><span id="hunt-count">—</span>&nbsp;hunts</div>
   </div>
-  <div class="search-wrap f2">
+  <div class="search-wrap">
     <span class="s-icon">🔍</span>
-    <input class="s-input" id="search" type="text" placeholder="Search city or area…" oninput="renderHunts()"/>
+    <input class="s-input" id="search" placeholder="Search city or area…" oninput="renderHunts()"/>
   </div>
-  <div class="filters f3" id="filters">
-    <button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>
-  </div>
-  <div class="cards f4" id="cards">
-    <div class="statebox"><div class="si">⏳</div>Loading hunts…</div>
-  </div>
-
-  <div class="pcta f4">
+  <div class="filters" id="filters"></div>
+  <div class="cards" id="cards"><div class="statebox"><div class="si">⏳</div>Loading hunts…</div></div>
+  <div class="gold-divider"></div>
+  <div class="pcta">
     <div class="pcta-icon">🏴‍☠️</div>
-    <h3>Become a Pirate</h3>
-    <p>Hide real cash in your city. Write clues. Watch seekers hunt. You set the prize.</p>
+    <h3>BECOME A PIRATE</h3>
+    <p>Hide real cash somewhere in your city, create AI-generated clues, and watch Seekers race to find it. You set the prize — they hunt it down.</p>
     <div class="pcta-pills">
       <span class="ppill">💰 You set the prize</span>
-      <span class="ppill">📜 AI writes clues</span>
-      <span class="ppill">🗺️ Any city</span>
+      <span class="ppill">🤖 AI writes the clues</span>
+      <span class="ppill">📍 Any location</span>
     </div>
-    <a href="pirate.html" class="btn-pirate">Start Hiding Treasure →</a>
+    <a href="pirate.html" class="btn-pirate">🏴‍☠️ Hide Your Treasure →</a>
   </div>
 </div>
 
 <script>
-const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const H = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
-
-let allHunts = [], activeFilter = 'all', activeSort = 'prize', timers = {};
-
-function tier(cents) { const v=Math.round(cents/100); return v>=75?'platinum':v>=50?'gold':v>=30?'silver':'starter'; }
-const TIER_LABEL = { platinum:'💎 PLATINUM', gold:'🔥 GOLD', silver:'🥈 SILVER', starter:'🌱 STARTER' };
-const TIER_CSS   = { platinum:'tp', gold:'tg', silver:'ts', starter:'tst' };
-const PRIZE_CSS  = { platinum:'pp', gold:'gp', silver:'sp', starter:'stp' };
-
-function fmt(ms) {
-  if(ms<=0)return'Ended';
-  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),
-        m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-  return `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
-}
-
-async function loadHunts() {
-  try {
-    const r = await fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc`, {headers:H});
-    const hunts = await r.json();
-    if(!Array.isArray(hunts)||hunts.length===0){
-      document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No active hunts right now.<br>Check back Friday!</div>';
-      document.getElementById('hunt-count').textContent='0';
-      document.getElementById('live-count').textContent='0';
-      return;
+const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H={'apikey':KEY,'Authorization':'Bearer '+KEY};
+let allHunts=[],activeFilter='all',timers={};
+function tier(cents){const v=Math.round(cents/100);return v>=75?'platinum':v>=50?'gold':v>=30?'silver':'starter';}
+const TL={platinum:'💎 PLATINUM',gold:'🔥 GOLD',silver:'🥈 SILVER',starter:'🌱 STARTER'};
+const TC={platinum:'tp',gold:'tg',silver:'ts',starter:'tst'};
+const PC={platinum:'pp',gold:'gp',silver:'sp',starter:'stp'};
+function fmt(ms){if(ms<=0)return'Ended';const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);return`${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;}
+async function loadHunts(){
+  try{
+    const r=await fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc`,{headers:H});
+    const hunts=await r.json();
+    if(!Array.isArray(hunts)||!hunts.length){
+      document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No active hunts right now.<br>Check back soon!</div>';
+      ['hunt-count','live-count','stat-hunts'].forEach(id=>document.getElementById(id).textContent='0');return;
     }
-
-    // Fetch clue counts
-    const ids = hunts.map(h=>`"${h.id}"`).join(',');
-    const cr = await fetch(`${SB}/rest/v1/clues?select=hunt_id,tier&hunt_id=in.(${ids})`,{headers:H});
-    const clues = cr.ok ? await cr.json() : [];
-
-    allHunts = hunts.map(h => {
-      const hc = clues.filter(c=>c.hunt_id===h.id);
-      const t = tier(h.prize_value);
-      return { id:h.id, city:h.city, prizeDesc:h.prize_desc, weekLabel:h.week_label,
-               tier:t, totalClues:hc.length||7, freeClues:hc.filter(c=>c.tier==='free').length,
-               endsAt:new Date(h.ends_at) };
-    });
-
-    // City filter pills
+    const ids=hunts.map(h=>`"${h.id}"`).join(',');
+    const cr=await fetch(`${SB}/rest/v1/clues?select=hunt_id,tier&hunt_id=in.(${ids})`,{headers:H});
+    const clues=cr.ok?await cr.json():[];
+    allHunts=hunts.map(h=>{const hc=clues.filter(c=>c.hunt_id===h.id),t=tier(h.prize_value);return{id:h.id,city:h.city,prizeDesc:h.prize_desc,weekLabel:h.week_label,tier:t,totalClues:hc.length||7,freeClues:hc.filter(c=>c.tier==='free').length,endsAt:new Date(h.ends_at)};});
+    document.getElementById('stat-hunts').textContent=allHunts.length;
     const cities=[...new Set(allHunts.map(h=>h.city))];
-    document.getElementById('filters').innerHTML =
-      `<button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>` +
-      cities.map(c=>`<button class="fpill" onclick="setFilter('${c.replace(/'/g,"\\'")}',this)">📍 ${c}</button>`).join('');
-
+    document.getElementById('filters').innerHTML=`<button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>`+cities.map(c=>`<button class="fpill" onclick="setFilter('${c.replace(/'/g,"\\'")}',this)">📍 ${c}</button>`).join('');
     renderHunts();
-  } catch(e) {
-    console.error(e);
-    document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">⚠️</div>Could not load hunts.</div>';
-    document.getElementById('hunt-count').textContent='0';
-    document.getElementById('live-count').textContent='0';
-  }
+  }catch(e){document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">⚠️</div>Could not load hunts.</div>';}
 }
-
-function renderHunts() {
+function renderHunts(){
   const q=document.getElementById('search').value.toLowerCase();
   const list=allHunts.filter(h=>(activeFilter==='all'||h.city===activeFilter)&&(!q||h.city.toLowerCase().includes(q)));
   document.getElementById('hunt-count').textContent=list.length;
   document.getElementById('live-count').textContent=allHunts.length;
-  Object.values(timers).forEach(clearInterval); timers={};
-  if(!list.length){
-    document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No hunts in that area yet.</div>';
-    return;
-  }
-  document.getElementById('cards').innerHTML=list.map(h=>`
-    <a class="hcard" href="hunt.html?id=${h.id}">
-      <div class="hcard-top">
-        <div class="hcity">${h.city}</div>
-        <div class="hprize-col">
-          <div class="hprize ${PRIZE_CSS[h.tier]}">${h.prizeDesc}</div>
-          <div class="tbadge ${TIER_CSS[h.tier]}">${TIER_LABEL[h.tier]}</div>
+  Object.values(timers).forEach(clearInterval);timers={};
+  if(!list.length){document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No hunts in that area yet.</div>';return;}
+  document.getElementById('cards').innerHTML=list.map((h,i)=>`
+    <a class="hcard" href="hunt.html?id=${h.id}" style="animation:fadeUp .4s ${i*.07}s both;">
+      <div class="hcard-accent"></div>
+      <div class="hcard-body">
+        <div class="hcard-top">
+          <div class="hcity">${h.city}</div>
+          <div class="hprize-col">
+            <div class="hprize ${PC[h.tier]}">${h.prizeDesc}</div>
+            <div class="tbadge ${TC[h.tier]}">${TL[h.tier]}</div>
+          </div>
+        </div>
+        <div class="hmeta">📅 ${h.weekLabel}</div>
+        <div class="hcard-mid">
+          <div class="clues-sec">
+            <div class="clues-lbl"><span>CLUES REVEALED</span><span>${h.freeClues}/${h.totalClues}</span></div>
+            <div class="pbar"><div class="pfill" style="width:${(h.freeClues/h.totalClues)*100}%"></div></div>
+          </div>
+          <div class="cbox"><div class="clbl">ENDS IN</div><div class="ctime" id="t-${h.id}">${fmt(h.endsAt-Date.now())}</div></div>
         </div>
       </div>
-      <div class="hmeta">📅 ${h.weekLabel}</div>
-      <div class="hbottom">
-        <div class="clues-sec">
-          <div class="clues-lbl"><span>CLUES</span><span>${h.freeClues}/${h.totalClues}</span></div>
-          <div class="pbar"><div class="pfill" style="width:${(h.freeClues/h.totalClues)*100}%"></div></div>
-        </div>
-        <div class="cbox">
-          <div class="clbl">ENDS IN</div>
-          <div class="ctime" id="t-${h.id}">${fmt(h.endsAt-Date.now())}</div>
-        </div>
+      <div class="hcard-foot">
+        <span class="hcard-foot-city">📍 ${h.city}</span>
+        <span class="jbtn">Start Hunting →</span>
       </div>
-      <div class="hdate">${h.weekLabel}</div>
-      <div class="hjoin"><span class="jbtn">Join Hunt →</span></div>
     </a>`).join('');
-  list.forEach(h=>{ timers[h.id]=setInterval(()=>{ const el=document.getElementById('t-'+h.id); if(el)el.textContent=fmt(h.endsAt-Date.now()); },1000); });
+  list.forEach(h=>{timers[h.id]=setInterval(()=>{const el=document.getElementById('t-'+h.id);if(el)el.textContent=fmt(h.endsAt-Date.now());},1000);});
 }
-
-function setFilter(city,el){
-  activeFilter=city;
-  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  renderHunts();
-}
-
+function setFilter(city,el){activeFilter=city;document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderHunts();}
 loadHunts();
 </script>
 </body>
