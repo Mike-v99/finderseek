@@ -3,344 +3,546 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FinderSeek — Coming Soon</title>
-<meta name="description" content="Real money hidden in your city every week. Follow the clues. Find the treasure."/>
+<title>FinderSeek — Real Treasure. Hidden in Your City.</title>
+<meta name="description" content="Real money hidden in your city every week. Follow the clues. Find the treasure. Free to play."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --ink:   #06050a;
-    --gold:  #c9890c;
-    --gold2: #e8a820;
-    --cream: #f5ead8;
-    --dim:   #c8b48a;
-    --muted: #8a7a5a;
-    --border: rgba(201,137,12,0.2);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
-  body {
-    background: var(--ink);
-    color: var(--cream);
-    font-family: 'Karla', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
-    cursor: none;
-    padding: 40px 24px;
-  }
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    opacity: 0.5;
-  }
-  #bg { position: fixed; inset: 0; z-index: 0; }
-  #cur  { position:fixed;top:0;left:0;z-index:999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen; }
-  #curl { position:fixed;top:0;left:0;z-index:998;pointer-events:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);transform:translate(-50%,-50%);opacity:.4; }
-  .glow {
-    position: fixed; z-index: 1; pointer-events: none;
-    width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(201,137,12,.07) 0%, transparent 65%);
-    left: 50%; top: 50%; transform: translate(-50%, -50%);
-  }
-  .card {
-    position: relative; z-index: 2;
-    text-align: center;
-    max-width: 520px;
-    width: 100%;
-    overflow-y: auto;
-    max-height: calc(100vh - 32px);
-    padding-bottom: 16px;
-    animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;
-    opacity: 0;
-  }
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(32px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  /* Logo row */
-  .logo-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 32px;
-    animation: fadeUp 1s .1s cubic-bezier(.16,1,.3,1) both;
-  }
-  .logo-inner {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .logo-icon {
-    width: 40px; height: 40px; border-radius: 11px;
-    background: linear-gradient(135deg, var(--gold), var(--gold2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 4px 20px rgba(201,137,12,.5);
-    flex-shrink: 0;
-  }
-  .logo-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px; font-weight: 600;
-    background: linear-gradient(90deg, var(--gold), var(--gold2), #fff8e0, var(--gold));
-    background-size: 300% auto;
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 5s linear infinite;
-  }
-  @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:300% center} }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(201,137,12,.1); border: 1px solid rgba(201,137,12,.3);
-    border-radius: 24px; padding: 5px 14px;
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
-  }
-  .pulse-dot { width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s infinite;flex-shrink:0; }
-  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.15} }
-  /* Headline */
-  h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 52px;
-    font-weight: 600; line-height: 1.3; padding-bottom: 6px;
-    margin-bottom: 14px;
-    background: linear-gradient(160deg, #ffffff 30%, var(--gold2) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: fadeUp 1s .3s cubic-bezier(.16,1,.3,1) both;
-  }
-  h1 em { font-style: italic; font-weight: 300; }
-  @media(max-width:600px){ h1 { font-size: 32px !important; } }
-  .sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(16px, 3vw, 22px);
-    font-weight: 300; font-style: italic;
-    color: var(--dim); margin-bottom: 18px;
-    animation: fadeUp 1s .4s cubic-bezier(.16,1,.3,1) both;
-  }
-  .body {
-    font-size: 14px; color: var(--dim); line-height: 1.75;
-    max-width: 380px; margin: 0 auto 32px;
-    animation: fadeUp 1s .5s cubic-bezier(.16,1,.3,1) both;
-  }
-  .body strong { color: var(--gold); font-weight: 600; }
-  /* Form */
-  .form-wrap {
-    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 24px;
-    animation: fadeUp 1s .6s cubic-bezier(.16,1,.3,1) both;
-  }
-  .email-input {
-    flex: 1; min-width: 200px;
-    background: rgba(255,255,255,.05);
-    border: 1.5px solid var(--border);
-    border-radius: 12px; padding: 13px 16px;
-    color: var(--cream); font-size: 14px; font-family: 'Karla', sans-serif;
-    outline: none; transition: border-color .2s, background .2s;
-    cursor: none;
-  }
-  .email-input::placeholder { color: var(--muted); }
-  .email-input:focus { border-color: var(--gold); background: rgba(201,137,12,.06); }
-  .submit-btn {
-    background: linear-gradient(135deg, var(--gold), var(--gold2));
-    color: #1a0800; font-weight: 700; font-size: 14px; letter-spacing: .5px;
-    border: none; border-radius: 12px; padding: 13px 24px;
-    cursor: none; white-space: nowrap;
-    box-shadow: 0 4px 24px rgba(201,137,12,.4);
-    transition: transform .2s, box-shadow .2s;
-    font-family: 'Karla', sans-serif;
-  }
-  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,137,12,.6); }
-  .confirm { display:none; color:var(--gold); font-size:13px; font-family:'DM Mono',monospace; letter-spacing:1px; margin-bottom:24px; }
-  .confirm.show { display:block; }
-  /* Pills */
-  .pills {
-    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-    margin-bottom: 36px;
-    animation: fadeUp 1s .7s cubic-bezier(.16,1,.3,1) both;
-  }
-  .pill {
-    background: rgba(201,137,12,.08); border: 1px solid rgba(201,137,12,.2);
-    border-radius: 20px; padding: 5px 13px;
-    font-size: 12px; color: var(--dim);
-  }
-  /* Divider */
-  .divider { width:1px;height:40px;background:linear-gradient(180deg,transparent,var(--border),transparent);margin:0 auto 28px; animation: fadeUp 1s .8s cubic-bezier(.16,1,.3,1) both; }
-  /* Countdown */
-  .teaser { animation: fadeUp 1s .9s cubic-bezier(.16,1,.3,1) both; }
-  .teaser-label { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;opacity:.7; }
-  .countdown { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,48px);font-weight:600;letter-spacing:2px;color:var(--cream); }
-  .countdown-sub { font-size:11px;color:var(--muted);margin-top:5px;font-family:'DM Mono',monospace;letter-spacing:1px; }
-  /* Footer */
-  .footer { margin-top:40px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:1px;font-family:'DM Mono',monospace;position:relative;z-index:2; }
-  @media(max-width:480px){
-    .form-wrap{flex-direction:column;align-items:stretch;}
-    .submit-btn{width:100%;}
-    .divider{display:none;}
-    .teaser{display:none;}
-    .footer{display:none;}
-    .body{font-size:13px;margin-bottom:20px;}
-    .sub{margin-bottom:12px;}
-  }
-.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
-#upgrade-fixed{position:fixed;top:16px;right:20px;z-index:200;}
+:root {
+  --ink:    #06050a;
+  --gold:   #c9890c;
+  --gold2:  #e8a820;
+  --cream:  #f5ead8;
+  --dim:    #c8b48a;
+  --muted:  #8a7a5a;
+  --border: rgba(201,137,12,0.18);
+  --green:  #22c55e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:200px 200px;opacity:0.45;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;transition:background .3s,backdrop-filter .3s;}
+nav.scrolled{background:rgba(6,5,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 16px rgba(201,137,12,.45);}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);}
+.nav-brand em{font-style:italic;color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-link{font-size:13px;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:8px;transition:color .2s;}
+.nav-link:hover{color:var(--cream);}
+.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-family:'Karla',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}
+.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
+#nav-upgrade-btn{display:none;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-weight:800;font-size:15px;letter-spacing:.4px;border:none;border-radius:14px;padding:15px 30px;cursor:pointer;text-decoration:none;box-shadow:0 6px 28px rgba(201,137,12,.5);transition:transform .2s,box-shadow .2s;font-family:'Karla',sans-serif;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(201,137,12,.7);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);color:var(--cream);font-weight:600;font-size:15px;border:1.5px solid rgba(245,234,216,.2);border-radius:14px;padding:15px 30px;cursor:pointer;text-decoration:none;transition:all .2s;font-family:'Karla',sans-serif;}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(245,234,216,.4);}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:url('pirate_sherlock.png') center 15%/cover no-repeat;opacity:0.28;filter:saturate(0.5) sepia(0.35);}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(6,5,10,0.3) 0%,rgba(6,5,10,0.75) 55%,rgba(6,5,10,0.97) 100%);}
+.hero-bottom-fade{position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(0deg,var(--ink) 0%,transparent 100%);}
+canvas#particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:760px;}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:24px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:28px;animation:fadeUp .8s .1s both;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,88px);font-weight:600;line-height:1.08;margin-bottom:20px;background:linear-gradient(160deg,#ffffff 20%,var(--gold2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeUp .8s .2s both;}
+.hero h1 em{font-style:italic;font-weight:300;}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-weight:300;font-style:italic;color:var(--dim);margin-bottom:40px;animation:fadeUp .8s .35s both;}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;animation:fadeUp .8s .5s both;}
+.ticker-wrap{animation:fadeUp .8s .65s both;overflow:hidden;width:100%;max-width:520px;margin:0 auto;border-radius:12px;background:rgba(201,137,12,.06);border:1px solid var(--border);padding:10px 20px;}
+.ticker-inner{display:flex;align-items:center;gap:10px;}
+.ticker-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);white-space:nowrap;flex-shrink:0;}
+.ticker-text{font-size:12px;color:var(--dim);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ticker-amount{color:var(--gold);font-weight:700;}
+
+/* STATS */
+.stats-bar{position:relative;z-index:2;display:flex;justify-content:center;max-width:600px;margin:0 auto;padding:0 24px 80px;}
+.stat-item{flex:1;text-align:center;padding:24px 16px;border-right:1px solid var(--border);opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;}
+.stat-item:last-child{border-right:none;}
+.stat-item.visible{opacity:1;transform:translateY(0);}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--gold2);line-height:1;}
+.stat-lbl{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-top:5px;}
+
+/* SECTIONS */
+section{padding:80px 24px;}
+.section-inner{max-width:1100px;margin:0 auto;}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;opacity:.8;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:600;line-height:1.15;margin-bottom:16px;}
+.section-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2vw,20px);font-weight:300;font-style:italic;color:var(--dim);max-width:560px;line-height:1.6;}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+@media(max-width:700px){.how-grid{grid-template-columns:1fr;}}
+.how-card{padding:40px 36px;background:rgba(201,137,12,.03);border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
+.how-card:last-child{border-right:none;}
+.how-card:hover{background:rgba(201,137,12,.07);}
+.how-num{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:700;color:rgba(201,137,12,.12);position:absolute;top:-10px;right:16px;line-height:1;pointer-events:none;}
+.how-icon{font-size:32px;margin-bottom:16px;display:block;}
+.how-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--cream);}
+.how-desc{font-size:14px;color:var(--muted);line-height:1.7;}
+.how-tag{display:inline-block;margin-top:14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:rgba(201,137,12,.1);border-radius:20px;padding:3px 10px;}
+
+/* HUNTS */
+.hunts-section{background:rgba(201,137,12,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.hunts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:48px;}
+.hunt-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .25s;cursor:pointer;text-decoration:none;display:block;position:relative;overflow:hidden;}
+.hunt-card::before{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(201,137,12,.06),transparent);opacity:0;transition:opacity .25s;}
+.hunt-card:hover{border-color:rgba(201,137,12,.4);transform:translateY(-3px);}
+.hunt-card:hover::before{opacity:1;}
+.hunt-city{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.hunt-prize{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold2);margin-bottom:6px;}
+.hunt-desc{font-size:13px;color:var(--dim);margin-bottom:16px;line-height:1.5;}
+.hunt-footer{display:flex;align-items:center;justify-content:space-between;}
+.hunt-seekers{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.hunt-status{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;}
+.hunt-status.active{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25);}
+.hunts-empty{text-align:center;padding:60px;color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;}
+.hunts-cta{text-align:center;margin-top:36px;}
+
+/* PIRATE PITCH */
+.pirate-pitch{background:linear-gradient(135deg,rgba(26,12,3,.8),rgba(6,5,10,.9));border:1px solid rgba(201,137,12,.2);border-radius:24px;padding:60px;position:relative;overflow:hidden;}
+@media(max-width:700px){.pirate-pitch{padding:36px 24px;}}
+.pirate-pitch::before{content:'🏴‍☠️';position:absolute;right:-20px;top:-20px;font-size:160px;opacity:0.06;pointer-events:none;transform:rotate(-15deg);}
+.pirate-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+@media(max-width:700px){.pirate-grid{grid-template-columns:1fr;gap:36px;}}
+.pirate-perks{display:flex;flex-direction:column;gap:18px;margin-top:32px;}
+.pirate-perk{display:flex;gap:14px;align-items:flex-start;}
+.perk-icon{width:38px;height:38px;border-radius:10px;background:rgba(201,137,12,.12);border:1px solid rgba(201,137,12,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.perk-text strong{display:block;font-size:14px;font-weight:700;color:var(--cream);margin-bottom:3px;}
+.perk-text span{font-size:13px;color:var(--muted);line-height:1.5;}
+.pirate-visual{background:rgba(201,137,12,.05);border:1px solid var(--border);border-radius:16px;padding:28px;}
+.pirate-visual-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:.7;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.stat-row:last-child{border-bottom:none;}
+.stat-row-label{font-size:12px;color:var(--muted);}
+.stat-row-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);}
+.stat-row-val.gold{color:var(--gold2);}
+
+/* PRICING */
+.gold-section{border-top:1px solid var(--border);}
+.pricing-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px;max-width:700px;}
+@media(max-width:600px){.pricing-cards{grid-template-columns:1fr;}}
+.price-card{border:1px solid var(--border);border-radius:20px;padding:32px;background:rgba(255,255,255,.02);}
+.price-card.gold-card{border-color:rgba(201,137,12,.45);background:linear-gradient(135deg,rgba(201,137,12,.06),rgba(232,168,32,.03));position:relative;overflow:hidden;}
+.price-card.gold-card::after{content:'POPULAR';position:absolute;top:16px;right:-22px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:8px;font-weight:800;letter-spacing:2px;padding:4px 32px;transform:rotate(35deg);font-family:'DM Mono',monospace;}
+.price-tier{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.price-amt{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:600;color:var(--cream);line-height:1;}
+.price-amt span{font-size:16px;color:var(--muted);font-weight:300;}
+.price-desc{font-size:13px;color:var(--muted);margin:10px 0 24px;line-height:1.6;}
+.price-features{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.price-feature{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dim);}
+.price-feature .check{color:var(--green);font-size:14px;flex-shrink:0;}
+.price-feature .check.gc{color:var(--gold);}
+
+/* WINNERS */
+.winners-wall{border-top:1px solid var(--border);}
+.winners-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:48px;}
+.winner-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.winner-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.winner-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#0a0800;flex-shrink:0;}
+.winner-name{font-size:14px;font-weight:700;color:var(--cream);}
+.winner-city{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.winner-prize{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold2);}
+.winner-ago{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;}
+.winners-empty{color:var(--muted);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;margin-top:40px;}
+
+/* FINAL CTA */
+.final-cta{text-align:center;padding:100px 24px;position:relative;overflow:hidden;}
+.final-cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,137,12,.08) 0%,transparent 65%);}
+.final-cta-content{position:relative;z-index:2;max-width:600px;margin:0 auto;}
+.final-cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.1;margin-bottom:16px;}
+.final-cta h2 em{font-style:italic;font-weight:300;color:var(--gold2);}
+.final-cta p{font-size:16px;color:var(--dim);margin-bottom:36px;line-height:1.6;}
+.final-cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:36px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.footer-logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:13px;}
+.footer-logo-text{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--cream);}
+.footer-logo-text em{color:var(--gold);font-style:italic;}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-link{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;transition:color .2s;}
+.footer-link:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:480px){
+  nav{padding:14px 16px;}
+  .nav-links .nav-link{display:none;}
+  .hero-ctas{flex-direction:column;align-items:center;}
+  .btn-primary,.btn-ghost{width:100%;max-width:320px;justify-content:center;}
+  .stats-bar{gap:0;}
+}
 </style>
 </head>
 <body>
-<div id="upgrade-fixed"><a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a></div>
-<div style="position:fixed;inset:0;z-index:0;background:url('pirate.png') center 20%/cover no-repeat;opacity:0.3;filter:saturate(0.6) sepia(0.3);"></div>
-<div style="position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at center, rgba(6,5,10,0.55) 0%, rgba(6,5,10,0.82) 60%, rgba(6,5,10,0.96) 100%);"></div>
-<canvas id="bg"></canvas>
-<div class="glow"></div>
-<div id="cur"></div>
-<div id="curl"></div>
 
-<div class="card">
-  <div class="logo-row">
-    <div class="logo-inner">
-      <div class="logo-icon">🔍</div>
-      <div class="logo-text">FinderSeek</div>
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#">
+    <div class="nav-icon">🔍</div>
+    <div class="nav-brand">Finder<em>Seek</em></div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#how">How It Works</a>
+    <a class="nav-link" href="#hunts">Hunts</a>
+    <a class="nav-link" href="pricing.html">Pricing</a>
+    <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html">⭐ Upgrade to Pro</a>
+    <a class="btn-primary" href="seeker.html" style="padding:9px 20px;font-size:13px;border-radius:10px;">Start Hunting →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom-fade"></div>
+  <canvas id="particles"></canvas>
+  <div class="hero-content">
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      <span id="hunt-count-badge">Hunts live now</span>
     </div>
-    <div class="eyebrow">
-      <span class="pulse-dot"></span>
-      Something is being hidden
+    <h1>Real money.<br/><em>Hidden in your city.</em></h1>
+    <p class="hero-sub">Follow cryptic clues. Solve the riddles. Find the treasure first.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="seeker.html">🔍 Start Hunting — It's Free</a>
+      <a class="btn-ghost" href="pirate.html">🏴‍☠️ Hide Treasure</a>
+    </div>
+    <div class="ticker-wrap">
+      <div class="ticker-inner">
+        <span class="ticker-label">Latest win</span>
+        <span class="ticker-text" id="ticker-text">Loading recent winners…</span>
+      </div>
     </div>
   </div>
+</section>
 
-  <h1>The treasure hunt is <em>coming.</em></h1>
-  <p class="sub">Real money. Hidden in your city. Every week.</p>
-  <p class="body">
-    Follow cryptic clues, solve riddles, and be the first to find
-    <strong>real cash prizes</strong> hidden somewhere in your city.
-    A new treasure drops every Friday.
-  </p>
-
-  <div style="margin-bottom:16px;animation:fadeUp 1s .55s cubic-bezier(.16,1,.3,1) both;opacity:0;">
-    <a href="how-it-works.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--dim);font-size:13px;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:1px;transition:color .2s;" onmouseenter="this.style.color='#c9890c'" onmouseleave="this.style.color=''">
-      📜 &nbsp;How it works →
-    </a>
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-val" id="stat-hunts">—</div>
+    <div class="stat-lbl">Hunts posted</div>
   </div>
-
-  <div class="form-wrap" id="form-wrap">
-    <input class="email-input" type="email" id="email" placeholder="your@email.com"/>
-    <button class="submit-btn" onclick="submit()">Notify Me →</button>
+  <div class="stat-item">
+    <div class="stat-val" id="stat-prizes">—</div>
+    <div class="stat-lbl">In prizes</div>
   </div>
-  <div class="confirm" id="confirm">✓ You're on the list — we'll find you.</div>
-
-
-
-  <div class="pills">
-    <div class="pill">💰 Real cash prizes</div>
-    <div class="pill">📜 Daily clue drops</div>
-    <div class="pill">🗺️ Your city</div>
-    <div class="pill">🆓 Free to play</div>
-  </div>
-
-  <div style="margin-bottom:28px;animation:fadeUp 1s .75s cubic-bezier(.16,1,.3,1) both;opacity:0;">
-    <a href="pirate.html" style="display:inline-flex;align-items:center;gap:10px;color:#f0f4ff;font-size:14px;font-weight:700;text-decoration:none;font-family:'Karla',sans-serif;letter-spacing:.5px;text-shadow:0 0 20px rgba(255,255,255,.6);background:#1a2090;border-radius:14px;padding:14px 28px;box-shadow:0 4px 24px rgba(40,50,194,.5);transition:transform .2s,box-shadow .2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 36px rgba(192,57,43,.7)'" onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 24px rgba(192,57,43,.5)'">
-      🏴‍☠️ &nbsp;Become a Pirate — Hide Treasure in Your City
-    </a>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="teaser">
-    <div class="teaser-label">First hunt drops in</div>
-    <div class="countdown" id="countdown">—</div>
-    <div class="countdown-sub">Friday · 8:00 AM</div>
-  </div>
-
-  <div class="footer">
-    <a href="how-it-works.html" style="color:var(--muted);text-decoration:none;margin-right:16px;transition:color .2s;" onmouseenter="this.style.color='#c9890c'" onmouseleave="this.style.color=''">How It Works</a>
-    &nbsp;·&nbsp; finderseek.com &nbsp;·&nbsp; the treasure is already out there
+  <div class="stat-item">
+    <div class="stat-val" id="stat-seekers">—</div>
+    <div class="stat-lbl">Seekers joined</div>
   </div>
 </div>
 
-<script>
-const cur=document.getElementById('cur'),curl=document.getElementById('curl');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curl.style.left=rx+'px';curl.style.top=ry+'px';requestAnimationFrame(a);})();
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">How it works</div>
+      <h2 class="section-title">Three steps to real treasure</h2>
+      <p class="section-sub">No apps, no gimmicks. A pirate hides cash, writes clues, and you go find it.</p>
+    </div>
+    <div class="how-grid reveal">
+      <div class="how-card">
+        <span class="how-num">1</span>
+        <span class="how-icon">🏴‍☠️</span>
+        <div class="how-title">A Pirate hides the loot</div>
+        <p class="how-desc">Local Pirates hide real cash envelopes somewhere in their city — a park, a plaza, a hidden nook. They write cryptic clues and set a hiding radius on the map.</p>
+        <span class="how-tag">Every week</span>
+      </div>
+      <div class="how-card">
+        <span class="how-num">2</span>
+        <span class="how-icon">📜</span>
+        <div class="how-title">Clues drop daily</div>
+        <p class="how-desc">New clues unlock every morning at 8am. Free seekers get the first four clues. Gold members unlock all seven — including a photo clue and a zoomed map.</p>
+        <span class="how-tag">8am daily</span>
+      </div>
+      <div class="how-card">
+        <span class="how-num">3</span>
+        <span class="how-icon">💰</span>
+        <div class="how-title">First finder keeps it all</div>
+        <p class="how-desc">Find the hidden envelope, enter the 6-digit finder code, and the prize is yours. The pirate sends payment via Zelle or Venmo — usually within the hour.</p>
+        <span class="how-tag">Instant payout</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-const canvas=document.getElementById('bg'),ctx=canvas.getContext('2d');
-let W,H,pts=[];
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+<!-- ACTIVE HUNTS -->
+<section id="hunts" class="hunts-section">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">On the map now</div>
+      <h2 class="section-title">Active hunts</h2>
+      <p class="section-sub">Real treasure hidden in real cities right now. Jump in — it's free.</p>
+    </div>
+    <div class="hunts-grid reveal" id="hunts-grid">
+      <div class="hunts-empty">Loading hunts…</div>
+    </div>
+    <div class="hunts-cta reveal">
+      <a class="btn-primary" href="seeker.html">See all hunts →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PIRATE PITCH -->
+<section>
+  <div class="section-inner">
+    <div class="pirate-pitch reveal">
+      <div class="pirate-grid">
+        <div>
+          <div class="section-eyebrow">Become a Pirate</div>
+          <h2 class="section-title" style="font-size:clamp(28px,3.5vw,44px);">Hide treasure.<br/>Build a following.</h2>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-top:12px;max-width:400px;">Hide $20 in an envelope. Watch your city scramble to find it. The thrill of the hunt starts with you.</p>
+          <div class="pirate-perks">
+            <div class="pirate-perk">
+              <div class="perk-icon">📍</div>
+              <div class="perk-text"><strong>You choose the hiding spot</strong><span>Pick anywhere in your city. Set a search radius on the map. Write clues as cryptic or clear as you want.</span></div>
+            </div>
+            <div class="pirate-perk">
+              <div class="perk-icon">🤖</div>
+              <div class="perk-text"><strong>AI writes your clues</strong><span>Enter your location and description — Claude generates six cryptic clues in seconds. Edit them, then publish.</span></div>
+            </div>
+            <div class="pirate-perk">
+              <div class="perk-icon">📊</div>
+              <div class="perk-text"><strong>Your Pirate's Cove dashboard</strong><span>See how many seekers are on your trail, who's Gold tier, and when your hunt ends.</span></div>
+            </div>
+          </div>
+          <div style="margin-top:32px;">
+            <a class="btn-primary" href="pirate.html">🏴‍☠️ Become a Pirate</a>
+          </div>
+        </div>
+        <div class="pirate-visual">
+          <div class="pirate-visual-title">Example pirate dashboard</div>
+          <div class="stat-row"><span class="stat-row-label">Hunts posted</span><span class="stat-row-val">4</span></div>
+          <div class="stat-row"><span class="stat-row-label">Total seekers</span><span class="stat-row-val">138</span></div>
+          <div class="stat-row"><span class="stat-row-label">Gold seekers</span><span class="stat-row-val gold">⭐ 23</span></div>
+          <div class="stat-row"><span class="stat-row-label">Current hunt</span><span class="stat-row-val" style="color:var(--green);font-size:14px;font-family:'DM Mono',monospace;">ACTIVE</span></div>
+          <div style="margin-top:20px;padding:16px;background:rgba(201,137,12,.06);border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">Latest clue drop</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--dim);line-height:1.6;">"Where pigeons gather but never roost, look beneath the iron guardian."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOLD UPSELL -->
+<section class="gold-section">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">FinderSeek Gold</div>
+      <h2 class="section-title">Get ahead of the pack</h2>
+      <p class="section-sub">Free gets you in the game. Gold gets you there first.</p>
+    </div>
+    <div class="pricing-cards reveal">
+      <div class="price-card">
+        <div class="price-tier">Free</div>
+        <div class="price-amt">$0<span>/mo</span></div>
+        <p class="price-desc">Everything you need to join the hunt and win.</p>
+        <div class="price-features">
+          <div class="price-feature"><span class="check">✓</span> 4 clues per hunt</div>
+          <div class="price-feature"><span class="check">✓</span> Hunt map with radius</div>
+          <div class="price-feature"><span class="check">✓</span> Leaderboard access</div>
+          <div class="price-feature"><span class="check">✓</span> Unlimited hunts</div>
+        </div>
+        <a class="btn-ghost" href="seeker.html" style="display:block;text-align:center;padding:12px;">Start free →</a>
+      </div>
+      <div class="price-card gold-card">
+        <div class="price-tier" style="color:var(--gold);">⭐ Gold</div>
+        <div class="price-amt" style="color:var(--gold2);">$9<span>.99/mo</span></div>
+        <p class="price-desc">Three extra clues, a photo clue, and a zoomed map. Win more hunts.</p>
+        <div class="price-features">
+          <div class="price-feature"><span class="check gc">★</span> 7 clues per hunt (3 extra)</div>
+          <div class="price-feature"><span class="check gc">★</span> Exclusive photo clue</div>
+          <div class="price-feature"><span class="check gc">★</span> Zoomed precision map</div>
+          <div class="price-feature"><span class="check">✓</span> Everything in Free</div>
+        </div>
+        <a class="btn-primary" href="pricing.html" style="display:block;text-align:center;padding:12px;">Upgrade to Gold →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WINNERS -->
+<section class="winners-wall">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Hall of fame</div>
+      <h2 class="section-title">Recent winners</h2>
+      <p class="section-sub">Real people. Real money. Hidden in real cities.</p>
+    </div>
+    <div class="winners-grid reveal" id="winners-grid">
+      <p class="winners-empty">Loading recent winners…</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-bg"></div>
+  <div class="final-cta-content reveal">
+    <h2>The treasure is already <em>out there.</em></h2>
+    <p>Someone in your city hid real cash. Right now. Are you going to find it?</p>
+    <div class="final-cta-btns">
+      <a class="btn-primary" href="seeker.html">🔍 Start Hunting — Free</a>
+      <a class="btn-ghost" href="pirate.html">🏴‍☠️ Become a Pirate</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="#">
+    <div class="footer-logo-icon">🔍</div>
+    <div class="footer-logo-text">Finder<em>Seek</em></div>
+  </a>
+  <div class="footer-links">
+    <a class="footer-link" href="how-it-works.html">How It Works</a>
+    <a class="footer-link" href="seeker.html">Hunt</a>
+    <a class="footer-link" href="pirate.html">Become a Pirate</a>
+    <a class="footer-link" href="pricing.html">Pricing</a>
+  </div>
+  <div class="footer-copy">© 2026 FinderSeek · the treasure is out there</div>
+</footer>
+
+<script>
+const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const H={'apikey':KEY,'Authorization':'Bearer '+KEY};
+
+// Nav scroll
+window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>60));
+
+// Particles
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+let W,H2,pts=[];
+function resize(){W=canvas.width=innerWidth;H2=canvas.height=innerHeight;}
 resize();window.addEventListener('resize',resize);
-for(let i=0;i<70;i++)pts.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,r:Math.random()*1.2+.3,a:Math.random()*.35+.08});
+for(let i=0;i<60;i++)pts.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,r:Math.random()*1.2+.3,a:Math.random()*.3+.06});
 (function draw(){
-  ctx.clearRect(0,0,W,H);
-  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-    if(d<120){ctx.beginPath();ctx.strokeStyle=`rgba(201,137,12,${(1-d/120)*.07})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}
-  }
-  pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,137,12,${p.a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;});
+  ctx.clearRect(0,0,W,H2);
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){ctx.beginPath();ctx.strokeStyle=`rgba(201,137,12,${(1-d/130)*.06})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}}
+  pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,137,12,${p.a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H2)p.vy*=-1;});
   requestAnimationFrame(draw);
 })();
 
-function nextFriday8am(){
-  const now=new Date(),d=now.getDay(),daysUntil=(5-d+7)%7||(now.getHours()<8?0:7);
-  const t=new Date(now);t.setDate(now.getDate()+daysUntil);t.setHours(8,0,0,0);return t;
-}
-function tick(){
-  const ms=nextFriday8am()-new Date();
-  if(ms<=0){document.getElementById('countdown').textContent='Any moment now…';return;}
-  const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-  document.getElementById('countdown').textContent=`${String(d).padStart(2,'0')}d  ${String(h).padStart(2,'0')}h  ${String(m).padStart(2,'0')}m  ${String(s).padStart(2,'0')}s`;
-}
-tick();setInterval(tick,1000);
+// Scroll reveal
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const statObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat-item').forEach((it,i)=>setTimeout(()=>it.classList.add('visible'),i*120));statObs.disconnect();}});},{threshold:0.3});
+const sb=document.querySelector('.stats-bar');if(sb)statObs.observe(sb);
 
-async function submit(){
-  const val=document.getElementById('email').value.trim();
-  if(!val||!val.includes('@'))return;
-  const btn=document.querySelector('.submit-btn');
-  btn.textContent='Saving…';
-  btn.disabled=true;
-  try {
-    const res = await fetch(
-      'https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/waitlist',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ email: val })
-      }
-    );
-    if(res.ok || res.status===409){
-      document.getElementById('form-wrap').style.display='none';
-      document.getElementById('confirm').classList.add('show');
+// Helpers
+function formatPrize(val,desc){
+  if(val&&val>=100){return '$'+Math.round(val/100);}
+  if(desc){const m=desc.match(/\$[\d,]+/);if(m)return m[0];}
+  return desc||'Prize';
+}
+function timeAgo(d){
+  if(!d)return 'recently';
+  const s=(Date.now()-new Date(d))/1000;
+  if(s<3600)return Math.round(s/60)+'m ago';
+  if(s<86400)return Math.round(s/3600)+'h ago';
+  return Math.round(s/86400)+'d ago';
+}
+function countUp(id,target,isMoney=false){
+  const el=document.getElementById(id);if(!el||!target)return;
+  const dur=1200,st=performance.now();
+  (function step(now){
+    const p=Math.min((now-st)/dur,1),ease=1-Math.pow(1-p,3),val=Math.round(ease*target);
+    if(isMoney){const d=Math.round(val/100);el.textContent=d>=1000?`$${(d/1000).toFixed(1)}k`:`$${d}`;}
+    else el.textContent=val>=1000?`${(val/1000).toFixed(1)}k`:val;
+    if(p<1)requestAnimationFrame(step);
+  })(st);
+}
+
+// Load live data
+async function loadData(){
+  try{
+    const [huntsRes,endedRes,followersRes]=await Promise.all([
+      fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc&limit=6`,{headers:H}),
+      fetch(`${SB}/rest/v1/hunts?status=eq.ended&order=ends_at.desc&limit=8&select=*,profiles(username,city)`,{headers:H}),
+      fetch(`${SB}/rest/v1/hunt_followers?select=hunt_id`,{headers:H}),
+    ]);
+    const hunts=await huntsRes.json(),ended=await endedRes.json(),followers=await followersRes.json();
+    const seekerMap={};
+    if(Array.isArray(followers))followers.forEach(f=>{seekerMap[f.hunt_id]=(seekerMap[f.hunt_id]||0)+1;});
+
+    const totalHunts=(Array.isArray(hunts)?hunts.length:0)+(Array.isArray(ended)?ended.length:0);
+    const totalPrizes=Array.isArray(ended)?ended.reduce((s,h)=>s+(h.prize_value||0),0):0;
+    const totalSeekers=Object.values(seekerMap).reduce((s,v)=>s+v,0);
+    countUp('stat-hunts',totalHunts);
+    countUp('stat-prizes',totalPrizes,true);
+    countUp('stat-seekers',totalSeekers);
+
+    const liveCount=Array.isArray(hunts)?hunts.length:0;
+    document.getElementById('hunt-count-badge').textContent=liveCount>0?`${liveCount} hunt${liveCount!==1?'s':''} live now`:'New hunt dropping soon';
+
+    // Hunts grid
+    const grid=document.getElementById('hunts-grid');
+    if(Array.isArray(hunts)&&hunts.length>0){
+      grid.innerHTML=hunts.map(h=>`
+        <a class="hunt-card" href="seeker.html">
+          <div class="hunt-city">${h.city||'Unknown city'}</div>
+          <div class="hunt-prize">${formatPrize(h.prize_value,h.prize_desc)}</div>
+          <div class="hunt-desc">${h.prize_desc||'Hidden treasure'}</div>
+          <div class="hunt-footer">
+            <span class="hunt-seekers">👥 ${seekerMap[h.id]||0} seekers</span>
+            <span class="hunt-status active">● LIVE</span>
+          </div>
+        </a>`).join('');
     } else {
-      btn.textContent='Notify Me →';
-      btn.disabled=false;
+      grid.innerHTML=`<div class="hunts-empty" style="grid-column:1/-1">✦ No active hunts right now — check back Friday 8am.</div>`;
     }
-  } catch(e){
-    btn.textContent='Notify Me →';
-    btn.disabled=false;
+
+    // Ticker + winners
+    const withWinner=Array.isArray(ended)?ended.filter(h=>h.winner_id||h.profiles):[];
+    if(withWinner.length>0){
+      const w=withWinner[0];
+      const name=w.profiles?.username||'A lucky hunter';
+      const city=w.profiles?.city||w.city||'their city';
+      document.getElementById('ticker-text').innerHTML=`<span class="ticker-amount">${name}</span> in ${city} found <span class="ticker-amount">${formatPrize(w.prize_value,w.prize_desc)}</span> · ${timeAgo(w.ends_at||w.found_at)}`;
+      document.getElementById('winners-grid').innerHTML=withWinner.slice(0,8).map(h=>{
+        const n=h.profiles?.username||'Hunter',c=h.profiles?.city||h.city||'Unknown';
+        return `<div class="winner-card"><div class="winner-top"><div class="winner-avatar">${n[0].toUpperCase()}</div><div><div class="winner-name">${n}</div><div class="winner-city">${c}</div></div></div><div class="winner-prize">${formatPrize(h.prize_value,h.prize_desc)}</div><div class="winner-ago">${timeAgo(h.ends_at||h.found_at)}</div></div>`;
+      }).join('');
+    } else {
+      document.getElementById('ticker-text').textContent='Be the first treasure hunter in your city!';
+      document.getElementById('winners-grid').innerHTML=`<p class="winners-empty">No winners yet — could be you! 🏆</p>`;
+    }
+  }catch(e){
+    console.error(e);
+    document.getElementById('hunts-grid').innerHTML=`<div class="hunts-empty" style="grid-column:1/-1">Could not load hunts. <a href="seeker.html" style="color:var(--gold)">Browse directly →</a></div>`;
   }
 }
-document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
-</script>
-<script>
+
+// Pro check
 (async()=>{
-  const SB='https://qeiuycuasjkopxfkmggp.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-  const tok=localStorage.getItem('fs_token'); if(!tok) return;
+  const tok=localStorage.getItem('fs_token');if(!tok)return;
   try{
     const ur=await fetch(`${SB}/auth/v1/user`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
-    if(!ur.ok) return;
-    const u=await ur.json(); if(!u?.id) return;
+    if(!ur.ok)return;const u=await ur.json();if(!u?.id)return;
     const pr=await fetch(`${SB}/rest/v1/profiles?id=eq.${u.id}&select=is_pro`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
     const pd=await pr.json();
     const btn=document.getElementById('nav-upgrade-btn');
-    if(btn) btn.style.display=(pd?.[0]?.is_pro)?'none':'inline-flex';
+    if(btn)btn.style.display=(pd?.[0]?.is_pro)?'none':'inline-flex';
   }catch(e){}
 })();
+
+loadData();
 </script>
 </body>
 </html>
