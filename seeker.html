@@ -92,12 +92,32 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 /* HUNTS */
 .main{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 16px 80px;}
 
-.section-banner{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(201,137,12,.04));border:1px solid rgba(34,197,94,.15);border-radius:18px;padding:20px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.section-banner-left{display:flex;align-items:center;gap:14px;}
-.section-banner-icon{font-size:32px;}
-.section-banner-title{font-family:'Bangers',cursive;font-size:30px;letter-spacing:3px;background:linear-gradient(135deg,#4ade80,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.section-banner-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;letter-spacing:.5px;}
-.hbadge{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--green);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+/* COLLAPSIBLE HUNT SECTIONS */
+.hunt-section{margin-bottom:12px;}
+.hunt-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-radius:18px;cursor:pointer;transition:all .25s;user-select:none;border:1px solid transparent;}
+.hunt-section-hdr:hover{transform:translateY(-1px);}
+.hdr-active{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,197,94,.04));border-color:rgba(34,197,94,.2);}
+.hdr-active:hover{border-color:rgba(34,197,94,.4);box-shadow:0 4px 24px rgba(34,197,94,.1);}
+.hdr-scheduled{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,191,36,.02));border-color:rgba(251,191,36,.15);}
+.hdr-scheduled:hover{border-color:rgba(251,191,36,.35);box-shadow:0 4px 24px rgba(251,191,36,.08);}
+.hdr-completed{background:linear-gradient(135deg,rgba(148,163,184,.07),rgba(148,163,184,.02));border-color:rgba(148,163,184,.12);}
+.hdr-completed:hover{border-color:rgba(148,163,184,.3);}
+.hdr-left{display:flex;align-items:center;gap:14px;}
+.hdr-icon{font-size:28px;}
+.hdr-info .hdr-title{font-family:'Bangers',cursive;font-size:26px;letter-spacing:3px;line-height:1;}
+.hdr-active .hdr-title{background:linear-gradient(135deg,#4ade80,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hdr-scheduled .hdr-title{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hdr-completed .hdr-title{color:#94a3b8;}
+.hdr-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;letter-spacing:.5px;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.hdr-badge{border-radius:20px;padding:5px 12px;font-size:11px;font-family:'DM Mono',monospace;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.badge-active{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.badge-scheduled{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24;}
+.badge-completed{background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.2);color:#94a3b8;}
+.hdr-chevron{font-size:18px;color:var(--muted);transition:transform .3s;line-height:1;margin-left:4px;}
+.hunt-section.open .hdr-chevron{transform:rotate(180deg);}
+.hunt-section-body{display:none;padding-top:12px;}
+.hunt-section.open .hunt-section-body{display:block;animation:fadeUp .3s both;}
 
 .search-wrap{position:relative;margin-bottom:12px;}
 .s-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px 14px 44px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s,background .2s;}
@@ -245,22 +265,73 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 </div>
 
 <div class="main" id="hunts">
-  <div class="section-banner f5">
-    <div class="section-banner-left">
-      <div class="section-banner-icon">🎯</div>
-      <div>
-        <div class="section-banner-title">ACTIVE HUNTS</div>
-        <div class="section-banner-sub">Click any hunt to start seeking</div>
-      </div>
-    </div>
-    <div class="hbadge"><span class="dot"></span><span id="hunt-count">—</span>&nbsp;hunts</div>
-  </div>
+  <!-- SEARCH & FILTERS -->
   <div class="search-wrap">
     <span class="s-icon">🔍</span>
-    <input class="s-input" id="search" placeholder="Search city or area…" oninput="renderHunts()"/>
+    <input class="s-input" id="search" placeholder="Search city or area…" oninput="renderAll()"/>
   </div>
   <div class="filters" id="filters"></div>
-  <div class="cards" id="cards"><div class="statebox"><div class="si">⏳</div>Loading hunts…</div></div>
+
+  <!-- ACTIVE HUNTS -->
+  <div class="hunt-section open" id="sec-active">
+    <div class="hunt-section-hdr hdr-active" onclick="toggleSection('sec-active')">
+      <div class="hdr-left">
+        <div class="hdr-icon">🎯</div>
+        <div class="hdr-info">
+          <div class="hdr-title">ACTIVE HUNTS</div>
+          <div class="hdr-sub">Live now — click any hunt to start seeking</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-badge badge-active"><span class="dot"></span><span id="count-active">—</span></div>
+        <div class="hdr-chevron">▼</div>
+      </div>
+    </div>
+    <div class="hunt-section-body">
+      <div class="cards" id="cards-active"><div class="statebox"><div class="si">⏳</div>Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- SCHEDULED HUNTS -->
+  <div class="hunt-section" id="sec-scheduled">
+    <div class="hunt-section-hdr hdr-scheduled" onclick="toggleSection('sec-scheduled')">
+      <div class="hdr-left">
+        <div class="hdr-icon">📅</div>
+        <div class="hdr-info">
+          <div class="hdr-title">SCHEDULED HUNTS</div>
+          <div class="hdr-sub">Coming soon — mark your calendar</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-badge badge-scheduled"><span id="count-scheduled">—</span></div>
+        <div class="hdr-chevron">▼</div>
+      </div>
+    </div>
+    <div class="hunt-section-body">
+      <div class="cards" id="cards-scheduled"></div>
+    </div>
+  </div>
+
+  <!-- COMPLETED HUNTS -->
+  <div class="hunt-section" id="sec-completed">
+    <div class="hunt-section-hdr hdr-completed" onclick="toggleSection('sec-completed')">
+      <div class="hdr-left">
+        <div class="hdr-icon">🏆</div>
+        <div class="hdr-info">
+          <div class="hdr-title">COMPLETED HUNTS</div>
+          <div class="hdr-sub">Past hunts — see who found the treasure</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-badge badge-completed"><span id="count-completed">—</span></div>
+        <div class="hdr-chevron">▼</div>
+      </div>
+    </div>
+    <div class="hunt-section-body">
+      <div class="cards" id="cards-completed"></div>
+    </div>
+  </div>
+
   <div class="gold-divider"></div>
   <div class="pcta">
     <div class="pcta-icon">🏴‍☠️</div>
@@ -279,40 +350,33 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H={'apikey':KEY,'Authorization':'Bearer '+KEY};
-let allHunts=[],activeFilter='all',timers={};
+let allActive=[],allScheduled=[],allCompleted=[],activeFilter='all',timers={};
 function tier(cents){const v=Math.round(cents/100);return v>=75?'platinum':v>=50?'gold':v>=30?'silver':'starter';}
 const TL={platinum:'💎 PLATINUM',gold:'🔥 GOLD',silver:'🥈 SILVER',starter:'🌱 STARTER'};
 const TC={platinum:'tp',gold:'tg',silver:'ts',starter:'tst'};
 const PC={platinum:'pp',gold:'gp',silver:'sp',starter:'stp'};
 function fmt(ms){if(ms<=0)return'Ended';const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);return`${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;}
-async function loadHunts(){
-  try{
-    const r=await fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc`,{headers:H});
-    const hunts=await r.json();
-    if(!Array.isArray(hunts)||!hunts.length){
-      document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No active hunts right now.<br>Check back soon!</div>';
-      ['hunt-count','live-count','stat-hunts'].forEach(id=>document.getElementById(id).textContent='0');return;
-    }
-    const ids=hunts.map(h=>`"${h.id}"`).join(',');
-    const cr=await fetch(`${SB}/rest/v1/clues?select=hunt_id,tier&hunt_id=in.(${ids})`,{headers:H});
-    const clues=cr.ok?await cr.json():[];
-    allHunts=hunts.map(h=>{const hc=clues.filter(c=>c.hunt_id===h.id),t=tier(h.prize_value);return{id:h.id,city:h.city,prizeDesc:h.prize_desc,weekLabel:h.week_label,tier:t,totalClues:hc.length||7,freeClues:hc.filter(c=>c.tier==='free').length,endsAt:new Date(h.ends_at)};});
-    document.getElementById('stat-hunts').textContent=allHunts.length;
-    const cities=[...new Set(allHunts.map(h=>h.city))];
-    document.getElementById('filters').innerHTML=`<button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>`+cities.map(c=>`<button class="fpill" onclick="setFilter('${c.replace(/'/g,"\\'")}',this)">📍 ${c}</button>`).join('');
-    renderHunts();
-  }catch(e){document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">⚠️</div>Could not load hunts.</div>';}
+
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('open');
 }
-function renderHunts(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const list=allHunts.filter(h=>(activeFilter==='all'||h.city===activeFilter)&&(!q||h.city.toLowerCase().includes(q)));
-  document.getElementById('hunt-count').textContent=list.length;
-  document.getElementById('live-count').textContent=allHunts.length;
-  Object.values(timers).forEach(clearInterval);timers={};
-  if(!list.length){document.getElementById('cards').innerHTML='<div class="statebox"><div class="si">🔍</div>No hunts in that area yet.</div>';return;}
-  document.getElementById('cards').innerHTML=list.map((h,i)=>`
-    <a class="hcard" href="hunt.html?id=${h.id}" style="animation:fadeUp .4s ${i*.07}s both;">
-      <div class="hcard-accent"></div>
+
+function buildCards(list, container, type) {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = list.filter(h => (activeFilter==='all'||h.city===activeFilter) && (!q||h.city.toLowerCase().includes(q)));
+  if (!filtered.length) {
+    container.innerHTML = `<div class="statebox"><div class="si">${type==='completed'?'🏆':type==='scheduled'?'📅':'🔍'}</div>${type==='active'?'No active hunts in that area.':type==='scheduled'?'No upcoming hunts yet.':'No completed hunts yet.'}</div>`;
+    return;
+  }
+  container.innerHTML = filtered.map((h,i) => {
+    const isCompleted = type === 'completed';
+    const isScheduled = type === 'scheduled';
+    const accentColor = isCompleted ? 'linear-gradient(90deg,#475569,#64748b,transparent)' : isScheduled ? 'linear-gradient(90deg,#b45309,#fbbf24,transparent)' : 'linear-gradient(90deg,var(--gold),var(--gold2),transparent)';
+    const footBtn = isCompleted ? '<span class="jbtn" style="color:#94a3b8;">View Hunt →</span>' : isScheduled ? '<span class="jbtn" style="color:#fbbf24;">Coming Soon</span>' : '<span class="jbtn">Start Hunting →</span>';
+    const timeLabel = isCompleted ? 'ENDED' : isScheduled ? 'STARTS IN' : 'ENDS IN';
+    const timeVal = isCompleted ? new Date(h.endsAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : fmt(isScheduled ? h.startsAt - Date.now() : h.endsAt - Date.now());
+    return `<a class="hcard${isCompleted?' hcard-done':''}" href="hunt.html?id=${h.id}" style="animation:fadeUp .4s ${i*.07}s both;opacity:${isCompleted?.75:1};">
+      <div class="hcard-accent" style="background:${accentColor}"></div>
       <div class="hcard-body">
         <div class="hcard-top">
           <div class="hcity">${h.city}</div>
@@ -327,17 +391,81 @@ function renderHunts(){
             <div class="clues-lbl"><span>CLUES REVEALED</span><span>${h.freeClues}/${h.totalClues}</span></div>
             <div class="pbar"><div class="pfill" style="width:${(h.freeClues/h.totalClues)*100}%"></div></div>
           </div>
-          <div class="cbox"><div class="clbl">ENDS IN</div><div class="ctime" id="t-${h.id}">${fmt(h.endsAt-Date.now())}</div></div>
+          <div class="cbox"><div class="clbl">${timeLabel}</div><div class="ctime" id="t-${h.id}-${type}">${timeVal}</div></div>
         </div>
       </div>
       <div class="hcard-foot">
         <span class="hcard-foot-city">📍 ${h.city}</span>
-        <span class="jbtn">Start Hunting →</span>
+        ${footBtn}
       </div>
-    </a>`).join('');
-  list.forEach(h=>{timers[h.id]=setInterval(()=>{const el=document.getElementById('t-'+h.id);if(el)el.textContent=fmt(h.endsAt-Date.now());},1000);});
+    </a>`;
+  }).join('');
+  if (type !== 'completed') {
+    filtered.forEach(h => {
+      timers[h.id+'-'+type] = setInterval(() => {
+        const el = document.getElementById(`t-${h.id}-${type}`);
+        if (el) el.textContent = fmt((type==='scheduled' ? h.startsAt : h.endsAt) - Date.now());
+      }, 1000);
+    });
+  }
 }
-function setFilter(city,el){activeFilter=city;document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderHunts();}
+
+async function loadHunts() {
+  try {
+    // Fetch all statuses in parallel
+    const [ra, rs, rc] = await Promise.all([
+      fetch(`${SB}/rest/v1/hunts?status=eq.active&order=prize_value.desc`, {headers:H}),
+      fetch(`${SB}/rest/v1/hunts?status=eq.draft&order=starts_at.asc`, {headers:H}),
+      fetch(`${SB}/rest/v1/hunts?status=eq.ended&order=ends_at.desc&limit=10`, {headers:H}),
+    ]);
+    const [active, scheduled, completed] = await Promise.all([ra.json(), rs.json(), rc.json()]);
+
+    // Fetch clues for all hunts
+    const allIds = [...(active||[]), ...(scheduled||[]), ...(completed||[])].map(h=>`"${h.id}"`).join(',');
+    let clues = [];
+    if (allIds) {
+      const cr = await fetch(`${SB}/rest/v1/clues?select=hunt_id,tier&hunt_id=in.(${allIds})`, {headers:H});
+      clues = cr.ok ? await cr.json() : [];
+    }
+
+    const toHunt = h => {
+      const hc = clues.filter(c=>c.hunt_id===h.id);
+      return { id:h.id, city:h.city, prizeDesc:h.prize_desc, weekLabel:h.week_label, tier:tier(h.prize_value),
+        totalClues:hc.length||7, freeClues:hc.filter(c=>c.tier==='free').length,
+        endsAt:new Date(h.ends_at), startsAt:new Date(h.starts_at) };
+    };
+
+    allActive    = (active||[]).map(toHunt);
+    allScheduled = (scheduled||[]).map(toHunt);
+    allCompleted = (completed||[]).map(toHunt);
+
+    // Build city filter from all hunts
+    const allCities = [...new Set([...allActive,...allScheduled,...allCompleted].map(h=>h.city))];
+    document.getElementById('filters').innerHTML =
+      `<button class="fpill active" onclick="setFilter('all',this)">🌍 All</button>` +
+      allCities.map(c=>`<button class="fpill" onclick="setFilter('${c.replace(/'/g,"\\'")}',this)">📍 ${c}</button>`).join('');
+
+    // Update live count in nav
+    document.getElementById('live-count').textContent = allActive.length;
+    document.getElementById('stat-hunts').textContent = allActive.length;
+
+    renderAll();
+  } catch(e) {
+    document.getElementById('cards-active').innerHTML = '<div class="statebox"><div class="si">⚠️</div>Could not load hunts.</div>';
+  }
+}
+
+function renderAll() {
+  Object.values(timers).forEach(clearInterval); timers = {};
+  buildCards(allActive,    document.getElementById('cards-active'),    'active');
+  buildCards(allScheduled, document.getElementById('cards-scheduled'), 'scheduled');
+  buildCards(allCompleted, document.getElementById('cards-completed'), 'completed');
+  document.getElementById('count-active').textContent    = allActive.filter(h=>(activeFilter==='all'||h.city===activeFilter)).length;
+  document.getElementById('count-scheduled').textContent = allScheduled.filter(h=>(activeFilter==='all'||h.city===activeFilter)).length;
+  document.getElementById('count-completed').textContent = allCompleted.filter(h=>(activeFilter==='all'||h.city===activeFilter)).length;
+}
+
+function setFilter(city,el){activeFilter=city;document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderAll();}
 // ── AUTH ──────────────────────────────────────────────
 const SB_AUTH = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY_AUTH = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
