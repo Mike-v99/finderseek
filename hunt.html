@@ -377,6 +377,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .f4{animation:fadeUp .5s .2s both}
 .f5{animation:fadeUp .5s .25s both}
 .revealed .cnum{animation:glowPulse 2.5s ease-in-out infinite;}
+.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
 </style>
 </head>
 <body>
@@ -387,7 +388,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div><div class="nav-name">Finder<em>Seek</em></div></div>
   </a>
   <div style="display:flex;align-items:center;gap:10px;">
-    <div id="nav-auth-area"></div>
+    <div style="display:flex;align-items:center;gap:10px;"><a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a><div id="nav-auth-area"></div></div>
     <a class="nav-back" href="seeker.html">← All Quests</a>
   </div>
 </nav>
@@ -1221,14 +1222,17 @@ function checkBanned() {
 function updateNavAuth() {
   const area = document.getElementById('nav-auth-area');
   if (!area) return;
+  const upgradeBtn = document.getElementById('nav-upgrade-btn');
   if (currentUser) {
     const name = currentProfile?.username || 'Hunter';
     area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'">
       <div class="nav-avatar">${name[0].toUpperCase()}</div>
       <span>${name}</span>
     </div>`;
+    if (upgradeBtn) upgradeBtn.style.display = currentProfile?.is_pro ? 'none' : 'inline-flex';
   } else {
     area.innerHTML = `<button class="btn-signin" onclick="openAuthModal()">Sign In</button>`;
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
   }
 }
 
