@@ -35,6 +35,35 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:17px;}
 .nav-back{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;transition:color .2s;}
 .nav-back:hover{color:var(--gold);}
+.nav-user{display:flex;align-items:center;gap:7px;cursor:pointer;padding:4px 10px;border-radius:20px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.08);}
+.nav-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0a1a0a;}
+.nav-user span{font-size:11px;font-weight:700;color:#4ade80;font-family:'DM Mono',monospace;}
+.btn-signin{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;}
+.auth-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;}
+.auth-modal.show{display:flex;}
+.auth-box{background:linear-gradient(160deg,rgba(20,16,30,.98),rgba(10,8,16,.99));border:1px solid rgba(34,197,94,.25);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;}
+.auth-close{float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;margin-top:-8px;margin-right:-8px;line-height:1;}
+.auth-logo{text-align:center;margin-bottom:20px;}
+.auth-logo-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#15803d,#22c55e);display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;}
+.auth-title em{color:#4ade80;font-style:italic;}
+.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.5;}
+.auth-tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:3px;margin-bottom:24px;}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--muted);}
+.auth-tab.active{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;}
+.auth-field{margin-bottom:14px;}
+.auth-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:6px;display:block;}
+.auth-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+.auth-input:focus{border-color:rgba(34,197,94,.5);}
+.auth-input::placeholder{color:var(--muted);}
+.auth-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;margin-top:6px;transition:all .2s;}
+.auth-btn-primary{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;box-shadow:0 4px 20px rgba(34,197,94,.35);}
+.auth-btn:hover{transform:translateY(-1px);}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.auth-msg{font-size:13px;padding:10px 14px;border-radius:10px;margin-top:12px;display:none;font-family:'DM Mono',monospace;}
+.auth-msg.show{display:block;}
+.auth-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+.auth-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;}
 .gold-bar{display:none;}
 
 /* HERO SECTION */
@@ -296,8 +325,40 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="nav-icon">🔍</div>
     <div><div class="nav-name">Finder<em>Seek</em></div></div>
   </a>
-  <a class="nav-back" href="seeker.html">← All Quests</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="nav-auth-area"></div>
+    <a class="nav-back" href="seeker.html">← All Quests</a>
+  </div>
 </nav>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal" id="auth-modal">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuthModal()">×</button>
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔍</div>
+      <div class="auth-title">Finder<em>Seek</em></div>
+      <p class="auth-sub">Sign in to claim prizes & join the leaderboard.</p>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+      <div class="auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+    </div>
+    <div id="signup-fields">
+      <div class="auth-field"><label class="auth-label">Hunter Name</label><input class="auth-input" id="auth-username" placeholder="e.g. TreasureHunter99" maxlength="20"/></div>
+      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="auth-email-signup" type="email" placeholder="you@email.com"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="auth-pass-signup" type="password" placeholder="At least 8 characters"/></div>
+      <button class="auth-btn auth-btn-primary" id="btn-signup" onclick="doSignup()">Join the Hunt 🔍</button>
+    </div>
+    <div id="login-fields" style="display:none;">
+      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="auth-email-login" type="email" placeholder="you@email.com"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="auth-pass-login" type="password" placeholder="Your password"/></div>
+      <button class="auth-btn auth-btn-primary" id="btn-login" onclick="doLogin()">Sign In →</button>
+    </div>
+    <div class="auth-msg auth-error" id="auth-error"></div>
+    <div class="auth-msg auth-success" id="auth-success"></div>
+  </div>
+</div>
 
 
 <!-- HERO -->
@@ -767,6 +828,12 @@ async function submitClaim() {
   if (code.length < 6) { showClaimError('⚠️ Enter all 6 digits'); return; }
   if (!hunt) { showClaimError('⚠️ Hunt not loaded yet'); return; }
 
+  // Require sign-in to claim
+  if (!currentUser) {
+    openAuthModal(() => submitClaim());
+    return;
+  }
+
   const btn = document.getElementById('btn-submit-claim');
   btn.disabled = true;
   btn.textContent = '⏳ Checking…';
@@ -807,6 +874,114 @@ async function submitClaim() {
     btn.disabled = false; btn.textContent = '🏆 CLAIM MY PRIZE';
   }
 }
+
+// ── AUTH ──────────────────────────────────────────────
+let currentUser = null, currentProfile = null;
+function getToken(){ return localStorage.getItem('fs_token'); }
+function setToken(t){ localStorage.setItem('fs_token', t); }
+function clearToken(){ localStorage.removeItem('fs_token'); }
+
+window.addEventListener('load', async () => {
+  try {
+    const r = await fetch(`${SB}/auth/v1/user`, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
+    });
+    if (r.ok) { const u = await r.json(); if (u?.id) { currentUser = u; await loadProfile(u.id); } }
+  } catch(e) {}
+  updateNavAuth();
+});
+
+async function loadProfile(uid) {
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() }
+    });
+    const d = await r.json();
+    if (d?.length) currentProfile = d[0];
+  } catch(e) {}
+}
+
+function updateNavAuth() {
+  const area = document.getElementById('nav-auth-area');
+  if (!area) return;
+  if (currentUser) {
+    const name = currentProfile?.username || 'Hunter';
+    area.innerHTML = `<div class="nav-user" onclick="doSignOut()">
+      <div class="nav-avatar">${name[0].toUpperCase()}</div>
+      <span>${name}</span>
+    </div>`;
+  } else {
+    area.innerHTML = `<button class="btn-signin" onclick="openAuthModal()">Sign In</button>`;
+  }
+}
+
+function openAuthModal(cb){ window._authCb=cb||null; document.getElementById('auth-modal').classList.add('show'); }
+function closeAuthModal(){ document.getElementById('auth-modal').classList.remove('show'); }
+function switchAuthTab(tab) {
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('signup-fields').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('login-fields').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+function showAuthError(msg){ const e=document.getElementById('auth-error'); e.textContent=msg; e.classList.add('show'); document.getElementById('auth-success').classList.remove('show'); }
+function showAuthSuccess(msg){ const e=document.getElementById('auth-success'); e.textContent=msg; e.classList.add('show'); document.getElementById('auth-error').classList.remove('show'); }
+
+async function doSignup() {
+  const username = document.getElementById('auth-username').value.trim();
+  const email    = document.getElementById('auth-email-signup').value.trim();
+  const pass     = document.getElementById('auth-pass-signup').value;
+  if (!username) return showAuthError('Please choose a Hunter name.');
+  if (!email) return showAuthError('Please enter your email.');
+  if (pass.length < 8) return showAuthError('Password must be at least 8 characters.');
+  const btn = document.getElementById('btn-signup');
+  btn.disabled=true; btn.textContent='Creating account…';
+  try {
+    const r = await fetch(`${SB}/auth/v1/signup`, {
+      method:'POST', headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pass, data: { username } })
+    });
+    const d = await r.json();
+    if (d.error) { showAuthError(d.error.message || JSON.stringify(d.error)); btn.disabled=false; btn.textContent='Join the Hunt 🔍'; return; }
+    if (d.access_token) {
+      setToken(d.access_token); currentUser = d.user;
+      await loadProfile(d.user.id); updateNavAuth();
+      showAuthSuccess('✅ Welcome, ' + username + '!');
+      setTimeout(() => { closeAuthModal(); if(window._authCb) window._authCb(); }, 1500);
+    } else {
+      showAuthSuccess('📧 Check your email to confirm, then sign in!');
+      setTimeout(() => switchAuthTab('login'), 2500);
+    }
+  } catch(e) { showAuthError('Something went wrong.'); }
+  btn.disabled=false; btn.textContent='Join the Hunt 🔍';
+}
+
+async function doLogin() {
+  const email = document.getElementById('auth-email-login').value.trim();
+  const pass  = document.getElementById('auth-pass-login').value;
+  if (!email || !pass) return showAuthError('Please enter email and password.');
+  const btn = document.getElementById('btn-login');
+  btn.disabled=true; btn.textContent='Signing in…';
+  try {
+    const r = await fetch(`${SB}/auth/v1/token?grant_type=password`, {
+      method:'POST', headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pass })
+    });
+    const d = await r.json();
+    if (d.error) { showAuthError(d.error_description || 'Login failed'); btn.disabled=false; btn.textContent='Sign In →'; return; }
+    setToken(d.access_token); currentUser = d.user;
+    await loadProfile(d.user.id); updateNavAuth();
+    showAuthSuccess('✅ Welcome back, ' + (currentProfile?.username || 'Hunter') + '!');
+    setTimeout(() => { closeAuthModal(); if(window._authCb) window._authCb(); }, 1500);
+  } catch(e) { showAuthError('Error: ' + e.message); }
+  btn.disabled=false; btn.textContent='Sign In →';
+}
+
+async function doSignOut() {
+  clearToken(); currentUser=null; currentProfile=null; updateNavAuth();
+}
+// ── END AUTH ──────────────────────────────────────────
 
 loadHunt();
 </script>
