@@ -503,15 +503,32 @@ async function loadProfile(uid) {
       headers: { 'apikey': KEY_AUTH, 'Authorization': 'Bearer ' + getToken() }
     });
     const d = await r.json();
-    if (d?.length) currentProfile = d[0];
+    if (d?.length) { currentProfile = d[0]; checkBanned(); }
   } catch(e) {}
+}
+
+function checkBanned() {
+  if (!currentProfile?.is_banned) return;
+  // Hide all "Hide Treasure" buttons
+  document.querySelectorAll('.btn-hide, .btn-cta.btn-hide').forEach(b => b.style.display = 'none');
+  // Replace nav auth area with suspended badge
+  const area = document.getElementById('nav-auth-area');
+  if (area) area.innerHTML = `<span style="font-size:11px;color:#f87171;font-family:'DM Mono',monospace;border:1px solid rgba(239,68,68,.3);border-radius:20px;padding:4px 12px;background:rgba(239,68,68,.08);">🚫 Account Suspended</span>`;
+  // Show a dismissible banner at the top
+  if (!document.getElementById('ban-banner')) {
+    const banner = document.createElement('div');
+    banner.id = 'ban-banner';
+    banner.style.cssText = 'position:relative;z-index:50;background:rgba(239,68,68,.1);border-bottom:1px solid rgba(239,68,68,.25);padding:10px 24px;text-align:center;font-size:13px;font-family:\'DM Mono\',monospace;color:#fca5a5;';
+    banner.innerHTML = `🚫 Your account has been suspended. You can browse hunts but cannot hide treasure or claim prizes.${currentProfile.admin_note ? ` <em style="opacity:.7">Reason: ${currentProfile.admin_note}</em>` : ''}`;
+    document.body.insertBefore(banner, document.body.firstChild);
+  }
 }
 
 function updateNavAuth() {
   const area = document.getElementById('nav-auth-area');
   if (currentUser) {
     const name = currentProfile?.username || 'Hunter';
-    area.innerHTML = `<div class="nav-user" onclick="doSignOut()">
+    area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'">
       <div class="nav-avatar">${name[0].toUpperCase()}</div>
       <span>${name}</span>
     </div>`;
