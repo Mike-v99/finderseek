@@ -70,16 +70,20 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .hero-sub{font-size:16px;color:var(--dim);margin-top:18px;line-height:1.8;max-width:360px;margin-inline:auto;}
 .hero-sub strong{color:var(--cream);font-weight:700;}
 
-.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
-.btn-cta{display:flex;flex-direction:column;align-items:center;padding:16px 28px;border-radius:14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;border:none;font-family:'Karla',sans-serif;transition:transform .2s,box-shadow .2s;min-width:150px;position:relative;overflow:hidden;}
-.btn-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);pointer-events:none;}
-.btn-cta span{font-size:16px;font-weight:800;margin-top:4px;letter-spacing:0;text-transform:none;}
-.btn-hide{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;box-shadow:0 6px 28px rgba(26,32,144,.5);}
-.btn-hide:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,32,144,.7);}
-.btn-find{background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.5);}
-.btn-find:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(201,137,12,.7);}
-.btn-how{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#f3e8ff;border:1px solid rgba(167,139,250,.3);box-shadow:0 6px 28px rgba(124,58,237,.5);}
-.btn-how:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,.7);}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
+.btn-cta{display:flex;flex-direction:column;align-items:flex-start;padding:20px 24px;border-radius:20px;cursor:pointer;text-decoration:none;border:1px solid transparent;font-family:'Karla',sans-serif;transition:all .25s;min-width:160px;position:relative;overflow:hidden;}
+.btn-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);}
+.btn-cta-eyebrow{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;opacity:.65;margin-bottom:10px;font-family:'DM Mono',monospace;}
+.btn-cta-main{display:flex;align-items:center;gap:9px;font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;line-height:1;}
+.btn-cta-icon{font-size:22px;filter:drop-shadow(0 2px 6px currentColor);}
+.btn-cta-arrow{margin-left:auto;font-size:16px;opacity:.5;transition:transform .25s,opacity .25s;padding-top:2px;}
+.btn-cta:hover .btn-cta-arrow{transform:translateX(4px);opacity:1;}
+.btn-hide{background:linear-gradient(145deg,#1e2db8,#1a20a0);color:#c8d0ff;border-color:rgba(100,120,255,.25);box-shadow:0 8px 32px rgba(26,32,144,.45),inset 0 1px 0 rgba(255,255,255,.08);}
+.btn-hide:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(26,32,144,.65),inset 0 1px 0 rgba(255,255,255,.12);border-color:rgba(100,120,255,.5);}
+.btn-find{background:linear-gradient(145deg,#b07a00,#c9890c);color:#fff8e8;border-color:rgba(255,200,60,.2);box-shadow:0 8px 32px rgba(201,137,12,.45),inset 0 1px 0 rgba(255,255,255,.12);}
+.btn-find:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(201,137,12,.65),inset 0 1px 0 rgba(255,255,255,.18);border-color:rgba(255,200,60,.45);}
+.btn-how{background:linear-gradient(145deg,#4a1a9e,#6d28d9);color:#ede0ff;border-color:rgba(167,139,250,.2);box-shadow:0 8px 32px rgba(109,40,217,.45),inset 0 1px 0 rgba(255,255,255,.08);}
+.btn-how:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(109,40,217,.65),inset 0 1px 0 rgba(255,255,255,.12);border-color:rgba(167,139,250,.45);}
 
 .stat-strip{display:flex;justify-content:center;margin-top:40px;max-width:480px;margin-inline:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
 .stat-item{flex:1;text-align:center;padding:16px 8px;position:relative;}
@@ -252,9 +256,18 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   <h1 class="f1">Real Money.<span class="line2">Find Local Treasures.</span></h1>
   <p class="hero-sub f2">Join local treasure hunts.<br><strong>Hide the treasure or be the seeker!</strong></p>
   <div class="cta-row f3">
-    <a href="pirate.html" class="btn-cta btn-hide">I WANT TO <span>🏴‍☠️ Hide Treasure</span></a>
-    <a href="#hunts" class="btn-cta btn-find">I WANT TO <span>🔍 Find Treasure</span></a>
-    <a href="how-it-works.html" class="btn-cta btn-how">LEARN <span>📜 How It Works</span></a>
+    <a href="pirate.html" class="btn-cta btn-hide">
+      <div class="btn-cta-eyebrow">I want to</div>
+      <div class="btn-cta-main"><span class="btn-cta-icon">🏴‍☠️</span>Hide Treasure<span class="btn-cta-arrow">→</span></div>
+    </a>
+    <a href="#hunts" class="btn-cta btn-find">
+      <div class="btn-cta-eyebrow">I want to</div>
+      <div class="btn-cta-main"><span class="btn-cta-icon">🔍</span>Find Treasure<span class="btn-cta-arrow">→</span></div>
+    </a>
+    <a href="how-it-works.html" class="btn-cta btn-how">
+      <div class="btn-cta-eyebrow">Learn</div>
+      <div class="btn-cta-main"><span class="btn-cta-icon">📜</span>How It Works<span class="btn-cta-arrow">→</span></div>
+    </a>
   </div>
   <div class="stat-strip f4">
     <div class="stat-item"><span class="stat-num" id="stat-hunts">—</span><span class="stat-lbl">Active Hunts</span></div>
