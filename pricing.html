@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinderSeek Gold — Go Pro</title>
+<title>FinderSeek — My Profile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Karla:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Karla:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;
   --dim:#c8b48a;--muted:#8a7a5a;--green:#22c55e;
-  --card:rgba(12,10,18,.95);--border:rgba(201,137,12,.25);
+  --card:rgba(12,10,18,.92);--border:rgba(201,137,12,.2);
+  --red:#ef4444;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;overflow-x:hidden;}
+html{overflow-x:hidden;}
 body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;width:100%;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.08;}
+  background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.07;}
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   background-size:180px;opacity:.5;}
 
-/* NAV — same pattern as profile page */
+/* NAV */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
   padding:14px 16px;background:rgba(6,5,10,.92);
   border-bottom:1px solid rgba(201,137,12,.15);overflow:hidden;}
@@ -31,61 +32,123 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .nav-brand em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
 .nav-back-arrow{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1px solid rgba(201,137,12,.25);color:var(--dim);text-decoration:none;transition:all .2s;flex-shrink:0;}
 .nav-back-arrow:hover{border-color:var(--gold);color:var(--cream);background:rgba(201,137,12,.08);}
-.nav-upgrade-pill{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}
-.nav-upgrade-pill:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
 
-/* WRAP */
-.wrap{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:60px 24px 100px;overflow-x:hidden;}
+/* AUTH GATE */
+.auth-gate{position:fixed;inset:0;z-index:200;background:rgba(6,5,10,.97);display:flex;align-items:center;justify-content:center;padding:20px;}
+.auth-gate-box{background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid var(--border);border-radius:24px;padding:40px 36px;max-width:380px;width:100%;text-align:center;}
+.auth-gate-icon{font-size:48px;margin-bottom:16px;}
+.auth-gate-title{font-family:'Bangers',cursive;font-size:34px;letter-spacing:3px;margin-bottom:8px;}
+.auth-gate-sub{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px;line-height:1.7;}
+.btn-gate-signin{display:inline-block;background:linear-gradient(135deg,#b45309,var(--gold2));color:#0a0800;border:none;border-radius:12px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;transition:all .2s;}
+.btn-gate-signin:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,137,12,.4);}
 
-/* HERO */
-.pricing-hero{text-align:center;margin-bottom:60px;}
-.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.3);border-radius:20px;padding:6px 18px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:24px;}
-.hero-title{font-family:'Bangers',cursive;font-size:clamp(52px,10vw,90px);letter-spacing:4px;line-height:.95;margin-bottom:20px;}
-.hero-title .line1{display:block;color:var(--cream);}
-.hero-title .line2{display:block;background:linear-gradient(135deg,#b45309,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:17px;color:var(--dim);line-height:1.7;max-width:500px;margin:0 auto 32px;}
+/* AUTH MODAL */
+.auth-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(6,5,10,.88);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:20px;}
+.auth-modal.show{display:flex;}
+.auth-box{background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(34,197,94,.25);border-radius:24px;padding:36px 32px;max-width:400px;width:100%;position:relative;}
+.auth-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);}
+.auth-tab{flex:1;padding:10px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;font-family:'Karla',sans-serif;letter-spacing:.5px;margin-bottom:-1px;}
+.auth-tab.active{color:var(--green);border-color:var(--green);}
+.auth-field{margin-bottom:14px;}
+.auth-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;display:block;margin-bottom:6px;}
+.auth-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+.auth-input:focus{border-color:rgba(34,197,94,.4);}
+.auth-input::placeholder{color:var(--muted);}
+.auth-btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;margin-top:4px;transition:all .2s;}
+.auth-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,197,94,.3);}
+.auth-msg{font-size:12px;font-family:'DM Mono',monospace;margin-top:10px;text-align:center;}
+.auth-error{color:#fca5a5;}.auth-success{color:#4ade80;}
+#signup-fields{display:block;}
 
-/* GOLD RADIANCE */
-.gold-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center top,rgba(201,137,12,.12) 0%,transparent 70%);pointer-events:none;z-index:0;}
+/* MAIN */
+.wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:40px 24px 80px;overflow-x:hidden;}
 
-/* CARD */
-.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:48px;}
-.pcard{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:32px 28px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;}
-.pcard.featured{border-color:rgba(201,137,12,.4);box-shadow:0 0 0 1px rgba(201,137,12,.2),0 20px 60px rgba(201,137,12,.12);}
-.pcard.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),transparent);}
-.pcard:hover{transform:translateY(-3px);}
-.pcard-badge{display:inline-block;background:linear-gradient(135deg,#b45309,#e8a820);color:#0a0800;border-radius:20px;padding:4px 14px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:16px;}
-.pcard-badge.free{background:rgba(255,255,255,.1);color:var(--muted);}
-.pcard-name{font-family:'Bangers',cursive;font-size:32px;letter-spacing:3px;margin-bottom:6px;}
-.pcard-price{font-family:'Bangers',cursive;font-size:52px;letter-spacing:2px;line-height:1;margin-bottom:4px;}
-.pcard-price sup{font-size:22px;vertical-align:super;}
-.pcard-price span{font-size:16px;color:var(--muted);font-family:'Karla',sans-serif;font-weight:600;letter-spacing:0;}
-.pcard-cycle{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px;}
-.pcard-divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:20px 0;}
-.pcard-role{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;margin-top:16px;}
-.pcard-role:first-of-type{margin-top:0;}
-.feat-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
-.feat-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--dim);line-height:1.5;}
-.feat-list li .fi{font-size:14px;flex-shrink:0;margin-top:1px;}
-.feat-list li.muted{opacity:.45;}
-.feat-list li.muted .fi{filter:grayscale(1);}
-.btn-go-gold{width:100%;background:linear-gradient(135deg,#92400e,#b45309,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;transition:all .25s;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-top:24px;}
-.btn-go-gold:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,137,12,.5);}
-.btn-go-gold:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-.btn-free{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:14px;padding:15px;font-size:16px;font-weight:700;cursor:default;font-family:'Karla',sans-serif;margin-top:24px;}
-.current-badge{width:100%;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:14px;padding:15px;font-size:14px;font-weight:800;font-family:'DM Mono',monospace;margin-top:24px;text-align:center;}
+/* PROFILE HERO */
+.profile-hero{display:flex;align-items:center;gap:24px;margin-bottom:32px;}
+.profile-avatar-big{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-family:'Bangers',cursive;font-size:36px;color:#0a1a0a;flex-shrink:0;box-shadow:0 0 0 4px rgba(34,197,94,.15);}
+.profile-hero-info{min-width:0;}
+.profile-hero-name{font-family:'Bangers',cursive;font-size:38px;letter-spacing:3px;line-height:1;margin-bottom:4px;word-break:break-all;overflow-wrap:break-word;}
+.profile-hero-meta{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;}
+.profile-hero-meta span{color:var(--dim);}
+.profile-stats{display:flex;gap:20px;margin-top:10px;}
+.phstat{text-align:center;}
+.phstat-val{font-family:'Bangers',cursive;font-size:26px;letter-spacing:1px;color:var(--gold);line-height:1;}
+.phstat-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;}
 
-/* FAQ */
-.faq-section{margin-top:60px;}
-.faq-title{font-family:'Bangers',cursive;font-size:28px;letter-spacing:3px;text-align:center;margin-bottom:28px;color:var(--cream);}
-.faq-list{display:flex;flex-direction:column;gap:10px;max-width:640px;margin:0 auto;}
-.faq-item{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;}
-.faq-q{padding:16px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s;}
-.faq-q:hover{background:rgba(255,255,255,.03);}
-.faq-q .chevron{font-size:12px;color:var(--muted);transition:transform .2s;}
-.faq-item.open .chevron{transform:rotate(180deg);}
-.faq-a{display:none;padding:0 20px 16px;font-size:13px;color:var(--dim);line-height:1.8;font-family:'DM Mono',monospace;}
-.faq-item.open .faq-a{display:block;}
+/* ── TABS ─────────────────────────────────────────────── */
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;}
+.tab{padding:13px 8px;text-align:center;font-size:12px;font-weight:800;letter-spacing:.8px;
+  border-radius:14px;border:2px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);
+  font-family:'Karla',sans-serif;text-transform:uppercase;cursor:pointer;color:var(--muted);
+  transition:all .2s;user-select:none;}
+.tab:hover{border-color:rgba(255,255,255,.14);color:var(--dim);}
+.tab.active{color:var(--cream);border-color:rgba(201,137,12,.35);
+  background:linear-gradient(135deg,rgba(201,137,12,.15),rgba(201,137,12,.05));}
+.tab-icon{font-size:18px;display:block;margin-bottom:4px;}
+
+/* Pirate tab special styling */
+.tab-pirate-btn{color:#fbbf24!important;border-color:rgba(251,191,36,.3)!important;
+  background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(251,191,36,.03))!important;}
+.tab-pirate-btn:hover{border-color:rgba(251,191,36,.5)!important;}
+.tab-pirate-btn.active{background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(251,191,36,.08))!important;
+  border-color:#fbbf24!important;
+  box-shadow:0 0 22px rgba(251,191,36,.25),inset 0 1px 0 rgba(251,191,36,.18)!important;}
+
+/* ── TAB PANELS ───────────────────────────────────────── */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:28px;margin-bottom:20px;overflow:hidden;}
+.section-title{font-family:'Bangers',cursive;font-size:20px;letter-spacing:2px;color:var(--cream);margin-bottom:4px;}
+.section-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:22px;}
+
+/* FORM FIELDS */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.field-row.single{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.field-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;}
+.field-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s;}
+.field-input:focus{border-color:rgba(201,137,12,.45);}
+.field-input::placeholder{color:var(--muted);}
+.field-hint{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.btn-save{background:linear-gradient(135deg,#b45309,var(--gold2));color:#0a0800;border:none;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;margin-top:6px;}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,137,12,.35);}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* NOTIFICATION TOGGLES */
+.notif-list{display:flex;flex-direction:column;gap:0;}
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);gap:12px;}
+.notif-row:last-child{border-bottom:none;}
+.notif-left{min-width:0;flex:1;}
+.notif-title{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:2px;}
+.notif-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* TOGGLE SWITCH */
+.toggle{position:relative;width:46px;height:26px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:26px;cursor:pointer;transition:background .2s;border:1px solid rgba(255,255,255,.12);}
+.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle input:checked + .toggle-slider{background:var(--green);border-color:var(--green);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);}
+
+/* HUNT HISTORY */
+.hunt-history{display:flex;flex-direction:column;gap:10px;}
+.hh-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;transition:border-color .2s;}
+.hh-card:hover{border-color:rgba(201,137,12,.2);}
+.hh-left{min-width:0;flex:1;}
+.hh-title{font-size:14px;font-weight:700;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hh-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.hh-badge{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;border-radius:20px;padding:3px 10px;flex-shrink:0;white-space:nowrap;}
+.hh-won{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.hh-played{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.hh-empty{text-align:center;padding:32px;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+
+/* DANGER ZONE */
+.danger-zone{border-color:rgba(239,68,68,.15);}
+.btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+.btn-danger:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);}
 
 /* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,16,30,.97);border:1px solid var(--border);border-radius:14px;padding:12px 24px;font-size:13px;font-family:'DM Mono',monospace;color:var(--cream);z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
@@ -93,106 +156,233 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .toast.success{border-color:rgba(34,197,94,.4);color:#4ade80;}
 .toast.error{border-color:rgba(239,68,68,.4);color:#fca5a5;}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeUp .5s both;}
+/* PIRATE DASHBOARD */
+.pirate-dash{max-width:680px;margin:0 auto;padding:0 0 40px;}
+.pirate-header{display:flex;align-items:center;gap:14px;padding:20px 0 18px;border-bottom:1px solid rgba(201,137,12,.18);margin-bottom:22px;}
+.pirate-header-icon{width:52px;height:52px;border-radius:14px;flex-shrink:0;background:linear-gradient(135deg,#92400e,#b45309);border:1px solid rgba(232,168,32,.3);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 20px rgba(201,137,12,.25),inset 0 1px 0 rgba(232,168,32,.2);}
+.pirate-header-title{font-family:'Bangers',cursive;font-size:32px;font-weight:400;letter-spacing:4px;color:var(--gold2);line-height:1;text-shadow:0 0 20px rgba(232,168,32,.3);}
+.pirate-header-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.pirate-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.pirate-pstat{background:rgba(8,6,14,.9);border-radius:14px;padding:14px 16px;border:1px solid rgba(255,255,255,.07);transition:border-color .2s;}
+.pirate-pstat:hover{border-color:rgba(201,137,12,.25);}
+.pirate-pstat-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.pirate-pstat-val{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;line-height:1;color:var(--cream);}
+.pirate-pstat-val.gold{color:var(--gold2);text-shadow:0 0 16px rgba(232,168,32,.35);}
+.pirate-pstat-val.green{color:var(--green);text-shadow:0 0 16px rgba(34,197,94,.3);}
+.pirate-pstat-note{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;}
+.pirate-sec-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.pirate-sec-title{font-family:'Bangers',cursive;font-size:22px;font-weight:400;letter-spacing:3px;color:var(--cream);}
+.pirate-filter{display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:999px;padding:3px;}
+.pf-pill{background:transparent;border:none;border-radius:999px;padding:5px 14px;cursor:pointer;transition:background .15s,color .15s;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.pf-pill.active{background:linear-gradient(135deg,#92400e,#c9890c);color:#fff8e6;font-weight:600;}
+.pf-pill:hover:not(.active){color:var(--dim);}
+.pirate-hunt-list{display:flex;flex-direction:column;gap:10px;}
+.pirate-hcard{background:rgba(8,6,14,.95);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.07);transition:border-color .2s,transform .15s;}
+.pirate-hcard:hover{border-color:rgba(201,137,12,.3);transform:translateY(-1px);}
+.pirate-hcard.status-active{border-left:3px solid #4ade80;}
+.pirate-hcard.status-ended{border-left:3px solid var(--gold);}
+.pirate-hcard.status-draft{border-left:3px solid rgba(138,122,90,.5);}
+.pirate-hcard.status-pending{border-left:3px solid #fbbf24;}
+.pirate-hcard.status-scheduled{border-left:3px solid #93c5fd;}
+.pirate-hcard-inner{padding:16px 18px;}
+.pirate-hcard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.pirate-hcard-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--cream);line-height:1.2;}
+.pirate-hcard-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.5px;margin-top:3px;}
+.pstatus{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:999px;flex-shrink:0;font-weight:600;white-space:nowrap;}
+.pstatus.active{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80;}
+.pstatus.ended{background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.3);color:var(--gold2);}
+.pstatus.draft{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.pstatus.pending{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.pstatus.scheduled{background:rgba(147,197,253,.08);border:1px solid rgba(147,197,253,.3);color:#93c5fd;}
+.pirate-seeker-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.pscount{display:flex;align-items:center;gap:6px;}
+.pscount-num{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;line-height:1;color:var(--cream);}
+.pscount-num.gold{color:var(--gold2);}
+.pscount-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.pscount-sep{width:1px;height:24px;background:rgba(255,255,255,.08);}
+.pgold-bar-wrap{margin-top:10px;display:flex;align-items:center;gap:10px;}
+.pgold-track{flex:1;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;}
+.pgold-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#b45309,#fbbf24);transition:width .7s cubic-bezier(.34,1.56,.64,1);}
+.pgold-pct{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);white-space:nowrap;}
+.pirate-winner-row{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.pirate-winner-name{color:#4ade80;font-weight:600;}
+.pirate-view-link{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:3px 0;opacity:.7;transition:opacity .15s;}
+.pirate-view-link:hover{opacity:1;}
+.pirate-empty{background:rgba(8,6,14,.8);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:48px 24px;text-align:center;color:var(--muted);}
+.pirate-empty-icon{font-size:40px;margin-bottom:14px;opacity:.4;}
+.pirate-empty-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--dim);margin-bottom:6px;}
+.pirate-empty-sub{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;}
+.pirate-cta{margin-top:22px;padding:18px 20px;background:rgba(201,137,12,.05);border:1px dashed rgba(201,137,12,.22);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.pirate-cta-text{font-size:13px;color:var(--dim);line-height:1.5;}
+.pirate-cta-text strong{color:var(--cream);display:block;margin-bottom:2px;font-size:14px;}
+.btn-hide-treasure{background:linear-gradient(135deg,#92400e,#c9890c);color:#fff8e6;border:none;border-radius:12px;padding:11px 22px;font-family:'Karla',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.5px;white-space:nowrap;box-shadow:0 4px 20px rgba(201,137,12,.3);transition:transform .15s,box-shadow .15s;}
+.btn-hide-treasure:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,137,12,.5);}
+.pirate-skeleton{display:flex;flex-direction:column;gap:10px;}
+.pirate-skel-card{background:rgba(8,6,14,.8);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:18px;animation:pskel 1.5s ease-in-out infinite;}
+.skel-ln{height:10px;border-radius:4px;background:rgba(255,255,255,.06);margin-bottom:8px;}
+.skel-ln.w60{width:60%;}.skel-ln.w35{width:35%;}.skel-ln.w80{width:80%;}
+@keyframes pskel{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUpCard{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-@media(max-width:600px){
-  .pricing-grid{grid-template-columns:1fr;}
-  .hero-title{font-size:52px;}
+.fade-in{animation:fadeUp .35s both;}
+
+@media(max-width:560px){
   .nav-brand{display:none;}
   .nav-icon{width:30px;height:30px;font-size:14px;}
-  .nav-upgrade-pill{font-size:10px;padding:6px 12px;}
+  .btn-upgrade{font-size:10px;padding:6px 12px;}
   .nav-back-arrow{width:34px;height:34px;}
   nav{padding:10px 12px;}
-  .pcard{padding:24px 20px;}
+  .field-row{grid-template-columns:1fr;}
+  .profile-hero{flex-direction:column;text-align:center;}
+  .profile-hero-name{font-size:28px;}
+  .profile-stats{justify-content:center;}
+  .tabs{grid-template-columns:1fr 1fr 1fr;}
+  .pirate-stats{grid-template-columns:1fr 1fr;}
+  .pirate-stats .pirate-pstat:last-child{grid-column:1/-1;}
+  .section{padding:20px 16px;}
+  .pirate-hcard-top{flex-direction:column;gap:8px;}
 }
+.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
 </style>
 </head>
 <body>
+
+<!-- AUTH GATE -->
+<div class="auth-gate" id="auth-gate" style="display:none;">
+  <div class="auth-gate-box">
+    <div class="auth-gate-icon">🔍</div>
+    <div class="auth-gate-title">Sign In</div>
+    <div class="auth-gate-sub">You need an account to view your profile.</div>
+    <button class="btn-gate-signin" onclick="openAuthModal()">Sign In / Create Account</button>
+    <div style="margin-top:16px;"><a href="index.html" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">← Back to hunts</a></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal" id="auth-modal">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuthModal()">×</button>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+      <div class="auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+    </div>
+    <div id="signup-fields">
+      <div class="auth-field"><label class="auth-label">Username</label><input class="auth-input" id="su-username" placeholder="YourHandle" autocomplete="username"/></div>
+      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="su-email" type="email" placeholder="you@example.com"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="su-pass" type="password" placeholder="Min 6 characters"/></div>
+      <button class="auth-btn" onclick="doSignUp()">Create Account →</button>
+    </div>
+    <div id="login-fields" style="display:none;">
+      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="li-email" type="email" placeholder="you@example.com"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="li-pass" type="password" placeholder="Password"/></div>
+      <button class="auth-btn" onclick="doSignIn()">Sign In →</button>
+    </div>
+    <div class="auth-msg auth-error" id="auth-err" style="display:none;"></div>
+    <div class="auth-msg auth-success" id="auth-ok" style="display:none;"></div>
+  </div>
+</div>
 
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
     <div><div class="nav-brand">Finder<em>Seek</em></div></div>
   </a>
-  <a id="nav-upgrade-btn" class="nav-upgrade-pill" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
+  <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
   <a class="nav-back-arrow" href="index.html">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
   </a>
 </nav>
 
-<div class="wrap">
-  <div class="gold-glow"></div>
+<div class="wrap" id="main-wrap" style="display:none;">
 
-  <div class="pricing-hero fade-in">
-    <div class="hero-kicker">✦ Upgrade Your Hunt ✦</div>
-    <h1 class="hero-title">
-      <span class="line1">Hunt Like A</span>
-      <span class="line2">Legend</span>
-    </h1>
-    <p class="hero-sub">Go Gold for early clues, a featured badge, and promoted hunts. One tier. All the perks.</p>
-  </div>
-
-  <div class="pricing-grid fade-in" style="animation-delay:.1s;">
-    <div class="pcard">
-      <div class="pcard-badge free">Free</div>
-      <div class="pcard-name">Explorer</div>
-      <div class="pcard-price"><sup>$</sup>0<span>/mo</span></div>
-      <div class="pcard-cycle">Forever free · No credit card</div>
-      <hr class="pcard-divider"/>
-      <div class="pcard-role">🔍 As a Seeker</div>
-      <ul class="feat-list">
-        <li><span class="fi">✅</span>Access all active hunts</li>
-        <li><span class="fi">✅</span>Standard clue release timing</li>
-        <li><span class="fi">✅</span>Claim prizes & chat with Pirates</li>
-        <li class="muted"><span class="fi">🔒</span>No early clue access</li>
-        <li class="muted"><span class="fi">🔒</span>No Gold badge</li>
-      </ul>
-      <div class="pcard-role">🏴‍☠️ As a Pirate</div>
-      <ul class="feat-list">
-        <li><span class="fi">✅</span>Hide treasure & set clues</li>
-        <li><span class="fi">✅</span>Receive prizes via Zelle/Venmo</li>
-        <li class="muted"><span class="fi">🔒</span>No promoted listing</li>
-        <li class="muted"><span class="fi">🔒</span>No Gold badge</li>
-      </ul>
-      <div class="btn-free">Current Plan</div>
-    </div>
-
-    <div class="pcard featured" id="gold-card">
-      <div class="pcard-badge">🥇 Gold</div>
-      <div class="pcard-name" style="background:linear-gradient(135deg,#b45309,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Legend</div>
-      <div class="pcard-price" style="background:linear-gradient(135deg,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><sup>$</sup>9<span style="-webkit-text-fill-color:var(--muted)">/mo</span></div>
-      <div class="pcard-cycle">Cancel anytime · Billed monthly</div>
-      <hr class="pcard-divider"/>
-      <div class="pcard-role">🔍 As a Seeker</div>
-      <ul class="feat-list">
-        <li><span class="fi">⚡</span><strong style="color:var(--gold2);">Early clue access</strong> — see clues 1 drop ahead of free users</li>
-        <li><span class="fi">🥇</span>Gold badge on your profile & chat</li>
-        <li><span class="fi">🙈</span>Ad-free experience</li>
-        <li><span class="fi">💬</span>Priority support</li>
-      </ul>
-      <div class="pcard-role">🏴‍☠️ As a Pirate</div>
-      <ul class="feat-list">
-        <li><span class="fi">📌</span><strong style="color:var(--gold2);">Promoted hunt</strong> — pinned at top of hunt listings</li>
-        <li><span class="fi">🥇</span>Gold badge on your hunt card</li>
-        <li><span class="fi">🙈</span>Ad-free experience</li>
-        <li><span class="fi">💬</span>Priority support</li>
-      </ul>
-      <button class="btn-go-gold" id="btn-upgrade" onclick="startCheckout()">
-        🥇 Go Gold — $9/mo
-      </button>
+  <!-- HERO -->
+  <div class="profile-hero fade-in">
+    <div class="profile-avatar-big" id="p-avatar">?</div>
+    <div class="profile-hero-info">
+      <div class="profile-hero-name" id="p-name">Loading…</div>
+      <div class="profile-hero-meta">
+        📍 <span id="p-city">—</span> &nbsp;·&nbsp; Member since <span id="p-joined">—</span>
+      </div>
+      <div class="profile-stats">
+        <div class="phstat"><div class="phstat-val" id="p-finds">0</div><div class="phstat-lbl">Finds</div></div>
+        <div class="phstat"><div class="phstat-val" id="p-streak">0</div><div class="phstat-lbl">Streak</div></div>
+        <div class="phstat"><div class="phstat-val" id="p-hunts-hidden">0</div><div class="phstat-lbl">Hunts Hidden</div></div>
+      </div>
     </div>
   </div>
 
-  <div class="faq-section fade-in" style="animation-delay:.2s;">
-    <div class="faq-title">Questions</div>
-    <div class="faq-list">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does early clue access work? <span class="chevron">▼</span></div><div class="faq-a">Free users see clues as they drop on their normal schedule. Gold Seekers see the next unrevealed clue one step ahead — giving you a head start on finding the treasure.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does a promoted hunt look like? <span class="chevron">▼</span></div><div class="faq-a">When you're a Gold Pirate and your hunt is active, it appears pinned at the top of the hunt listings with a ✦ FEATURED banner. More eyes = faster finds = faster prize delivery.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="chevron">▼</span></div><div class="faq-a">Yes — cancel anytime from your profile page. You keep Gold perks until the end of your current billing period, then revert to the free Explorer tier.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need Gold to hide or find treasure? <span class="chevron">▼</span></div><div class="faq-a">Nope! The free tier gives you full access to hide treasure, hunt for prizes, and claim wins. Gold just gives you a competitive edge and helps support the platform.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is my payment secure? <span class="chevron">▼</span></div><div class="faq-a">Payments are processed by Stripe — we never see or store your card details. FinderSeek uses Stripe Checkout, the same infrastructure trusted by millions of businesses.</div></div>
+  <!-- TABS -->
+  <div class="tabs fade-in" style="animation-delay:.04s;">
+    <div class="tab active" id="tab-settings" onclick="showTab('settings',this)">
+      <span class="tab-icon">⚙️</span>Settings
     </div>
+    <div class="tab" id="tab-history" onclick="showTab('history',this)">
+      <span class="tab-icon">🗺️</span>History
+    </div>
+    <div class="tab tab-pirate-btn" id="tab-pirate" onclick="showTab('pirate',this)">
+      <span class="tab-icon">🏴‍☠️</span>Pirate
+    </div>
+  </div>
+
+  <!-- PANEL: SETTINGS -->
+  <div class="panel active" id="panel-settings">
+    <div class="section fade-in" style="animation-delay:.05s;">
+      <div class="section-title">Profile Settings</div>
+      <div class="section-sub">Update your public info</div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Username</label><input class="field-input" id="f-username" placeholder="YourHandle"/></div>
+        <div class="field"><label class="field-label">City</label><input class="field-input" id="f-city" placeholder="e.g. Austin, TX"/></div>
+      </div>
+      <div class="field-row single">
+        <div class="field"><label class="field-label">Email <span style="color:var(--muted);font-size:9px;">(for notifications)</span></label><input class="field-input" id="f-email" type="email" placeholder="you@example.com"/><div class="field-hint">Used only for FinderSeek notifications. Never shared.</div></div>
+      </div>
+      <button class="btn-save" id="btn-save-profile" onclick="saveProfile()">Save Changes</button>
+    </div>
+    <div class="section fade-in" style="animation-delay:.1s;">
+      <div class="section-title">Email Notifications</div>
+      <div class="section-sub">Choose what emails you receive from FinderSeek</div>
+      <div class="notif-list">
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🗺️ New Hunt In My City</div><div class="notif-sub">Get notified when a new treasure hunt drops near you</div></div><label class="toggle"><input type="checkbox" id="n-new-hunts" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏆 I Won a Hunt</div><div class="notif-sub">Confirmation email when you successfully claim a prize</div></div><label class="toggle"><input type="checkbox" id="n-hunt-won" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">💬 New Chat Message</div><div class="notif-sub">Email when your Pirate or Winner sends you a message</div></div><label class="toggle"><input type="checkbox" id="n-chat" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏴‍☠️ My Hunt Goes Live</div><div class="notif-sub">Email when admin approves your hidden treasure hunt</div></div><label class="toggle"><input type="checkbox" id="n-hunt-live" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+      </div>
+    </div>
+    <div class="section danger-zone fade-in" style="animation-delay:.15s;">
+      <div class="section-title" style="color:#f87171;">Danger Zone</div>
+      <div class="section-sub">Irreversible actions</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-danger" onclick="signOut()">🚪 Sign Out</button>
+        <button class="btn-danger" onclick="confirmDeleteAccount()" style="opacity:.6;">⚠️ Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL: HISTORY -->
+  <div class="panel" id="panel-history">
+    <div class="section fade-in">
+      <div class="section-title">Hunt History</div>
+      <div class="section-sub">Hunts you've won or participated in</div>
+      <div class="hunt-history" id="hunt-history"><div class="hh-empty">Loading your hunt history…</div></div>
+    </div>
+  </div>
+
+  <!-- PANEL: PIRATE'S COVE -->
+  <div class="panel" id="panel-pirate">
+  <div class="pirate-dash">
+    <div class="pirate-header"><div class="pirate-header-icon">🏴‍☠️</div><div><div class="pirate-header-title">PIRATE'S COVE</div><div class="pirate-header-sub">Your hunts · Seeker intel · Buried loot</div></div></div>
+    <div class="pirate-stats">
+      <div class="pirate-pstat"><div class="pirate-pstat-lbl">⚓ Hunts Posted</div><div class="pirate-pstat-val gold" id="pstat-hunts">—</div><div class="pirate-pstat-note">total</div></div>
+      <div class="pirate-pstat"><div class="pirate-pstat-lbl">🧭 All Seekers</div><div class="pirate-pstat-val" id="pstat-seekers">—</div><div class="pirate-pstat-note">across all hunts</div></div>
+      <div class="pirate-pstat"><div class="pirate-pstat-lbl">⭐ Gold Seekers</div><div class="pirate-pstat-val green" id="pstat-gold">—</div><div class="pirate-pstat-note">is_pro members</div></div>
+    </div>
+    <div class="pirate-sec-hd"><div class="pirate-sec-title" id="pirate-sec-title">YOUR HUNTS</div><div class="pirate-filter"><button class="pf-pill active" onclick="setPirateFilter('all',this)">All Seekers</button><button class="pf-pill" onclick="setPirateFilter('gold',this)">⭐ Gold Only</button></div></div>
+    <div class="pirate-skeleton" id="pirate-skeleton"><div class="pirate-skel-card"><div class="skel-ln w60"></div><div class="skel-ln w35"></div><div class="skel-ln w80"></div></div><div class="pirate-skel-card"><div class="skel-ln w60"></div><div class="skel-ln w35"></div><div class="skel-ln w80"></div></div></div>
+    <div class="pirate-hunt-list" id="pirate-hunt-list" style="display:none;"></div>
+    <div class="pirate-empty" id="pirate-empty" style="display:none;"><div class="pirate-empty-icon">🗺️</div><div class="pirate-empty-title">No hunts yet, Pirate.</div><div class="pirate-empty-sub">Post your first hunt and let the seekers come.</div></div>
+    <div class="pirate-cta"><div class="pirate-cta-text"><strong>Ready to bury treasure?</strong>Post a hunt and watch the seekers race.</div><button class="btn-hide-treasure" onclick="window.location.href='pirate.html'">⚓ Hide Treasure</button></div>
+  </div>
   </div>
 
 </div>
@@ -202,40 +392,42 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <script>
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const NOTIFY_SECRET='fs-notify-2026';
+const H={'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
 const getToken=()=>localStorage.getItem('fs_token');
+const setToken=t=>localStorage.setItem('fs_token',t);
+const clearToken=()=>localStorage.removeItem('fs_token');
 let currentUser=null,currentProfile=null;
 
-window.addEventListener('load',async()=>{
-  if(location.search.includes('upgraded=1')){showToast('🥇 Welcome to Gold! Your perks are active.','success');history.replaceState(null,'',location.pathname);}
-  if(location.search.includes('cancelled=1')){showToast('Checkout cancelled — no charge made.','');history.replaceState(null,'',location.pathname);}
-  const token=getToken();if(!token)return;
-  try{
-    const r=await fetch(`${SB}/auth/v1/user`,{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if(!r.ok)return;currentUser=await r.json();if(!currentUser?.id)return;
-    const pr=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}&select=*`,{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    const pd=await pr.json();currentProfile=pd?.[0]||null;
-    const navUpgrade=document.getElementById('nav-upgrade-btn');
-    if(navUpgrade)navUpgrade.style.display=currentProfile?.is_pro?'none':'inline-flex';
-    if(currentProfile?.is_pro){
-      const btn=document.getElementById('btn-upgrade');
-      btn.outerHTML=`<div class="current-badge">🥇 You're already Gold!</div><a href="https://billing.stripe.com/p/login/your_portal_link" target="_blank" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Manage subscription →</a>`;
-    }
-  }catch(e){}
-});
+window.addEventListener('load',async()=>{const token=getToken();if(!token){showAuthGate();return;}try{const r=await fetch(`${SB}/auth/v1/user`,{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!r.ok)throw new Error('Not authed');const u=await r.json();if(!u?.id)throw new Error('No user');currentUser=u;await loadProfile(u.id);showPortal();}catch(e){clearToken();showAuthGate();}});
+function showAuthGate(){document.getElementById('auth-gate').style.display='flex';document.getElementById('main-wrap').style.display='none';}
+function showPortal(){document.getElementById('auth-gate').style.display='none';document.getElementById('main-wrap').style.display='block';}
+function showTab(name,tabEl){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');tabEl.classList.add('active');if(name==='pirate'&&!_pirateLoaded)loadPirateDash();}
+async function loadProfile(uid){const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});const d=await r.json();if(!d?.length)return;currentProfile=d[0];const upgradeBtn=document.getElementById('nav-upgrade-btn');if(upgradeBtn)upgradeBtn.style.display=currentProfile?.is_pro?'none':'inline-flex';renderProfile();loadHuntHistory(uid);}
+function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';document.getElementById('p-avatar').textContent=name[0].toUpperCase();document.getElementById('p-name').textContent=name;document.getElementById('p-city').textContent=p.city||'—';document.getElementById('p-joined').textContent=p.created_at?new Date(p.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';document.getElementById('p-finds').textContent=p.finds_count||0;document.getElementById('p-streak').textContent=p.streak||0;document.getElementById('f-username').value=p.username||'';document.getElementById('f-city').value=p.city||'';document.getElementById('f-email').value=p.email||currentUser?.email||'';document.getElementById('n-new-hunts').checked=p.notify_new_hunts!==false;document.getElementById('n-hunt-won').checked=p.notify_hunt_won!==false;document.getElementById('n-chat').checked=p.notify_chat!==false;document.getElementById('n-hunt-live').checked=p.notify_hunt_live!==false;}
+async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No hunt history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
+async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Username is required','error');return;}const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({username,city,email})});if(!r.ok)throw new Error('Save failed');currentProfile={...currentProfile,username,city,email};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
+let notifTimer=null;async function saveNotif(){clearTimeout(notifTimer);notifTimer=setTimeout(async()=>{try{const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({notify_new_hunts:document.getElementById('n-new-hunts').checked,notify_hunt_won:document.getElementById('n-hunt-won').checked,notify_chat:document.getElementById('n-chat').checked,notify_hunt_live:document.getElementById('n-hunt-live').checked,})});if(!r.ok)throw new Error();showToast('✅ Notifications updated','success');}catch(e){showToast('Could not save notifications','error');}},600);}
+function signOut(){clearToken();window.location.href='index.html';}
+function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your hunt history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
+function openAuthModal(){document.getElementById('auth-modal').classList.add('show');}
+function closeAuthModal(){document.getElementById('auth-modal').classList.remove('show');}
+function switchAuthTab(tab){document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('signup-fields').style.display=tab==='signup'?'block':'none';document.getElementById('login-fields').style.display=tab==='login'?'block':'none';document.getElementById('auth-err').style.display='none';document.getElementById('auth-ok').style.display='none';}
+function showAuthErr(msg){const e=document.getElementById('auth-err');e.textContent=msg;e.style.display='block';}
+function showAuthOk(msg){const e=document.getElementById('auth-ok');e.textContent=msg;e.style.display='block';}
+async function doSignUp(){const username=document.getElementById('su-username').value.trim();const email=document.getElementById('su-email').value.trim();const pass=document.getElementById('su-pass').value;if(!username||!email||!pass){showAuthErr('All fields required');return;}try{const r=await fetch(`${SB}/auth/v1/signup`,{method:'POST',headers:H,body:JSON.stringify({email,password:pass,data:{username}})});const d=await r.json();if(d.error){showAuthErr(d.error.message||d.error);return;}setToken(d.access_token);currentUser=d.user;await loadProfile(d.user.id);closeAuthModal();showPortal();}catch(e){showAuthErr('Network error. Try again.');}}
+async function doSignIn(){const email=document.getElementById('li-email').value.trim();const pass=document.getElementById('li-pass').value;if(!email||!pass){showAuthErr('Email and password required');return;}try{const r=await fetch(`${SB}/auth/v1/token?grant_type=password`,{method:'POST',headers:H,body:JSON.stringify({email,password:pass})});const d=await r.json();if(d.error){showAuthErr(d.error.message||d.error);return;}setToken(d.access_token);currentUser=d.user;await loadProfile(d.user.id);closeAuthModal();showPortal();}catch(e){showAuthErr('Network error. Try again.');}}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.classList.remove('show'),3000);}
 
-async function startCheckout(){
-  if(!currentUser){showToast('Sign in first to upgrade','error');setTimeout(()=>window.location='profile.html',1500);return;}
-  const btn=document.getElementById('btn-upgrade');if(!btn)return;
-  btn.disabled=true;btn.textContent='⏳ Redirecting to Stripe…';
-  try{
-    const r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});
-    const d=await r.json();if(d.url){window.location=d.url;return;}throw new Error(d.error||'No checkout URL');
-  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='🥇 Go Gold — $9/mo';}
-}
-
-function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.classList.remove('show'),4000);}
+let _pirateLoaded=false;let _pirateHunts=[];let _pirateFollowers={};let _pirateFilter='all';
+async function loadPirateDash(){if(!currentUser?.id)return;_pirateShowSkel(true);_pirateShowList(false);_pirateShowEmpty(false);try{const hr=await fetch(`${SB}/rest/v1/hunts?created_by=eq.${currentUser.id}&select=id,week_label,prize_desc,city,status,starts_at,winner_id&order=starts_at.desc`,{headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});_pirateHunts=hr.ok?await hr.json():[];if(_pirateHunts.length){const ids=_pirateHunts.map(h=>`"${h.id}"`).join(',');const fr=await fetch(`${SB}/rest/v1/hunt_followers?hunt_id=in.(${ids})&select=hunt_id,profiles(id,is_pro)`,{headers:H});const rows=fr.ok?await fr.json():[];_pirateFollowers={};rows.forEach(row=>{const hid=row.hunt_id;if(!_pirateFollowers[hid])_pirateFollowers[hid]={total:0,gold:0};_pirateFollowers[hid].total++;if(row.profiles?.is_pro)_pirateFollowers[hid].gold++;});}let totalSeekers=0,totalGold=0;_pirateHunts.forEach(h=>{totalSeekers+=(_pirateFollowers[h.id]?.total||0);totalGold+=(_pirateFollowers[h.id]?.gold||0);});_pTxt('pstat-hunts',_pirateHunts.length);_pTxt('pstat-seekers',totalSeekers);_pTxt('pstat-gold',totalGold);_renderPirateCards();_pirateShowSkel(false);_pirateHunts.length?_pirateShowList(true):_pirateShowEmpty(true);_pirateLoaded=true;}catch(err){console.error('pirate dash:',err);_pirateShowSkel(false);_pirateShowEmpty(true);}}
+function _renderPirateCards(){const list=document.getElementById('pirate-hunt-list');if(!list)return;list.innerHTML='';_pirateShowEmpty(false);let rendered=0;_pirateHunts.forEach((hunt,i)=>{const fol=_pirateFollowers[hunt.id]||{total:0,gold:0};const total=fol.total,gold=fol.gold;const pct=total>0?Math.round((gold/total)*100):0;if(_pirateFilter==='gold'&&gold===0)return;const displayCount=_pirateFilter==='gold'?gold:total;const countLabel=_pirateFilter==='gold'?'Gold Seekers':'Total Seekers';const dateStr=hunt.starts_at?new Date(hunt.starts_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';const card=document.createElement('div');card.className=`pirate-hcard status-${hunt.status||'draft'}`;card.style.animation=`fadeUpCard .4s ${i*0.07}s both`;card.innerHTML=`<div class="pirate-hcard-inner"><div class="pirate-hcard-top"><div><div class="pirate-hcard-name">${_pEsc(hunt.prize_desc||'—')}</div><div class="pirate-hcard-meta">${_pEsc(hunt.city||'')}${dateStr?' · '+dateStr:''}</div></div><div style="display:flex;align-items:center;gap:10px;flex-shrink:0;"><span class="pstatus ${hunt.status||'draft'}">${hunt.status||'draft'}</span><a class="pirate-view-link" href="hunt.html?id=${hunt.id}">View →</a></div></div><div class="pirate-seeker-row"><div class="pscount"><div><div class="pscount-num ${_pirateFilter==='gold'?'gold':''}">${displayCount}</div><div class="pscount-lbl">${countLabel}</div></div></div>${_pirateFilter!=='gold'&&total>0?`<div class="pscount-sep"></div><div class="pscount"><div><div class="pscount-num gold">${gold}</div><div class="pscount-lbl">Gold</div></div></div>`:''} ${total===0?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">No seekers yet</span>`:''}</div>${total>0&&_pirateFilter!=='gold'?`<div class="pgold-bar-wrap"><div class="pgold-track"><div class="pgold-fill" style="width:${pct}%"></div></div><span class="pgold-pct">${pct}% Gold</span></div>`:''} ${hunt.winner_id?`<div class="pirate-winner-row">🏆 <span>Found by</span><span class="pirate-winner-name" data-winner="${hunt.winner_id}">…</span></div>`:''}</div>`;list.appendChild(card);rendered++;if(hunt.winner_id)_resolveWinner(hunt.winner_id);});if(!rendered)_pirateShowEmpty(true);}
+function setPirateFilter(filter,btn){_pirateFilter=filter;document.querySelectorAll('.pf-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');const t=document.getElementById('pirate-sec-title');if(t)t.textContent=filter==='gold'?'⭐ GOLD SEEKER HUNTS':'YOUR HUNTS';_pirateShowList(false);_pirateShowEmpty(false);_renderPirateCards();if(_pirateHunts.length)_pirateShowList(true);}
+function _pirateShowSkel(v){const e=document.getElementById('pirate-skeleton');if(e)e.style.display=v?'flex':'none';}
+function _pirateShowList(v){const e=document.getElementById('pirate-hunt-list');if(e)e.style.display=v?'flex':'none';}
+function _pirateShowEmpty(v){const e=document.getElementById('pirate-empty');if(e)e.style.display=v?'block':'none';}
+function _pTxt(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function _pEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+async function _resolveWinner(userId){try{const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${userId}&select=username`,{headers:H});const d=await r.json();const name=d?.[0]?.username;if(!name)return;document.querySelectorAll(`[data-winner="${userId}"]`).forEach(el=>{el.textContent=name;});}catch(e){}}
 </script>
 </body>
 </html>
