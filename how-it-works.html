@@ -9,8 +9,8 @@
 <style>
 :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--green:#22c55e;--border:rgba(201,137,12,0.2);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;width:100%;}
 
 .bg-img{position:fixed;inset:0;z-index:0;background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.17;}
 .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(6,5,10,.2) 0%,rgba(6,5,10,.95) 80%);}
@@ -139,13 +139,13 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 <div class="bg-vig"></div>
 
 <nav>
-  <a class="nav-logo" href="index.html">
+  <a class="nav-logo" href="seeker.html">
     <div class="nav-icon">🔍</div>
     <div><div class="nav-name">Finder<em>Seek</em></div></div>
   </a>
   <div style="display:flex;align-items:center;gap:10px;">
     <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-    <a href="index.html" class="btn-back">← Back to Hunts</a>
+    <a href="seeker.html" class="btn-back">← Back to Hunts</a>
   </div>
 </nav>
 
@@ -163,20 +163,20 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   <div class="role-panel active" id="panel-seeker">
     <div class="sec-eyebrow gold">For Seekers</div>
     <div class="sec-title gold">FIND THE TREASURE</div>
-    <p class="sec-desc">Seekers follow clues to track down a hidden 6-digit code somewhere in their city. Enter the code, claim the prize.</p>
+    <p class="sec-desc">Follow clues to find a hidden 6-digit code. Enter it, claim the prize.</p>
     <div class="steps">
-      <div class="step"><div class="step-left"><div class="step-num gold">1</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🎯</div><div class="step-head" style="color:#fbbf24;">BROWSE ACTIVE HUNTS</div><p class="step-body">Find a hunt in your city. Each listing shows the <strong>prize amount</strong>, how many clues have dropped, and how much time is left. No account needed to browse.</p><span class="step-pill gold">Free to browse</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">2</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🗺️</div><div class="step-head" style="color:#34d399;">FOLLOW THE CLUES</div><p class="step-body">Clues drop on a timer throughout the hunt. Early seekers get fewer clues — <strong>the longer you wait, the easier it gets</strong>. But someone else might find it first!</p><span class="step-pill gold">AI-generated clues</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">3</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#f472b6;">USE THE MAP</div><p class="step-body">As more clues unlock, a <strong>progressive map</strong> zooms closer to the hiding spot. The final clue drops a pin with a 260-foot radius and a photo of the exact location.</p><span class="step-pill gold">3× zoom reveals</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">4</div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#c4b5fd;">ENTER THE CODE & CLAIM</div><p class="step-body">When you find the hiding spot, look for a <strong>6-digit code</strong> left by the Pirate. Submit it in the app to claim your prize. First one to submit wins!</p><span class="step-pill green">Winner takes all</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num gold">1</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🎯</div><div class="step-head" style="color:#fbbf24;">BROWSE ACTIVE HUNTS</div><p class="step-body">Find a hunt in your city. See the <strong>prize amount</strong>, clues dropped, and time left.</p><span class="step-pill gold">Free to browse</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num gold">2</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🗺️</div><div class="step-head" style="color:#34d399;">FOLLOW THE CLUES</div><p class="step-body">Clues drop on a timer. Wait longer for easier clues — but <strong>someone might beat you to it!</strong></p><span class="step-pill gold">AI-generated clues</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num gold">3</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#f472b6;">USE THE MAP</div><p class="step-body">The map <strong>zooms closer</strong> with each clue. The final clue narrows to 260ft with a photo.</p><span class="step-pill gold">3× zoom reveals</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num gold">4</div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#c4b5fd;">ENTER THE CODE & CLAIM</div><p class="step-body">Find the hiding spot, enter the <strong>6-digit code</strong> in the app. First to submit wins!</p><span class="step-pill green">Winner takes all</span></div></div>
     </div>
     <div class="gold-divider"></div>
     <div class="faq">
       <div class="faq-inner">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is it free to play?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — completely free to browse hunts and follow clues. You only need to sign up to claim a prize.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I get paid?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">When you submit the winning code, FinderSeek notifies the Pirate who hid the treasure. They'll send the prize directly to you via Zelle or Venmo, or through FinderSeek.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">If someone else found it first, the hunt will show as claimed. Check back for new hunts — new ones drop regularly!</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How close do the maps get?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">The 3rd-to-last clue shows a 2,600ft radius. The 2nd-to-last narrows to 1,000ft. The final clue zooms to 260ft with a photo of the exact hiding spot.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is it free to play?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Free to browse and follow clues. Sign up only to claim a prize.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I get paid?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">The Pirate sends your prize directly via Zelle or Venmo after you claim.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt shows as claimed. Check back — new hunts drop regularly!</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How close do the maps get?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Final clue zooms to 260ft with a photo of the exact hiding spot.</div></div></div>
       </div>
     </div>
   </div>
@@ -184,26 +184,43 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   <div class="role-panel" id="panel-pirate">
     <div class="sec-eyebrow blue">For Pirates</div>
     <div class="sec-title blue">HIDE THE TREASURE</div>
-    <p class="sec-desc">Pirates hide a 6-digit code somewhere in their city, set a prize amount, and let AI write the clues. Seekers race to find it.</p>
+    <p class="sec-desc">Hide a 6-digit code, set a prize, let AI write the clues. Seekers race to find it.</p>
     <div class="steps">
-      <div class="step"><div class="step-left"><div class="step-num blue">1</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#38bdf8;">PICK YOUR HIDING SPOT</div><p class="step-body">Choose a <strong>public, accessible location</strong> in your city — a park, trail, landmark, or neighborhood. Drop a pin on the map and describe exactly where you hid the code.</p><span class="step-pill blue">Any public location</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">2</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#fb923c;">HIDE YOUR 6-DIGIT CODE</div><p class="step-body">Write a 6-digit code on a small card or paper and hide it at your chosen spot. This is what seekers will enter to claim the prize. <strong>Keep it safe and weatherproof!</strong></p><span class="step-pill blue">Physically hidden</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">3</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🤖</div><div class="step-head" style="color:#e879f9;">AI GENERATES YOUR CLUES</div><p class="step-body">Choose a persona — Pirate, Gothic, Poetic, Hillbilly, Rhymes, or 5 Year Old — and set how many clues you want. <strong>FinderSeek's AI writes them all</strong> based on your hiding spot description.</p><span class="step-pill blue">6 clue personas</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">4</div></div><div class="step-right"><div class="step-icon">🚀</div><div class="step-head" style="color:#4ade80;">GO LIVE & WATCH THE HUNT</div><p class="step-body">Once approved, your hunt goes live. Clues drop on a timer. You'll be notified when a seeker claims the prize. Then pay them via <strong>Zelle, Venmo, or through FinderSeek</strong>.</p><span class="step-pill green">Notify on claim</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num blue">1</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#38bdf8;">PICK YOUR HIDING SPOT</div><p class="step-body">Pick a <strong>public, accessible spot</strong> — park, trail, landmark. Drop a pin and describe the hiding place.</p><span class="step-pill blue">Any public location</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num blue">2</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#fb923c;">HIDE YOUR 6-DIGIT CODE</div><p class="step-body">Write a 6-digit code on a card and hide it at your spot. <strong>Keep it weatherproof!</strong></p><span class="step-pill blue">Physically hidden</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num blue">3</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🤖</div><div class="step-head" style="color:#e879f9;">AI GENERATES YOUR CLUES</div><p class="step-body">Pick a persona — Pirate, Gothic, Poetic, Comedy, Hillbilly, or Kid — and <strong>AI writes all your clues</strong> from your hiding spot description.</p><span class="step-pill blue">6 clue personas</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num blue">4</div></div><div class="step-right"><div class="step-icon">🚀</div><div class="step-head" style="color:#4ade80;">GO LIVE & WATCH THE HUNT</div><p class="step-body">Hunt goes live after approval. Get notified when someone claims — then pay via <strong>Zelle or Venmo</strong>.</p><span class="step-pill green">Notify on claim</span></div></div>
     </div>
     <div class="gold-divider"></div>
     <div class="faq">
       <div class="faq-inner">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What makes a good hiding spot?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Somewhere public and safe — a park bench, under a rock, behind a landmark. Avoid private property. The spot should be accessible to anyone during daylight hours.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I protect the code from weather?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Use a small waterproof bag, a sealed zip-lock, or write the code on a laminated card. The code just needs to stay readable until a seeker finds it.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I edit clues before going live?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — after the AI generates your clues, you'll review them and can regenerate with a different persona before approving. Once approved and live, clues are locked.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if nobody finds it?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">If the hunt timer expires without a winner, you keep everything. Go retrieve your code and the prize is yours to re-hide or keep.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What makes a good hiding spot?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Public, safe, accessible — park bench, under a rock, near a landmark. No private property.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I protect the code from weather?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Use a zip-lock bag or laminated card. Just keep it readable until found.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I edit clues before going live?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — review and regenerate after AI creates them. Once live, clues are locked.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if nobody finds it?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt expires, you keep everything. Go retrieve your code and re-hide or keep the prize.</div></div></div>
       </div>
     </div>
   </div>
+      <!-- WARNING CARD -->
+      <div style="margin:20px 0 0;background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(251,146,60,.08));border:1px solid rgba(239,68,68,.35);border-radius:18px;padding:22px 20px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:18px 18px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <span style="font-size:22px;">⚠️</span>
+          <div style="font-family:'Bangers',cursive;font-size:20px;letter-spacing:2px;color:#fca5a5;">DO NOT HIDE NEAR</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Homes or apartments</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Private property</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Schools or daycares</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Unsafe or dark areas</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Inside vehicles</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Restricted areas</div>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in hunt removal and account ban.</div>
+      </div>
 
   <div class="cta-grid f4">
-    <div class="cta-card seeker"><div class="cta-card-icon">🔍</div><div class="cta-card-title">START SEEKING</div><p class="cta-card-desc">Browse active hunts in your area and start following the clues.</p><a href="index.html#hunts" class="cta-btn seeker">View Active Hunts →</a></div>
+    <div class="cta-card seeker"><div class="cta-card-icon">🔍</div><div class="cta-card-title">START SEEKING</div><p class="cta-card-desc">Browse active hunts in your area and start following the clues.</p><a href="seeker.html#hunts" class="cta-btn seeker">View Active Hunts →</a></div>
     <div class="cta-card pirate"><div class="cta-card-icon">🏴‍☠️</div><div class="cta-card-title">BECOME A PIRATE</div><p class="cta-card-desc">Hide a code, write AI clues, and watch seekers race to find it.</p><a href="pirate.html" class="cta-btn pirate">Create a Hunt →</a></div>
   </div>
 </div>
@@ -221,7 +238,7 @@ document.querySelectorAll('.step').forEach(s=>stepObserver.observe(s));
 
 <!-- Floating sticky CTA — mobile only -->
 <div class="sticky-cta">
-  <a href="index.html#hunts">🔍 Start Hunting →</a>
+  <a href="seeker.html#hunts">🔍 Start Hunting →</a>
 </div>
 
 <script>
