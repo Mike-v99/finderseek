@@ -188,14 +188,15 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .nav-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
 .hero-svg-wrap{flex-shrink:0;}
 
+/* Mobile hamburger floating overlay */
+.mobile-hamburger{display:none;position:fixed;top:14px;right:16px;z-index:50;background:rgba(6,5,10,.6);backdrop-filter:blur(12px);border:1px solid rgba(201,137,12,.25);border-radius:10px;padding:8px 7px;cursor:pointer;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:40px;height:40px;transition:border-color .2s,background .2s;}
+.mobile-hamburger:hover{border-color:rgba(201,137,12,.6);background:rgba(6,5,10,.8);}
+.mobile-hamburger span{display:block;width:20px;height:2px;background:var(--cream);border-radius:2px;}
+
 /* Mobile responsive */
 @media(max-width:640px){
-  .nav-hamburger{display:flex;}
-  .btn-pirate-nav,.btn-signin,.live-badge{display:none;}
-  #nav-auth-area{display:none;}
-  nav{padding:10px 16px;}
-  .nav-name{font-size:16px;}
-  .nav-name em{font-size:18px;}
+  nav{display:none;}
+  .mobile-hamburger{display:flex;}
 
   /* Hero: tighter, logo+wordmark side by side but smaller */
   .hero{padding:20px 16px 28px;}
@@ -231,11 +232,13 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     <div class="live-badge"><span class="dot"></span><span id="live-count">&mdash;</span> LIVE</div>
     <div id="nav-auth-area"><button class="btn-signin" onclick="openAuthModal()">&#128269; Sign In</button></div>
     <a href="pirate.html" class="btn-pirate-nav">&#127988;&#8205;&#9760;&#65039; Hide Treasure</a>
-    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
+
+<!-- Mobile floating hamburger (overlays the background image) -->
+<button class="mobile-hamburger" onclick="toggleMobileMenu()">
+  <span></span><span></span><span></span>
+</button>
 
 <!-- AUTH MODAL -->
 <div class="auth-modal" id="auth-modal">
