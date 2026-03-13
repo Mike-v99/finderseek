@@ -1013,17 +1013,33 @@ async function generateClues() {
     const liveAt = liveChoice === 'now' ? new Date().toISOString() : new Date(document.getElementById('live-datetime').value).toISOString();
     const liveDateObj = new Date(liveAt);
     const durationHours = questDuration;
+    const isGold = currentProfile?.is_pro || false;
+
+    // Free: clue 1 drops at start, rest spread evenly over duration
+    // Gold: clues 1 & 2 drop at start, rest spread evenly over duration
+    const freeClues = isGold ? 2 : 1; // how many drop immediately at start
+    const remainingClues = clueCount - freeClues;
 
     const clueRows = cluesArr.map(c => {
       const num = c.number;
       const isPhotoClue = num >= (clueCount - 2);
       const durationMs = durationHours * 60 * 60 * 1000;
-      const intervalMs = durationMs / (clueCount + 2);
-      const revealAt = new Date(liveDateObj.getTime() + (num - 1) * intervalMs);
+
+      let revealAt;
+      if (num <= freeClues) {
+        // Drop immediately at hunt start
+        revealAt = new Date(liveDateObj.getTime());
+      } else {
+        // Space remaining clues evenly over the duration
+        const intervalMs = durationMs / (remainingClues + 1);
+        const position = num - freeClues; // 1-based position among remaining clues
+        revealAt = new Date(liveDateObj.getTime() + position * intervalMs);
+      }
+
       return {
         hunt_id: clueGenHuntId,
         clue_number: num,
-        tier: 'free',
+        tier: num <= freeClues ? 'free' : 'free',
         day_label: revealAt.toLocaleDateString('en-US', { weekday: 'long' }),
         date_label: revealAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         reveal_at: revealAt.toISOString(),
