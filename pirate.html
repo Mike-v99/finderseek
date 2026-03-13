@@ -1086,9 +1086,12 @@ window.addEventListener('load', async () => {
   } catch(e) {}
 });
 
-function getToken() { return localStorage.getItem('fs_token'); }
-function setToken(t) { localStorage.setItem('fs_token', t); }
-function clearToken() { localStorage.removeItem('fs_token'); }
+function getToken(){ return localStorage.getItem('fs_token'); }
+function setToken(t){ localStorage.setItem('fs_token', t); }
+function setRefresh(t){ localStorage.setItem('fs_refresh', t); }
+function getRefresh(){ return localStorage.getItem('fs_refresh'); }
+function clearToken(){ localStorage.removeItem('fs_token'); localStorage.removeItem('fs_refresh'); }
+async function refreshSession(){const rt=getRefresh();if(!rt)return false;try{const r=await fetch(`${SB}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{'apikey':KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:rt})});if(!r.ok)return false;const d=await r.json();if(d.access_token){setToken(d.access_token);if(d.refresh_token)setRefresh(d.refresh_token);return true;}return false;}catch(e){return false;}}
 
 async function loadProfile(uid) {
   try {
