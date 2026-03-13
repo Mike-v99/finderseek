@@ -187,13 +187,11 @@
   .f5{animation:fadeUp .55s .25s both} .f6{animation:fadeUp .55s .3s both}
   .f7{animation:fadeUp .55s .35s both}
 
-  .qt-opt{border:2px solid rgba(147,197,253,.15);border-radius:14px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(59,130,246,.04);}
-  .qt-opt:hover{border-color:rgba(147,197,253,.4);background:rgba(59,130,246,.1);}
-  .qt-opt.selected{border-color:#93c5fd;background:rgba(59,130,246,.15);box-shadow:0 0 20px rgba(59,130,246,.15);}
-  .qt-icon{font-size:28px;margin-bottom:8px;}
-  .qt-name{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:4px;line-height:1.3;}
-  .qt-opt.selected .qt-name{color:#93c5fd;}
-  .qt-desc{font-size:11px;color:var(--muted);}
+  input[type=range]#duration-slider, input[type=range]#clue-count-slider {
+    background:linear-gradient(90deg,#93c5fd var(--pct,16.2%),rgba(147,197,253,.15) var(--pct,16.2%));
+  }
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#93c5fd);border:3px solid #0a0800;box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#93c5fd);border:3px solid #0a0800;box-shadow:0 0 0 2px #93c5fd;cursor:pointer;}
   @media(max-width:500px){
     .perks{grid-template-columns:1fr 1fr;}
     .pay-opts{grid-template-columns:1fr;}
@@ -312,8 +310,8 @@
   .persona-card.p-gothic.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,.12),transparent);opacity:1;}
   .persona-card.p-poetic.selected{border-color:rgba(236,72,153,.7);box-shadow:0 8px 32px rgba(236,72,153,.25);}
   .persona-card.p-poetic.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(236,72,153,.12),transparent);opacity:1;}
-  .persona-card.p-rhymes.selected{border-color:rgba(34,197,94,.7);box-shadow:0 8px 32px rgba(34,197,94,.25);}
-  .persona-card.p-rhymes.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.12),transparent);opacity:1;}
+  .persona-card.p-comedy.selected{border-color:rgba(234,179,8,.7);box-shadow:0 8px 32px rgba(234,179,8,.25);}
+  .persona-card.p-comedy.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(234,179,8,.12),transparent);opacity:1;}
   .persona-card.p-hillbilly.selected{border-color:rgba(251,146,60,.7);box-shadow:0 8px 32px rgba(251,146,60,.25);}
   .persona-card.p-hillbilly.selected::before{background:radial-gradient(ellipse at 50% 0%,rgba(251,146,60,.12),transparent);opacity:1;}
   .persona-card.p-kid.selected{border-color:rgba(251,191,36,.7);box-shadow:0 8px 32px rgba(251,191,36,.25);}
@@ -323,7 +321,7 @@
   .persona-card.p-pirate .persona-name{color:var(--gold);}
   .persona-card.p-gothic .persona-name{color:#c4b5fd;}
   .persona-card.p-poetic .persona-name{color:#f9a8d4;}
-  .persona-card.p-rhymes .persona-name{color:var(--green);}
+  .persona-card.p-comedy .persona-name{color:#fde047;}
   .persona-card.p-hillbilly .persona-name{color:#fb923c;}
   .persona-card.p-kid .persona-name{color:#fbbf24;}
   .persona-desc{font-size:11px;color:var(--muted);line-height:1.5;}
@@ -332,7 +330,7 @@
   .persona-card.selected .persona-check{display:flex;}
   .persona-card.p-gothic.selected .persona-check{background:#8b5cf6;}
   .persona-card.p-poetic.selected .persona-check{background:#ec4899;}
-  .persona-card.p-rhymes.selected .persona-check{background:var(--green);}
+  .persona-card.p-comedy.selected .persona-check{background:#eab308;}
   .persona-card.p-hillbilly.selected .persona-check{background:#fb923c;}
   .persona-card.p-kid.selected .persona-check{background:#fbbf24;}
 
@@ -389,14 +387,13 @@
     <div id="nav-auth-area">
       <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:800;color:#0a0800;cursor:pointer;font-family:'Karla',sans-serif;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,137,12,.4);">🏴‍☠️ Sign In</button>
     </div>
-    <a href="index.html" class="btn-back">← Hunts</a>
+    <a href="seeker.html" class="btn-back">← Hunts</a>
   </div>
 </nav>
 
 <div class="hero f1">
   <div class="hero-badge">PIRATE MODE ACTIVATED</div>
   <h1><span class="desktop-title">Pirate's <em>Quest</em></span><span class="mobile-title">Hide <em>Treasure</em></span></h1>
-  <p class="hero-sub">Safely hide a 6-digit code. Set AI clues. Watch seekers hunt.</p>
   <div class="hero-steps">
     <span class="hero-step"><span class="hero-step-dot"></span> <strong>Set duration</strong></span>
     <span class="hero-step-sep">→</span>
@@ -426,15 +423,60 @@
       </div>
     </div>
     <div class="fcard-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-        <div class="qt-opt" id="qt-blitz" onclick="selectTime('blitz')">
-          <div class="qt-icon">⚡</div><div class="qt-name">2 Hour Blitz</div><div class="qt-desc">Fast & furious</div>
+      <!-- Duration Slider -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+          <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);">Duration</span>
+          <span id="duration-display" style="font-family:'Bangers',cursive;font-size:32px;letter-spacing:2px;color:#93c5fd;text-shadow:0 0 20px rgba(147,197,253,.4);">24 Hours</span>
         </div>
-        <div class="qt-opt" id="qt-weekend" onclick="selectTime('weekend')">
-          <div class="qt-icon">🌊</div><div class="qt-name">Weekend Frenzy</div><div class="qt-desc">Fri–Sun hunt</div>
+        <input type="range" id="duration-slider" min="1" max="144" value="24" step="1"
+          oninput="updateDuration(this.value)"
+          style="width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;"/>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);">
+          <span>1 hr</span><span>12 hrs</span><span>1 day</span><span>3 days</span><span>6 days</span>
         </div>
-        <div class="qt-opt" id="qt-calmseas" onclick="selectTime('calmseas')">
-          <div class="qt-icon">⛵</div><div class="qt-name">6 Days Calm Seas</div><div class="qt-desc">Full week quest</div>
+      </div>
+      <!-- Clue Count Slider -->
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+          <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);">Number of Clues</span>
+          <span id="clue-count-display" style="font-family:'Bangers',cursive;font-size:32px;letter-spacing:2px;color:#93c5fd;text-shadow:0 0 20px rgba(147,197,253,.4);">7 Clues</span>
+        </div>
+        <input type="range" id="clue-count-slider" min="3" max="10" value="7" step="1"
+          oninput="updateClueCount(this.value)"
+          style="width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;"/>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);">
+          <span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+      </div>
+      <!-- Persona Picker -->
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:22px;margin-top:4px;">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:14px;">🎭 Clue Style</div>
+        <div class="persona-grid">
+          <div class="persona-card p-pirate selected" id="persona-pirate" onclick="selectPersona('pirate')">
+            <div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span>
+            <div class="persona-name">Pirate</div><div class="persona-desc">Seafaring riddles & salty adventure</div>
+          </div>
+          <div class="persona-card p-gothic" id="persona-gothic" onclick="selectPersona('gothic')">
+            <div class="persona-check">✓</div><span class="persona-emoji">🕯️</span>
+            <div class="persona-name">Gothic</div><div class="persona-desc">Dark, mysterious & haunting whispers</div>
+          </div>
+          <div class="persona-card p-poetic" id="persona-poetic" onclick="selectPersona('poetic')">
+            <div class="persona-check">✓</div><span class="persona-emoji">🌸</span>
+            <div class="persona-name">Poetic</div><div class="persona-desc">Lyrical, beautiful & dreamlike verses</div>
+          </div>
+          <div class="persona-card p-comedy" id="persona-comedy" onclick="selectPersona('comedy')">
+            <div class="persona-check">✓</div><span class="persona-emoji">😂</span>
+            <div class="persona-name">Comedy</div><div class="persona-desc">Farcical, satirical & laugh-out-loud clues</div>
+          </div>
+          <div class="persona-card p-hillbilly" id="persona-hillbilly" onclick="selectPersona('hillbilly')">
+            <div class="persona-check">✓</div><span class="persona-emoji">🤠</span>
+            <div class="persona-name">Hillbilly</div><div class="persona-desc">Folksy, Southern drawl & country charm</div>
+          </div>
+          <div class="persona-card p-kid" id="persona-kid" onclick="selectPersona('kid')">
+            <div class="persona-check">✓</div><span class="persona-emoji">🧸</span>
+            <div class="persona-name">5 Year Old</div><div class="persona-desc">Super simple, silly & playful clues</div>
+          </div>
         </div>
       </div>
     </div>
@@ -664,7 +706,7 @@
   <div class="confirm-title">Quest <em>Confirmed!</em></div>
   <p class="confirm-sub">Your treasure is hidden and your quest is set. Seekers will start hunting as soon as it goes live. Guard your secret code!</p>
   <div class="confirm-details" id="confirm-details"></div>
-  <button class="btn-home" onclick="location.href='index.html'">View Active Hunts →</button>
+  <button class="btn-home" onclick="location.href='seeker.html'">View Active Hunts →</button>
 </div>
 
 <script>
@@ -885,6 +927,10 @@ function selectPersona(persona) {
   selectedPersona = persona;
   document.querySelectorAll('.persona-card').forEach(el => el.classList.remove('selected'));
   document.getElementById('persona-' + persona).classList.add('selected');
+  const emojis = {pirate:'🏴‍☠️',gothic:'🕯️',poetic:'🌸',comedy:'😂',hillbilly:'🤠',kid:'🧸'};
+  const names = {pirate:'Pirate',gothic:'Gothic',poetic:'Poetic',comedy:'Comedy',hillbilly:'Hillbilly',kid:'5 Year Old'};
+  const el = document.getElementById('cg-persona-summary');
+  if (el) el.textContent = (emojis[persona]||'') + ' ' + (names[persona]||persona);
 }
 
 function openClueGen(huntId, photoUrl, lat, lng) {
@@ -909,13 +955,13 @@ async function generateClues() {
     pirate: ['Consulting the ancient maps…','Decoding pirate riddles…','Charting the hidden waters…','Burying the breadcrumbs…','Sealing the treasure chest…'],
     gothic: ['Summoning the shadows…','Whispering to the dark…','Inscribing the cryptic runes…','Veiling the path in darkness…','Binding the mystery…'],
     poetic: ['Gathering falling petals…','Weaving lyrical threads…','Breathing life into verses…','Painting the trail in words…','Composing your masterpiece…'],
-    rhymes: ['Finding the perfect rhyme…','Bouncing the verses around…','Stringing the rhythm together…','Setting the beat…','Dropping the final rhyme…'],
+    comedy: ['Warming up the crowd…','Crafting the setup…','Nailing the punchline…','Adding a bit of farce…','Making it absurd enough…'],
     hillbilly: ['Puttin the boots on…','Checkin the barn…','Hollerin at the neighbors…','Feedin the chickens…','Hee-haw, almost done…'],
     kid: ['Thinking real hard…','Counting on fingers…','Drawing a picture clue…','Asking for help…','Yay almost done! 🎉']
   };
   const personaTitles = {
     pirate:'Crafting pirate riddles…', gothic:'Conjuring dark mysteries…', poetic:'Weaving poetic verses…',
-    rhymes:'Composing your rhymes…', hillbilly:'Writin them country clues…', kid:'Making super fun clues! 🌟'
+    comedy:'Cooking up the jokes…', hillbilly:'Writin them country clues…', kid:'Making super fun clues! 🌟'
   };
   const statusMsgs = personaStatusMsgs[selectedPersona] || personaStatusMsgs.pirate;
   document.getElementById('cg-gen-text').textContent = personaTitles[selectedPersona] || 'Crafting your clues…';
@@ -928,7 +974,7 @@ async function generateClues() {
       pirate:`Write in a classic pirate voice — seafaring metaphors, treasure maps, "ye", "arr", nautical imagery, adventure. Bold and swashbuckling.`,
       gothic:`Write in a dark, gothic style — shadow, mystery, whispers, the uncanny, moonlight, ravens, forgotten things. Haunting and atmospheric.`,
       poetic:`Write in a lyrical, poetic style — beautiful imagery, nature metaphors, soft and dreamlike language, almost like song lyrics. Graceful and evocative.`,
-      rhymes:`Write every clue as a fun rhyming couplet or quatrain. Bouncy, catchy, and playful. The rhymes must be clean and satisfying.`,
+      comedy:`Write every clue as absurdist, farcical satire — deadpan observations, ridiculous comparisons, mock-serious tone, unexpected punchlines. Think Monty Python meets treasure hunting. Funny but still useful clues.`,
       hillbilly:`Write in a Southern hillbilly country style — folksy dialect, yall, aint, fixin to, yonder, drawl. Warm, funny, and down-home charming.`,
       kid:`Write like a cheerful 5-year-old explaining it to another 5-year-old — super simple words, silly comparisons, lots of excitement, short sentences. Use emojis occasionally.`
     };
@@ -948,7 +994,7 @@ async function generateClues() {
 
     const liveAt = liveChoice === 'now' ? new Date().toISOString() : new Date(document.getElementById('live-datetime').value).toISOString();
     const liveDateObj = new Date(liveAt);
-    const durationHours = questDuration === 'blitz' ? 2 : questDuration === 'weekend' ? 72 : 144;
+    const durationHours = questDuration;
 
     const clueRows = cluesArr.map(c => {
       const num = c.number;
@@ -972,9 +1018,9 @@ async function generateClues() {
     document.getElementById('cg-generating').style.display = 'none';
     document.getElementById('cg-review').style.display = 'block';
 
-    const personaBadge = { pirate:'🏴‍☠️ PIRATE CLUES', gothic:'🕯️ GOTHIC CLUES', poetic:'🌸 POETIC CLUES', rhymes:'🎵 RHYMING CLUES', hillbilly:'🤠 HILLBILLY CLUES', kid:'🧸 KID CLUES' };
-    const personaBadgeColors = { pirate:'rgba(201,137,12,.2)', gothic:'rgba(139,92,246,.2)', poetic:'rgba(236,72,153,.2)', rhymes:'rgba(34,197,94,.2)', hillbilly:'rgba(251,146,60,.2)', kid:'rgba(251,191,36,.2)' };
-    const personaBadgeBorder = { pirate:'rgba(201,137,12,.5)', gothic:'rgba(139,92,246,.5)', poetic:'rgba(236,72,153,.5)', rhymes:'rgba(34,197,94,.5)', hillbilly:'rgba(251,146,60,.5)', kid:'rgba(251,191,36,.5)' };
+    const personaBadge = { pirate:'🏴‍☠️ PIRATE CLUES', gothic:'🕯️ GOTHIC CLUES', poetic:'🌸 POETIC CLUES', comedy:'😂 COMEDY CLUES', hillbilly:'🤠 HILLBILLY CLUES', kid:'🧸 KID CLUES' };
+    const personaBadgeColors = { pirate:'rgba(201,137,12,.2)', gothic:'rgba(139,92,246,.2)', poetic:'rgba(236,72,153,.2)', comedy:'rgba(234,179,8,.2)', hillbilly:'rgba(251,146,60,.2)', kid:'rgba(251,191,36,.2)' };
+    const personaBadgeBorder = { pirate:'rgba(201,137,12,.5)', gothic:'rgba(139,92,246,.5)', poetic:'rgba(236,72,153,.5)', comedy:'rgba(234,179,8,.5)', hillbilly:'rgba(251,146,60,.5)', kid:'rgba(251,191,36,.5)' };
     const badge = document.getElementById('review-persona-badge');
     badge.textContent = personaBadge[selectedPersona] || '🏴‍☠️ PIRATE CLUES';
     badge.style.background = personaBadgeColors[selectedPersona];
@@ -1136,7 +1182,7 @@ function checkBanned() {
         <div style="font-size:52px;margin-bottom:16px;">🚫</div>
         <div style="font-family:'Bangers',cursive;font-size:36px;letter-spacing:3px;color:#f87171;margin-bottom:10px;">ACCOUNT BANNED</div>
         <div style="font-size:13px;color:#8a7a5a;font-family:'DM Mono',monospace;line-height:1.8;margin-bottom:28px;">Your account has been suspended for violating FinderSeek's community guidelines. If you believe this is a mistake, contact us at <strong style="color:#c8b48a;">finderseek1@gmail.com</strong></div>
-        <a href="index.html" style="display:inline-block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c8b48a;border-radius:12px;padding:12px 28px;font-size:13px;font-weight:700;font-family:'Karla',sans-serif;text-decoration:none;">← Back to Home</a>
+        <a href="seeker.html" style="display:inline-block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c8b48a;border-radius:12px;padding:12px 28px;font-size:13px;font-weight:700;font-family:'Karla',sans-serif;text-decoration:none;">← Back to Home</a>
       </div>
     </div>`);
 }
@@ -1223,7 +1269,38 @@ async function doLogin() {
 async function doSignOut() { clearToken(); currentUser = null; currentProfile = null; updateNavAuth(); }
 
 // ── FORM ──────────────────────────────────────────────
-let payMethod = 'zelle', liveChoice = 'now', photoFile = null, questDuration = null;
+let payMethod = 'zelle', liveChoice = 'now', photoFile = null, questDuration = 24;
+
+function formatDuration(h) {
+  h = parseInt(h);
+  if (h < 24) return h === 1 ? '1 Hour' : h + ' Hours';
+  const d = h / 24;
+  return d === 1 ? '1 Day' : (Number.isInteger(d) ? d + ' Days' : d.toFixed(1) + ' Days');
+}
+
+function updateDuration(val) {
+  questDuration = parseInt(val);
+  document.getElementById('duration-display').textContent = formatDuration(questDuration);
+  const el = document.getElementById('cg-duration-summary');
+  if (el) el.textContent = formatDuration(questDuration);
+  const pct = ((val - 1) / (144 - 1) * 100).toFixed(1) + '%';
+  const sl = document.getElementById('duration-slider');
+  sl.style.background = `linear-gradient(90deg,#93c5fd ${pct},rgba(147,197,253,.15) ${pct})`;
+}
+
+function updateClueCount(val) {
+  clueCount = parseInt(val);
+  document.getElementById('clue-count-display').textContent = val + ' Clues';
+  const cgCount = document.getElementById('cg-count');
+  if (cgCount) cgCount.textContent = val;
+  const el = document.getElementById('cg-count-summary');
+  if (el) el.textContent = val + ' clues';
+  const pct = ((val - 3) / (10 - 3) * 100).toFixed(1) + '%';
+  const sl = document.getElementById('clue-count-slider');
+  sl.style.background = `linear-gradient(90deg,#93c5fd ${pct},rgba(147,197,253,.15) ${pct})`;
+}
+
+function selectTime(t) { /* legacy no-op */ }
 
 function handlePhoto(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -1333,7 +1410,7 @@ async function submitHunt() {
 
     const now = new Date();
     const liveDate = new Date(liveAt);
-    const durationHours = questDuration === 'blitz' ? 2 : questDuration === 'weekend' ? 72 : 144;
+    const durationHours = questDuration;
     const weekEnd = new Date(liveDate.getTime() + durationHours * 60 * 60 * 1000);
     const weekLabel = `${liveDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
     const status = liveDate > now ? 'scheduled' : 'active';
@@ -1476,51 +1553,14 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
         <div class="cg-title">AI <em>Generated</em> Clues</div>
         <p class="cg-sub">Choose your clue style, set the count, and let FinderSeek craft the perfect trail for your Seekers.</p>
       </div>
-      <div style="margin-bottom:14px;">
-        <span class="cg-label" style="margin-bottom:14px;">🎭 Choose Your Clue Persona</span>
-        <div class="persona-grid">
-          <div class="persona-card p-pirate selected" id="persona-pirate" onclick="selectPersona('pirate')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span>
-            <div class="persona-name">Pirate</div><div class="persona-desc">Seafaring riddles, treasure maps & salty adventure</div>
-            <div class="persona-ex">"Where the tide of stone meets the forgotten shore…"</div>
-          </div>
-          <div class="persona-card p-gothic" id="persona-gothic" onclick="selectPersona('gothic')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🕯️</span>
-            <div class="persona-name">Gothic</div><div class="persona-desc">Dark, mysterious & haunting whispers</div>
-            <div class="persona-ex">"In the shadow that daylight dares not touch…"</div>
-          </div>
-          <div class="persona-card p-poetic" id="persona-poetic" onclick="selectPersona('poetic')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🌸</span>
-            <div class="persona-name">Poetic</div><div class="persona-desc">Lyrical, beautiful & dreamlike verses</div>
-            <div class="persona-ex">"Where nature exhales and stillness sings…"</div>
-          </div>
-          <div class="persona-card p-rhymes" id="persona-rhymes" onclick="selectPersona('rhymes')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🎵</span>
-            <div class="persona-name">Rhymes</div><div class="persona-desc">Fun, catchy clues that rhyme & bounce</div>
-            <div class="persona-ex">"Seek the place where branches grow, follow the path below…"</div>
-          </div>
-          <div class="persona-card p-hillbilly" id="persona-hillbilly" onclick="selectPersona('hillbilly')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🤠</span>
-            <div class="persona-name">Hillbilly</div><div class="persona-desc">Folksy, Southern drawl & country charm</div>
-            <div class="persona-ex">"Well shoot, y'all — head on over yonder past the big ol' tree…"</div>
-          </div>
-          <div class="persona-card p-kid" id="persona-kid" onclick="selectPersona('kid')">
-            <div class="persona-check">✓</div><span class="persona-emoji">🧸</span>
-            <div class="persona-name">5 Year Old</div><div class="persona-desc">Super simple, silly & playful clues</div>
-            <div class="persona-ex">"Go find the big brown thing that looks like a sleeping giant…"</div>
-          </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);">Your Settings</div>
+        <div style="display:flex;gap:16px;align-items:center;">
+          <span id="cg-duration-summary" style="font-size:13px;font-weight:700;color:#93c5fd;font-family:'DM Mono',monospace;">24 hrs</span>
+          <span id="cg-count-summary" style="font-size:13px;font-weight:700;color:#93c5fd;font-family:'DM Mono',monospace;">7 clues</span>
+          <span id="cg-persona-summary" style="font-size:13px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;">🏴‍☠️ Pirate</span>
         </div>
-      </div>
-      <div class="cg-card">
-        <span class="cg-label">🎯 How Many Clues?</span>
-        <div class="cg-num-row">
-          <div class="cg-num-label" style="color:var(--dim);font-size:13px;">Between 3 and 10 clues</div>
-          <div class="cg-num-ctrl">
-            <button class="cg-num-btn minus" onclick="changeClueCount(-1)">−</button>
-            <div class="cg-num-val" id="cg-count">7</div>
-            <button class="cg-num-btn plus" onclick="changeClueCount(1)">+</button>
-          </div>
-        </div>
+        <div id="cg-count" style="display:none;">7</div>
       </div>
       <button class="btn-gen-clues" id="btn-gen-clues" onclick="generateClues()">✨ &nbsp; Generate My Clues</button>
     </div>
@@ -1550,7 +1590,7 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
         <p style="color:var(--dim);font-size:15px;line-height:1.7;margin-bottom:4px;">Your clues have been crafted and saved.</p>
         <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;">Seekers can now hunt your treasure!</p>
         <div id="cg-clue-previews" style="text-align:left;margin:20px 0;"></div>
-        <a id="btn-view-hunt" class="btn-view-hunt" href="index.html">⚔️ &nbsp; View Active Hunts →</a>
+        <a id="btn-view-hunt" class="btn-view-hunt" href="seeker.html">⚔️ &nbsp; View Active Hunts →</a>
       </div>
     </div>
   </div>
