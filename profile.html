@@ -25,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 /* NAV */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
   padding:14px 16px;background:rgba(6,5,10,.92);
-  border-bottom:1px solid rgba(201,137,12,.15);overflow:hidden;}
+  border-bottom:1px solid rgba(201,137,12,.15);overflow:hidden;width:100%;box-sizing:border-box;}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
 .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .nav-brand{font-size:16px;font-weight:800;color:var(--cream);}
@@ -230,17 +230,19 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 @media(max-width:560px){
   .nav-brand{display:none;}
   .nav-icon{width:30px;height:30px;font-size:14px;}
-  .btn-upgrade{font-size:10px;padding:6px 12px;}
+  .btn-upgrade{font-size:10px;padding:6px 10px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .nav-back-arrow{width:34px;height:34px;}
   nav{padding:10px 12px;}
+  .wrap{padding:24px 14px 80px;}
   .field-row{grid-template-columns:1fr;}
   .profile-hero{flex-direction:column;text-align:center;}
-  .profile-hero-name{font-size:28px;}
+  .profile-hero-name{font-size:26px;letter-spacing:1px;}
   .profile-stats{justify-content:center;}
-  .tabs{grid-template-columns:1fr 1fr 1fr;}
+  .tabs{grid-template-columns:1fr 1fr 1fr;gap:6px;}
+  .tab{padding:12px 4px;font-size:11px;}
   .pirate-stats{grid-template-columns:1fr 1fr;}
   .pirate-stats .pirate-pstat:last-child{grid-column:1/-1;}
-  .section{padding:20px 16px;}
+  .section{padding:20px 14px;}
   .pirate-hcard-top{flex-direction:column;gap:8px;}
 }
 .btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
@@ -339,6 +341,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       </div>
       <button class="btn-save" id="btn-save-profile" onclick="saveProfile()">Save Changes</button>
     </div>
+
+    <!-- CHANGE PASSWORD -->
+    <div class="section fade-in" style="animation-delay:.08s;">
+      <div class="section-title">Change Password</div>
+      <div class="section-sub">We'll send a reset link to your email</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px;">
+        <div style="flex:1;min-width:180px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--muted);font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="pw-email-display">—</div>
+        <button class="btn-save" id="btn-reset-pw" onclick="sendPasswordReset()" style="margin-top:0;white-space:nowrap;">📧 Send Reset Link</button>
+      </div>
+      <div id="pw-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:13px;font-family:'DM Mono',monospace;"></div>
+    </div>
     <div class="section fade-in" style="animation-delay:.1s;">
       <div class="section-title">Email Notifications</div>
       <div class="section-sub">Choose what emails you receive from FinderSeek</div>
@@ -403,9 +416,35 @@ function showAuthGate(){document.getElementById('auth-gate').style.display='flex
 function showPortal(){document.getElementById('auth-gate').style.display='none';document.getElementById('main-wrap').style.display='block';}
 function showTab(name,tabEl){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');tabEl.classList.add('active');if(name==='pirate'&&!_pirateLoaded)loadPirateDash();}
 async function loadProfile(uid){const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});const d=await r.json();if(!d?.length)return;currentProfile=d[0];const upgradeBtn=document.getElementById('nav-upgrade-btn');if(upgradeBtn)upgradeBtn.style.display=currentProfile?.is_pro?'none':'inline-flex';renderProfile();loadHuntHistory(uid);}
-function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';document.getElementById('p-avatar').textContent=name[0].toUpperCase();document.getElementById('p-name').textContent=name;document.getElementById('p-city').textContent=p.city||'—';document.getElementById('p-joined').textContent=p.created_at?new Date(p.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';document.getElementById('p-finds').textContent=p.finds_count||0;document.getElementById('p-streak').textContent=p.streak||0;document.getElementById('f-username').value=p.username||'';document.getElementById('f-city').value=p.city||'';document.getElementById('f-email').value=p.email||currentUser?.email||'';document.getElementById('n-new-hunts').checked=p.notify_new_hunts!==false;document.getElementById('n-hunt-won').checked=p.notify_hunt_won!==false;document.getElementById('n-chat').checked=p.notify_chat!==false;document.getElementById('n-hunt-live').checked=p.notify_hunt_live!==false;}
+function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';document.getElementById('p-avatar').textContent=name[0].toUpperCase();document.getElementById('p-name').textContent=name;document.getElementById('p-city').textContent=p.city||'—';document.getElementById('p-joined').textContent=p.created_at?new Date(p.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';document.getElementById('p-finds').textContent=p.finds_count||0;document.getElementById('p-streak').textContent=p.streak||0;document.getElementById('f-username').value=p.username||'';document.getElementById('f-city').value=p.city||'';document.getElementById('f-email').value=p.email||currentUser?.email||'';const pwEmail=document.getElementById('pw-email-display');if(pwEmail)pwEmail.textContent=p.email||currentUser?.email||'—';document.getElementById('n-new-hunts').checked=p.notify_new_hunts!==false;document.getElementById('n-hunt-won').checked=p.notify_hunt_won!==false;document.getElementById('n-chat').checked=p.notify_chat!==false;document.getElementById('n-hunt-live').checked=p.notify_hunt_live!==false;}
 async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No hunt history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
 async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Username is required','error');return;}const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({username,city,email})});if(!r.ok)throw new Error('Save failed');currentProfile={...currentProfile,username,city,email};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
+
+async function sendPasswordReset(){
+  const email = currentUser?.email;
+  if(!email){showToast('No email on file','error');return;}
+  const btn = document.getElementById('btn-reset-pw');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try{
+    const r = await fetch(`${SB}/auth/v1/recover`,{
+      method:'POST',
+      headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const msgEl = document.getElementById('pw-msg');
+    if(r.ok){
+      msgEl.style.display='block';
+      msgEl.style.cssText='display:block;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:13px;font-family:\'DM Mono\',monospace;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;';
+      msgEl.textContent='✅ Reset link sent! Check your email.';
+      btn.textContent='✅ Sent!';
+    } else {
+      msgEl.style.display='block';
+      msgEl.style.cssText='display:block;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:13px;font-family:\'DM Mono\',monospace;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;';
+      msgEl.textContent='❌ Could not send reset email. Try again.';
+      btn.disabled=false; btn.textContent='📧 Send Reset Link';
+    }
+  }catch(e){showToast('Network error','error');btn.disabled=false;btn.textContent='📧 Send Reset Link';}
+}
 let notifTimer=null;async function saveNotif(){clearTimeout(notifTimer);notifTimer=setTimeout(async()=>{try{const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({notify_new_hunts:document.getElementById('n-new-hunts').checked,notify_hunt_won:document.getElementById('n-hunt-won').checked,notify_chat:document.getElementById('n-chat').checked,notify_hunt_live:document.getElementById('n-hunt-live').checked,})});if(!r.ok)throw new Error();showToast('✅ Notifications updated','success');}catch(e){showToast('Could not save notifications','error');}},600);}
 function signOut(){clearToken();window.location.href='index.html';}
 function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your hunt history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
