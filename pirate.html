@@ -588,12 +588,12 @@
     </div>
     <div class="fcard-body">
       <div class="code-wrap">
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d1" oninput="codeNext(this,'d2')" onkeydown="codePrev(event,this,'')"/>
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d2" oninput="codeNext(this,'d3')" onkeydown="codePrev(event,this,'d1')"/>
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d3" oninput="codeNext(this,'d4')" onkeydown="codePrev(event,this,'d2')"/>
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d4" oninput="codeNext(this,'d5')" onkeydown="codePrev(event,this,'d3')"/>
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="codeNext(this,'d6')" onkeydown="codePrev(event,this,'d4')"/>
-        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="codeNext(this,'')"   onkeydown="codePrev(event,this,'d5')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d1" onfocus="codeSelect(this)" oninput="codeNext(this,'d2')" onkeydown="codePrev(event,this,'')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d2" onfocus="codeSelect(this)" oninput="codeNext(this,'d3')" onkeydown="codePrev(event,this,'d1')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d3" onfocus="codeSelect(this)" oninput="codeNext(this,'d4')" onkeydown="codePrev(event,this,'d2')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d4" onfocus="codeSelect(this)" oninput="codeNext(this,'d5')" onkeydown="codePrev(event,this,'d3')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d5" onfocus="codeSelect(this)" oninput="codeNext(this,'d6')" onkeydown="codePrev(event,this,'d4')"/>
+        <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="d6" onfocus="codeSelect(this)" oninput="codeNext(this,'')"   onkeydown="codePrev(event,this,'d5')"/>
       </div>
       <div style="text-align:center;margin-top:12px;">
         <button class="btn-gen" onclick="generateCode()">🎲 Generate Random Code</button>
@@ -1363,8 +1363,16 @@ drop.addEventListener('drop', e => {
   if (file && file.type.startsWith('image/')) handlePhoto({ target: { files: [file] } });
 });
 
-function codeNext(el, nextId) { el.value = el.value.replace(/[^0-9]/g, ''); if (el.value && nextId) document.getElementById(nextId).focus(); }
-function codePrev(e, el, prevId) { if (e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId).focus(); }
+function codeNext(el, nextId) {
+  // Keep only last digit typed (handles overwrite of existing value)
+  const val = el.value.replace(/[^0-9]/g, '');
+  el.value = val ? val[val.length - 1] : '';
+  if (el.value && nextId) document.getElementById(nextId).focus();
+}
+function codePrev(e, el, prevId) {
+  if (e.key === 'Backspace') { el.value = ''; if (prevId) document.getElementById(prevId).focus(); }
+}
+function codeSelect(el) { el.select(); }
 function generateCode() {
   const d = Math.floor(100000 + Math.random() * 900000).toString().split('');
   ['d1','d2','d3','d4','d5','d6'].forEach((id, i) => document.getElementById(id).value = d[i]);
