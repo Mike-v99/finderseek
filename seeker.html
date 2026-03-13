@@ -119,13 +119,13 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .hunt-section-body{display:none;padding-top:12px;}
 .hunt-section.open .hunt-section-body{display:block;animation:fadeUp .3s both;}
 
-.search-wrap{position:relative;margin-bottom:12px;}
-.s-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 120px 14px 44px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s,background .2s;}
-.s-input::placeholder{color:var(--muted);}
-.s-input:focus{border-color:rgba(201,137,12,.4);background:rgba(255,255,255,.06);}
-.s-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;}
-.btn-livemap{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,#b91c1c,#ef4444);color:#ffffff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:800;font-family:'Karla',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 2px 10px rgba(239,68,68,.3);}
-.btn-livemap:hover{transform:translateY(-50%) translateY(-1px);box-shadow:0 4px 16px rgba(239,68,68,.5);}
+.search-wrap{position:relative;margin-bottom:12px;display:flex;align-items:center;gap:0;}
+.s-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px 0 0 14px;padding:14px 16px 14px 44px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s,background .2s;}
+.s-input::placeholder{color:var(--dim);}
+.s-input:focus{border-color:rgba(201,137,12,.5);background:rgba(255,255,255,.1);}
+.s-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;z-index:2;color:var(--dim);}
+.btn-livemap{flex-shrink:0;background:linear-gradient(135deg,#b91c1c,#ef4444);color:#ffffff;border:none;border-radius:0 14px 14px 0;padding:14px 18px;font-size:12px;font-weight:800;font-family:'Karla',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 2px 10px rgba(239,68,68,.3);}
+.btn-livemap:hover{box-shadow:0 4px 16px rgba(239,68,68,.5);}
 .btn-livemap .dot{width:6px;height:6px;border-radius:50%;background:#ffffff;animation:pulse 2s infinite;}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
 .fpill{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--dim);cursor:pointer;transition:all .2s;font-family:'Karla',sans-serif;font-weight:600;}
@@ -326,7 +326,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
 <div class="main" id="hunts">
   <div class="search-wrap">
-    <span class="s-icon">&#128269;</span>
+    <span class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></span>
     <input class="s-input" id="search" placeholder="Search city or area..." oninput="renderAll()"/>
     <button class="btn-livemap" onclick="openLiveMap()"><span class="dot"></span> Live Map</button>
   </div>
@@ -402,8 +402,8 @@ function fmt(ms){if(ms<=0)return'Ended';const d=Math.floor(ms/86400000),h=Math.f
 function toggleSection(id){document.getElementById(id).classList.toggle('open');}
 
 function buildCards(list,container,type){
-  const q=document.getElementById('search').value.toLowerCase();
-  const filtered=list.filter(h=>(activeFilter==='all'||h.city===activeFilter)&&(!q||h.city.toLowerCase().includes(q)));
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const filtered=list.filter(h=>(!q||h.city.toLowerCase().includes(q)));
   if(!filtered.length){container.innerHTML='<div class="statebox"><div class="si">'+(type==='completed'?'\uD83C\uDFC6':type==='scheduled'?'\uD83D\uDCC5':'\uD83D\uDD0D')+'</div>'+(type==='active'?'No active hunts in that area.':type==='scheduled'?'No upcoming hunts yet.':'No completed hunts yet.')+'</div>';return;}
   container.innerHTML=filtered.map((h,i)=>{
     const isCompleted=type==='completed',isScheduled=type==='scheduled';
