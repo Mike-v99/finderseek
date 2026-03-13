@@ -232,6 +232,40 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   .stat-lbl{font-size:7px;letter-spacing:1px;}
   .stat-item[style*="flex:0 0 auto"]{width:100px!important;min-width:100px!important;border-radius:18px 0 0 18px!important;}
 }
+
+/* Mobile slide-out menu */
+.mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;}
+.mobile-menu-overlay.show{display:block;opacity:1;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;max-width:85vw;height:100vh;z-index:100;background:linear-gradient(180deg,#0f0d1a 0%,#0a0818 100%);border-left:1px solid rgba(201,137,12,.15);box-shadow:-8px 0 40px rgba(0,0,0,.5);transition:right .3s ease;display:flex;flex-direction:column;overflow-y:auto;}
+.mobile-menu.show{right:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--cream);}
+.mm-logo em{font-style:italic;color:var(--gold);font-weight:300;}
+.mm-close{background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;transition:color .2s;}
+.mm-close:hover{color:var(--cream);}
+.mm-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-signin-btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:800;font-family:'Karla',sans-serif;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(34,197,94,.3);}
+.mm-signin-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,197,94,.5);}
+.mm-user-info{display:flex;align-items:center;gap:12px;}
+.mm-user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#0a1a0a;}
+.mm-user-name{font-size:15px;font-weight:700;color:var(--cream);}
+.mm-user-email{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.mm-links{flex:1;padding:12px 0;}
+.mm-link{display:flex;align-items:center;gap:14px;padding:14px 20px;color:var(--cream);text-decoration:none;font-size:15px;font-weight:600;transition:background .15s;font-family:'Karla',sans-serif;}
+.mm-link:hover{background:rgba(255,255,255,.04);}
+.mm-link-icon{font-size:20px;width:28px;text-align:center;}
+.mm-arrow{margin-left:auto;color:var(--muted);font-size:20px;}
+.mm-link-pro{color:var(--gold2);}
+.mm-pro-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a0800;font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;letter-spacing:1.5px;margin-left:8px;}
+.mm-footer{padding:20px;border-top:1px solid rgba(255,255,255,.06);margin-top:auto;}
+.mm-pirate-btn{display:block;text-align:center;background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border-radius:12px;padding:14px;font-size:14px;font-weight:800;text-decoration:none;font-family:'Karla',sans-serif;box-shadow:0 4px 20px rgba(26,32,144,.4);transition:all .2s;}
+.mm-pirate-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
+.mm-version{text-align:center;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:14px;letter-spacing:1px;}
+
+/* Hamburger animation when open */
+.mobile-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.mobile-hamburger.open span:nth-child(2){opacity:0;}
+.mobile-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
 </style>
 </head>
 <body>
@@ -250,9 +284,31 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 </nav>
 
 <!-- Mobile floating hamburger (overlays the background image) -->
-<button class="mobile-hamburger" onclick="toggleMobileMenu()">
+<button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileMenu()">
   <span></span><span></span><span></span>
 </button>
+
+<!-- MOBILE SLIDE-OUT MENU -->
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header">
+    <div class="mm-logo">Finder<em>Seek</em></div>
+    <button class="mm-close" onclick="closeMobileMenu()">&times;</button>
+  </div>
+  <div class="mm-user" id="mm-user">
+    <button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal();">&#128269; Sign In / Create Account</button>
+  </div>
+  <div class="mm-links">
+    <a href="profile.html" class="mm-link"><span class="mm-link-icon">&#128100;</span>Profile<span class="mm-arrow">&rsaquo;</span></a>
+    <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">&#128220;</span>How It Works<span class="mm-arrow">&rsaquo;</span></a>
+    <a href="mailto:support@finderseek.com" class="mm-link"><span class="mm-link-icon">&#9993;&#65039;</span>Contact<span class="mm-arrow">&rsaquo;</span></a>
+    <a href="pricing.html" class="mm-link mm-link-pro"><span class="mm-link-icon">&#11088;</span>Upgrade to Gold<span class="mm-pro-badge">PRO</span><span class="mm-arrow">&rsaquo;</span></a>
+  </div>
+  <div class="mm-footer">
+    <a href="pirate.html" class="mm-pirate-btn">&#127988;&#8205;&#9760;&#65039; Hide Treasure</a>
+    <div class="mm-version">FinderSeek v1.0</div>
+  </div>
+</div>
 
 <!-- AUTH MODAL -->
 <div class="auth-modal" id="auth-modal">
@@ -511,6 +567,7 @@ function updateNavAuth(){
   const area=document.getElementById('nav-auth-area');
   if(currentUser){const name=currentProfile?currentProfile.username:'Hunter';area.innerHTML='<div class="nav-user" onclick="window.location=\'profile.html\'"><div class="nav-avatar">'+name[0].toUpperCase()+'</div><span>'+name+'</span></div>';}
   else{area.innerHTML='<button class="btn-signin" onclick="openAuthModal()">\uD83D\uDD0D Sign In</button>';}
+  updateMobileMenuAuth();
 }
 
 function openAuthModal(){document.getElementById('auth-modal').classList.add('show');}
@@ -558,7 +615,27 @@ async function doLogin(){
 async function doSignOut(){clearToken();currentUser=null;currentProfile=null;updateNavAuth();}
 
 function toggleMobileMenu(){
-  alert('Mobile menu coming soon!');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-menu-overlay');
+  const btn=document.getElementById('mobile-hamburger');
+  const isOpen=menu.classList.contains('show');
+  if(isOpen){closeMobileMenu();}
+  else{menu.classList.add('show');overlay.classList.add('show');btn.classList.add('open');document.body.style.overflow='hidden';}
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('show');
+  document.getElementById('mobile-menu-overlay').classList.remove('show');
+  document.getElementById('mobile-hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+function updateMobileMenuAuth(){
+  const area=document.getElementById('mm-user');
+  if(currentUser&&currentProfile){
+    const name=currentProfile.username||'Hunter';
+    area.innerHTML='<div class="mm-user-info"><div class="mm-user-avatar">'+name[0].toUpperCase()+'</div><div><div class="mm-user-name">'+name+'</div><div class="mm-user-email">'+(currentUser.email||'')+'</div></div></div>';
+  } else {
+    area.innerHTML='<button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal();">&#128269; Sign In / Create Account</button>';
+  }
 }
 
 // ─── LIVE MAP ───
