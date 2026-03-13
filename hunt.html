@@ -1435,6 +1435,26 @@ function showPirateChat() {
 }
 
 loadHunt();
+
+// ── AUTO-REFRESH CLUES ────────────────────────────────
+// Poll every 30s to reveal newly dropped clues without a page refresh
+setInterval(async () => {
+  if (!hunt?.id || hunt?.status === 'ended') return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/clues?hunt_id=eq.${hunt.id}&order=clue_number.asc`, { headers: H });
+    if (!r.ok) return;
+    const fresh = await r.json();
+    if (!Array.isArray(fresh)) return;
+    // Check if any newly revealed clues since last render
+    const now = new Date();
+    const prevRevealed = clues.filter(c => new Date(c.reveal_at) <= now).length;
+    const newRevealed = fresh.filter(c => new Date(c.reveal_at) <= now).length;
+    if (newRevealed > prevRevealed) {
+      clues = fresh;
+      renderHunt();
+    }
+  } catch(e) {}
+}, 30000);
 </script>
 </body>
 </html>
