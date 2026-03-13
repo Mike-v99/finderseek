@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -111,12 +111,12 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">
+  <a class="nav-logo" href="seeker.html">
     <div class="nav-icon">🔍</div>
     <div><div class="nav-brand">Finder<em>Seek</em></div></div>
   </a>
   <a id="nav-upgrade-btn" class="nav-upgrade-pill" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-  <a class="nav-back-arrow" href="index.html">
+  <a class="nav-back-arrow" href="seeker.html">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
   </a>
 </nav>
@@ -161,7 +161,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="pcard featured" id="gold-card">
       <div class="pcard-badge">🥇 Gold</div>
       <div class="pcard-name" style="background:linear-gradient(135deg,#b45309,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Legend</div>
-      <div class="pcard-price" style="background:linear-gradient(135deg,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><sup>$</sup>9<span style="-webkit-text-fill-color:var(--muted)">.99/mo</span></div>
+      <div class="pcard-price" style="background:linear-gradient(135deg,#e8a820,#fde68a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><sup>$</sup>9<span style="-webkit-text-fill-color:var(--muted)">/mo</span></div>
       <div class="pcard-cycle">Cancel anytime · Billed monthly</div>
       <hr class="pcard-divider"/>
       <div class="pcard-role">🔍 As a Seeker</div>
@@ -179,7 +179,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         <li><span class="fi">💬</span>Priority support</li>
       </ul>
       <button class="btn-go-gold" id="btn-upgrade" onclick="startCheckout()">
-        🥇 Go Gold — $9.99/mo
+        🥇 Go Gold — $9/mo
       </button>
     </div>
   </div>
@@ -231,7 +231,7 @@ async function startCheckout(){
   try{
     const r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});
     const d=await r.json();if(d.url){window.location=d.url;return;}throw new Error(d.error||'No checkout URL');
-  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='🥇 Go Gold — $9.99/mo';}
+  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='🥇 Go Gold — $9/mo';}
 }
 
 function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
