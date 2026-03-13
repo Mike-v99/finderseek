@@ -739,15 +739,22 @@ let searchTimeout = null;
 
 function loadLeaflet(cb) {
   if (window.L) { cb(); return; }
-  setTimeout(() => { if (window.L) cb(); else document.getElementById('map-coords').textContent = '⚠️ Map failed to load'; }, 1000);
+  const check = (n) => {
+    if (window.L) { cb(); return; }
+    if (n > 20) { document.getElementById('map-coords').textContent = '⚠️ Map failed to load — try refreshing'; return; }
+    setTimeout(() => check(n+1), 200);
+  };
+  check(0);
 }
 
 function initMap(lat, lng) {
   if (_mapReady) { flyTo(lat, lng); return; }
   loadLeaflet(() => {
     _mapReady = true;
-    _map = L.map('map-container').setView([lat, lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(_map);
+    _map = L.map('map-container', { zoomControl: true, attributionControl: false }).setView([lat, lng], 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19, subdomains: 'abcd'
+    }).addTo(_map);
     const icon = L.divIcon({
       className: '',
       html: '<div style="font-size:34px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.7))">📍</div>',
@@ -766,6 +773,8 @@ function initMap(lat, lng) {
       _marker.setLatLng([selectedLat, selectedLng]);
       setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
     });
+    // Force map to recalculate size after render
+    setTimeout(() => _map && _map.invalidateSize(), 300);
   });
 }
 
@@ -855,26 +864,19 @@ let searchResults = [], selectedResultIdx = -1;
 function liveSearch(val) {
   clearTimeout(searchTimeout);
   const dropdown = document.getElementById('search-dropdown');
-  if (val.length < 3) { dropdown.classList.remove('show'); return; }
-  searchTimeout = setTimeout(() => fetchSearchResults(val), 400);
+  if (val.length < 2) { dropdown.classList.remove('show'); return; }
+  searchTimeout = setTimeout(() => fetchSearchResults(val), 350);
 }
 
 async function fetchSearchResults(query) {
   try {
     const biasLat = selectedLat || 29.7604, biasLng = selectedLng || -95.3698;
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1&countrycodes=us&viewbox=${biasLng-2},${biasLat+2},${biasLng+2},${biasLat-2}&bounded=0`;
-    const r = await fetch(url);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&addressdetails=1&countrycodes=us&viewbox=${biasLng-2},${biasLat+2},${biasLng+2},${biasLat-2}&bounded=0`;
+    const r = await fetch(url, { headers: { 'Accept-Language': 'en' } });
     const d = await r.json();
     searchResults = d || [];
     const dropdown = document.getElementById('search-dropdown');
     if (!searchResults.length) { dropdown.classList.remove('show'); return; }
-    const first = searchResults[0];
-    const lat = parseFloat(first.lat), lng = parseFloat(first.lon);
-    const bbox = first.boundingbox;
-    if (_mapReady && _map) {
-      if (bbox) { _map.fitBounds([[parseFloat(bbox[0]), parseFloat(bbox[2])],[parseFloat(bbox[1]), parseFloat(bbox[3])]], {animate:true, duration:0.8, maxZoom:16}); }
-      else { _map.setView([lat, lng], 14, {animate:true, duration:0.8}); }
-    }
     dropdown.innerHTML = searchResults.map((r, i) => {
       const parts = r.display_name.split(',');
       const main = parts.slice(0,2).join(',').trim();
