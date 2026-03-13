@@ -255,7 +255,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="auth-gate-title">Sign In</div>
     <div class="auth-gate-sub">You need an account to view your profile.</div>
     <button class="btn-gate-signin" onclick="openAuthModal()">Sign In / Create Account</button>
-    <div style="margin-top:16px;"><a href="seeker.html" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">← Back to hunts</a></div>
+    <div style="margin-top:16px;"><a href="index.html" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">← Back to hunts</a></div>
   </div>
 </div>
 
@@ -284,12 +284,12 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 </div>
 
 <nav>
-  <a class="nav-logo" href="seeker.html">
+  <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
     <div><div class="nav-brand">Finder<em>Seek</em></div></div>
   </a>
   <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-  <a class="nav-back-arrow" href="seeker.html">
+  <a class="nav-back-arrow" href="index.html">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
   </a>
 </nav>
@@ -407,7 +407,7 @@ function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';
 async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No hunt history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
 async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Username is required','error');return;}const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({username,city,email})});if(!r.ok)throw new Error('Save failed');currentProfile={...currentProfile,username,city,email};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
 let notifTimer=null;async function saveNotif(){clearTimeout(notifTimer);notifTimer=setTimeout(async()=>{try{const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({notify_new_hunts:document.getElementById('n-new-hunts').checked,notify_hunt_won:document.getElementById('n-hunt-won').checked,notify_chat:document.getElementById('n-chat').checked,notify_hunt_live:document.getElementById('n-hunt-live').checked,})});if(!r.ok)throw new Error();showToast('✅ Notifications updated','success');}catch(e){showToast('Could not save notifications','error');}},600);}
-function signOut(){clearToken();window.location.href='seeker.html';}
+function signOut(){clearToken();window.location.href='index.html';}
 function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your hunt history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
 function openAuthModal(){document.getElementById('auth-modal').classList.add('show');}
 function closeAuthModal(){document.getElementById('auth-modal').classList.remove('show');}
