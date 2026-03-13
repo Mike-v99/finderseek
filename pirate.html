@@ -549,8 +549,8 @@
           </div>
           <button type="button" onclick="goToMyLocation()" id="my-loc-btn" style="background:#2196f3;flex-shrink:0;border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:700;color:#ffffff;cursor:pointer;font-family:'Karla',sans-serif;white-space:nowrap;box-shadow:0 3px 14px rgba(33,150,243,.5);transition:all .2s;display:flex;align-items:center;gap:7px;" onmouseover="this.style.background='#1976d2'" onmouseout="this.style.background='#2196f3'"><span id="my-loc-txt">✈️ Current Location</span></button>
         </div>
-        <div id="map-container" style="width:100%;height:300px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.25);position:relative;z-index:2;background:rgba(10,8,18,.9);display:flex;align-items:center;justify-content:center;">
-          <div id="map-loading" style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;">
+        <div id="map-container" style="width:100%;height:300px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.25);position:relative;z-index:2;background:rgba(10,8,18,.9);">
+          <div id="map-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;pointer-events:none;">
             <div style="font-size:28px;margin-bottom:8px;">🗺️</div>
             <div>Loading map…</div>
           </div>
@@ -744,29 +744,26 @@ let searchTimeout = null;
 
 function loadLeaflet(cb) {
   if (window.L) { cb(); return; }
-  const check = (n) => {
-    if (window.L) { cb(); return; }
-    if (n > 20) { document.getElementById('map-coords').textContent = '⚠️ Map failed to load — try refreshing'; return; }
-    setTimeout(() => check(n+1), 200);
-  };
-  check(0);
+  let tries = 0;
+  const t = setInterval(() => {
+    tries++;
+    if (window.L) { clearInterval(t); cb(); }
+    else if (tries > 30) { clearInterval(t); document.getElementById('map-coords').textContent = '⚠️ Map failed to load'; }
+  }, 100);
 }
 
 function initMap(lat, lng) {
   if (_mapReady) { flyTo(lat, lng); return; }
-  loadLeaflet(() => {
-    // Remove loading placeholder
-    const loading = document.getElementById('map-loading');
-    if (loading) loading.remove();
-    // Remove flex centering from container
-    const mc = document.getElementById('map-container');
-    if (mc) { mc.style.display = 'block'; }
+  const loading = document.getElementById('map-loading');
+  if (loading) loading.remove();
+  const mc = document.getElementById('map-container');
+  if (mc) mc.style.cssText = 'width:100%;height:300px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,137,12,.25);position:relative;z-index:2;display:block;';
 
+  loadLeaflet(() => {
     _mapReady = true;
-    _map = L.map('map-container', { zoomControl: true, attributionControl: false }).setView([lat, lng], 15);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19, subdomains: 'abcd'
-    }).addTo(_map);
+    _map = L.map('map-container', { zoomControl: true, attributionControl: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(_map);
+    _map.setView([lat, lng], 15);
     const icon = L.divIcon({
       className: '',
       html: '<div style="font-size:34px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.7))">📍</div>',
@@ -785,8 +782,7 @@ function initMap(lat, lng) {
       _marker.setLatLng([selectedLat, selectedLng]);
       setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
     });
-    // Force map to recalculate size after render
-    [100, 300, 600, 1000, 2000].forEach(ms => setTimeout(() => _map && _map.invalidateSize(), ms));
+    setTimeout(() => _map.invalidateSize(), 200);
   });
 }
 
@@ -934,31 +930,25 @@ document.addEventListener('click', function(e) {
 });
 
 window.addEventListener('load', () => {
-  // Small delay to ensure DOM is fully painted before Leaflet measures container
+  // Init map after short delay to ensure container is painted
   setTimeout(() => {
-    const loading = document.getElementById('map-loading');
-    if (loading) loading.remove();
-    const mc = document.getElementById('map-container');
-    if (mc) mc.style.display = 'block';
-
     if (navigator.geolocation) {
-      let gpsUsed = false;
+      let done = false;
       navigator.geolocation.getCurrentPosition(
         p => {
-          gpsUsed = true;
+          done = true;
           initMap(p.coords.latitude, p.coords.longitude);
           selectedLat = p.coords.latitude; selectedLng = p.coords.longitude;
           reverseGeocode(p.coords.latitude, p.coords.longitude);
         },
-        () => { if (!gpsUsed) initMap(29.7604, -95.3698); },
-        { timeout: 4000 }
+        () => { if (!done) initMap(29.7604, -95.3698); },
+        { timeout: 3000 }
       );
-      // Don't wait forever — init with default after 1.5s if GPS hasn't responded
-      setTimeout(() => { if (!_mapReady) initMap(29.7604, -95.3698); }, 1500);
+      setTimeout(() => { if (!_mapReady) initMap(29.7604, -95.3698); }, 3100);
     } else {
       initMap(29.7604, -95.3698);
     }
-  }, 400);
+  }, 300);
 });
 
 // ── CLUE GENERATION ──────────────────────────────────
