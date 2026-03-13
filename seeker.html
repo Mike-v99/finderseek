@@ -41,12 +41,12 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .auth-logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#15803d,#22c55e);display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;box-shadow:0 4px 20px rgba(34,197,94,.3);}
 .auth-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;}
 .auth-title em{color:#4ade80;font-style:italic;}
-.auth-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.auth-benefit{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 12px;transition:border-color .2s;}
-.auth-benefit:hover{border-color:rgba(34,197,94,.2);}
-.auth-benefit-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
-.auth-benefit-title{display:block;font-size:12px;font-weight:700;color:var(--cream);line-height:1.3;}
-.auth-benefit-desc{display:block;font-size:10px;color:var(--muted);line-height:1.4;margin-top:2px;}
+.auth-benefits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.auth-benefit{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px 8px;transition:border-color .2s;text-align:center;}
+.auth-benefit:hover{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.04);}
+.auth-benefit-icon{font-size:22px;}
+.auth-benefit-title{font-size:11px;font-weight:700;color:var(--cream);letter-spacing:.5px;}
+.auth-check{color:#4ade80;margin-right:3px;font-weight:800;}
 .auth-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.2),transparent);margin:4px 0 16px;}
 .auth-free-note{text-align:center;font-size:11px;color:#4ade80;font-family:'DM Mono',monospace;margin-top:12px;letter-spacing:.5px;}
 .auth-tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:3px;margin-bottom:24px;}
@@ -77,6 +77,11 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
 .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
 .btn-cta{display:flex;flex-direction:column;align-items:flex-start;padding:20px 24px;border-radius:20px;cursor:pointer;text-decoration:none;border:1px solid transparent;font-family:'Karla',sans-serif;transition:all .25s;min-width:160px;position:relative;overflow:hidden;}
+.btn-cta::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.15) 45%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.15) 55%,transparent 80%);animation:glisten 4.5s infinite;pointer-events:none;}
+.btn-cta:nth-child(1)::after{animation-delay:0s;}
+.btn-cta:nth-child(2)::after{animation-delay:1.5s;}
+.btn-cta:nth-child(3)::after{animation-delay:3s;}
+@keyframes glisten{0%{left:-100%;}15%{left:150%;}100%{left:150%;}}
 .btn-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);}
 .btn-cta-eyebrow{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;opacity:.65;margin-bottom:10px;font-family:'DM Mono',monospace;}
 .btn-cta-main{display:flex;align-items:center;gap:9px;font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;line-height:1;}
@@ -330,10 +335,12 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
     <!-- Benefits section -->
     <div class="auth-benefits">
-      <div class="auth-benefit"><span class="auth-benefit-icon">&#127919;</span><div><span class="auth-benefit-title">Track Live Hunts</span><span class="auth-benefit-desc">Follow active hunts and get clue drop alerts</span></div></div>
-      <div class="auth-benefit"><span class="auth-benefit-icon">&#128176;</span><div><span class="auth-benefit-title">Claim Prizes</span><span class="auth-benefit-desc">Found the treasure? Claim your cash reward</span></div></div>
-      <div class="auth-benefit"><span class="auth-benefit-icon">&#127942;</span><div><span class="auth-benefit-title">Leaderboard</span><span class="auth-benefit-desc">Compete with other hunters in your city</span></div></div>
-      <div class="auth-benefit"><span class="auth-benefit-icon">&#127988;&#8205;&#9760;&#65039;</span><div><span class="auth-benefit-title">Hide Treasure</span><span class="auth-benefit-desc">Become a Pirate and create your own hunts</span></div></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#127919;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Track Live Hunts</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#128176;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Claim Prizes</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#128101;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Build Followers</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#127988;&#8205;&#9760;&#65039;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Hide Treasure</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#129302;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>AI Clues</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#128276;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Notifications</span></div>
     </div>
 
     <div class="auth-divider"></div>
@@ -344,7 +351,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     </div>
     <div id="signup-fields">
       <div class="auth-field"><label class="auth-label">Hunter Name</label><input class="auth-input" id="auth-username" placeholder="e.g. TreasureHunter99" maxlength="20"/></div>
-      <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="auth-email-signup" type="email" placeholder="you@email.com"/></div>
+      <div class="auth-field"><label class="auth-label">Email — For Zelle / Venmo</label><input class="auth-input" id="auth-email-signup" type="email" placeholder="you@email.com"/></div>
       <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="auth-pass-signup" type="password" placeholder="At least 8 characters"/></div>
       <button class="auth-btn auth-btn-primary" id="btn-signup" onclick="doSignup()">Join the Hunt &#128269;</button>
       <div class="auth-free-note">&#10003; 100% free &mdash; no credit card needed</div>
