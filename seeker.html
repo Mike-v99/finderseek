@@ -181,6 +181,27 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .f3{animation:fadeUp .6s .2s both}
 .f4{animation:fadeUp .6s .3s both}
 .f5{animation:fadeUp .6s .38s both}
+
+/* Hamburger menu button */
+.nav-hamburger{display:none;background:none;border:1px solid rgba(201,137,12,.3);border-radius:8px;padding:6px 5px;cursor:pointer;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:36px;height:36px;transition:border-color .2s;}
+.nav-hamburger:hover{border-color:rgba(201,137,12,.6);}
+.nav-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
+
+/* Mobile responsive */
+@media(max-width:640px){
+  .nav-hamburger{display:flex;}
+  .btn-pirate-nav,.btn-signin,.live-badge{display:none;}
+  #nav-auth-area{display:none;}
+  .hero{padding:32px 20px 40px;}
+  .hero .f1{gap:16px;margin-bottom:24px;}
+  .hero .f1 svg{width:100px;height:100px;}
+  .cta-row{flex-direction:column;align-items:stretch;padding:0 8px;}
+  .btn-cta{min-width:auto;}
+  .stat-strip-wrap{max-width:100%;}
+  .stat-item{padding:12px 4px;}
+  .stat-num{font-size:22px;}
+  .stat-lbl{font-size:8px;letter-spacing:1.5px;}
+}
 </style>
 </head>
 <body>
@@ -189,13 +210,15 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
 <nav>
   <a class="nav-logo" href="#">
-    <div class="nav-icon">&#128269;</div>
-    <div><div class="nav-name">Finder<em>Seek</em></div></div>
+    <div class="nav-name">Finder<em>Seek</em></div>
   </a>
   <div class="nav-r">
     <div class="live-badge"><span class="dot"></span><span id="live-count">&mdash;</span> LIVE</div>
     <div id="nav-auth-area"><button class="btn-signin" onclick="openAuthModal()">&#128269; Sign In</button></div>
     <a href="pirate.html" class="btn-pirate-nav">&#127988;&#8205;&#9760;&#65039; Hide Treasure</a>
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -457,6 +480,11 @@ async function doLogin(){
 }
 
 async function doSignOut(){clearToken();currentUser=null;currentProfile=null;updateNavAuth();}
+
+function toggleMobileMenu(){
+  // Placeholder — we'll build the mobile menu later
+  alert('Mobile menu coming soon!');
+}
 
 loadHunts();
 </script>
