@@ -1179,17 +1179,6 @@ async function submitClaim() {
 }
 
 // ── AUTH ──────────────────────────────────────────────
-<!-- ═══════════════════════════════════════════════════════
-     HUNT.HTML — PATCHED AUTH SECTION
-     
-     In hunt.html, find the section that starts with:
-       // ── AUTH ──
-     And ends with:
-       // ── END AUTH ──
-     
-     Replace that ENTIRE section with everything below.
-     ═══════════════════════════════════════════════════════ -->
-
 // ── AUTH ──────────────────────────────────────────────
 let currentUser = null, currentProfile = null;
 function getToken(){ return localStorage.getItem('fs_token'); }
