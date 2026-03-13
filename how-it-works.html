@@ -12,11 +12,11 @@
 html{scroll-behavior:smooth;}
 body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-.bg-img{position:fixed;inset:0;z-index:0;background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.1;}
+.bg-img{position:fixed;inset:0;z-index:0;background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.13;}
 .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(6,5,10,.2) 0%,rgba(6,5,10,.95) 80%);}
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.5;}
 
-nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid rgba(201,137,12,.12);background:rgba(6,5,10,.8);backdrop-filter:blur(16px);}
+nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid rgba(201,137,12,.12);background:rgba(6,5,10,.92);}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .nav-icon{width:36px;height:36px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,137,12,.4);}
 .nav-name{font-size:18px;font-weight:800;color:var(--cream);}
@@ -25,7 +25,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .btn-back:hover{border-color:var(--gold);color:var(--cream);}
 
 .hero{position:relative;z-index:2;text-align:center;padding:70px 24px 56px;}
-.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.07) 0%,rgba(201,137,12,.04) 40%,transparent 70%);pointer-events:none;}
+.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.04) 0%,rgba(201,137,12,.02) 40%,transparent 70%);pointer-events:none;}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:6px 18px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c4b5fd;font-family:'DM Mono',monospace;margin-bottom:24px;}
 .hero h1{font-family:'Bangers',cursive;font-size:clamp(52px,10vw,88px);letter-spacing:4px;line-height:.95;margin-bottom:18px;text-shadow:0 4px 24px rgba(0,0,0,.7);}
 .hero h1 em{color:var(--gold);font-style:normal;text-shadow:0 0 40px rgba(201,137,12,.4);}
@@ -41,7 +41,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .role-panel.active{display:block;}
 
 .sec-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;}
-.sec-eyebrow.gold{color:var(--gold);}
+.sec-eyebrow.gold{color:var(--cream);}
 .sec-eyebrow.blue{color:#93c5fd;}
 .sec-title{font-family:'Bangers',cursive;font-size:clamp(32px,6vw,48px);letter-spacing:3px;margin-bottom:12px;line-height:1.05;}
 .sec-title.gold{background:linear-gradient(135deg,var(--gold2),#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -53,10 +53,10 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .step:last-child{padding-bottom:0;}
 .step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
 .step-num{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bangers',cursive;font-size:22px;letter-spacing:1px;flex-shrink:0;position:relative;z-index:1;}
-.step-num.gold{background:linear-gradient(135deg,rgba(201,137,12,.3),rgba(232,168,32,.2));border:2px solid rgba(201,137,12,.6);color:var(--gold2);box-shadow:0 0 20px rgba(201,137,12,.2);}
+.step-num.gold{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.2);color:var(--cream);box-shadow:0 0 12px rgba(255,255,255,.05);}
 .step-num.blue{background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(99,102,241,.15));border:2px solid rgba(99,102,241,.5);color:#93c5fd;box-shadow:0 0 20px rgba(99,102,241,.2);}
 .step-line{width:2px;flex:1;margin:6px 0;min-height:20px;}
-.step-line.gold{background:linear-gradient(180deg,rgba(201,137,12,.4),rgba(201,137,12,.05));}
+.step-line.gold{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.03));}
 .step-line.blue{background:linear-gradient(180deg,rgba(99,102,241,.4),rgba(99,102,241,.05));}
 .step-right{flex:1;padding-top:10px;}
 .step-icon{font-size:28px;margin-bottom:10px;}
@@ -66,13 +66,14 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .step-body{font-size:14px;color:rgba(255,255,255,.85);line-height:1.8;}
 .step-body strong{color:#ffffff;font-weight:700;}
 .step-pill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:.5px;margin-top:10px;}
-.step-pill.gold{background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);color:var(--gold);}
+.step-pill.gold{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--cream);}
 .step-pill.blue{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;}
 .step-pill.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
 
-.gold-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,137,12,.3),transparent);margin:40px 0;}
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);margin:40px 0;}
 
-.faq{margin-bottom:48px;}
+.faq{margin-bottom:48px;padding:2px;border-radius:16px;background:linear-gradient(135deg,#c9890c,#f5c842,#a8781a,#e8a820,#c9890c);}
+.faq-inner{background:var(--ink);border-radius:14px;padding:4px;}
 .faq-item{border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:8px;background:rgba(10,8,18,.7);backdrop-filter:blur(10px);}
 .faq-q{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-weight:700;font-size:15px;gap:12px;transition:background .2s;}
 .faq-q:hover{background:rgba(255,255,255,.03);}
@@ -110,6 +111,27 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   .step-num{width:40px;height:40px;font-size:18px;}
 }
 .btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
+
+/* Scroll-triggered step animations */
+.step{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
+.step.visible{opacity:1;transform:translateY(0);}
+
+/* CTA card glisten */
+.cta-card{position:relative;overflow:hidden;}
+.cta-card::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 55%,transparent 80%);animation:ctaGlisten 8s infinite;pointer-events:none;}
+.cta-card:nth-child(1)::after{animation-delay:0s;}
+.cta-card:nth-child(2)::after{animation-delay:4s;}
+@keyframes ctaGlisten{0%{left:-100%;}10%{left:150%;}100%{left:150%;}}
+
+/* Floating sticky button — mobile only */
+.sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;padding:12px 16px;background:linear-gradient(180deg,transparent,rgba(6,5,10,.95) 30%);pointer-events:none;}
+.sticky-cta a{pointer-events:all;display:block;text-align:center;background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;font-size:15px;font-weight:800;font-family:'Karla',sans-serif;padding:14px;border-radius:14px;text-decoration:none;box-shadow:0 -2px 20px rgba(201,137,12,.4);transition:all .2s;}
+.sticky-cta a:hover{transform:translateY(-2px);box-shadow:0 -4px 28px rgba(201,137,12,.6);}
+
+@media(max-width:640px){
+  .sticky-cta{display:block;}
+  .wrap{padding-bottom:100px;}
+}
 </style>
 </head>
 <body>
@@ -150,10 +172,12 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     </div>
     <div class="gold-divider"></div>
     <div class="faq">
+      <div class="faq-inner">
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is it free to play?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — completely free to browse hunts and follow clues. You only need to sign up to claim a prize.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I get paid?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">When you submit the winning code, FinderSeek notifies the Pirate who hid the treasure. They'll send the prize directly to you via Zelle or Venmo, or through FinderSeek.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">If someone else found it first, the hunt will show as claimed. Check back for new hunts — new ones drop regularly!</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How close do the maps get?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">The 3rd-to-last clue shows a 2,600ft radius. The 2nd-to-last narrows to 1,000ft. The final clue zooms to 260ft with a photo of the exact hiding spot.</div></div></div>
+      </div>
     </div>
   </div>
 
@@ -169,10 +193,12 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     </div>
     <div class="gold-divider"></div>
     <div class="faq">
+      <div class="faq-inner">
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What makes a good hiding spot?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Somewhere public and safe — a park bench, under a rock, behind a landmark. Avoid private property. The spot should be accessible to anyone during daylight hours.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I protect the code from weather?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Use a small waterproof bag, a sealed zip-lock, or write the code on a laminated card. The code just needs to stay readable until a seeker finds it.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I edit clues before going live?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — after the AI generates your clues, you'll review them and can regenerate with a different persona before approving. Once approved and live, clues are locked.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if nobody finds it?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">If the hunt timer expires without a winner, you keep everything. Go retrieve your code and the prize is yours to re-hide or keep.</div></div></div>
+      </div>
     </div>
   </div>
 
@@ -185,7 +211,19 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 <script>
 function showRole(role){document.querySelectorAll('.role-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+role).classList.add('active');document.querySelector('.rtab.'+role).classList.add('active');}
 function toggleFaq(el){const answer=el.nextElementSibling;const isOpen=el.classList.contains('open');document.querySelectorAll('.faq-q.open').forEach(q=>{q.classList.remove('open');q.nextElementSibling.classList.remove('open');});if(!isOpen){el.classList.add('open');answer.classList.add('open');}}
+
+// Scroll-triggered step animations
+const stepObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');stepObserver.unobserve(e.target);}});
+},{threshold:0.15});
+document.querySelectorAll('.step').forEach(s=>stepObserver.observe(s));
 </script>
+
+<!-- Floating sticky CTA — mobile only -->
+<div class="sticky-cta">
+  <a href="seeker.html#hunts">🔍 Start Hunting →</a>
+</div>
+
 <script>
 (async()=>{
   const SB='https://qeiuycuasjkopxfkmggp.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
