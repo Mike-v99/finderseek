@@ -1077,21 +1077,47 @@ function updateDtPreview() {
 window.addEventListener('load', () => { initDatePicker(); });
 
 // ── AUTH ──────────────────────────────────────────────
+<!-- ═══════════════════════════════════════════════════════
+     PIRATE.HTML — PATCHED AUTH SECTION
+     
+     In pirate.html, find the section that starts with:
+       // ── AUTH ──
+     And replace EVERYTHING from there through doSignOut()
+     with everything below.
+     ═══════════════════════════════════════════════════════ -->
+
+// ── AUTH ──────────────────────────────────────────────
 let currentUser = null, currentProfile = null;
 
 window.addEventListener('load', async () => {
-  try {
-    const r = await fetch(`${SB}/auth/v1/user`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) } });
-    if (r.ok) { const u = await r.json(); if (u?.id) { currentUser = u; await loadProfile(u.id); updateNavAuth(); } }
-  } catch(e) {}
+  const token = getToken();
+  if(token){
+    try {
+      let r = await fetch(`${SB}/auth/v1/user`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token } });
+      if(!r.ok){
+        const ok = await refreshSession();
+        if(ok) r = await fetch(`${SB}/auth/v1/user`, {headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});
+      }
+      if(r.ok){ const u = await r.json(); if(u?.id){ currentUser = u; await loadProfile(u.id); updateNavAuth(); } }
+    } catch(e) {}
+  }
 });
 
-function getToken(){ return localStorage.getItem('fs_token'); }
-function setToken(t){ localStorage.setItem('fs_token', t); }
-function setRefresh(t){ localStorage.setItem('fs_refresh', t); }
-function getRefresh(){ return localStorage.getItem('fs_refresh'); }
-function clearToken(){ localStorage.removeItem('fs_token'); localStorage.removeItem('fs_refresh'); }
-async function refreshSession(){const rt=getRefresh();if(!rt)return false;try{const r=await fetch(`${SB}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{'apikey':KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:rt})});if(!r.ok)return false;const d=await r.json();if(d.access_token){setToken(d.access_token);if(d.refresh_token)setRefresh(d.refresh_token);return true;}return false;}catch(e){return false;}}
+function getToken() { return localStorage.getItem('fs_token'); }
+function setToken(t) { localStorage.setItem('fs_token', t); }
+function setRefresh(t) { localStorage.setItem('fs_refresh', t); }
+function getRefresh() { return localStorage.getItem('fs_refresh'); }
+function clearToken() { localStorage.removeItem('fs_token'); localStorage.removeItem('fs_refresh'); }
+
+async function refreshSession(){
+  const rt=getRefresh();if(!rt)return false;
+  try{
+    const r=await fetch(`${SB}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{'apikey':KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:rt})});
+    if(!r.ok)return false;const d=await r.json();
+    if(d.access_token){setToken(d.access_token);if(d.refresh_token)setRefresh(d.refresh_token);return true;}
+    return false;
+  }catch(e){return false;}
+}
 
 async function loadProfile(uid) {
   try {
@@ -1109,7 +1135,7 @@ function checkBanned() {
       <div style="background:linear-gradient(160deg,rgba(30,10,10,.99),rgba(10,8,16,.99));border:1px solid rgba(239,68,68,.35);border-radius:24px;padding:40px 36px;max-width:420px;width:100%;text-align:center;">
         <div style="font-size:52px;margin-bottom:16px;">🚫</div>
         <div style="font-family:'Bangers',cursive;font-size:36px;letter-spacing:3px;color:#f87171;margin-bottom:10px;">ACCOUNT BANNED</div>
-        <div style="font-size:13px;color:#8a7a5a;font-family:'DM Mono',monospace;line-height:1.8;margin-bottom:28px;">Your account has been suspended for violating FinderSeek's community guidelines. If you believe this is a mistake, contact us at <strong style="color:#c8b48a;">hello@finderseek.com</strong></div>
+        <div style="font-size:13px;color:#8a7a5a;font-family:'DM Mono',monospace;line-height:1.8;margin-bottom:28px;">Your account has been suspended for violating FinderSeek's community guidelines. If you believe this is a mistake, contact us at <strong style="color:#c8b48a;">finderseek1@gmail.com</strong></div>
         <a href="seeker.html" style="display:inline-block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c8b48a;border-radius:12px;padding:12px 28px;font-size:13px;font-weight:700;font-family:'Karla',sans-serif;text-decoration:none;">← Back to Home</a>
       </div>
     </div>`);
@@ -1162,7 +1188,7 @@ async function doSignup() {
     const d = await r.json();
     if (d.error) { showAuthError(d.error.message || d.error?.msg || JSON.stringify(d.error)); btn.disabled = false; btn.textContent = 'Create Pirate Account 🏴‍☠️'; return; }
     if (d.access_token) {
-      setToken(d.access_token); currentUser = d.user;
+      setToken(d.access_token); if(d.refresh_token)setRefresh(d.refresh_token); currentUser = d.user;
       await fetch(`${SB}/rest/v1/profiles`, { method: 'POST', headers: { ...H, 'Authorization': 'Bearer ' + d.access_token }, body: JSON.stringify({ id: d.user.id, handle, phone_number: phone }) });
       await loadProfile(d.user.id); updateNavAuth();
       showAuthSuccess('✅ Account created! Welcome, @' + handle);
@@ -1186,7 +1212,7 @@ async function doLogin() {
     const d = await r.json();
     if (d.error) { showAuthError(d.error_description || d.error?.message || JSON.stringify(d.error)); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
     if (!d.access_token) { showAuthError('No token returned.'); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
-    setToken(d.access_token); currentUser = d.user;
+    setToken(d.access_token); if(d.refresh_token)setRefresh(d.refresh_token); currentUser = d.user;
     await loadProfile(d.user.id); updateNavAuth();
     showAuthSuccess('✅ Welcome back, @' + (currentProfile?.handle || 'Pirate') + '!');
     setTimeout(() => closeAuthModal(), 1500);
