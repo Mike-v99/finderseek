@@ -282,7 +282,7 @@ async function loadAll() {
   document.getElementById('admin-status').textContent = 'Syncing…';
   try {
     const [huntsRes, profilesRes] = await Promise.all([
-      fetch(`${SB}/rest/v1/hunts?select=*&order=created_at.desc`, { headers: H }),
+      fetch(`${SB}/rest/v1/hunts?select=*,pirate:profiles!hunts_created_by_fkey(id,username,city,is_pro,is_banned)&order=created_at.desc`, { headers: H }),
       fetch(`${SB}/rest/v1/profiles?select=*&order=created_at.desc`, { headers: H }),
     ]);
     const hunts    = await huntsRes.json();
@@ -486,6 +486,16 @@ function buildCard(h, i) {
 
   const payIcon = h.payment_type === 'zelle' ? '💚' : h.payment_type === 'venmo' ? '💙' : h.payment_type === 'cash' ? '💵' : '💳';
 
+  const pirate = h.pirate;
+  const pirateName = pirate?.username || 'Unknown Pirate';
+  const pirateId = pirate?.id || h.created_by || null;
+  const pirateLink = pirateId ? `<a href="profile.html?uid=${pirateId}" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700;">${pirateName}</a>` : `<span style="color:var(--muted)">${pirateName}</span>`;
+  const pirateBadges = [
+    pirate?.is_pro ? `<span style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;letter-spacing:1px;">⭐ GOLD</span>` : '',
+    pirate?.is_banned ? `<span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;letter-spacing:1px;">🚫 BANNED</span>` : '',
+  ].filter(Boolean).join(' ');
+  const pirateCity = pirate?.city ? `<span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">· ${pirate.city}</span>` : '';
+
   const actions = h.status === 'draft' ? `
     <button class="btn-approve" onclick="approveHunt('${h.id}')">✅ Approve & Go Live</button>
     <button class="btn-reject"  onclick="rejectHunt('${h.id}')">❌ Reject</button>
@@ -511,6 +521,12 @@ function buildCard(h, i) {
             <div class="status-pill ${statusClass[h.status]}">${statusLabel[h.status]}</div>
           </div>
           <div class="rcard-meta">
+            <div class="rmeta-item" style="grid-column:1/-1;">
+              <div class="rmeta-lbl">Posted by</div>
+              <div class="rmeta-val" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                🏴‍☠️ ${pirateLink} ${pirateCity} ${pirateBadges}
+              </div>
+            </div>
             <div class="rmeta-item"><div class="rmeta-lbl">Submitted</div><div class="rmeta-val">${createdAt}</div></div>
             <div class="rmeta-item"><div class="rmeta-lbl">Goes Live</div><div class="rmeta-val">${startsAt}</div></div>
             <div class="rmeta-item"><div class="rmeta-lbl">Ends</div><div class="rmeta-val">${endsAt}</div></div>
