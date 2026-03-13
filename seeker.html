@@ -186,21 +186,36 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .nav-hamburger{display:none;background:none;border:1px solid rgba(201,137,12,.3);border-radius:8px;padding:6px 5px;cursor:pointer;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:36px;height:36px;transition:border-color .2s;}
 .nav-hamburger:hover{border-color:rgba(201,137,12,.6);}
 .nav-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
+.hero-svg-wrap{flex-shrink:0;}
 
 /* Mobile responsive */
 @media(max-width:640px){
   .nav-hamburger{display:flex;}
   .btn-pirate-nav,.btn-signin,.live-badge{display:none;}
   #nav-auth-area{display:none;}
-  .hero{padding:32px 20px 40px;}
-  .hero .f1{gap:16px;margin-bottom:24px;}
-  .hero .f1 svg{width:100px;height:100px;}
-  .cta-row{flex-direction:column;align-items:stretch;padding:0 8px;}
-  .btn-cta{min-width:auto;}
-  .stat-strip-wrap{max-width:100%;}
-  .stat-item{padding:12px 4px;}
-  .stat-num{font-size:22px;}
-  .stat-lbl{font-size:8px;letter-spacing:1.5px;}
+  nav{padding:10px 16px;}
+  .nav-name{font-size:16px;}
+  .nav-name em{font-size:18px;}
+
+  /* Hero: tighter, logo+wordmark side by side but smaller */
+  .hero{padding:20px 16px 28px;}
+  .hero .f1{gap:14px;margin-bottom:20px;}
+  .hero-svg-wrap svg{width:72px;height:72px;}
+
+  /* CTA buttons: compact horizontal row on mobile */
+  .cta-row{gap:8px;margin-top:20px;padding:0 4px;}
+  .btn-cta{padding:14px 12px;min-width:0;border-radius:14px;}
+  .btn-cta-eyebrow{font-size:7px;letter-spacing:1.5px;margin-bottom:6px;}
+  .btn-cta-main{font-size:16px;letter-spacing:1px;gap:6px;}
+  .btn-cta-icon{font-size:15px;}
+  .btn-cta-arrow{font-size:13px;}
+
+  /* Stat strip: full width, smaller text */
+  .stat-strip-wrap{max-width:100%;margin-top:24px;}
+  .stat-item{padding:10px 3px;}
+  .stat-num{font-size:18px;letter-spacing:1px;}
+  .stat-lbl{font-size:7px;letter-spacing:1px;}
+  .stat-item[style*="flex:0 0 auto"]{width:100px!important;min-width:100px!important;}
 }
 </style>
 </head>
@@ -253,7 +268,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
 <div class="hero">
   <div class="f1" style="display:flex;justify-content:center;align-items:center;gap:28px;margin-bottom:36px;flex-wrap:wrap;">
-    <div style="position:relative;flex-shrink:0;">
+    <div class="hero-svg-wrap" style="position:relative;flex-shrink:0;">
       <svg width="130" height="130" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
         <defs><linearGradient id="iG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c9890c"/><stop offset="100%" stop-color="#e8a820"/></linearGradient></defs>
         <circle cx="55" cy="55" r="52" fill="#0f0d1a" stroke="#c9890c" stroke-width="0.8" opacity="0.25"/>
