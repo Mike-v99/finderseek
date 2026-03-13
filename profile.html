@@ -30,8 +30,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .nav-brand{font-size:16px;font-weight:800;color:var(--cream);}
 .nav-brand em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
-.nav-back{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;transition:color .2s;white-space:nowrap;}
-.nav-back:hover{color:var(--cream);}
+.nav-back-arrow{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1px solid rgba(201,137,12,.25);color:var(--dim);text-decoration:none;transition:all .2s;flex-shrink:0;}
+.nav-back-arrow:hover{border-color:var(--gold);color:var(--cream);background:rgba(201,137,12,.08);}
 
 /* AUTH GATE */
 .auth-gate{position:fixed;inset:0;z-index:200;background:rgba(6,5,10,.97);display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -231,8 +231,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   .nav-brand{display:none;}
   .nav-icon{width:30px;height:30px;font-size:14px;}
   .btn-upgrade{font-size:10px;padding:6px 12px;}
-  .nav-back{font-size:11px;}
-  nav{padding:10px 12px;gap:8px;}
+  .nav-back-arrow{width:34px;height:34px;}
+  nav{padding:10px 12px;}
   .field-row{grid-template-columns:1fr;}
   .profile-hero{flex-direction:column;text-align:center;}
   .profile-hero-name{font-size:28px;}
@@ -288,10 +288,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="nav-icon">🔍</div>
     <div><div class="nav-brand">Finder<em>Seek</em></div></div>
   </a>
-  <div style="display:flex;align-items:center;gap:10px;flex-shrink:1;min-width:0;">
-    <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-    <a class="nav-back" href="seeker.html">← Back to Hunts</a>
-  </div>
+  <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
+  <a class="nav-back-arrow" href="seeker.html">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </a>
 </nav>
 
 <div class="wrap" id="main-wrap" style="display:none;">
