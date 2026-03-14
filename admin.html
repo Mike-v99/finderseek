@@ -219,10 +219,78 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="atab" onclick="switchTab('ended',this)">🏁 Completed <span class="atab-count" id="tc-ended">—</span></div>
     <div class="atab" onclick="switchTab('cancelled',this)">❌ Rejected <span class="atab-count" id="tc-cancelled">—</span></div>
     <div class="atab" onclick="switchTab('profiles',this)">👤 Users <span class="atab-count" id="tc-profiles">—</span></div>
+    <div class="atab" onclick="switchTab('settings',this)">⚙️ Settings</div>
   </div>
 
   <div class="review-grid" id="review-grid">
     <div class="empty-state loading-pulse"><div class="empty-icon">⏳</div><div class="empty-msg">Loading hunts…</div></div>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div id="settings-panel" style="display:none;max-width:600px;margin:0 auto;">
+    <div style="background:rgba(10,8,18,.9);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;margin-bottom:16px;">
+      <div style="padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(135deg,rgba(201,137,12,.15),rgba(201,137,12,.05));">
+        <div style="font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;color:var(--gold2);">🕐 Hunt Listing Hours</div>
+        <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;">Hunts can only be scheduled and go live within these hours</div>
+      </div>
+      <div style="padding:24px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div>
+            <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--dim);display:block;margin-bottom:8px;">Start Time</label>
+            <select id="setting-start-time" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,137,12,.25);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;">
+              <option value="6">6:00 AM</option>
+              <option value="7">7:00 AM</option>
+              <option value="8" selected>8:00 AM</option>
+              <option value="9">9:00 AM</option>
+              <option value="10">10:00 AM</option>
+              <option value="11">11:00 AM</option>
+              <option value="12">12:00 PM</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--dim);display:block;margin-bottom:8px;">End Time</label>
+            <select id="setting-end-time" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,137,12,.25);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;">
+              <option value="14">2:00 PM</option>
+              <option value="15">3:00 PM</option>
+              <option value="16">4:00 PM</option>
+              <option value="17">5:00 PM</option>
+              <option value="18" selected>6:00 PM</option>
+              <option value="19">7:00 PM</option>
+              <option value="20">8:00 PM</option>
+              <option value="21">9:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div style="background:rgba(201,137,12,.06);border:1px solid rgba(201,137,12,.15);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--dim);font-family:'DM Mono',monospace;">
+          💡 Hunts scheduled outside these hours will not activate. The cron job checks every 15 minutes.
+        </div>
+        <button onclick="saveSettings()" style="background:linear-gradient(135deg,#b45309,var(--gold2));color:#0a0800;border:none;border-radius:12px;padding:13px 32px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(201,137,12,.35);transition:all .2s;">💾 Save Settings</button>
+      </div>
+    </div>
+
+    <!-- Max Active Hunts -->
+    <div style="background:rgba(10,8,18,.9);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;margin-bottom:16px;">
+      <div style="padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(139,92,246,.05));">
+        <div style="font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;color:#c4b5fd;">🎯 Max Active Hunts</div>
+        <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;">Maximum number of hunts that can be live at the same time per city</div>
+      </div>
+      <div style="padding:24px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <div style="flex:1;">
+            <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--dim);display:block;margin-bottom:8px;">Max per city</label>
+            <select id="setting-max-hunts" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;">
+              <option value="1">1 hunt</option>
+              <option value="2">2 hunts</option>
+              <option value="3" selected>3 hunts</option>
+              <option value="5">5 hunts</option>
+              <option value="10">10 hunts</option>
+              <option value="0">Unlimited</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="saveSettings()" style="background:linear-gradient(135deg,#6d28d9,#8b5cf6);color:#fff;border:none;border-radius:12px;padding:13px 32px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(139,92,246,.35);transition:all .2s;">💾 Save Settings</button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -329,7 +397,17 @@ function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  renderTab(tab);
+  const grid = document.getElementById('review-grid');
+  const settingsPanel = document.getElementById('settings-panel');
+  if (tab === 'settings') {
+    grid.style.display = 'none';
+    settingsPanel.style.display = 'block';
+    loadSettings();
+  } else {
+    grid.style.display = '';
+    settingsPanel.style.display = 'none';
+    renderTab(tab);
+  }
 }
 
 function renderTab(tab) {
@@ -343,6 +421,43 @@ function renderTab(tab) {
     return;
   }
   grid.innerHTML = hunts.map((h, i) => buildCard(h, i)).join('');
+}
+
+async function loadSettings() {
+  try {
+    const r = await fetch(`${SB}/rest/v1/settings?select=*`, { headers: H });
+    if (!r.ok) return;
+    const rows = await r.json();
+    const get = (key, def) => rows.find(r => r.key === key)?.value ?? def;
+    document.getElementById('setting-start-time').value = get('listing_start_hour', '8');
+    document.getElementById('setting-end-time').value = get('listing_end_hour', '18');
+    document.getElementById('setting-max-hunts').value = get('max_hunts_per_city', '3');
+  } catch(e) { console.error('loadSettings', e); }
+}
+
+async function saveSettings() {
+  const startHour = document.getElementById('setting-start-time').value;
+  const endHour = document.getElementById('setting-end-time').value;
+  const maxHunts = document.getElementById('setting-max-hunts').value;
+
+  const upsert = async (key, value) => {
+    await fetch(`${SB}/rest/v1/settings`, {
+      method: 'POST',
+      headers: { ...H, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify({ key, value: String(value) })
+    });
+  };
+
+  try {
+    await Promise.all([
+      upsert('listing_start_hour', startHour),
+      upsert('listing_end_hour', endHour),
+      upsert('max_hunts_per_city', maxHunts),
+    ]);
+    showToast(`✅ Settings saved — hunts list ${document.getElementById('setting-start-time').options[document.getElementById('setting-start-time').selectedIndex].text} to ${document.getElementById('setting-end-time').options[document.getElementById('setting-end-time').selectedIndex].text}`, 'success');
+  } catch(e) {
+    showToast('Error saving settings: ' + e.message, 'error');
+  }
 }
 
 // ── PROFILES ──────────────────────────────────────────
