@@ -1535,7 +1535,7 @@ function editCluesBack() {
   window._pendingClueRows = null;
 }
 
-async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status) {
+async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status, liveAt) {
   // Show a simple fullscreen loading state
   const loadingEl = document.createElement('div');
   loadingEl.id = 'silent-loading';
@@ -1564,7 +1564,7 @@ async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status) {
     const cluesArr = clueData.clues || clueData;
 
     setStatus('Saving clues…');
-    const liveDateObj = new Date(document.getElementById('live-datetime')?.value || new Date());
+    const liveDateObj = new Date(liveAt);
     const durationHours = questDuration;
     const durationMs = durationHours * 60 * 60 * 1000;
     const isGold = currentProfile?.is_pro;
@@ -1911,7 +1911,7 @@ async function submitHunt(previewMode = false) {
     openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
   } else {
     // Silent mode — auto-generate and publish directly
-    await silentGenerateAndPublish(savedHuntId, photoUrl, selectedLat, selectedLng, status);
+    await silentGenerateAndPublish(savedHuntId, photoUrl, selectedLat, selectedLng, status, liveAt);
   }
 }
 
