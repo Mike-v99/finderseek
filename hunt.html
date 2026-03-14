@@ -738,7 +738,7 @@ function renderHunt() {
   // Next clue (only relevant if hunt is still active)
   const nextClue = huntEnded ? null : clues.find(c => new Date(c.reveal_at) > new Date());
   if (nextClue) {
-    document.getElementById('next-clue-lbl').textContent = 'Clue ' + nextClue.clue_number;
+    document.getElementById('next-clue-lbl').textContent = 'Clue ' + nextClue.clue_number + ' — ' + new Date(nextClue.reveal_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     clearInterval(nextTimer);
     nextTimer = setInterval(() => {
       const el = document.getElementById('next-clue-cd');
@@ -812,7 +812,7 @@ function renderHunt() {
               <span class="cday">${c.day_label}</span>
               <span class="cdate">${c.date_label}</span>
             </div>
-            <div class="clocked">🔒 Drops in</div>
+            <div class="clocked">🔒 Drops at ${new Date(c.reveal_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div>
             <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>
           </div>
         </div>
