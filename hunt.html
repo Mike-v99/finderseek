@@ -29,17 +29,39 @@ body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
   transition:transform .3s ease;
-  padding:12px 20px;background:transparent;}
-.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+  padding:12px 20px;background:transparent;width:100%;box-sizing:border-box;}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
 .nav-icon{width:30px;height:30px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;}
 .nav-name{font-size:15px;font-weight:700;color:var(--cream);}
 .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:17px;}
-.nav-back{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;transition:color .2s;}
-.nav-back:hover{color:var(--gold);}
-.nav-user{display:flex;align-items:center;gap:7px;cursor:pointer;padding:4px 10px;border-radius:20px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.08);}
-.nav-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0a1a0a;}
-.nav-user span{font-size:11px;font-weight:700;color:#4ade80;font-family:'DM Mono',monospace;}
-.btn-signin{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;}
+@media(max-width:560px){.nav-name{display:none;}}
+.mobile-hamburger{background:rgba(6,5,10,.5);border:1px solid rgba(201,137,12,.3);backdrop-filter:blur(8px);border-radius:8px;padding:6px 5px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:38px;height:38px;transition:border-color .2s;}
+.mobile-hamburger:hover{border-color:rgba(201,137,12,.6);}
+.mobile-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
+.mobile-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.mobile-hamburger.open span:nth-child(2){opacity:0;}
+.mobile-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;}
+.mobile-menu-overlay.show{display:block;opacity:1;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;max-width:85vw;height:100vh;z-index:100;background:linear-gradient(180deg,#0f0d1a 0%,#0a0818 100%);border-left:1px solid rgba(201,137,12,.15);box-shadow:-8px 0 40px rgba(0,0,0,.5);transition:right .3s ease;display:flex;flex-direction:column;overflow-y:auto;}
+.mobile-menu.show{right:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--cream);}
+.mm-logo em{font-style:italic;color:var(--gold);font-weight:300;}
+.mm-close{background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
+.mm-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-signin-btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:800;font-family:'Karla',sans-serif;cursor:pointer;}
+.mm-links{flex:1;padding:12px 0;}
+.mm-link{display:flex;align-items:center;gap:14px;padding:14px 20px;color:var(--cream);text-decoration:none;font-size:15px;font-weight:600;transition:background .15s;font-family:'Karla',sans-serif;}
+.mm-link:hover{background:rgba(255,255,255,.04);}
+.mm-link-icon{font-size:20px;width:28px;text-align:center;}
+.mm-arrow{margin-left:auto;color:var(--muted);font-size:20px;}
+.mm-link-pro{color:var(--gold2);}
+.mm-pro-badge{font-size:9px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border-radius:6px;padding:2px 6px;margin-left:6px;}
+.mm-user-info{display:flex;align-items:center;gap:12px;}
+.mm-user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#0a1a0a;}
+.mm-user-name{font-size:15px;font-weight:700;color:var(--cream);}
+.mm-user-email{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
 .auth-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;}
 .auth-modal.show{display:flex;}
 .auth-box{background:linear-gradient(160deg,rgba(20,16,30,.98),rgba(10,8,16,.99));border:1px solid rgba(34,197,94,.25);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;}
@@ -386,13 +408,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
-    <div><div class="nav-name">Finder<em>Seek</em></div></div>
+    <div class="nav-name">Finder<em>Seek</em></div>
   </a>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <div style="display:flex;align-items:center;gap:10px;"><a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a><div id="nav-auth-area"></div></div>
-    <a class="nav-back" href="index.html">← All Quests</a>
-  </div>
+  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header">
+    <div class="mm-logo">Finder<em>Seek</em></div>
+    <button class="mm-close" onclick="closeMobileMenu()">×</button>
+  </div>
+  <div class="mm-user" id="mm-user">
+    <button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🔍 Sign In / Create Account</button>
+  </div>
+  <div class="mm-links">
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
+    <a href="profile.html" class="mm-link"><span class="mm-link-icon">👤</span>Profile<span class="mm-arrow">›</span></a>
+    <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">📜</span>How It Works<span class="mm-arrow">›</span></a>
+    <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
+    <a href="pricing.html" class="mm-link mm-link-pro"><span class="mm-link-icon">⭐</span>Upgrade to Gold<span class="mm-pro-badge">PRO</span><span class="mm-arrow">›</span></a>
+  </div>
+</div>
 
 <!-- AUTH MODAL -->
 <div class="auth-modal" id="auth-modal">
@@ -1241,21 +1281,21 @@ function checkBanned() {
 }
 
 function updateNavAuth() {
-  const area = document.getElementById('nav-auth-area');
+  const area = document.getElementById('mm-user');
   if (!area) return;
-  const upgradeBtn = document.getElementById('nav-upgrade-btn');
   if (currentUser) {
     const name = currentProfile?.username || 'Hunter';
-    area.innerHTML = `<div class="nav-user" onclick="window.location='profile.html'">
-      <div class="nav-avatar">${name[0].toUpperCase()}</div>
-      <span>${name}</span>
+    area.innerHTML = `<div class="mm-user-info">
+      <div class="mm-user-avatar">${name[0].toUpperCase()}</div>
+      <div><div class="mm-user-name">${name}</div><div class="mm-user-email">${currentUser.email||''}</div></div>
     </div>`;
-    if (upgradeBtn) upgradeBtn.style.display = currentProfile?.is_pro ? 'none' : 'inline-flex';
   } else {
-    area.innerHTML = `<button class="btn-signin" onclick="openAuthModal()">Sign In</button>`;
-    if (upgradeBtn) upgradeBtn.style.display = 'none';
+    area.innerHTML = `<button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🔍 Sign In / Create Account</button>`;
   }
 }
+
+function toggleMobileMenu(){const m=document.getElementById('mobile-menu'),o=document.getElementById('mobile-menu-overlay'),b=document.getElementById('mobile-hamburger'),open=m.classList.contains('show');m.classList.toggle('show',!open);o.classList.toggle('show',!open);b.classList.toggle('open',!open);}
+function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('show');document.getElementById('mobile-menu-overlay').classList.remove('show');document.getElementById('mobile-hamburger').classList.remove('open');}
 
 function openAuthModal(cb){ window._authCb=cb||null; document.getElementById('auth-modal').classList.add('show'); }
 function closeAuthModal(){ document.getElementById('auth-modal').classList.remove('show'); }
