@@ -104,7 +104,7 @@
   .fc-platinum .fcard-num{border-color:#ffb3be;background:rgba(200,40,70,.2);}
   .fcard-hdr-icon{font-size:24px;flex-shrink:0;}
   .fcard-hdr-text{flex:1;}
-  .fcard-title{font-family:'Bangers',cursive;font-size:26px;font-weight:400;line-height:1.1;letter-spacing:2px;}
+  .fcard-title{font-family:'Bangers',cursive;font-size:30px;font-weight:400;line-height:1.1;letter-spacing:2px;}
   .fcard-sub{display:block;font-size:11px;opacity:.6;margin-top:2px;font-family:'DM Mono',monospace;letter-spacing:.3px;}
   .fcard-body{background:rgba(6,5,10,.82);padding:22px 24px 26px;}
 
@@ -159,17 +159,34 @@
   .btn-gen:hover{background:rgba(239,68,68,.2);}
 
   /* PAYMENT */
-  .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-  .pay-opt{border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s;position:relative;background:rgba(255,255,255,.02);}
-  .pay-opt:hover{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.05);}
-  .pay-opt.selected{border-color:#8b5cf6;background:rgba(139,92,246,.1);}
+  .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+  .pay-opt{border:2px solid rgba(255,255,255,.08);border-radius:18px;padding:24px 20px;cursor:pointer;transition:all .25s;position:relative;background:rgba(10,8,20,.8);overflow:hidden;text-align:center;}
+  .pay-opt::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;pointer-events:none;}
+  /* Honor Code — purple */
+  #pay-honor::before{background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,.18),transparent 70%);}
+  #pay-honor{border-color:rgba(139,92,246,.2);}
+  #pay-honor:hover{border-color:rgba(139,92,246,.5);transform:translateY(-3px);box-shadow:0 8px 32px rgba(139,92,246,.2);}
+  #pay-honor:hover::before{opacity:1;}
+  #pay-honor.selected{border-color:#8b5cf6;box-shadow:0 0 0 1px #8b5cf6,0 8px 32px rgba(139,92,246,.3);}
+  #pay-honor.selected::before{opacity:1;}
+  /* Escrow — green */
+  #pay-fs::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.15),transparent 70%);}
+  #pay-fs{border-color:rgba(34,197,94,.2);}
+  #pay-fs:hover{border-color:rgba(34,197,94,.5);transform:translateY(-3px);box-shadow:0 8px 32px rgba(34,197,94,.2);}
+  #pay-fs:hover::before{opacity:1;}
+  #pay-fs.selected{border-color:#22c55e;box-shadow:0 0 0 1px #22c55e,0 8px 32px rgba(34,197,94,.3);}
+  #pay-fs.selected::before{opacity:1;}
   .pay-opt input{position:absolute;opacity:0;pointer-events:none;}
-  .pay-opt-icon{font-size:24px;margin-bottom:8px;}
-  .pay-opt-name{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--cream);}
-  .pay-opt.selected .pay-opt-name{color:#c4b5fd;}
-  .pay-opt-desc{font-size:11px;color:var(--muted);line-height:1.5;}
-  .pay-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);transition:all .2s;}
-  .pay-opt.selected .pay-check{background:#8b5cf6;border-color:#8b5cf6;}
+  .pay-opt-icon{font-size:36px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px currentColor);}
+  .pay-opt-name{font-size:17px;font-weight:800;color:var(--cream);font-family:'Karla',sans-serif;letter-spacing:.3px;}
+  #pay-honor.selected .pay-opt-name{color:#c4b5fd;}
+  #pay-fs.selected .pay-opt-name{color:#4ade80;}
+  .pay-opt-tag{display:inline-block;margin-top:8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:20px;}
+  #pay-honor .pay-opt-tag{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:#c4b5fd;}
+  #pay-fs .pay-opt-tag{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+  .pay-check{display:none;}
+  .pay-opt-learn{font-size:11px;color:rgba(255,255,255,.3);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.5px;}
+  .pay-opt:hover .pay-opt-learn{color:rgba(255,255,255,.5);}
   .pay-handle-wrap{display:none;} .pay-handle-wrap.show{display:block;}
   .pay-method-row{display:flex;gap:8px;margin-bottom:10px;}
   .pmb{padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
@@ -183,7 +200,7 @@
   .golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
   .golive-opt input{display:none;}
   .golive-icon{font-size:22px;margin-bottom:6px;}
-  .golive-name{font-size:14px;font-weight:700;color:var(--cream);}
+  .golive-name{font-size:17px;font-weight:700;color:var(--cream);}
   .golive-opt.selected .golive-name{color:#86efac;}
   .golive-desc{font-size:11px;color:var(--muted);margin-top:2px;}
   .schedule-wrap{display:none;} .schedule-wrap.show{display:block;}
@@ -463,7 +480,7 @@
       <div class="fcard-hdr-icon">⏱️</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">Quest Duration</div>
-        <div class="fcard-sub">How long will seekers have to find your treasure?</div>
+        
       </div>
     </div>
     <div class="fcard-body">
@@ -551,7 +568,7 @@
       <div class="fcard-hdr-icon">📸</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">Photo of Hiding Spot</div>
-        <div class="fcard-sub">Upload a teaser shot — atmospheric, not too obvious!</div>
+        
       </div>
     </div>
     <div class="fcard-body">
@@ -579,7 +596,7 @@
       <div class="fcard-hdr-icon">📍</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">Where & How Much</div>
-        <div class="fcard-sub">Pin the location and set your prize amount.</div>
+        
       </div>
     </div>
     <div class="fcard-body">
@@ -606,8 +623,7 @@
         <div class="map-coords" id="map-coords">📌 Drop a pin or search to set location</div>
       </div>
       <div class="field">
-        <label class="flabel" style="color:#fff;">City <span style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:0;text-transform:none;font-family:'Karla',sans-serif;">(auto-filled — correct if wrong)</span></label>
-        <input class="finput" id="city" type="text" placeholder="e.g. Conroe, TX"/>
+        <input type="hidden" id="city"/>
       </div>
       <div class="field">
         <label class="flabel" style="color:#fff;">📝 Describe the Hiding Spot</label>
@@ -631,7 +647,7 @@
       <div class="fcard-hdr-icon">🔐</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">Secret Finder Code</div>
-        <div class="fcard-sub">Finders enter this 6-digit code to claim the prize.</div>
+        
       </div>
     </div>
     <div class="fcard-body">
@@ -656,24 +672,26 @@
       <div class="fcard-hdr-icon">💸</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">How You'll Pay the Finder</div>
-        <div class="fcard-sub">Choose how the prize gets to the winner.</div>
+        
       </div>
     </div>
     <div class="fcard-body">
       <div class="pay-opts">
-        <div class="pay-opt" id="pay-honor" onclick="selectPay('honor')">
+        <div class="pay-opt" id="pay-honor" onclick="openPayPopup('honor')">
           <input type="radio" name="payment" value="honor"/>
           <div class="pay-check"></div>
-          <div class="pay-opt-icon">🤝</div>
+          <span class="pay-opt-icon">🤝</span>
           <div class="pay-opt-name">Honor Code</div>
-          <div class="pay-opt-desc">You pay the finder directly via Zelle or Venmo when they claim.</div>
+          <div class="pay-opt-tag">You pay directly</div>
+          <div class="pay-opt-learn">Tap to learn more →</div>
         </div>
-        <div class="pay-opt" id="pay-fs" onclick="selectPay('finderseek')">
+        <div class="pay-opt" id="pay-fs" onclick="openPayPopup('finderseek')">
           <input type="radio" name="payment" value="finderseek"/>
           <div class="pay-check"></div>
-          <div class="pay-opt-icon">🔒</div>
+          <span class="pay-opt-icon">🔒</span>
           <div class="pay-opt-name">FinderSeek Escrow</div>
-          <div class="pay-opt-desc">Pay the prize upfront via Stripe. We hold it and auto-pay the winner. +10% service fee.</div>
+          <div class="pay-opt-tag">+10% service fee</div>
+          <div class="pay-opt-learn">Tap to learn more →</div>
         </div>
       </div>
 
@@ -685,7 +703,7 @@
           <button class="pmb" id="btn-venmo" onclick="selectMethod('venmo')">Venmo</button>
         </div>
         <input class="finput" id="pay-handle" type="text" placeholder="Phone number or email"/>
-        <div class="pay-note">💡 When the finder claims the prize, FinderSeek will notify you to send payment directly.</div>
+        
       </div>
 
       <!-- Escrow: prize breakdown -->
@@ -712,7 +730,7 @@
       <div class="fcard-hdr-icon">🚀</div>
       <div class="fcard-hdr-text">
         <div class="fcard-title">When to Go Live</div>
-        <div class="fcard-sub">Choose when seekers can start hunting.</div>
+        
       </div>
     </div>
     <div class="fcard-body">
@@ -721,13 +739,13 @@
           <input type="radio" name="golive" value="now" checked/>
           <div class="golive-icon">⚡</div>
           <div class="golive-name">Right Now</div>
-          <div class="golive-desc">Goes live immediately</div>
+          
         </div>
         <div class="golive-opt" id="live-schedule" onclick="selectLive('schedule')">
           <input type="radio" name="golive" value="schedule"/>
           <div class="golive-icon">📅</div>
           <div class="golive-name">Schedule It</div>
-          <div class="golive-desc">Pick a date & time</div>
+          
         </div>
       </div>
       <div class="schedule-wrap" id="schedule-wrap">
@@ -1849,6 +1867,119 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
     </div>
   </div>
 </div>
+
+<!-- HONOR CODE POPUP -->
+<div id="popup-honor" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(139,92,246,.3);border-radius:24px;padding:32px 28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="font-size:40px;text-align:center;margin-bottom:12px;">🤝</div>
+    <div style="font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#c4b5fd;text-align:center;margin-bottom:6px;">Honor Code</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);text-align:center;font-family:'DM Mono',monospace;margin-bottom:24px;">You are responsible for paying the winner directly</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">🏪</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;">Ask a local <strong>restaurant or coffee shop</strong> to hold the prize and hand it to the winner when they show the claim confirmation.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">💬</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;">Use the <strong>in-app chat</strong> to message the winner privately and coordinate prize delivery.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">🤝</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;">Meet in a <strong>public place</strong> to hand off the prize directly — park, coffee shop, or anywhere safe.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">💸</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;">Send via <strong>Zelle or Venmo</strong> — you'll enter your handle below so the winner knows how to receive payment.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">🌧️</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;">If hiding cash physically, use a <strong>weatherproof envelope</strong> or zip-lock bag to keep it safe until found.</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;line-height:1.7;">
+      ⚠️ By choosing Honor Code, you agree to pay the winner promptly upon claim. Failure to pay may result in your account being suspended.
+    </div>
+
+    <div style="display:flex;gap:12px;">
+      <button onclick="closePayPopup()" style="flex:1;padding:13px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;font-family:'Karla',sans-serif;">Cancel</button>
+      <button onclick="agreeAndSelect('honor')" style="flex:2;padding:13px;background:linear-gradient(135deg,#6d28d9,#8b5cf6);border:none;border-radius:12px;font-size:15px;font-weight:800;color:#fff;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(139,92,246,.4);">✅ I Agree — Use Honor Code</button>
+    </div>
+  </div>
+</div>
+
+<!-- ESCROW POPUP -->
+<div id="popup-escrow" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(34,197,94,.3);border-radius:24px;padding:32px 28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="font-size:40px;text-align:center;margin-bottom:12px;">🔒</div>
+    <div style="font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#4ade80;text-align:center;margin-bottom:6px;">FinderSeek Escrow</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);text-align:center;font-family:'DM Mono',monospace;margin-bottom:24px;">Secure, automatic prize delivery</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">1️⃣</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>You pay upfront</strong> — prize amount + 10% FinderSeek fee via Stripe checkout after clue generation.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">2️⃣</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>FinderSeek holds the prize</strong> securely in escrow until a valid 6-digit code is submitted.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">3️⃣</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>Winner claims</strong> — FinderSeek notifies you and coordinates payment to the winner via Venmo or Zelle.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">♻️</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No winner?</strong> If the hunt expires unclaimed, your prize is fully refunded — no questions asked.</div>
+      </div>
+    </div>
+
+    <!-- Fee breakdown preview -->
+    <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:16px 18px;margin-bottom:20px;">
+      <div style="font-size:10px;letter-spacing:2px;font-family:'DM Mono',monospace;color:#4ade80;margin-bottom:10px;">💳 EXAMPLE BREAKDOWN</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;margin-bottom:6px;"><span>$20 prize</span><span>$20.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:8px;"><span>FinderSeek fee (10%)</span><span>$2.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#4ade80;border-top:1px solid rgba(255,255,255,.08);padding-top:8px;"><span>Total charged</span><span>$22.00</span></div>
+    </div>
+
+    <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;line-height:1.7;">
+      ✅ By choosing Escrow, FinderSeek guarantees the prize is held and paid out. You will be charged after clue generation.
+    </div>
+
+    <div style="display:flex;gap:12px;">
+      <button onclick="closePayPopup()" style="flex:1;padding:13px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;font-family:'Karla',sans-serif;">Cancel</button>
+      <button onclick="agreeAndSelect('finderseek')" style="flex:2;padding:13px;background:linear-gradient(135deg,#15803d,#22c55e);border:none;border-radius:12px;font-size:15px;font-weight:800;color:#0a1a0a;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(34,197,94,.4);">✅ I Agree — Use Escrow</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openPayPopup(type) {
+  if (type === 'honor') {
+    document.getElementById('popup-honor').style.display = 'flex';
+  } else {
+    document.getElementById('popup-escrow').style.display = 'flex';
+  }
+}
+
+function closePayPopup() {
+  document.getElementById('popup-honor').style.display = 'none';
+  document.getElementById('popup-escrow').style.display = 'none';
+}
+
+function agreeAndSelect(type) {
+  closePayPopup();
+  selectPay(type);
+}
+
+// Close on backdrop click
+['popup-honor','popup-escrow'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) closePayPopup();
+  });
+});
+</script>
 
 </body>
 </html>
