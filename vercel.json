@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron-activate-hunts",
+      "schedule": "*/15 * * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*).html",
