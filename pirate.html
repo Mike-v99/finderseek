@@ -2247,13 +2247,15 @@ async function openStripePayment({ prizeAmt, totalCents, huntId }) {
 
   try {
     // Create PaymentIntent via our API
+    console.log('[Escrow] Creating PaymentIntent…', { huntId, prizeAmt, totalCents });
     const r = await fetch('/api/create-escrow-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
     });
     const data = await r.json();
-    if (!r.ok || !data.clientSecret) throw new Error(data.error || 'Failed to create payment');
+    console.log('[Escrow] API response:', r.status, data);
+    if (!r.ok || !data.clientSecret) throw new Error(data.error || 'Failed to create payment (status ' + r.status + ')');
 
     // Initialize Stripe
     if (!stripeInstance) stripeInstance = Stripe(STRIPE_PK);
@@ -2287,8 +2289,18 @@ async function openStripePayment({ prizeAmt, totalCents, huntId }) {
     stripePaymentElement.mount('#stripe-payment-element');
 
     stripePaymentElement.on('ready', () => {
+      console.log('[Escrow] Payment Element ready');
       document.getElementById('stripe-pay-btn').disabled = false;
       document.getElementById('stripe-pay-btn').textContent = '🔒   Pay $' + total.toFixed(2) + ' & Go Live';
+    });
+
+    stripePaymentElement.on('loaderror', (event) => {
+      console.error('[Escrow] Payment Element load error:', event.error);
+      const errEl = document.getElementById('stripe-pay-error');
+      errEl.textContent = 'Payment form failed to load: ' + (event.error?.message || 'Unknown error') + '. Try the fallback link below.';
+      errEl.style.display = 'block';
+      document.getElementById('stripe-pay-btn').disabled = false;
+      document.getElementById('stripe-pay-btn').textContent = '🔒   Retry';
     });
 
     // Return a promise that resolves when payment completes or modal closes
@@ -2298,7 +2310,8 @@ async function openStripePayment({ prizeAmt, totalCents, huntId }) {
     console.error('Stripe embed error:', e);
     document.getElementById('stripe-pay-error').textContent = e.message || 'Could not load payment form. Use the fallback link below.';
     document.getElementById('stripe-pay-error').style.display = 'block';
-    document.getElementById('stripe-pay-btn').style.display = 'none';
+    document.getElementById('stripe-pay-btn').textContent = 'Error — use fallback below';
+    document.getElementById('stripe-pay-btn').disabled = true;
     return new Promise(resolve => { _stripeResolve = resolve; });
   }
 }
