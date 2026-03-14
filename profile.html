@@ -24,14 +24,34 @@ body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 
 /* NAV */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;background:rgba(6,5,10,.92);
-  border-bottom:1px solid rgba(201,137,12,.15);overflow:hidden;width:100%;box-sizing:border-box;}
+  padding:12px 16px;background:rgba(6,5,10,.92);
+  border-bottom:1px solid rgba(201,137,12,.15);width:100%;box-sizing:border-box;}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
 .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .nav-brand{font-size:16px;font-weight:800;color:var(--cream);}
 .nav-brand em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;}
-.nav-back-arrow{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1px solid rgba(201,137,12,.25);color:var(--dim);text-decoration:none;transition:all .2s;flex-shrink:0;}
-.nav-back-arrow:hover{border-color:var(--gold);color:var(--cream);background:rgba(201,137,12,.08);}
+@media(max-width:560px){.nav-brand{display:none;}}
+.mobile-hamburger{background:none;border:1px solid rgba(201,137,12,.3);border-radius:8px;padding:6px 5px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:38px;height:38px;transition:border-color .2s;}
+.mobile-hamburger:hover{border-color:rgba(201,137,12,.6);}
+.mobile-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
+.mobile-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.mobile-hamburger.open span:nth-child(2){opacity:0;}
+.mobile-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;}
+.mobile-menu-overlay.show{display:block;opacity:1;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;max-width:85vw;height:100vh;z-index:100;background:linear-gradient(180deg,#0f0d1a 0%,#0a0818 100%);border-left:1px solid rgba(201,137,12,.15);box-shadow:-8px 0 40px rgba(0,0,0,.5);transition:right .3s ease;display:flex;flex-direction:column;overflow-y:auto;}
+.mobile-menu.show{right:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--cream);}
+.mm-logo em{font-style:italic;color:var(--gold);font-weight:300;}
+.mm-close{background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
+.mm-links{flex:1;padding:12px 0;}
+.mm-link{display:flex;align-items:center;gap:14px;padding:14px 20px;color:var(--cream);text-decoration:none;font-size:15px;font-weight:600;transition:background .15s;font-family:'Karla',sans-serif;}
+.mm-link:hover{background:rgba(255,255,255,.04);}
+.mm-link-icon{font-size:20px;width:28px;text-align:center;}
+.mm-arrow{margin-left:auto;color:var(--muted);font-size:20px;}
+.mm-link-pro{color:var(--gold2);}
+.mm-pro-badge{font-size:9px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border-radius:6px;padding:2px 6px;margin-left:6px;}
 
 /* AUTH GATE */
 .auth-gate{position:fixed;inset:0;z-index:200;background:rgba(6,5,10,.97);display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -288,13 +308,28 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
-    <div><div class="nav-brand">Finder<em>Seek</em></div></div>
+    <div class="nav-brand">Finder<em>Seek</em></div>
   </a>
-  <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-  <a class="nav-back-arrow" href="index.html">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-  </a>
+  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header">
+    <div class="mm-logo">Finder<em>Seek</em></div>
+    <button class="mm-close" onclick="closeMobileMenu()">×</button>
+  </div>
+  <div class="mm-links">
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
+    <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">📜</span>How It Works<span class="mm-arrow">›</span></a>
+    <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
+    <a href="pricing.html" class="mm-link mm-link-pro"><span class="mm-link-icon">⭐</span>Upgrade to Gold<span class="mm-pro-badge">PRO</span><span class="mm-arrow">›</span></a>
+    <a href="#" onclick="signOut();return false;" class="mm-link" style="color:#f87171;"><span class="mm-link-icon">🚪</span>Sign Out<span class="mm-arrow">›</span></a>
+  </div>
+</div>
 
 <div class="wrap" id="main-wrap" style="display:none;">
 
@@ -446,6 +481,8 @@ async function sendPasswordReset(){
   }catch(e){showToast('Network error','error');btn.disabled=false;btn.textContent='📧 Send Reset Link';}
 }
 let notifTimer=null;async function saveNotif(){clearTimeout(notifTimer);notifTimer=setTimeout(async()=>{try{const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({notify_new_hunts:document.getElementById('n-new-hunts').checked,notify_hunt_won:document.getElementById('n-hunt-won').checked,notify_chat:document.getElementById('n-chat').checked,notify_hunt_live:document.getElementById('n-hunt-live').checked,})});if(!r.ok)throw new Error();showToast('✅ Notifications updated','success');}catch(e){showToast('Could not save notifications','error');}},600);}
+function toggleMobileMenu(){const m=document.getElementById('mobile-menu'),o=document.getElementById('mobile-menu-overlay'),b=document.getElementById('mobile-hamburger'),open=m.classList.contains('show');m.classList.toggle('show',!open);o.classList.toggle('show',!open);b.classList.toggle('open',!open);}
+function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('show');document.getElementById('mobile-menu-overlay').classList.remove('show');document.getElementById('mobile-hamburger').classList.remove('open');}
 function signOut(){clearToken();window.location.href='index.html';}
 function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your hunt history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
 function openAuthModal(){document.getElementById('auth-modal').classList.add('show');}
