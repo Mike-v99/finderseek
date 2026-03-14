@@ -1535,6 +1535,106 @@ function editCluesBack() {
   window._pendingClueRows = null;
 }
 
+async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status) {
+  // Show a simple fullscreen loading state
+  const loadingEl = document.createElement('div');
+  loadingEl.id = 'silent-loading';
+  loadingEl.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(6,5,10,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;';
+  loadingEl.innerHTML = `
+    <div style="font-size:56px;margin-bottom:20px;">🏴‍☠️</div>
+    <div style="font-family:'Bangers',cursive;font-size:32px;letter-spacing:3px;color:var(--gold2);margin-bottom:12px;">Burying Your Treasure…</div>
+    <div id="silent-status" style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;">Generating clues…</div>
+  `;
+  document.body.appendChild(loadingEl);
+
+  try {
+    const setStatus = t => { const el = document.getElementById('silent-status'); if(el) el.textContent = t; };
+
+    setStatus('Crafting AI clues…');
+    const desc = document.getElementById('neighborhood').value.trim();
+    const persona = selectedPersona || 'pirate';
+
+    const clueRes = await fetch('/api/generate-clues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ huntId, description: desc, clueCount, persona, lat, lng })
+    });
+    if (!clueRes.ok) throw new Error('Clue generation failed');
+    const clueData = await clueRes.json();
+    const cluesArr = clueData.clues || clueData;
+
+    setStatus('Saving clues…');
+    const liveDateObj = new Date(document.getElementById('live-datetime')?.value || new Date());
+    const durationHours = questDuration;
+    const durationMs = durationHours * 60 * 60 * 1000;
+    const isGold = currentProfile?.is_pro;
+    const freeClues = isGold ? 2 : 1;
+    const remainingClues = clueCount - freeClues;
+
+    const clueRows = cluesArr.map(c => {
+      const num = c.number;
+      const isPhotoClue = num === clueCount;
+      let revealAt;
+      if (num <= freeClues) {
+        revealAt = new Date(liveDateObj.getTime());
+      } else {
+        const intervalMs = durationMs / (remainingClues + 1);
+        const position = num - freeClues;
+        revealAt = new Date(liveDateObj.getTime() + position * intervalMs);
+      }
+      return {
+        hunt_id: huntId,
+        clue_number: num,
+        tier: 'free',
+        day_label: revealAt.toLocaleDateString('en-US', { weekday: 'long' }),
+        date_label: revealAt.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+        reveal_at: revealAt.toISOString(),
+        clue_text: c.text,
+        is_photo: isPhotoClue,
+        photo_url: isPhotoClue ? photoUrl : null
+      };
+    });
+
+    const authHeaders = { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
+    const saveRes = await fetch(`${SB}/rest/v1/clues`, { method: 'POST', headers: authHeaders, body: JSON.stringify(clueRows) });
+    if (!saveRes.ok) throw new Error('Failed to save clues');
+
+    setStatus('Going live…');
+
+    // Fire notification
+    if (status === 'active') {
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+        body: JSON.stringify({ event: 'hunt_approved', huntId })
+      }).catch(() => {});
+    }
+
+    // Escrow redirect
+    if (window._pendingEscrow) {
+      const { prizeAmt, totalCents } = window._pendingEscrow;
+      const er = await fetch('/api/create-escrow-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+        body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
+      });
+      const ed = await er.json();
+      if (ed.url) { window.location = ed.url; return; }
+    }
+
+    // Remove loading and show confirmation
+    loadingEl.remove();
+    document.getElementById('confirm-screen').classList.add('show');
+
+  } catch(e) {
+    loadingEl.remove();
+    alert('Error: ' + e.message);
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('preview-btn').disabled = false;
+    document.getElementById('submit-btn').textContent = '🏴‍☠️   BURY MY TREASURE →';
+  }
+}
+
 function updateEscrowBreakdown() {
   const prize = parseFloat(document.getElementById('prize').value) || 0;
   const fee = Math.round(prize * 0.10 * 100) / 100;
@@ -1793,19 +1893,8 @@ async function submitHunt(previewMode = false) {
   }
 
   btn.disabled = false; previewBtn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
-  openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
-  window._previewMode = previewMode;
 
-  // Fire notification if going live immediately
-  if (status === 'active') {
-    fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-      body: JSON.stringify({ event: 'hunt_approved', huntId: savedHuntId })
-    }).catch(() => {});
-  }
-
-  // If escrow payment, store details — Stripe redirect happens after clues approved
+  // Store escrow details before branching
   if (payType === 'finderseek') {
     const prizeAmt = prize;
     const feeAmt = Math.round(prizeAmt * 0.10);
@@ -1813,6 +1902,16 @@ async function submitHunt(previewMode = false) {
     window._pendingEscrow = { prizeAmt, totalCents, huntId: savedHuntId };
   } else {
     window._pendingEscrow = null;
+  }
+
+  window._previewMode = previewMode;
+
+  if (previewMode) {
+    // Show clue gen screen for review
+    openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
+  } else {
+    // Silent mode — auto-generate and publish directly
+    await silentGenerateAndPublish(savedHuntId, photoUrl, selectedLat, selectedLng, status);
   }
 }
 
