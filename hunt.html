@@ -853,7 +853,7 @@ function renderHunt() {
               <span class="cdate">${c.date_label}</span>
             </div>
             <div class="clocked">🔒 Drops at ${new Date(c.reveal_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div>
-            <div class="ctimer">${fmtShort(new Date(c.reveal_at)-now)}</div>
+            <div class="ctimer" id="locked-timer-${c.clue_number}">${fmtShort(new Date(c.reveal_at)-now)}</div>
           </div>
         </div>
       </div>`;
@@ -1476,6 +1476,21 @@ function showPirateChat() {
 }
 
 loadHunt();
+
+// ── LIVE COUNTDOWN FOR LOCKED CLUES ──────────────────
+setInterval(() => {
+  clues.forEach(c => {
+    const el = document.getElementById('locked-timer-' + c.clue_number);
+    if (!el) return;
+    const remaining = new Date(c.reveal_at) - Date.now();
+    if (remaining <= 0) {
+      // Clue just unlocked — trigger a refresh
+      loadHunt();
+    } else {
+      el.textContent = fmtShort(remaining);
+    }
+  });
+}, 1000);
 
 // ── HIDE NAV ON SCROLL DOWN ───────────────────────────
 let lastScrollY = 0;
