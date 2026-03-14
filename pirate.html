@@ -756,7 +756,7 @@
           </div>
           <div style="margin-bottom:6px;"><span class="dt-label" style="text-align:center;display:block;">Time (8am – 6pm)</span></div>
           <div class="dt-time-row">
-            <select class="dt-select" id="dt-hour" onchange="updateDtPreview()" style="max-width:80px;">
+            <select class="dt-select" id="dt-hour" onchange="updateDtPreview();updateEndTimeOptions()" style="max-width:80px;">
               <option>8</option><option>9</option><option>10</option><option>11</option>
               <option>12</option><option>1</option><option>2</option><option>3</option>
               <option>4</option><option>5</option>
@@ -767,13 +767,35 @@
               <option value="30">30</option><option value="45">45</option>
             </select>
             <div class="dt-ampm">
-              <button type="button" class="dt-ampm-btn active" id="dt-am" onclick="setAmPm('AM')">AM</button>
-              <button type="button" class="dt-ampm-btn" id="dt-pm" onclick="setAmPm('PM')">PM</button>
+              <button type="button" class="dt-ampm-btn active" id="dt-am" onclick="setAmPm('AM');updateEndTimeOptions()">AM</button>
+              <button type="button" class="dt-ampm-btn" id="dt-pm" onclick="setAmPm('PM');updateEndTimeOptions()">PM</button>
             </div>
           </div>
           <div class="dt-preview" id="dt-preview">📅 Select a date above</div>
         </div>
         <input type="hidden" id="live-datetime"/>
+
+        <!-- END TIME CHOICE — shown when start time could conflict with blackout -->
+        <div id="end-time-choice" style="display:none;margin-top:16px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:18px 20px;">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fbbf24;margin-bottom:12px;">🌙 Hunt End Time</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6;">Your hunt would end during blackout hours (8pm–8am). Choose how to handle it:</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;transition:border-color .2s;" id="end-opt-before">
+              <input type="radio" name="end-choice" value="before" onchange="selectEndChoice('before')" style="accent-color:#fbbf24;width:16px;height:16px;flex-shrink:0;"/>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">⏰ End at 8:00 PM tonight</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-before-label">Shorter hunt — ends same day</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;transition:border-color .2s;" id="end-opt-after">
+              <input type="radio" name="end-choice" value="after" onchange="selectEndChoice('after')" style="accent-color:#fbbf24;width:16px;height:16px;flex-shrink:0;"/>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">☀️ Extend to 8:00 AM tomorrow</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-after-label">Longer hunt — resumes next morning</div>
+              </div>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1427,7 +1449,43 @@ function updateEscrowBreakdown() {
   document.getElementById('escrow-total').textContent = `$${total.toFixed(2)}`;
 }
 
-function selectTime(t) { /* legacy no-op */ }
+let endChoice = null; // 'before' | 'after' | null
+
+function updateEndTimeOptions() {
+  const hour = parseInt(document.getElementById('dt-hour').value);
+  const isPM = document.getElementById('dt-pm').classList.contains('active');
+  const ampm = isPM ? 'PM' : 'AM';
+
+  // Convert to 24hr
+  let h24 = hour;
+  if (ampm === 'PM' && hour !== 12) h24 = hour + 12;
+  if (ampm === 'AM' && hour === 12) h24 = 0;
+
+  const endHour = h24 + questDuration;
+  const endTimeChoice = document.getElementById('end-time-choice');
+
+  // If calculated end time goes past 20 (8pm) — show the choice
+  if (endHour > 20) {
+    endTimeChoice.style.display = 'block';
+    // Update labels with actual times
+    document.getElementById('end-before-label').textContent = `Hunt ends at 8:00 PM — ${Math.round(20 - h24)}hr window`;
+    document.getElementById('end-after-label').textContent = `Hunt resumes 8:00 AM next day — full ${questDuration}hr duration`;
+    // Reset choice
+    endChoice = null;
+    document.querySelectorAll('input[name="end-choice"]').forEach(r => r.checked = false);
+    document.getElementById('end-opt-before').style.borderColor = 'rgba(255,255,255,.1)';
+    document.getElementById('end-opt-after').style.borderColor = 'rgba(255,255,255,.1)';
+  } else {
+    endTimeChoice.style.display = 'none';
+    endChoice = null;
+  }
+}
+
+function selectEndChoice(choice) {
+  endChoice = choice;
+  document.getElementById('end-opt-before').style.borderColor = choice === 'before' ? 'rgba(251,191,36,.6)' : 'rgba(255,255,255,.1)';
+  document.getElementById('end-opt-after').style.borderColor = choice === 'after' ? 'rgba(251,191,36,.6)' : 'rgba(255,255,255,.1)';
+}
 
 function handlePhoto(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -1510,6 +1568,10 @@ function validate() {
     alert('Please enter your Zelle or Venmo handle.'); return false;
   }
   if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) { alert('Please choose a go-live date and time.'); return false; }
+  // Validate end time choice if blackout conflict exists
+  if (liveChoice === 'schedule' && document.getElementById('end-time-choice').style.display !== 'none' && !endChoice) {
+    alert('Please choose when your hunt should end — before 8pm or extend to 8am next morning.'); return false;
+  }
   let startTime = liveChoice === 'now' ? new Date() : new Date(document.getElementById('live-datetime').value);
   const hour = startTime.getHours();
   if (hour < 8 || hour >= 18) { showTimeBlockedModal(); return false; }
@@ -1557,7 +1619,29 @@ async function submitHunt() {
     const now = new Date();
     const liveDate = new Date(liveAt);
     const durationHours = questDuration;
-    const weekEnd = new Date(liveDate.getTime() + durationHours * 60 * 60 * 1000);
+
+    // Check if end time choice is needed
+    let weekEnd;
+    const defaultEnd = new Date(liveDate.getTime() + durationHours * 60 * 60 * 1000);
+    const defaultEndHour = defaultEnd.getHours();
+
+    if (defaultEndHour >= 20 || defaultEndHour < 8) {
+      // End time falls in blackout — use pirate's choice
+      if (endChoice === 'before') {
+        // End at 8pm same day
+        weekEnd = new Date(liveDate);
+        weekEnd.setHours(20, 0, 0, 0);
+      } else if (endChoice === 'after') {
+        // End at 8am next morning
+        weekEnd = new Date(liveDate);
+        weekEnd.setDate(weekEnd.getDate() + 1);
+        weekEnd.setHours(8, 0, 0, 0);
+      } else {
+        weekEnd = defaultEnd; // fallback
+      }
+    } else {
+      weekEnd = defaultEnd;
+    }
     const weekLabel = `${liveDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
     const status = liveDate > now ? 'scheduled' : 'active';
 
