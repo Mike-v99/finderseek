@@ -98,6 +98,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .rcard-actions{display:flex;gap:10px;align-items:center;}
 .btn-approve{background:linear-gradient(135deg,#15803d,#22c55e);color:#0a1a0a;border:none;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(34,197,94,.3);transition:all .2s;letter-spacing:.5px;}
 .btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(34,197,94,.5);}
+.btn-schedule{background:linear-gradient(135deg,#1a2090,#3b82f6);color:#fff;border:none;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(59,130,246,.3);transition:all .2s;letter-spacing:.5px;}
+.btn-schedule:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,130,246,.5);}
 .btn-reject{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:12px;padding:11px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;letter-spacing:.5px;}
 .btn-reject:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);}
 .btn-view{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:12px;padding:11px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;text-decoration:none;}
@@ -505,6 +507,7 @@ function buildCard(h, i) {
 
   const actions = h.status === 'draft' ? `
     <button class="btn-approve" onclick="approveHunt('${h.id}')">✅ Approve & Go Live</button>
+    <button class="btn-schedule" onclick="openSchedule('${h.id}')">🕐 Schedule</button>
     <button class="btn-reject"  onclick="rejectHunt('${h.id}')">❌ Reject</button>
     <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 Preview</a>
   ` : h.status === 'active' ? `
@@ -625,5 +628,105 @@ setInterval(() => {
   if (localStorage.getItem('fs_admin') === '1') loadAll();
 }, 30000); // refresh every 30s
 </script>
+<!-- SCHEDULE MODAL -->
+<div id="schedule-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(59,130,246,.3);border-radius:24px;padding:32px 28px;max-width:420px;width:100%;">
+    <div style="font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#93c5fd;margin-bottom:6px;">🕐 Schedule Hunt</div>
+    <div style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px;">Set a date & time between 8:00 AM – 6:00 PM for this hunt to go live.</div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#93c5fd;display:block;margin-bottom:8px;">Date</label>
+      <input type="date" id="sched-date" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;"/>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#93c5fd;display:block;margin-bottom:8px;">Time (8:00 AM – 6:00 PM)</label>
+      <select id="sched-time" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;">
+        <option value="08:00">8:00 AM</option>
+        <option value="08:30">8:30 AM</option>
+        <option value="09:00">9:00 AM</option>
+        <option value="09:30">9:30 AM</option>
+        <option value="10:00">10:00 AM</option>
+        <option value="10:30">10:30 AM</option>
+        <option value="11:00">11:00 AM</option>
+        <option value="11:30">11:30 AM</option>
+        <option value="12:00">12:00 PM</option>
+        <option value="12:30">12:30 PM</option>
+        <option value="13:00">1:00 PM</option>
+        <option value="13:30">1:30 PM</option>
+        <option value="14:00">2:00 PM</option>
+        <option value="14:30">2:30 PM</option>
+        <option value="15:00">3:00 PM</option>
+        <option value="15:30">3:30 PM</option>
+        <option value="16:00">4:00 PM</option>
+        <option value="16:30">4:30 PM</option>
+        <option value="17:00">5:00 PM</option>
+        <option value="17:30">5:30 PM</option>
+        <option value="18:00">6:00 PM</option>
+      </select>
+    </div>
+
+    <div style="display:flex;gap:12px;">
+      <button onclick="closeSchedule()" style="flex:1;padding:13px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;font-family:'Karla',sans-serif;">Cancel</button>
+      <button onclick="confirmSchedule()" style="flex:2;padding:13px;background:linear-gradient(135deg,#1a2090,#3b82f6);border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 16px rgba(59,130,246,.4);">🕐 Set Schedule</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _schedHuntId = null;
+
+function openSchedule(huntId) {
+  _schedHuntId = huntId;
+  // Default to tomorrow at 9am
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('sched-date').value = tomorrow.toISOString().split('T')[0];
+  document.getElementById('sched-time').value = '09:00';
+  document.getElementById('schedule-modal').style.display = 'flex';
+}
+
+function closeSchedule() {
+  document.getElementById('schedule-modal').style.display = 'none';
+  _schedHuntId = null;
+}
+
+async function confirmSchedule() {
+  const date = document.getElementById('sched-date').value;
+  const time = document.getElementById('sched-time').value;
+  if (!date || !time) { showToast('Please select a date and time', 'error'); return; }
+
+  const scheduledAt = new Date(`${date}T${time}:00`);
+  const now = new Date();
+
+  if (scheduledAt <= now) { showToast('Please choose a future date and time', 'error'); return; }
+
+  const hour = parseInt(time.split(':')[0]);
+  if (hour < 8 || hour > 18) { showToast('Time must be between 8:00 AM and 6:00 PM', 'error'); return; }
+
+  try {
+    const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${_schedHuntId}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        status: 'scheduled',
+        starts_at: scheduledAt.toISOString()
+      })
+    });
+    if (!r.ok) throw new Error('Update failed');
+    showToast(`✅ Hunt scheduled for ${scheduledAt.toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}`, 'success');
+    closeSchedule();
+    await loadAll();
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// Close modal on backdrop click
+document.getElementById('schedule-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSchedule();
+});
+</script>
+
 </body>
 </html>
