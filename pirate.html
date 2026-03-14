@@ -1084,7 +1084,7 @@ async function generateClues() {
 
     const clueRows = cluesArr.map(c => {
       const num = c.number;
-      const isPhotoClue = num >= (clueCount - 2);
+      const isPhotoClue = num === clueCount; // only the last clue gets the photo
       const durationMs = durationHours * 60 * 60 * 1000;
 
       let revealAt;
@@ -1514,7 +1514,12 @@ async function submitHunt() {
         headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken()||KEY), 'Content-Type': photoFile.type },
         body: photoFile
       });
-      if (up.ok) photoUrl = `${SB}/storage/v1/object/public/finderseeek-assets/${path}`;
+      if (up.ok) {
+        photoUrl = `${SB}/storage/v1/object/public/finderseeek-assets/${path}`;
+      } else {
+        const err = await up.text();
+        console.error('Photo upload failed:', up.status, err);
+      }
     }
 
     const now = new Date();
