@@ -832,7 +832,7 @@
 <div class="confirm-screen" id="confirm-screen">
   <div class="confirm-icon">🏴‍☠️</div>
   <div class="confirm-title">Quest <em>Confirmed!</em></div>
-  <p class="confirm-sub">Your treasure is hidden and your quest is set. Seekers will start hunting as soon as it goes live. Guard your secret code!</p>
+  <p class="confirm-sub">Your treasure is hidden and your quest is live! Seekers can start hunting now. Guard your secret code!</p>
   <div class="confirm-details" id="confirm-details"></div>
   <button class="btn-home" onclick="location.href='index.html'">View Active Hunts →</button>
 </div>
@@ -1709,6 +1709,14 @@ async function submitHunt() {
 
   btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
   openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
+  // Fire notification if going live immediately
+  if (status === 'active') {
+    fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ event: 'hunt_approved', huntId: savedHuntId })
+    }).catch(() => {});
+  }
 
   // If escrow payment, launch Stripe checkout for prize + fee
   if (payType === 'finderseek') {
