@@ -210,6 +210,9 @@
   .btn-submit{width:100%;background:linear-gradient(135deg,#b87800,#e8a820,#c9890c);color:#0a0800;border:none;border-radius:18px;padding:24px;font-size:20px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:4px;transition:all .25s;box-shadow:0 8px 36px rgba(201,137,12,.45),inset 0 1px 0 rgba(255,255,255,.2);}
   .btn-submit:hover{box-shadow:0 14px 50px rgba(201,137,12,.65),inset 0 1px 0 rgba(255,255,255,.2);transform:translateY(-3px);}
   .btn-submit:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn-preview-clues{width:100%;margin-top:12px;background:rgba(255,255,255,.05);border:2px solid rgba(201,137,12,.3);border-radius:18px;padding:18px;font-size:18px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:3px;color:var(--gold2);transition:all .25s;}
+  .btn-preview-clues:hover{border-color:var(--gold);background:rgba(201,137,12,.08);transform:translateY(-2px);}
+  .btn-preview-clues:disabled{opacity:.45;cursor:not-allowed;transform:none;}
   .submit-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;font-family:'DM Mono',monospace;letter-spacing:.5px;}
 
   /* CONFIRM */
@@ -815,7 +818,10 @@
     <button class="btn-submit" id="submit-btn" onclick="submitHunt()">
       🏴‍☠️ &nbsp; BURY MY TREASURE →
     </button>
-    <p class="submit-note">Your quest will go live soon.</p>
+    <button class="btn-preview-clues" id="preview-btn" onclick="submitHunt(true)">
+      🗺️ &nbsp; SEE CLUES FIRST
+    </button>
+    <p class="submit-note">Bury My Treasure goes live instantly · See Clues First lets you review before publishing</p>
   </div>
 
 </div>
@@ -1204,6 +1210,36 @@ async function approveClues() {
         <div class="cg-clue-num">CLUE ${c.clue_number}</div>
         <div class="cg-clue-text" style="color:#fff;font-style:normal;">"${c.clue_text}"</div>
       </div>`).join('');
+
+    // Show preview vs live state
+    if (window._previewMode) {
+      document.getElementById('cg-success-icon').textContent = '👀';
+      document.getElementById('cg-success-title').textContent = 'Review Your Clues';
+      document.getElementById('cg-success-sub').textContent = 'Happy with these? Publish to go live!';
+      document.getElementById('cg-success-sub2').textContent = 'Or regenerate with a different style.';
+      document.getElementById('cg-publish-wrap').style.display = 'block';
+      document.getElementById('btn-view-hunt').style.display = 'none';
+    }
+
+    // If escrow — redirect to Stripe now that clues are saved
+    if (window._pendingEscrow && !window._previewMode) {
+      const { prizeAmt, totalCents, huntId } = window._pendingEscrow;
+      try {
+        const r = await fetch('/api/create-escrow-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            email: currentUser.email,
+            huntId,
+            prizeAmount: prizeAmt,
+            totalCents
+          })
+        });
+        const d = await r.json();
+        if (d.url) { window.location = d.url; return; }
+      } catch(e) { console.error('Escrow checkout error:', e); }
+    }
   } catch(e) {
     alert('Error saving clues: ' + e.message);
     btn.disabled = false; btn.textContent = '✅  Approve & Go Live';
@@ -1450,6 +1486,50 @@ function updateClueCount(val) {
   sl.style.background = `linear-gradient(90deg,#93c5fd ${pct},rgba(147,197,253,.15) ${pct})`;
 }
 
+async function publishDraftHunt() {
+  if (!window._pendingHuntId) return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${window._pendingHuntId}`, {
+      method: 'PATCH',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'active' })
+    });
+    if (!r.ok) throw new Error('Publish failed');
+    // Fire notification
+    fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ event: 'hunt_approved', huntId: window._pendingHuntId })
+    }).catch(() => {});
+    // If escrow, redirect to Stripe
+    if (window._pendingEscrow) {
+      const { prizeAmt, totalCents, huntId } = window._pendingEscrow;
+      const er = await fetch('/api/create-escrow-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+        body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
+      });
+      const ed = await er.json();
+      if (ed.url) { window.location = ed.url; return; }
+    }
+    // Show live state
+    document.getElementById('cg-success-icon').textContent = '🏴‍☠️';
+    document.getElementById('cg-success-title').textContent = 'Quest is Live!';
+    document.getElementById('cg-success-sub').textContent = 'Your clues are live. Seekers can start hunting!';
+    document.getElementById('cg-success-sub2').textContent = '';
+    document.getElementById('cg-publish-wrap').style.display = 'none';
+    document.getElementById('btn-view-hunt').style.display = 'inline-block';
+    window._previewMode = false;
+  } catch(e) { alert('Error publishing: ' + e.message); }
+}
+
+function editCluesBack() {
+  document.getElementById('cg-success').style.display = 'none';
+  document.getElementById('cg-form').style.display = 'block';
+  document.getElementById('clue-gen-screen').scrollTop = 0;
+  window._pendingClueRows = null;
+}
+
 function updateEscrowBreakdown() {
   const prize = parseFloat(document.getElementById('prize').value) || 0;
   const fee = Math.round(prize * 0.10 * 100) / 100;
@@ -1588,13 +1668,15 @@ function validate() {
 function showTimeBlockedModal() { document.getElementById('time-blocked-modal').classList.add('show'); }
 function closeTimeModal() { document.getElementById('time-blocked-modal').classList.remove('show'); }
 
-async function submitHunt() {
+async function submitHunt(previewMode = false) {
   if (!validate()) return;
   if (!currentUser) { openAuthModal(); return; }
   if (currentProfile?.is_banned) { checkBanned(); return; }
 
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'Submitting your quest…';
+  const previewBtn = document.getElementById('preview-btn');
+  btn.disabled = true; previewBtn.disabled = true;
+  btn.textContent = previewMode ? 'Creating…' : 'Submitting your quest…';
 
   const city = document.getElementById('city').value.trim();
   const hood = document.getElementById('neighborhood').value.trim();
@@ -1650,7 +1732,7 @@ async function submitHunt() {
       weekEnd = defaultEnd;
     }
     const weekLabel = `${liveDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}–${weekEnd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
-    const status = liveDate > now ? 'scheduled' : 'active';
+    const status = previewMode ? 'draft' : (liveDate > now ? 'scheduled' : 'active');
 
     const authHeaders = { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY), 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 
@@ -1680,7 +1762,7 @@ async function submitHunt() {
     const huntData = await huntRes.json();
     if (!huntRes.ok) {
       console.error('Supabase error:', huntData);
-      btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
+      btn.disabled = false; previewBtn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
       alert('Error saving quest: ' + (huntData?.message || huntData?.error || JSON.stringify(huntData)));
       return;
     }
@@ -1691,13 +1773,15 @@ async function submitHunt() {
 
   } catch(e) {
     console.error('Submit error:', e);
-    btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
+    btn.disabled = false; previewBtn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
     alert('Submission failed: ' + e.message);
     return;
   }
 
-  btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
+  btn.disabled = false; previewBtn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
   openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
+  window._previewMode = previewMode;
+
   // Fire notification if going live immediately
   if (status === 'active') {
     fetch('/api/notify', {
@@ -1707,28 +1791,14 @@ async function submitHunt() {
     }).catch(() => {});
   }
 
-  // If escrow payment, launch Stripe checkout for prize + fee
+  // If escrow payment, store details — Stripe redirect happens after clues approved
   if (payType === 'finderseek') {
-    const prizeAmt = prize; // already captured above
+    const prizeAmt = prize;
     const feeAmt = Math.round(prizeAmt * 0.10);
     const totalCents = (prizeAmt + feeAmt) * 100;
-    try {
-      const r = await fetch('/api/create-escrow-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          email: currentUser.email,
-          huntId: savedHuntId,
-          prizeAmount: prizeAmt,
-          totalCents
-        })
-      });
-      const d = await r.json();
-      if (d.url) window.location = d.url;
-    } catch(e) {
-      console.error('Escrow checkout error:', e);
-    }
+    window._pendingEscrow = { prizeAmt, totalCents, huntId: savedHuntId };
+  } else {
+    window._pendingEscrow = null;
   }
 }
 
@@ -1854,11 +1924,15 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
     </div>
     <div id="cg-success" style="display:none;">
       <div class="cg-success">
-        <div class="cg-success-icon">🏴‍☠️</div>
-        <div class="cg-success-title">Quest is Live!</div>
-        <p style="color:var(--dim);font-size:15px;line-height:1.7;margin-bottom:4px;">Your clues have been crafted and saved.</p>
-        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;">Seekers can now hunt your treasure!</p>
+        <div class="cg-success-icon" id="cg-success-icon">🏴‍☠️</div>
+        <div class="cg-success-title" id="cg-success-title">Quest is Live!</div>
+        <p style="color:var(--dim);font-size:15px;line-height:1.7;margin-bottom:4px;" id="cg-success-sub">Your clues have been crafted and saved.</p>
+        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;" id="cg-success-sub2">Seekers can now hunt your treasure!</p>
         <div id="cg-clue-previews" style="text-align:left;margin:20px 0;"></div>
+        <div id="cg-publish-wrap" style="display:none;margin-bottom:12px;">
+          <button onclick="publishDraftHunt()" style="width:100%;background:linear-gradient(135deg,#b87800,#e8a820,#c9890c);color:#0a0800;border:none;border-radius:14px;padding:18px;font-size:20px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:3px;box-shadow:0 6px 24px rgba(201,137,12,.4);margin-bottom:10px;">🏴‍☠️ &nbsp; PUBLISH NOW →</button>
+          <button onclick="editCluesBack()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;font-size:16px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:2px;color:var(--dim);">← REGENERATE CLUES</button>
+        </div>
         <a id="btn-view-hunt" class="btn-view-hunt" href="index.html">⚔️ &nbsp; View Active Hunts →</a>
       </div>
     </div>
