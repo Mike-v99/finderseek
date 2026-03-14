@@ -521,7 +521,11 @@ async function loadHunts(){
     let clues=[];
     if(allIds){const cr=await fetch(SB+'/rest/v1/clues?select=hunt_id,tier&hunt_id=in.('+allIds+')',{headers:H});clues=cr.ok?await cr.json():[];}
     const toHunt=h=>{const hc=clues.filter(c=>c.hunt_id===h.id);return{id:h.id,city:h.city,prizeDesc:h.prize_desc,weekLabel:h.week_label,tier:tier(h.prize_value),totalClues:hc.length||7,freeClues:hc.filter(c=>c.tier==='free').length,endsAt:new Date(h.ends_at),startsAt:new Date(h.starts_at)};};
-    allActive=(active||[]).map(toHunt);allScheduled=(scheduled||[]).map(toHunt);allCompleted=(completed||[]).map(toHunt);
+    const allMappedActive=(active||[]).map(toHunt);
+    const now=Date.now();
+    allActive=allMappedActive.filter(h=>h.endsAt.getTime()>now);
+    const expired=allMappedActive.filter(h=>h.endsAt.getTime()<=now);
+    allScheduled=(scheduled||[]).map(toHunt);allCompleted=[...expired,...(completed||[]).map(toHunt)];
     const allCities=[...new Set([...allActive,...allScheduled,...allCompleted].map(h=>h.city))];
     document.getElementById('filters').innerHTML='<button class="fpill active" onclick="setFilter(\'all\',this)">\uD83C\uDF0D All</button>'+allCities.map(c=>'<button class="fpill" onclick="setFilter(\''+c.replace(/'/g,"\\'")+'\''+',this)">\uD83D\uDCCD '+c+'</button>').join('');
     document.getElementById('live-count').textContent=allActive.length;
