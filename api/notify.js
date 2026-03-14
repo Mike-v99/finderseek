@@ -10,6 +10,7 @@
 //   admin.html    → event: 'hunt_approved'
 //   hunt.html     → event: 'prize_claimed'
 //   hunt.html     → event: 'chat_message'
+//   cron          → event: 'hunt_expired'
 
 const RESEND_URL = 'https://api.resend.com/emails';
 const FROM = 'FinderSeek <notifications@mylocalpaws.com>';
@@ -132,6 +133,47 @@ function tplNewHuntInCity({ username, city, prize, huntUrl }) {
   };
 }
 
+function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
+  const escrowNote = wasEscrow
+    ? `<div class="highlight" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06);">
+        <div class="highlight-label" style="color:#4ade80;">💰 Escrow Refund</div>
+        <div class="highlight-val" style="color:#4ade80;">Full refund processing</div>
+      </div>
+      <p>Since you used FinderSeek Escrow, your full payment is being automatically refunded to your original payment method. This typically takes 5–10 business days.</p>`
+    : `<p>Since this was an Honor Code hunt, no payment was collected.</p>`;
+  return {
+    subject: `⏰ Your hunt in ${city} expired with no winner`,
+    html: html('Hunt Expired', `
+      <h1>Hunt Expired ⏰</h1>
+      <p>Hey ${username}, your treasure hunt in <strong style="color:#f5ead8;">${city}</strong> has ended — nobody cracked the clues this time!</p>
+      <div class="highlight">
+        <div class="highlight-label">Prize</div>
+        <div class="highlight-val">${prize}</div>
+      </div>
+      ${escrowNote}
+      <hr class="divider"/>
+      <p>Want to try again? You can hide another treasure anytime.</p>
+      <a href="https://finderseek.com/pirate.html" class="btn">Hide New Treasure →</a>
+    `)
+  };
+}
+
+function tplHuntExpiredSeeker({ username, city, prize, huntUrl }) {
+  return {
+    subject: `⏰ The hunt in ${city} ended — no one found it!`,
+    html: html('Hunt Expired', `
+      <h1>Time's Up! ⏰</h1>
+      <p>Hey ${username}, the treasure hunt in <strong style="color:#f5ead8;">${city}</strong> ended and nobody found the prize.</p>
+      <div class="highlight">
+        <div class="highlight-label">Unclaimed prize</div>
+        <div class="highlight-val">${prize}</div>
+      </div>
+      <p>Better luck next time! Keep an eye out for new hunts in your area.</p>
+      <a href="https://finderseek.com" class="btn">Browse Hunts →</a>
+    `)
+  };
+}
+
 // ── Send via Resend ───────────────────────────────────────────────
 async function sendEmail(to, subject, htmlBody) {
   const res = await fetch(RESEND_URL, {
@@ -177,7 +219,7 @@ export default async function handler(req, res) {
 
   try {
     // Fetch hunt + pirate profile + winner profile
-    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status`);
+    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type`);
     const hunt  = hunts?.[0];
     if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
 
@@ -231,6 +273,39 @@ export default async function handler(req, res) {
         const tpl = tplYouWon({ username: winner.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
         await sendEmail(winner.email, tpl.subject, tpl.html);
         results.push(`winner_notified:${winner.email}`);
+      }
+    }
+
+    // ── hunt_expired ──────────────────────────────────────────────
+    // Hunt ended with no winner — notify pirate (+ refund note if escrow)
+    // Also notify seekers who were following the hunt
+    if (event === 'hunt_expired') {
+      const wasEscrow = hunt.payment_type === 'escrow';
+
+      // Email the Pirate
+      if (hunt.pirate_id) {
+        const [pirate] = await sbFetch(`profiles?id=eq.${hunt.pirate_id}&select=username,email,notify_hunt_won`);
+        if (pirate?.email) {
+          const tpl = tplHuntExpired({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, wasEscrow, huntUrl });
+          await sendEmail(pirate.email, tpl.subject, tpl.html);
+          results.push(`pirate_expired_notified:${pirate.email}`);
+        }
+      }
+
+      // Email seekers who followed this hunt
+      const followers = await sbFetch(`hunt_followers?hunt_id=eq.${huntId}&select=user_id`);
+      if (followers?.length) {
+        const followerIds = followers.map(f => f.user_id).filter(id => id !== hunt.pirate_id);
+        for (const fId of followerIds) {
+          try {
+            const [profile] = await sbFetch(`profiles?id=eq.${fId}&select=username,email,notify_hunt_won`);
+            if (profile?.email && profile?.notify_hunt_won) {
+              const tpl = tplHuntExpiredSeeker({ username: profile.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
+              await sendEmail(profile.email, tpl.subject, tpl.html);
+              results.push(`seeker_expired_notified:${profile.email}`);
+            }
+          } catch(e) { /* skip individual failures */ }
+        }
       }
     }
 
