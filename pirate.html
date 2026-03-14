@@ -618,7 +618,7 @@
         <label class="flabel">Prize Amount</label>
         <div style="position:relative">
           <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#22c55e;font-weight:700;font-size:16px;">$</span>
-          <input class="finput" id="prize" type="number" min="1" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);"/>
+          <input class="finput" id="prize" type="number" min="1" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);" oninput="updateEscrowBreakdown()"/>
         </div>
       </div>
     </div>
@@ -666,24 +666,41 @@
           <div class="pay-check"></div>
           <div class="pay-opt-icon">🤝</div>
           <div class="pay-opt-name">Honor Code</div>
-          <div class="pay-opt-desc">You pay the finder directly when they claim. FinderSeek notifies you.</div>
+          <div class="pay-opt-desc">You pay the finder directly via Zelle or Venmo when they claim.</div>
         </div>
         <div class="pay-opt" id="pay-fs" onclick="selectPay('finderseek')">
           <input type="radio" name="payment" value="finderseek"/>
           <div class="pay-check"></div>
-          <div class="pay-opt-icon">🏴‍☠️</div>
-          <div class="pay-opt-name">Through FinderSeek</div>
-          <div class="pay-opt-desc">Transfer to FinderSeek via Zelle or Venmo. We pay the finder.</div>
+          <div class="pay-opt-icon">🔒</div>
+          <div class="pay-opt-name">FinderSeek Escrow</div>
+          <div class="pay-opt-desc">Pay the prize upfront via Stripe. We hold it and auto-pay the winner. +10% service fee.</div>
         </div>
       </div>
+
+      <!-- Honor Code: Zelle/Venmo handle -->
       <div class="pay-handle-wrap" id="pay-handle-wrap">
-        <label class="flabel">Your Payment Handle</label>
+        <label class="flabel" style="color:#fff;">Your Payment Handle</label>
         <div class="pay-method-row">
           <button class="pmb active" id="btn-zelle" onclick="selectMethod('zelle')">Zelle</button>
           <button class="pmb" id="btn-venmo" onclick="selectMethod('venmo')">Venmo</button>
         </div>
         <input class="finput" id="pay-handle" type="text" placeholder="Phone number or email"/>
-        <div class="pay-note">💡 When the finder submits their code, we'll notify you to transfer the prize to FinderSeek. We'll then forward it to the finder via the same method.</div>
+        <div class="pay-note">💡 When the finder claims the prize, FinderSeek will notify you to send payment directly.</div>
+      </div>
+
+      <!-- Escrow: prize breakdown -->
+      <div id="escrow-wrap" style="display:none;margin-top:16px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px 20px;">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#4ade80;margin-bottom:14px;">💳 Escrow Breakdown</div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:#fff;margin-bottom:8px;">
+          <span>Prize amount</span><span id="escrow-prize">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:rgba(255,255,255,.6);margin-bottom:8px;">
+          <span>FinderSeek fee (10%)</span><span id="escrow-fee">$0.00</span>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:#4ade80;">
+          <span>Total charged today</span><span id="escrow-total">$0.00</span>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace;line-height:1.6;">Prize held securely · Released to winner upon valid claim · Refunded if hunt expires unclaimed</div>
       </div>
     </div>
   </div>
@@ -1401,6 +1418,15 @@ function updateClueCount(val) {
   sl.style.background = `linear-gradient(90deg,#93c5fd ${pct},rgba(147,197,253,.15) ${pct})`;
 }
 
+function updateEscrowBreakdown() {
+  const prize = parseFloat(document.getElementById('prize').value) || 0;
+  const fee = Math.round(prize * 0.10 * 100) / 100;
+  const total = Math.round((prize + fee) * 100) / 100;
+  document.getElementById('escrow-prize').textContent = `$${prize.toFixed(2)}`;
+  document.getElementById('escrow-fee').textContent = `$${fee.toFixed(2)}`;
+  document.getElementById('escrow-total').textContent = `$${total.toFixed(2)}`;
+}
+
 function selectTime(t) { /* legacy no-op */ }
 
 function handlePhoto(e) {
@@ -1448,7 +1474,9 @@ function selectTime(t) {
 function selectPay(type) {
   document.getElementById('pay-honor').classList.toggle('selected', type === 'honor');
   document.getElementById('pay-fs').classList.toggle('selected', type === 'finderseek');
-  document.getElementById('pay-handle-wrap').classList.toggle('show', type === 'finderseek');
+  document.getElementById('pay-handle-wrap').style.display = type === 'honor' ? 'block' : 'none';
+  document.getElementById('escrow-wrap').style.display = type === 'finderseek' ? 'block' : 'none';
+  if (type === 'finderseek') updateEscrowBreakdown();
 }
 function selectMethod(m) {
   payMethod = m;
@@ -1476,7 +1504,11 @@ function validate() {
   if (!photoFile) { alert('Please upload a photo of the hiding spot.'); return false; }
   if (!/^[0-9]{6}$/.test(code)) { alert('Please complete your 6-digit secret code.'); return false; }
   if (!paySelected) { alert('Please choose a payment method.'); return false; }
-  if (paySelected.id === 'pay-fs' && !document.getElementById('pay-handle').value.trim()) { alert('Please enter your Zelle or Venmo handle.'); return false; }
+  if (paySelected.id === 'pay-fs') {
+    // Escrow — no handle needed, Stripe will collect payment
+  } else if (!document.getElementById('pay-handle').value.trim()) {
+    alert('Please enter your Zelle or Venmo handle.'); return false;
+  }
   if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) { alert('Please choose a go-live date and time.'); return false; }
   let startTime = liveChoice === 'now' ? new Date() : new Date(document.getElementById('live-datetime').value);
   const hour = startTime.getHours();
@@ -1575,6 +1607,30 @@ async function submitHunt() {
 
   btn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';
   openClueGen(savedHuntId, photoUrl, selectedLat, selectedLng);
+
+  // If escrow payment, launch Stripe checkout for prize + fee
+  if (payType === 'finderseek') {
+    const prizeAmt = parseInt(document.getElementById('prize').value);
+    const feeAmt = Math.round(prizeAmt * 0.10);
+    const totalCents = (prizeAmt + feeAmt) * 100;
+    try {
+      const r = await fetch('/api/create-escrow-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          email: currentUser.email,
+          huntId: savedHuntId,
+          prizeAmount: prizeAmt,
+          totalCents
+        })
+      });
+      const d = await r.json();
+      if (d.url) window.location = d.url;
+    } catch(e) {
+      console.error('Escrow checkout error:', e);
+    }
+  }
 }
 
 function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
