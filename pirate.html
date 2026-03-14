@@ -1673,6 +1673,15 @@ async function submitHunt(previewMode = false) {
   if (!currentUser) { openAuthModal(); return; }
   if (currentProfile?.is_banned) { checkBanned(); return; }
 
+  // Refresh token before submitting to avoid JWT expired errors
+  try {
+    const testR = await fetch(`${SB}/auth/v1/user`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() } });
+    if (!testR.ok) {
+      const ok = await refreshSession();
+      if (!ok) { alert('Your session expired. Please sign in again.'); openAuthModal(); return; }
+    }
+  } catch(e) { await refreshSession(); }
+
   const btn = document.getElementById('submit-btn');
   const previewBtn = document.getElementById('preview-btn');
   btn.disabled = true; previewBtn.disabled = true;
