@@ -832,7 +832,8 @@
   <div class="confirm-title">Quest <em>Confirmed!</em></div>
   <p class="confirm-sub">Your treasure is hidden and your quest is live! Seekers can start hunting now. Guard your secret code!</p>
   <div class="confirm-details" id="confirm-details"></div>
-  <button class="btn-home" onclick="location.href='index.html'">View Active Hunts →</button>
+  <a id="btn-view-this-hunt" class="btn-view-hunt" href="index.html" style="margin-bottom:12px;">⚔️ &nbsp; View My Hunt →</a>
+  <button class="btn-home" onclick="location.href='index.html'" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--dim);border-radius:14px;padding:12px 28px;font-size:14px;cursor:pointer;font-family:'Karla',sans-serif;font-weight:700;">Browse All Hunts</button>
 </div>
 
 <script>
@@ -1624,6 +1625,7 @@ async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status, live
 
     // Remove loading and show confirmation
     loadingEl.remove();
+    document.getElementById('btn-view-this-hunt').href = 'hunt.html?id=' + huntId;
     document.getElementById('confirm-screen').classList.add('show');
 
   } catch(e) {
@@ -1915,7 +1917,7 @@ async function submitHunt(previewMode = false) {
   }
 }
 
-function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
+function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) {
   const liveDate = new Date(liveAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   document.getElementById('confirm-details').innerHTML = `
     <div class="confirm-row"><span class="crlbl">City</span><span class="crval">${city}</span></div>
@@ -1925,6 +1927,7 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt }) {
     <div class="confirm-row"><span class="crlbl">Payment</span><span class="crval">${payType === 'honor' ? '🤝 Honor Code' : '🏴‍☠️ Through FinderSeek'}</span></div>
     <div class="confirm-row"><span class="crlbl">Goes Live</span><span class="crval">${liveDate}</span></div>
   `;
+  if (huntId) document.getElementById('btn-view-this-hunt').href = 'hunt.html?id=' + huntId;
   document.getElementById('confirm-screen').classList.add('show');
   window.scrollTo(0, 0);
 }
