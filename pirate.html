@@ -696,15 +696,7 @@
       </div>
 
       <!-- Honor Code: Zelle/Venmo handle -->
-      <div class="pay-handle-wrap" id="pay-handle-wrap">
-        <label class="flabel" style="color:#fff;">Your Payment Handle</label>
-        <div class="pay-method-row">
-          <button class="pmb active" id="btn-zelle" onclick="selectMethod('zelle')">Zelle</button>
-          <button class="pmb" id="btn-venmo" onclick="selectMethod('venmo')">Venmo</button>
-        </div>
-        <input class="finput" id="pay-handle" type="text" placeholder="Phone number or email"/>
-        
-      </div>
+      <input type="hidden" id="pay-handle"/>
 
       <!-- Escrow: prize breakdown -->
       <div id="escrow-wrap" style="display:none;margin-top:16px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px 20px;">
@@ -1550,7 +1542,6 @@ function selectTime(t) {
 function selectPay(type) {
   document.getElementById('pay-honor').classList.toggle('selected', type === 'honor');
   document.getElementById('pay-fs').classList.toggle('selected', type === 'finderseek');
-  document.getElementById('pay-handle-wrap').style.display = type === 'honor' ? 'block' : 'none';
   document.getElementById('escrow-wrap').style.display = type === 'finderseek' ? 'block' : 'none';
   if (type === 'finderseek') updateEscrowBreakdown();
 }
@@ -1581,9 +1572,7 @@ function validate() {
   if (!/^[0-9]{6}$/.test(code)) { alert('Please complete your 6-digit secret code.'); return false; }
   if (!paySelected) { alert('Please choose a payment method.'); return false; }
   if (paySelected.id === 'pay-fs') {
-    // Escrow — no handle needed, Stripe will collect payment
-  } else if (!document.getElementById('pay-handle').value.trim()) {
-    alert('Please enter your Zelle or Venmo handle.'); return false;
+    // Escrow — Stripe will collect payment
   }
   if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) { alert('Please choose a go-live date and time.'); return false; }
   // Validate end time choice if blackout conflict exists
