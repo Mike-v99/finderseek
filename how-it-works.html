@@ -16,13 +16,33 @@ body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min
 .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(6,5,10,.2) 0%,rgba(6,5,10,.95) 80%);}
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.5;}
 
-nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid rgba(201,137,12,.12);background:rgba(6,5,10,.92);}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(201,137,12,.12);background:rgba(6,5,10,.92);width:100%;box-sizing:border-box;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
 .nav-icon{width:36px;height:36px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,137,12,.4);}
 .nav-name{font-size:18px;font-weight:800;color:var(--cream);}
 .nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:20px;}
-.btn-back{background:transparent;border:1px solid rgba(201,137,12,.2);border-radius:20px;padding:7px 18px;font-size:13px;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;transition:all .2s;}
-.btn-back:hover{border-color:var(--gold);color:var(--cream);}
+@media(max-width:560px){.nav-name{display:none;}}
+.mobile-hamburger{background:none;border:1px solid rgba(201,137,12,.3);border-radius:8px;padding:6px 5px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:38px;height:38px;transition:border-color .2s;}
+.mobile-hamburger:hover{border-color:rgba(201,137,12,.6);}
+.mobile-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
+.mobile-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.mobile-hamburger.open span:nth-child(2){opacity:0;}
+.mobile-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;}
+.mobile-menu-overlay.show{display:block;opacity:1;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;max-width:85vw;height:100vh;z-index:100;background:linear-gradient(180deg,#0f0d1a 0%,#0a0818 100%);border-left:1px solid rgba(201,137,12,.15);box-shadow:-8px 0 40px rgba(0,0,0,.5);transition:right .3s ease;display:flex;flex-direction:column;overflow-y:auto;}
+.mobile-menu.show{right:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mm-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--cream);}
+.mm-logo em{font-style:italic;color:var(--gold);font-weight:300;}
+.mm-close{background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
+.mm-links{flex:1;padding:12px 0;}
+.mm-link{display:flex;align-items:center;gap:14px;padding:14px 20px;color:var(--cream);text-decoration:none;font-size:15px;font-weight:600;transition:background .15s;font-family:'Karla',sans-serif;}
+.mm-link:hover{background:rgba(255,255,255,.04);}
+.mm-link-icon{font-size:20px;width:28px;text-align:center;}
+.mm-arrow{margin-left:auto;color:var(--muted);font-size:20px;}
+.mm-link-pro{color:var(--gold2);}
+.mm-pro-badge{font-size:9px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border-radius:6px;padding:2px 6px;margin-left:6px;}
 
 .hero{position:relative;z-index:2;text-align:center;padding:70px 24px 56px;}
 .hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.04) 0%,rgba(201,137,12,.02) 40%,transparent 70%);pointer-events:none;}
@@ -141,13 +161,27 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="nav-icon">🔍</div>
-    <div><div class="nav-name">Finder<em>Seek</em></div></div>
+    <div class="nav-name">Finder<em>Seek</em></div>
   </a>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <a id="nav-upgrade-btn" class="btn-upgrade" href="pricing.html" style="display:none;">⭐ Upgrade to Pro</a>
-    <a href="index.html" class="btn-back">← Back to Hunts</a>
-  </div>
+  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header">
+    <div class="mm-logo">Finder<em>Seek</em></div>
+    <button class="mm-close" onclick="closeMobileMenu()">×</button>
+  </div>
+  <div class="mm-links">
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
+    <a href="profile.html" class="mm-link"><span class="mm-link-icon">👤</span>Profile<span class="mm-arrow">›</span></a>
+    <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
+    <a href="pricing.html" class="mm-link mm-link-pro"><span class="mm-link-icon">⭐</span>Upgrade to Gold<span class="mm-pro-badge">PRO</span><span class="mm-arrow">›</span></a>
+  </div>
+</div>
 
 <div class="hero">
   <div class="hero-eyebrow f1">📜 The Rules of the Hunt</div>
@@ -229,6 +263,9 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 function showRole(role){document.querySelectorAll('.role-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+role).classList.add('active');document.querySelector('.rtab.'+role).classList.add('active');}
 function toggleFaq(el){const answer=el.nextElementSibling;const isOpen=el.classList.contains('open');document.querySelectorAll('.faq-q.open').forEach(q=>{q.classList.remove('open');q.nextElementSibling.classList.remove('open');});if(!isOpen){el.classList.add('open');answer.classList.add('open');}}
 
+function toggleMobileMenu(){const m=document.getElementById('mobile-menu'),o=document.getElementById('mobile-menu-overlay'),b=document.getElementById('mobile-hamburger'),open=m.classList.contains('show');m.classList.toggle('show',!open);o.classList.toggle('show',!open);b.classList.toggle('open',!open);}
+function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('show');document.getElementById('mobile-menu-overlay').classList.remove('show');document.getElementById('mobile-hamburger').classList.remove('open');}
+
 // Scroll-triggered step animations
 const stepObserver=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');stepObserver.unobserve(e.target);}});
@@ -241,20 +278,4 @@ document.querySelectorAll('.step').forEach(s=>stepObserver.observe(s));
   <a href="index.html#hunts">🔍 Start Hunting →</a>
 </div>
 
-<script>
-(async()=>{
-  const SB='https://qeiuycuasjkopxfkmggp.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-  const tok=localStorage.getItem('fs_token'); if(!tok) return;
-  try{
-    const ur=await fetch(`${SB}/auth/v1/user`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
-    if(!ur.ok) return;
-    const u=await ur.json(); if(!u?.id) return;
-    const pr=await fetch(`${SB}/rest/v1/profiles?id=eq.${u.id}&select=is_pro`,{headers:{'apikey':KEY,'Authorization':'Bearer '+tok}});
-    const pd=await pr.json();
-    const btn=document.getElementById('nav-upgrade-btn');
-    if(btn) btn.style.display=(pd?.[0]?.is_pro)?'none':'inline-flex';
-  }catch(e){}
-})();
-</script>
-</body>
-</html>
+</body></html>
