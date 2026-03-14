@@ -415,7 +415,7 @@ function renderTab(tab) {
   if (tab === 'profiles') { renderProfiles(); return; }
   const hunts = allHunts[tab] || [];
   if (!hunts.length) {
-    const msgs = { draft:'No hunts pending review', active:'No active hunts', ended:'No completed hunts', cancelled:'No rejected hunts' };
+    const msgs = { draft:'No hunts pending review', active:'No active quests', ended:'No completed quests', cancelled:'No rejected hunts' };
     const icons = { draft:'🕐', active:'✅', ended:'🏁', cancelled:'❌' };
     grid.innerHTML = `<div class="empty-state"><div class="empty-icon">${icons[tab]}</div><div class="empty-msg">${msgs[tab]}</div></div>`;
     return;
@@ -630,7 +630,7 @@ function buildCard(h, i) {
     <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 View Live</a>
   ` : `
     <button class="btn-reject" onclick="deleteHunt('${h.id}')">🗑 Delete</button>
-    <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 View Hunt</a>
+    <a class="btn-view" href="hunt.html?id=${h.id}" target="_blank">👁 View Quest</a>
   `;
 
   return `<div class="rcard fade-in" style="animation-delay:${i*.05}s;" id="rcard-${h.id}">
@@ -669,7 +669,7 @@ function buildCard(h, i) {
 
 // ── ACTIONS ───────────────────────────────────────────
 async function approveHunt(id) {
-  if (!confirm('Approve this hunt and make it go live?')) return;
+  if (!confirm('Approve this quest and make it go live?')) return;
   try {
     const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${id}`, {
       method: 'PATCH',
@@ -677,7 +677,7 @@ async function approveHunt(id) {
       body: JSON.stringify({ status: 'active' })
     });
     if (!r.ok) throw new Error('Update failed');
-    // Fire notifications — pirate gets "hunt live" email, city seekers get "new hunt" email
+    // Fire notifications — pirate gets "hunt live" email, city seekers get "new quest" email
     fireNotify('hunt_approved', id).catch(()=>{});
     showToast('✅ Hunt approved and live!', 'success');
     await loadAll();
@@ -708,7 +708,7 @@ async function rejectHunt(id) {
 }
 
 async function deleteHunt(id) {
-  if (!confirm('Permanently delete this hunt? This cannot be undone.')) return;
+  if (!confirm('Permanently delete this quest? This cannot be undone.')) return;
   try {
     const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${id}`, {
       method: 'DELETE',
@@ -747,7 +747,7 @@ setInterval(() => {
 <div id="schedule-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(6,5,10,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;">
   <div style="background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(59,130,246,.3);border-radius:24px;padding:32px 28px;max-width:420px;width:100%;">
     <div style="font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#93c5fd;margin-bottom:6px;">🕐 Schedule Hunt</div>
-    <div style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px;">Set a date & time between 8:00 AM – 6:00 PM for this hunt to go live.</div>
+    <div style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px;">Set a date & time between 8:00 AM – 6:00 PM for this quest to go live.</div>
 
     <div style="margin-bottom:16px;">
       <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#93c5fd;display:block;margin-bottom:8px;">Date</label>

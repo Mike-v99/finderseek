@@ -175,7 +175,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     <button class="mm-close" onclick="closeMobileMenu()">×</button>
   </div>
   <div class="mm-links">
-    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Quests<span class="mm-arrow">›</span></a>
     <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
     <a href="profile.html" class="mm-link"><span class="mm-link-icon">👤</span>Profile<span class="mm-arrow">›</span></a>
     <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
@@ -186,7 +186,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 <div class="hero">
   <div class="hero-eyebrow f1">📜 The Rules of the Hunt</div>
   <h1 class="f1">How It <em>Works</em></h1>
-  <p class="hero-sub f2">Real treasure hunts. Real cash prizes. Two roles — hide it or find it.</p>
+  <p class="hero-sub f2">Real treasure quests. Real cash prizes. Two roles — hide it or find it.</p>
   <div class="role-toggle f3">
     <button class="rtab seeker active" onclick="showRole('seeker')">🔍 I'm a Seeker</button>
     <button class="rtab pirate" onclick="showRole('pirate')">🏴‍☠️ I'm a Pirate</button>
@@ -199,7 +199,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     <div class="sec-title gold">FIND THE TREASURE</div>
     <p class="sec-desc">Follow clues to find a hidden 6-digit code. Enter it, claim the prize.</p>
     <div class="steps">
-      <div class="step"><div class="step-left"><div class="step-num gold">1</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🎯</div><div class="step-head" style="color:#fbbf24;">BROWSE ACTIVE HUNTS</div><p class="step-body">Find a hunt in your city. See the <strong>prize amount</strong>, clues dropped, and time left.</p><span class="step-pill gold">Free to browse</span></div></div>
+      <div class="step"><div class="step-left"><div class="step-num gold">1</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🎯</div><div class="step-head" style="color:#fbbf24;">BROWSE ACTIVE QUESTS</div><p class="step-body">Find a quest in your city. See the <strong>prize amount</strong>, clues dropped, and time left.</p><span class="step-pill gold">Free to browse</span></div></div>
       <div class="step"><div class="step-left"><div class="step-num gold">2</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🗺️</div><div class="step-head" style="color:#34d399;">FOLLOW THE CLUES</div><p class="step-body">Clues drop on a timer. Wait longer for easier clues — but <strong>someone might beat you to it!</strong></p><span class="step-pill gold">AI-generated clues</span></div></div>
       <div class="step"><div class="step-left"><div class="step-num gold">3</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#f472b6;">USE THE MAP</div><p class="step-body">The map <strong>zooms closer</strong> with each clue. The final clue narrows to 260ft with a photo.</p><span class="step-pill gold">3× zoom reveals</span></div></div>
       <div class="step"><div class="step-left"><div class="step-num gold">4</div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#c4b5fd;">ENTER THE CODE & CLAIM</div><p class="step-body">Find the hiding spot, enter the <strong>6-digit code</strong> in the app. First to submit wins!</p><span class="step-pill green">Winner takes all</span></div></div>
@@ -209,7 +209,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
       <div class="faq-inner">
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is it free to play?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Free to browse and follow clues. Sign up only to claim a prize.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I get paid?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">The Pirate sends your prize directly via Zelle or Venmo after you claim.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt shows as claimed. Check back — new hunts drop regularly!</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt shows as claimed. Check back — new quests drop regularly!</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How close do the maps get?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Final clue zooms to 260ft with a photo of the exact hiding spot.</div></div></div>
       </div>
     </div>
@@ -250,11 +250,11 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Inside vehicles</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Restricted areas</div>
         </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in hunt removal and account ban.</div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in quest removal and account ban.</div>
       </div>
 
   <div class="cta-grid f4">
-    <div class="cta-card seeker"><div class="cta-card-icon">🔍</div><div class="cta-card-title">START SEEKING</div><p class="cta-card-desc">Browse active hunts in your area and start following the clues.</p><a href="index.html#hunts" class="cta-btn seeker">View Active Hunts →</a></div>
+    <div class="cta-card seeker"><div class="cta-card-icon">🔍</div><div class="cta-card-title">START SEEKING</div><p class="cta-card-desc">Browse active quests in your area and start following the clues.</p><a href="index.html#quests" class="cta-btn seeker">View Active Quests →</a></div>
     <div class="cta-card pirate"><div class="cta-card-icon">🏴‍☠️</div><div class="cta-card-title">BECOME A PIRATE</div><p class="cta-card-desc">Hide a code, write AI clues, and watch seekers race to find it.</p><a href="pirate.html" class="cta-btn pirate">Create a Hunt →</a></div>
   </div>
 </div>
@@ -275,7 +275,7 @@ document.querySelectorAll('.step').forEach(s=>stepObserver.observe(s));
 
 <!-- Floating sticky CTA — mobile only -->
 <div class="sticky-cta">
-  <a href="index.html#hunts">🔍 Start Hunting →</a>
+  <a href="index.html#quests">🔍 Start Seeking →</a>
 </div>
 
 </body></html>

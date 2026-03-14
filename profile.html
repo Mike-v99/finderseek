@@ -277,7 +277,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="auth-gate-title">Sign In</div>
     <div class="auth-gate-sub">You need an account to view your profile.</div>
     <button class="btn-gate-signin" onclick="openAuthModal()">Sign In / Create Account</button>
-    <div style="margin-top:16px;"><a href="index.html" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">← Back to hunts</a></div>
+    <div style="margin-top:16px;"><a href="index.html" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">← Back to quests</a></div>
   </div>
 </div>
 
@@ -322,7 +322,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <button class="mm-close" onclick="closeMobileMenu()">×</button>
   </div>
   <div class="mm-links">
-    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Quests<span class="mm-arrow">›</span></a>
     <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
     <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">📜</span>How It Works<span class="mm-arrow">›</span></a>
     <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
@@ -344,7 +344,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div class="profile-stats">
         <div class="phstat"><div class="phstat-val" id="p-finds">0</div><div class="phstat-lbl">Finds</div></div>
         <div class="phstat"><div class="phstat-val" id="p-streak">0</div><div class="phstat-lbl">Streak</div></div>
-        <div class="phstat"><div class="phstat-val" id="p-hunts-hidden">0</div><div class="phstat-lbl">Hunts Hidden</div></div>
+        <div class="phstat"><div class="phstat-val" id="p-hunts-hidden">0</div><div class="phstat-lbl">Quests Hidden</div></div>
       </div>
     </div>
   </div>
@@ -391,10 +391,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div class="section-title">Email Notifications</div>
       <div class="section-sub">Choose what emails you receive from FinderSeek</div>
       <div class="notif-list">
-        <div class="notif-row"><div class="notif-left"><div class="notif-title">🗺️ New Hunt In My City</div><div class="notif-sub">Get notified when a new treasure hunt drops near you</div></div><label class="toggle"><input type="checkbox" id="n-new-hunts" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
-        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏆 I Won a Hunt</div><div class="notif-sub">Confirmation email when you successfully claim a prize</div></div><label class="toggle"><input type="checkbox" id="n-hunt-won" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🗺️ New Quest In My City</div><div class="notif-sub">Get notified when a new treasure quest drops near you</div></div><label class="toggle"><input type="checkbox" id="n-new-hunts" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏆 I Won a Quest</div><div class="notif-sub">Confirmation email when you successfully claim a prize</div></div><label class="toggle"><input type="checkbox" id="n-hunt-won" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
         <div class="notif-row"><div class="notif-left"><div class="notif-title">💬 New Chat Message</div><div class="notif-sub">Email when your Pirate or Winner sends you a message</div></div><label class="toggle"><input type="checkbox" id="n-chat" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
-        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏴‍☠️ My Hunt Goes Live</div><div class="notif-sub">Email when admin approves your hidden treasure hunt</div></div><label class="toggle"><input type="checkbox" id="n-hunt-live" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
+        <div class="notif-row"><div class="notif-left"><div class="notif-title">🏴‍☠️ My Quest Goes Live</div><div class="notif-sub">Email when admin approves your hidden treasure quest</div></div><label class="toggle"><input type="checkbox" id="n-hunt-live" onchange="saveNotif()"/><span class="toggle-slider"></span></label></div>
       </div>
     </div>
     <div class="section danger-zone fade-in" style="animation-delay:.15s;">
@@ -410,26 +410,26 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <!-- PANEL: HISTORY -->
   <div class="panel" id="panel-history">
     <div class="section fade-in">
-      <div class="section-title">Hunt History</div>
+      <div class="section-title">Quest History</div>
       <div class="section-sub">Hunts you've won or participated in</div>
-      <div class="hunt-history" id="hunt-history"><div class="hh-empty">Loading your hunt history…</div></div>
+      <div class="hunt-history" id="hunt-history"><div class="hh-empty">Loading your quest history…</div></div>
     </div>
   </div>
 
   <!-- PANEL: PIRATE'S COVE -->
   <div class="panel" id="panel-pirate">
   <div class="pirate-dash">
-    <div class="pirate-header"><div class="pirate-header-icon">🏴‍☠️</div><div><div class="pirate-header-title">PIRATE'S COVE</div><div class="pirate-header-sub">Your hunts · Seeker intel · Buried loot</div></div></div>
+    <div class="pirate-header"><div class="pirate-header-icon">🏴‍☠️</div><div><div class="pirate-header-title">PIRATE'S COVE</div><div class="pirate-header-sub">Your quests · Seeker intel · Buried loot</div></div></div>
     <div class="pirate-stats">
-      <div class="pirate-pstat"><div class="pirate-pstat-lbl">⚓ Hunts Posted</div><div class="pirate-pstat-val gold" id="pstat-hunts">—</div><div class="pirate-pstat-note">total</div></div>
-      <div class="pirate-pstat"><div class="pirate-pstat-lbl">🧭 All Seekers</div><div class="pirate-pstat-val" id="pstat-seekers">—</div><div class="pirate-pstat-note">across all hunts</div></div>
+      <div class="pirate-pstat"><div class="pirate-pstat-lbl">⚓ Quests Posted</div><div class="pirate-pstat-val gold" id="pstat-hunts">—</div><div class="pirate-pstat-note">total</div></div>
+      <div class="pirate-pstat"><div class="pirate-pstat-lbl">🧭 All Seekers</div><div class="pirate-pstat-val" id="pstat-seekers">—</div><div class="pirate-pstat-note">across all quests</div></div>
       <div class="pirate-pstat"><div class="pirate-pstat-lbl">⭐ Gold Seekers</div><div class="pirate-pstat-val green" id="pstat-gold">—</div><div class="pirate-pstat-note">is_pro members</div></div>
     </div>
     <div class="pirate-sec-hd"><div class="pirate-sec-title" id="pirate-sec-title">YOUR HUNTS</div><div class="pirate-filter"><button class="pf-pill active" onclick="setPirateFilter('all',this)">All Seekers</button><button class="pf-pill" onclick="setPirateFilter('gold',this)">⭐ Gold Only</button></div></div>
     <div class="pirate-skeleton" id="pirate-skeleton"><div class="pirate-skel-card"><div class="skel-ln w60"></div><div class="skel-ln w35"></div><div class="skel-ln w80"></div></div><div class="pirate-skel-card"><div class="skel-ln w60"></div><div class="skel-ln w35"></div><div class="skel-ln w80"></div></div></div>
     <div class="pirate-hunt-list" id="pirate-hunt-list" style="display:none;"></div>
-    <div class="pirate-empty" id="pirate-empty" style="display:none;"><div class="pirate-empty-icon">🗺️</div><div class="pirate-empty-title">No hunts yet, Pirate.</div><div class="pirate-empty-sub">Post your first hunt and let the seekers come.</div></div>
-    <div class="pirate-cta"><div class="pirate-cta-text"><strong>Ready to bury treasure?</strong>Post a hunt and watch the seekers race.</div><button class="btn-hide-treasure" onclick="window.location.href='pirate.html'">⚓ Hide Treasure</button></div>
+    <div class="pirate-empty" id="pirate-empty" style="display:none;"><div class="pirate-empty-icon">🗺️</div><div class="pirate-empty-title">No quests yet, Pirate.</div><div class="pirate-empty-sub">Post your first quest and let the seekers come.</div></div>
+    <div class="pirate-cta"><div class="pirate-cta-text"><strong>Ready to bury treasure?</strong>Post a quest and watch the seekers race.</div><button class="btn-hide-treasure" onclick="window.location.href='pirate.html'">⚓ Hide Treasure</button></div>
   </div>
   </div>
 
@@ -452,7 +452,7 @@ function showPortal(){document.getElementById('auth-gate').style.display='none';
 function showTab(name,tabEl){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');tabEl.classList.add('active');if(name==='pirate'&&!_pirateLoaded)loadPirateDash();}
 async function loadProfile(uid){const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});const d=await r.json();if(!d?.length)return;currentProfile=d[0];const upgradeBtn=document.getElementById('nav-upgrade-btn');if(upgradeBtn)upgradeBtn.style.display=currentProfile?.is_pro?'none':'inline-flex';renderProfile();loadHuntHistory(uid);}
 function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';document.getElementById('p-avatar').textContent=name[0].toUpperCase();document.getElementById('p-name').textContent=name;document.getElementById('p-city').textContent=p.city||'—';document.getElementById('p-joined').textContent=p.created_at?new Date(p.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';document.getElementById('p-finds').textContent=p.finds_count||0;document.getElementById('p-streak').textContent=p.streak||0;document.getElementById('f-username').value=p.username||'';document.getElementById('f-city').value=p.city||'';document.getElementById('f-email').value=p.email||currentUser?.email||'';const pwEmail=document.getElementById('pw-email-display');if(pwEmail)pwEmail.textContent=p.email||currentUser?.email||'—';document.getElementById('n-new-hunts').checked=p.notify_new_hunts!==false;document.getElementById('n-hunt-won').checked=p.notify_hunt_won!==false;document.getElementById('n-chat').checked=p.notify_chat!==false;document.getElementById('n-hunt-live').checked=p.notify_hunt_live!==false;}
-async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No hunt history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
+async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No quest history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
 async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Username is required','error');return;}const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify({username,city,email})});if(!r.ok)throw new Error('Save failed');currentProfile={...currentProfile,username,city,email};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
 
 async function sendPasswordReset(){
@@ -484,7 +484,7 @@ let notifTimer=null;async function saveNotif(){clearTimeout(notifTimer);notifTim
 function toggleMobileMenu(){const m=document.getElementById('mobile-menu'),o=document.getElementById('mobile-menu-overlay'),b=document.getElementById('mobile-hamburger'),open=m.classList.contains('show');m.classList.toggle('show',!open);o.classList.toggle('show',!open);b.classList.toggle('open',!open);}
 function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('show');document.getElementById('mobile-menu-overlay').classList.remove('show');document.getElementById('mobile-hamburger').classList.remove('open');}
 function signOut(){clearToken();window.location.href='index.html';}
-function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your hunt history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
+function confirmDeleteAccount(){if(!confirm('Are you sure you want to delete your account? This cannot be undone.'))return;if(!confirm('Final confirmation: delete everything including your quest history?'))return;showToast('Account deletion — please contact finderseek1@gmail.com','error');}
 function openAuthModal(){document.getElementById('auth-modal').classList.add('show');}
 function closeAuthModal(){document.getElementById('auth-modal').classList.remove('show');}
 function switchAuthTab(tab){document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('signup-fields').style.display=tab==='signup'?'block':'none';document.getElementById('login-fields').style.display=tab==='login'?'block':'none';document.getElementById('auth-err').style.display='none';document.getElementById('auth-ok').style.display='none';}

@@ -335,7 +335,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
     <!-- Benefits section -->
     <div class="auth-benefits">
-      <div class="auth-benefit"><span class="auth-benefit-icon">&#127919;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Track Live Hunts</span></div>
+      <div class="auth-benefit"><span class="auth-benefit-icon">&#127919;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Track Live Quests</span></div>
       <div class="auth-benefit"><span class="auth-benefit-icon">&#128176;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Claim Prizes</span></div>
       <div class="auth-benefit"><span class="auth-benefit-icon">&#128101;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Build Followers</span></div>
       <div class="auth-benefit"><span class="auth-benefit-icon">&#127988;&#8205;&#9760;&#65039;</span><span class="auth-benefit-title"><span class="auth-check">&#10003;</span>Hide Treasure</span></div>
@@ -445,7 +445,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
   <div class="hunt-section" id="sec-active">
     <div class="hunt-section-hdr hdr-active" onclick="toggleSection('sec-active')">
-      <div class="hdr-left"><div class="hdr-icon">&#127919;</div><div class="hdr-info"><div class="hdr-title">ACTIVE HUNTS</div><div class="hdr-sub">Live now &mdash; click any hunt to start seeking</div></div></div>
+      <div class="hdr-left"><div class="hdr-icon">&#127919;</div><div class="hdr-info"><div class="hdr-title">ACTIVE QUESTS</div><div class="hdr-sub">Live now &mdash; click any quest to start seeking</div></div></div>
       <div class="hdr-right"><div class="hdr-badge badge-active"><span class="dot"></span><span id="count-active">&mdash;</span></div><div class="hdr-chevron">&#9660;</div></div>
     </div>
     <div class="hunt-section-body"><div class="cards" id="cards-active"><div class="statebox"><div class="si">&#9203;</div>Loading&hellip;</div></div></div>
@@ -453,7 +453,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
   <div class="hunt-section" id="sec-scheduled">
     <div class="hunt-section-hdr hdr-scheduled" onclick="toggleSection('sec-scheduled')">
-      <div class="hdr-left"><div class="hdr-icon">&#128197;</div><div class="hdr-info"><div class="hdr-title">SCHEDULED HUNTS</div><div class="hdr-sub">Coming soon &mdash; mark your calendar</div></div></div>
+      <div class="hdr-left"><div class="hdr-icon">&#128197;</div><div class="hdr-info"><div class="hdr-title">SCHEDULED QUESTS</div><div class="hdr-sub">Coming soon &mdash; mark your calendar</div></div></div>
       <div class="hdr-right"><div class="hdr-badge badge-scheduled"><span id="count-scheduled">&mdash;</span></div><div class="hdr-chevron">&#9660;</div></div>
     </div>
     <div class="hunt-section-body"><div class="cards" id="cards-scheduled"></div></div>
@@ -461,7 +461,7 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
   <div class="hunt-section" id="sec-completed">
     <div class="hunt-section-hdr hdr-completed" onclick="toggleSection('sec-completed')">
-      <div class="hdr-left"><div class="hdr-icon">&#127942;</div><div class="hdr-info"><div class="hdr-title">COMPLETED HUNTS</div><div class="hdr-sub">Past hunts &mdash; see who found the treasure</div></div></div>
+      <div class="hdr-left"><div class="hdr-icon">&#127942;</div><div class="hdr-info"><div class="hdr-title">COMPLETED QUESTS</div><div class="hdr-sub">Past quests &mdash; see who found the treasure</div></div></div>
       <div class="hdr-right"><div class="hdr-badge badge-completed"><span id="count-completed">&mdash;</span></div><div class="hdr-chevron">&#9660;</div></div>
     </div>
     <div class="hunt-section-body"><div class="cards" id="cards-completed"></div></div>
@@ -497,11 +497,11 @@ function toggleSection(id){document.getElementById(id).classList.toggle('open');
 function buildCards(list,container,type){
   const q=document.getElementById('search').value.toLowerCase().trim();
   const filtered=list.filter(h=>(!q||h.city.toLowerCase().includes(q)));
-  if(!filtered.length){container.innerHTML='<div class="statebox"><div class="si">'+(type==='completed'?'\uD83C\uDFC6':type==='scheduled'?'\uD83D\uDCC5':'\uD83D\uDD0D')+'</div>'+(type==='active'?'No active hunts in that area.':type==='scheduled'?'No upcoming hunts yet.':'No completed hunts yet.')+'</div>';return;}
+  if(!filtered.length){container.innerHTML='<div class="statebox"><div class="si">'+(type==='completed'?'\uD83C\uDFC6':type==='scheduled'?'\uD83D\uDCC5':'\uD83D\uDD0D')+'</div>'+(type==='active'?'No active quests in that area.':type==='scheduled'?'No upcoming quests yet.':'No completed quests yet.')+'</div>';return;}
   container.innerHTML=filtered.map((h,i)=>{
     const isCompleted=type==='completed',isScheduled=type==='scheduled';
     const accentColor=isCompleted?'linear-gradient(90deg,#475569,#64748b,transparent)':isScheduled?'linear-gradient(90deg,#b45309,#fbbf24,transparent)':'linear-gradient(90deg,var(--gold),var(--gold2),transparent)';
-    const footBtn=isCompleted?'<span class="jbtn" style="color:#94a3b8;">View Hunt \u2192</span>':isScheduled?'<span class="jbtn" style="color:#fbbf24;">Coming Soon</span>':'<span class="jbtn">Start Hunting \u2192</span>';
+    const footBtn=isCompleted?'<span class="jbtn" style="color:#94a3b8;">View Quest \u2192</span>':isScheduled?'<span class="jbtn" style="color:#fbbf24;">Coming Soon</span>':'<span class="jbtn">Start Seeking \u2192</span>';
     const timeLabel=isCompleted?'ENDED':isScheduled?'STARTS IN':'ENDS IN';
     const timeVal=isCompleted?new Date(h.endsAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}):fmt(isScheduled?h.startsAt-Date.now():h.endsAt-Date.now());
     return '<a class="hcard'+(isCompleted?' hcard-done':'')+'" href="hunt.html?id='+h.id+'" style="animation:fadeUp .4s '+(i*.07)+'s both;opacity:'+(isCompleted?.75:1)+';"><div class="hcard-accent" style="background:'+accentColor+'"></div><div class="hcard-body"><div class="hcard-top"><div class="hcity">'+h.city+'</div><div class="hprize-col"><div class="hprize '+PC[h.tier]+'">'+h.prizeDesc+'</div><div class="tbadge '+TC[h.tier]+'">'+TL[h.tier]+'</div></div></div><div class="hmeta">\uD83D\uDCC5 '+h.weekLabel+'</div><div class="hcard-mid"><div class="clues-sec"><div class="clues-lbl"><span>CLUES REVEALED</span><span>'+h.freeClues+'/'+h.totalClues+'</span></div><div class="pbar"><div class="pfill" style="width:'+(h.freeClues/h.totalClues*100)+'%"></div></div></div><div class="cbox"><div class="clbl">'+timeLabel+'</div><div class="ctime" id="t-'+h.id+'-'+type+'">'+timeVal+'</div></div></div></div><div class="hcard-foot"><span class="hcard-foot-city">\uD83D\uDCCD '+h.city+'</span>'+footBtn+'</div></a>';
@@ -591,7 +591,7 @@ function checkBanned(){
   document.querySelectorAll('.btn-hide,.btn-cta.btn-hide').forEach(b=>b.style.display='none');
   const area=document.getElementById('nav-auth-area');
   if(area)area.innerHTML='<span style="font-size:11px;color:#f87171;font-family:\'DM Mono\',monospace;border:1px solid rgba(239,68,68,.3);border-radius:20px;padding:4px 12px;background:rgba(239,68,68,.08);">\uD83D\uDEAB Account Suspended</span>';
-  if(!document.getElementById('ban-banner')){const banner=document.createElement('div');banner.id='ban-banner';banner.style.cssText='position:relative;z-index:50;background:rgba(239,68,68,.1);border-bottom:1px solid rgba(239,68,68,.25);padding:10px 24px;text-align:center;font-size:13px;font-family:\'DM Mono\',monospace;color:#fca5a5;';banner.innerHTML='\uD83D\uDEAB Your account has been suspended. You can browse hunts but cannot hide treasure or claim prizes.'+(currentProfile.admin_note?' <em style="opacity:.7">Reason: '+currentProfile.admin_note+'</em>':'');document.body.insertBefore(banner,document.body.firstChild);}
+  if(!document.getElementById('ban-banner')){const banner=document.createElement('div');banner.id='ban-banner';banner.style.cssText='position:relative;z-index:50;background:rgba(239,68,68,.1);border-bottom:1px solid rgba(239,68,68,.25);padding:10px 24px;text-align:center;font-size:13px;font-family:\'DM Mono\',monospace;color:#fca5a5;';banner.innerHTML='\uD83D\uDEAB Your account has been suspended. You can browse quests but cannot hide treasure or claim prizes.'+(currentProfile.admin_note?' <em style="opacity:.7">Reason: '+currentProfile.admin_note+'</em>':'');document.body.insertBefore(banner,document.body.firstChild);}
 }
 
 function updateNavAuth(){
@@ -722,12 +722,12 @@ function plotHuntsOnMap(){
         iconSize:[14,14],iconAnchor:[7,7]
       });
       L.marker(coords,{icon}).addTo(mapInstance)
-        .bindPopup('<div style="font-family:Karla,sans-serif;"><strong>'+h.city+'</strong><br><span style="color:'+color+';font-family:Bangers,cursive;font-size:16px;">'+h.prizeDesc+'</span><br><a href="hunt.html?id='+h.id+'" style="color:#22c55e;">Start Hunting &rarr;</a></div>');
+        .bindPopup('<div style="font-family:Karla,sans-serif;"><strong>'+h.city+'</strong><br><span style="color:'+color+';font-family:Bangers,cursive;font-size:16px;">'+h.prizeDesc+'</span><br><a href="hunt.html?id='+h.id+'" style="color:#22c55e;">Start Seeking &rarr;</a></div>');
       if(bounds.length>1) mapInstance.fitBounds(bounds,{padding:[40,40]});
       else if(bounds.length===1) mapInstance.setView(bounds[0],10);
     });
   });
-  document.getElementById('map-count').textContent=allActive.length+' active hunt'+(allActive.length!==1?'s':'');
+  document.getElementById('map-count').textContent=allActive.length+' active quest'+(allActive.length!==1?'s':'');
   // Legend
   const legend=document.getElementById('map-legend');
   legend.innerHTML=Object.entries(tierColors).map(([t,c])=>'<div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:'+c+';box-shadow:0 0 8px '+c+';"></div><span style="font-size:10px;color:var(--dim);font-family:\'DM Mono\',monospace;text-transform:uppercase;letter-spacing:1px;">'+t+'</span></div>').join('');

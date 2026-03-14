@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>FinderSeek — Hunt</title>
+<title>FinderSeek — Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&family=Oswald:wght@700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
@@ -149,7 +149,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .tab{flex:1;padding:16px 8px;text-align:center;font-size:13px;font-weight:800;cursor:pointer;
   border-radius:14px;border:2px solid transparent;transition:all .25s;letter-spacing:1px;
   font-family:'Karla',sans-serif;position:relative;overflow:hidden;text-transform:uppercase;}
-/* Hunt — teal */
+/* Quest — teal */
 .tab:nth-child(1){color:#34d399;border-color:rgba(52,211,153,.3);
   background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.04));}
 .tab:nth-child(1).active{background:linear-gradient(135deg,rgba(52,211,153,.28),rgba(52,211,153,.1));
@@ -167,7 +167,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .tab:nth-child(3).active{background:linear-gradient(135deg,rgba(192,132,252,.28),rgba(192,132,252,.1));
   border-color:#c084fc;box-shadow:0 0 24px rgba(192,132,252,.3),inset 0 1px 0 rgba(192,132,252,.2);}
 .tab:nth-child(3):hover{background:linear-gradient(135deg,rgba(192,132,252,.2),rgba(192,132,252,.07));border-color:rgba(192,132,252,.6);}
-/* Hunters — gold */
+/* Seekers — gold */
 .tab:nth-child(4){color:#fbbf24;border-color:rgba(251,191,36,.3);
   background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.04));}
 .tab:nth-child(4).active{background:linear-gradient(135deg,rgba(251,191,36,.28),rgba(251,191,36,.1));
@@ -425,7 +425,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🔍 Sign In / Create Account</button>
   </div>
   <div class="mm-links">
-    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Quests<span class="mm-arrow">›</span></a>
     <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
     <a href="profile.html" class="mm-link"><span class="mm-link-icon">👤</span>Profile<span class="mm-arrow">›</span></a>
     <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">📜</span>How It Works<span class="mm-arrow">›</span></a>
@@ -507,7 +507,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Hunt</div>
   <div class="tab" onclick="showTab('claim',this)"><span class="tab-icon">🎯</span>Claim Prize</div>
   <div class="tab tab-link" onclick="window.location.href='index.html'"><span class="tab-icon">🏠</span>All Quests</div>
-  <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Hunters Joined</div>
+  <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Seekers Joined</div>
 </div></div>
 
 <div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
@@ -588,7 +588,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
         </div>
 
         <div style="margin-top:24px;">
-          <a href="index.html" class="btn-back-hunts">← Back to All Hunts</a>
+          <a href="index.html" class="btn-back-hunts">← Back to All Quests</a>
         </div>
       </div>
 
@@ -620,13 +620,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <div class="follow-bar" id="follow-bar">
         <div class="follow-bar-left">
           <div class="follow-bar-title">Join the Hunt</div>
-          <div class="follow-bar-sub" id="follow-count-sub">— hunters on this trail</div>
+          <div class="follow-bar-sub" id="follow-count-sub">— seekers on this trail</div>
         </div>
         <button class="btn-follow" id="btn-follow" onclick="toggleFollow()">🔍 I'm Hunting This</button>
       </div>
 
       <!-- HUNTERS ON THIS HUNT -->
-      <div class="hunters-section-title">On This Hunt <span id="this-hunt-count">0</span></div>
+      <div class="hunters-section-title">On This Quest <span id="this-hunt-count">0</span></div>
       <div class="hunters-list-wrap" id="this-hunt-list">
         <div class="statebox"><div class="si">🔍</div>No hunters yet — be the first!</div>
       </div>
@@ -765,7 +765,7 @@ function renderHunt() {
   mainTimer = setInterval(() => { updateCd(endsAt - Date.now()); setPhase(); }, 1000);
 
   // Clue dots & count
-  // If hunt has ended, all clues are revealed
+  // If quest has ended, all clues are revealed
   const huntEnded = new Date(hunt.ends_at) <= new Date();
   const revealed = clues.filter(c => huntEnded || new Date(c.reveal_at) <= new Date());
   document.getElementById('clues-count').textContent = revealed.length;
@@ -1178,14 +1178,14 @@ async function submitClaim() {
   btn.textContent = '⏳ Checking…';
 
   try {
-    // Fetch the hunt's finder_code from Supabase
+    // Fetch the quest's finder_code from Supabase
     const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}&select=finder_code,prize_desc,city,status,winner_id`, { headers: H });
     const data = await r.json();
     const h = Array.isArray(data) ? data[0] : data;
 
     if (!h) { showClaimError('⚠️ Could not verify. Try again.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
     if (h.winner_id) { showClaimError('😔 This treasure has already been claimed!'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
-    if (h.status !== 'active') { showClaimError('⌛ This hunt has ended.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
+    if (h.status !== 'active') { showClaimError('⌛ This quest has ended.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
 
     if (String(h.finder_code).trim() !== String(code).trim()) {
       showClaimError('❌ Wrong code — keep searching!');

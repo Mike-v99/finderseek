@@ -472,7 +472,7 @@
     <button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🏴‍☠️ Sign In / Create Account</button>
   </div>
   <div class="mm-links">
-    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Hunts<span class="mm-arrow">›</span></a>
+    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Quests<span class="mm-arrow">›</span></a>
     <a href="profile.html" class="mm-link"><span class="mm-link-icon">👤</span>Profile<span class="mm-arrow">›</span></a>
     <a href="how-it-works.html" class="mm-link"><span class="mm-link-icon">📜</span>How It Works<span class="mm-arrow">›</span></a>
     <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
@@ -586,7 +586,7 @@
       <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Inside vehicles</div>
       <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Restricted areas</div>
     </div>
-    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in hunt removal and account ban.</div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in quest removal and account ban.</div>
   </div>
 
   <!-- STEP 2 -->
@@ -738,7 +738,7 @@
         <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:#4ade80;">
           <span>Total charged today</span><span id="escrow-total">$0.00</span>
         </div>
-        <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace;line-height:1.6;">Prize held securely · Released to winner upon valid claim · Refunded if hunt expires unclaimed</div>
+        <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace;line-height:1.6;">Prize held securely · Released to winner upon valid claim · Refunded if quest expires unclaimed</div>
       </div>
     </div>
   </div>
@@ -815,21 +815,21 @@
 
         <!-- END TIME CHOICE — shown when start time could conflict with blackout -->
         <div id="end-time-choice" style="display:none;margin-top:16px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:18px 20px;">
-          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fbbf24;margin-bottom:12px;">🌙 Hunt End Time</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6;">Your hunt would end during blackout hours (8pm–8am). Choose how to handle it:</div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fbbf24;margin-bottom:12px;">🌙 Quest End Time</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6;">Your quest would end during blackout hours (8pm–8am). Choose how to handle it:</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <label style="display:flex;align-items:center;gap:12px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;transition:border-color .2s;" id="end-opt-before">
               <input type="radio" name="end-choice" value="before" onchange="selectEndChoice('before')" style="accent-color:#fbbf24;width:16px;height:16px;flex-shrink:0;"/>
               <div>
                 <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">⏰ End at 8:00 PM tonight</div>
-                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-before-label">Shorter hunt — ends same day</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-before-label">Shorter quest — ends same day</div>
               </div>
             </label>
             <label style="display:flex;align-items:center;gap:12px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;transition:border-color .2s;" id="end-opt-after">
               <input type="radio" name="end-choice" value="after" onchange="selectEndChoice('after')" style="accent-color:#fbbf24;width:16px;height:16px;flex-shrink:0;"/>
               <div>
                 <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">☀️ Extend to 8:00 AM tomorrow</div>
-                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-after-label">Longer hunt — resumes next morning</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;" id="end-after-label">Longer quest — resumes next morning</div>
               </div>
             </label>
           </div>
@@ -855,9 +855,9 @@
 <div class="confirm-screen" id="confirm-screen">
   <div class="confirm-icon">🏴‍☠️</div>
   <div class="confirm-title">Quest <em>Confirmed!</em></div>
-  <p class="confirm-sub">Your treasure is hidden and your quest is live! Seekers can start hunting now. Guard your secret code!</p>
+  <p class="confirm-sub">Your treasure is hidden and your quest is live! Seekers can start seeking now. Guard your secret code!</p>
   <div class="confirm-details" id="confirm-details"></div>
-  <a id="btn-view-this-hunt" class="btn-view-hunt" href="index.html" style="margin-bottom:12px;">⚔️ &nbsp; View My Hunt →</a>
+  <a id="btn-view-this-hunt" class="btn-view-hunt" href="index.html" style="margin-bottom:12px;">⚔️ &nbsp; View My Quest →</a>
   <button class="btn-home" onclick="location.href='index.html'" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--dim);border-radius:14px;padding:12px 28px;font-size:14px;cursor:pointer;font-family:'Karla',sans-serif;font-weight:700;">Browse All Hunts</button>
 </div>
 
@@ -1136,12 +1136,12 @@ async function generateClues() {
       pirate:`Write in a classic pirate voice — seafaring metaphors, treasure maps, "ye", "arr", nautical imagery, adventure. Bold and swashbuckling.`,
       gothic:`Write in a dark, gothic style — shadow, mystery, whispers, the uncanny, moonlight, ravens, forgotten things. Haunting and atmospheric.`,
       poetic:`Write in a lyrical, poetic style — beautiful imagery, nature metaphors, soft and dreamlike language, almost like song lyrics. Graceful and evocative.`,
-      comedy:`Write every clue as absurdist, farcical satire — deadpan observations, ridiculous comparisons, mock-serious tone, unexpected punchlines. Think Monty Python meets treasure hunting. Funny but still useful clues.`,
+      comedy:`Write every clue as absurdist, farcical satire — deadpan observations, ridiculous comparisons, mock-serious tone, unexpected punchlines. Think Monty Python meets treasure questing. Funny but still useful clues.`,
       hillbilly:`Write in a Southern hillbilly country style — folksy dialect, yall, aint, fixin to, yonder, drawl. Warm, funny, and down-home charming.`,
       kid:`Write like a cheerful 5-year-old explaining it to another 5-year-old — super simple words, silly comparisons, lots of excitement, short sentences. Use emojis occasionally.`
     };
     const cityHint = document.getElementById('city').value.trim();
-    const prompt = `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app where real cash is hidden at a real physical location.\n\nThe hiding spot is described as:\n"${desc}"\n\n${cityHint ? `City/Area: ${cityHint}` : ''}\nLocation coordinates: ${clueGenLat ? `${clueGenLat}, ${clueGenLng}` : 'not provided'}\n\nSTYLE: ${personaInstructions[selectedPersona] || personaInstructions.pirate}\n\nWrite exactly ${clueCount} clues. Critical rules:\n- Clues MUST reference real, specific details from the hiding spot description\n- Build progressively — clue 1 is vague, last clues very specific\n- Written in second person\n- 1-3 sentences each\n- Never give GPS directions\n\nReturn ONLY a JSON array:\n[{"number": 1, "text": "clue text here"}, ...]`;
+    const prompt = `You are writing treasure quest clues for FinderSeek, a real-money treasure quest app where real cash is hidden at a real physical location.\n\nThe hiding spot is described as:\n"${desc}"\n\n${cityHint ? `City/Area: ${cityHint}` : ''}\nLocation coordinates: ${clueGenLat ? `${clueGenLat}, ${clueGenLng}` : 'not provided'}\n\nSTYLE: ${personaInstructions[selectedPersona] || personaInstructions.pirate}\n\nWrite exactly ${clueCount} clues. Critical rules:\n- Clues MUST reference real, specific details from the hiding spot description\n- Build progressively — clue 1 is vague, last clues very specific\n- Written in second person\n- 1-3 sentences each\n- Never give GPS directions\n\nReturn ONLY a JSON array:\n[{"number": 1, "text": "clue text here"}, ...]`;
 
     const response = await fetch('/api/generate-clues', {
       method: 'POST',
@@ -1171,7 +1171,7 @@ async function generateClues() {
 
       let revealAt;
       if (num <= freeClues) {
-        // Drop immediately at hunt start
+        // Drop immediately at quest start
         revealAt = new Date(liveDateObj.getTime());
       } else {
         // Space remaining clues evenly over the duration
@@ -1531,7 +1531,7 @@ async function publishDraftHunt() {
     // Show live state
     document.getElementById('cg-success-icon').textContent = '🏴‍☠️';
     document.getElementById('cg-success-title').textContent = 'Quest is Live!';
-    document.getElementById('cg-success-sub').textContent = 'Your clues are live. Seekers can start hunting!';
+    document.getElementById('cg-success-sub').textContent = 'Your clues are live. Seekers can start seeking!';
     document.getElementById('cg-success-sub2').textContent = '';
     document.getElementById('cg-publish-wrap').style.display = 'none';
     document.getElementById('btn-view-hunt').style.display = 'inline-block';
@@ -1627,7 +1627,7 @@ async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status, live
       loadingEl.remove();
       const result = await openStripePayment({ prizeAmt, totalCents, huntId });
       if (!result || !result.success) {
-        // Payment cancelled or failed — hunt is saved but not paid
+        // Payment cancelled or failed — quest is saved but not paid
         document.getElementById('submit-btn').disabled = false;
         document.getElementById('preview-btn').disabled = false;
         document.getElementById('submit-btn').textContent = '🏴‍☠️   BURY MY TREASURE →';
@@ -1776,7 +1776,7 @@ function validate() {
   if (liveChoice === 'schedule' && !document.getElementById('live-datetime').value) { alert('Please choose a go-live date and time.'); return false; }
   // Validate end time choice if blackout conflict exists
   if (liveChoice === 'schedule' && document.getElementById('end-time-choice').style.display !== 'none' && !endChoice) {
-    alert('Please choose when your hunt should end — before 8pm or extend to 8am next morning.'); return false;
+    alert('Please choose when your quest should end — before 8pm or extend to 8am next morning.'); return false;
   }
   let startTime = liveChoice === 'now' ? new Date() : new Date(document.getElementById('live-datetime').value);
   const hour = startTime.getHours();
@@ -1881,7 +1881,7 @@ async function submitHunt(previewMode = false) {
         neighborhood: hood,
         photo_url: photoUrl,
         pirate_id: currentUser?.id || null,
-        created_by: currentUser?.id || null,   // ← ADDED: links hunt to pirate for dashboard
+        created_by: currentUser?.id || null,   // ← ADDED: links quest to pirate for dashboard
         lat: selectedLat || null,
         lng: selectedLng || null,
       })
@@ -2055,13 +2055,13 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) 
         <div class="cg-success-icon" id="cg-success-icon">🏴‍☠️</div>
         <div class="cg-success-title" id="cg-success-title">Quest is Live!</div>
         <p style="color:var(--dim);font-size:15px;line-height:1.7;margin-bottom:4px;" id="cg-success-sub">Your clues have been crafted and saved.</p>
-        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;" id="cg-success-sub2">Seekers can now hunt your treasure!</p>
+        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;" id="cg-success-sub2">Seekers can now seek your treasure!</p>
         <div id="cg-clue-previews" style="text-align:left;margin:20px 0;"></div>
         <div id="cg-publish-wrap" style="display:none;margin-bottom:12px;">
           <button onclick="publishDraftHunt()" style="width:100%;background:linear-gradient(135deg,#b87800,#e8a820,#c9890c);color:#0a0800;border:none;border-radius:14px;padding:18px;font-size:20px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:3px;box-shadow:0 6px 24px rgba(201,137,12,.4);margin-bottom:10px;">🏴‍☠️ &nbsp; PUBLISH NOW →</button>
           <button onclick="editCluesBack()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;font-size:16px;font-weight:400;cursor:pointer;font-family:'Bangers',cursive;letter-spacing:2px;color:var(--dim);">← REGENERATE CLUES</button>
         </div>
-        <a id="btn-view-hunt" class="btn-view-hunt" href="index.html">⚔️ &nbsp; View Active Hunts →</a>
+        <a id="btn-view-hunt" class="btn-view-hunt" href="index.html">⚔️ &nbsp; View Active Quests →</a>
       </div>
     </div>
   </div>
@@ -2130,7 +2130,7 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) 
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="flex-shrink:0;width:28px;height:28px;background:#7c3aed;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;">♻️</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No winner?</strong> If the hunt expires unclaimed, your prize is fully refunded — within 24 hours!</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No winner?</strong> If the quest expires unclaimed, your prize is fully refunded — within 24 hours!</div>
       </div>
     </div>
 
