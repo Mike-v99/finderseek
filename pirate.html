@@ -420,9 +420,34 @@
   .cg-success-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:8px;color:var(--gold);}
   .btn-view-hunt{display:inline-block;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:16px 36px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;text-decoration:none;margin-top:16px;box-shadow:0 6px 24px rgba(201,137,12,.4);}
 .btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
+
+  /* STRIPE EMBEDDED PAYMENT MODAL */
+  .stripe-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(6,5,10,.94);backdrop-filter:blur(24px);align-items:center;justify-content:center;padding:20px;}
+  .stripe-modal.show{display:flex;}
+  .stripe-modal-box{background:linear-gradient(160deg,rgba(20,16,30,.99),rgba(10,8,16,.99));border:1px solid rgba(34,197,94,.25);border-radius:24px;padding:32px 28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+  .stripe-modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:16px;transition:all .2s;}
+  .stripe-modal-close:hover{background:rgba(255,255,255,.12);color:#fff;}
+  .stripe-modal-hdr{text-align:center;margin-bottom:24px;}
+  .stripe-modal-icon{font-size:44px;margin-bottom:10px;}
+  .stripe-modal-title{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;color:#4ade80;}
+  .stripe-modal-sub{font-size:12px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;margin-top:4px;}
+  .stripe-breakdown{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:14px;padding:16px 18px;margin-bottom:20px;}
+  .stripe-breakdown-row{display:flex;justify-content:space-between;font-size:13px;color:#fff;margin-bottom:6px;}
+  .stripe-breakdown-row.dim{color:rgba(255,255,255,.5);}
+  .stripe-breakdown-total{display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:#4ade80;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;margin-top:4px;}
+  #stripe-payment-element{min-height:120px;margin-bottom:20px;}
+  .stripe-pay-btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:800;color:#0a1a0a;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 6px 24px rgba(34,197,94,.4);transition:all .2s;letter-spacing:.5px;}
+  .stripe-pay-btn:hover{box-shadow:0 10px 36px rgba(34,197,94,.55);transform:translateY(-2px);}
+  .stripe-pay-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+  .stripe-pay-error{color:#f87171;font-size:12px;font-family:'DM Mono',monospace;text-align:center;margin-top:10px;display:none;}
+  .stripe-pay-or{text-align:center;font-size:11px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-top:14px;}
+  .stripe-pay-fallback{display:block;text-align:center;font-size:12px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;margin-top:6px;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;transition:color .2s;}
+  .stripe-pay-fallback:hover{color:rgba(255,255,255,.6);}
+  .stripe-secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-top:16px;letter-spacing:.5px;}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 <div class="bg-img"></div><div class="bg-vig"></div>
@@ -1223,24 +1248,13 @@ async function approveClues() {
       document.getElementById('btn-view-hunt').style.display = 'none';
     }
 
-    // If escrow — redirect to Stripe now that clues are saved
+    // If escrow — open embedded payment modal now that clues are saved
     if (window._pendingEscrow && !window._previewMode) {
       const { prizeAmt, totalCents, huntId } = window._pendingEscrow;
       try {
-        const r = await fetch('/api/create-escrow-checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            email: currentUser.email,
-            huntId,
-            prizeAmount: prizeAmt,
-            totalCents
-          })
-        });
-        const d = await r.json();
-        if (d.url) { window.location = d.url; return; }
-      } catch(e) { console.error('Escrow checkout error:', e); }
+        const result = await openStripePayment({ prizeAmt, totalCents, huntId });
+        if (!result || !result.success) return; // cancelled or failed
+      } catch(e) { console.error('Escrow payment error:', e); }
     }
   } catch(e) {
     alert('Error saving clues: ' + e.message);
@@ -1508,16 +1522,11 @@ async function publishDraftHunt() {
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ event: 'hunt_approved', huntId: window._pendingHuntId })
     }).catch(() => {});
-    // If escrow, redirect to Stripe
+    // If escrow, open embedded payment modal
     if (window._pendingEscrow) {
       const { prizeAmt, totalCents, huntId } = window._pendingEscrow;
-      const er = await fetch('/api/create-escrow-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-        body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
-      });
-      const ed = await er.json();
-      if (ed.url) { window.location = ed.url; return; }
+      const result = await openStripePayment({ prizeAmt, totalCents, huntId });
+      if (!result || !result.success) return; // cancelled or failed
     }
     // Show live state
     document.getElementById('cg-success-icon').textContent = '🏴‍☠️';
@@ -1612,16 +1621,18 @@ async function silentGenerateAndPublish(huntId, photoUrl, lat, lng, status, live
       }).catch(() => {});
     }
 
-    // Escrow redirect
+    // Escrow — open embedded payment modal
     if (window._pendingEscrow) {
       const { prizeAmt, totalCents } = window._pendingEscrow;
-      const er = await fetch('/api/create-escrow-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-        body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
-      });
-      const ed = await er.json();
-      if (ed.url) { window.location = ed.url; return; }
+      loadingEl.remove();
+      const result = await openStripePayment({ prizeAmt, totalCents, huntId });
+      if (!result || !result.success) {
+        // Payment cancelled or failed — hunt is saved but not paid
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('preview-btn').disabled = false;
+        document.getElementById('submit-btn').textContent = '🏴‍☠️   BURY MY TREASURE →';
+        return;
+      }
     }
 
     // Remove loading and show confirmation
@@ -2174,6 +2185,179 @@ function agreeAndSelect(type) {
     if (e.target === this) closePayPopup();
   });
 });
+</script>
+
+<!-- EMBEDDED STRIPE PAYMENT MODAL -->
+<div class="stripe-modal" id="stripe-modal">
+  <div class="stripe-modal-box">
+    <div class="stripe-modal-close" onclick="closeStripeModal()">&times;</div>
+    <div class="stripe-modal-hdr">
+      <div class="stripe-modal-icon">🔒</div>
+      <div class="stripe-modal-title">Secure Escrow Payment</div>
+      <div class="stripe-modal-sub">Prize held securely until claimed</div>
+    </div>
+    <div class="stripe-breakdown">
+      <div class="stripe-breakdown-row"><span>Prize amount</span><span id="sp-prize">$0.00</span></div>
+      <div class="stripe-breakdown-row dim"><span>FinderSeek fee (10%)</span><span id="sp-fee">$0.00</span></div>
+      <div class="stripe-breakdown-total"><span>Total</span><span id="sp-total">$0.00</span></div>
+    </div>
+    <div id="stripe-payment-element"></div>
+    <div id="stripe-pay-error" class="stripe-pay-error"></div>
+    <button class="stripe-pay-btn" id="stripe-pay-btn" onclick="confirmStripePayment()">🔒 &nbsp; Pay & Go Live</button>
+    <div class="stripe-pay-or">— or —</div>
+    <div class="stripe-pay-fallback" id="stripe-fallback-link" onclick="fallbackToHostedCheckout()">Pay on Stripe's secure page instead →</div>
+    <div class="stripe-secure-note">🔐 Encrypted &amp; secured by Stripe · Refunded if unclaimed</div>
+  </div>
+</div>
+
+<script>
+// Close stripe modal on backdrop click
+document.getElementById('stripe-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeStripeModal();
+});
+
+// ── STRIPE EMBEDDED PAYMENT ─────────────────────────
+// IMPORTANT: Replace with your Stripe publishable key from Dashboard → Developers → API Keys
+const STRIPE_PK = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
+let stripeInstance = null, stripeElements = null, stripePaymentElement = null;
+let _stripeResolve = null; // resolves the payment promise
+
+function closeStripeModal() {
+  document.getElementById('stripe-modal').classList.remove('show');
+  // If payment wasn't completed, reject/resolve with cancelled
+  if (_stripeResolve) { _stripeResolve({ success: false, cancelled: true }); _stripeResolve = null; }
+}
+
+async function openStripePayment({ prizeAmt, totalCents, huntId }) {
+  // Show modal immediately with breakdown
+  const fee = Math.round(prizeAmt * 0.10 * 100) / 100;
+  const total = Math.round((prizeAmt + fee) * 100) / 100;
+  document.getElementById('sp-prize').textContent = `$${prizeAmt.toFixed(2)}`;
+  document.getElementById('sp-fee').textContent = `$${fee.toFixed(2)}`;
+  document.getElementById('sp-total').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('stripe-pay-error').style.display = 'none';
+  document.getElementById('stripe-pay-error').textContent = '';
+  document.getElementById('stripe-pay-btn').disabled = true;
+  document.getElementById('stripe-pay-btn').textContent = 'Loading payment form…';
+  document.getElementById('stripe-payment-element').innerHTML = '';
+  document.getElementById('stripe-modal').classList.add('show');
+
+  // Store escrow info for fallback
+  window._currentEscrow = { prizeAmt, totalCents, huntId };
+
+  try {
+    // Create PaymentIntent via our API
+    const r = await fetch('/api/create-escrow-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId, prizeAmount: prizeAmt, totalCents })
+    });
+    const data = await r.json();
+    if (!r.ok || !data.clientSecret) throw new Error(data.error || 'Failed to create payment');
+
+    // Initialize Stripe
+    if (!stripeInstance) stripeInstance = Stripe(STRIPE_PK);
+    stripeElements = stripeInstance.elements({
+      clientSecret: data.clientSecret,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#22c55e',
+          colorBackground: '#0e0c14',
+          colorText: '#f5f0e8',
+          colorDanger: '#f87171',
+          fontFamily: "'Karla', sans-serif",
+          borderRadius: '12px',
+          spacingUnit: '4px',
+        },
+        rules: {
+          '.Input': { border: '1px solid rgba(255,255,255,.12)', backgroundColor: 'rgba(255,255,255,.04)', padding: '14px 16px', fontSize: '15px' },
+          '.Input:focus': { border: '1px solid rgba(34,197,94,.5)', boxShadow: '0 0 0 2px rgba(34,197,94,.15)' },
+          '.Label': { fontSize: '12px', fontFamily: "'DM Mono', monospace", letterSpacing: '0.5px', color: 'rgba(255,255,255,.55)' },
+          '.Tab': { border: '1px solid rgba(255,255,255,.1)', backgroundColor: 'rgba(255,255,255,.03)' },
+          '.Tab--selected': { border: '1px solid rgba(34,197,94,.4)', backgroundColor: 'rgba(34,197,94,.08)' },
+          '.Tab:hover': { border: '1px solid rgba(255,255,255,.2)' },
+        }
+      }
+    });
+
+    stripePaymentElement = stripeElements.create('payment');
+    stripePaymentElement.mount('#stripe-payment-element');
+
+    stripePaymentElement.on('ready', () => {
+      document.getElementById('stripe-pay-btn').disabled = false;
+      document.getElementById('stripe-pay-btn').textContent = '🔒   Pay $' + total.toFixed(2) + ' & Go Live';
+    });
+
+    // Return a promise that resolves when payment completes or modal closes
+    return new Promise(resolve => { _stripeResolve = resolve; });
+
+  } catch(e) {
+    console.error('Stripe embed error:', e);
+    document.getElementById('stripe-pay-error').textContent = e.message || 'Could not load payment form. Use the fallback link below.';
+    document.getElementById('stripe-pay-error').style.display = 'block';
+    document.getElementById('stripe-pay-btn').style.display = 'none';
+    return new Promise(resolve => { _stripeResolve = resolve; });
+  }
+}
+
+async function confirmStripePayment() {
+  const btn = document.getElementById('stripe-pay-btn');
+  const errEl = document.getElementById('stripe-pay-error');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+  errEl.style.display = 'none';
+
+  try {
+    const { error } = await stripeInstance.confirmPayment({
+      elements: stripeElements,
+      confirmParams: {
+        return_url: window.location.origin + '/pirate.html?escrow=paid&hunt=' + (window._currentEscrow?.huntId || ''),
+      },
+      redirect: 'if_required'
+    });
+
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '🔒   Pay $' + (document.getElementById('sp-total').textContent.replace('$','')) + ' & Go Live';
+      return;
+    }
+
+    // Payment succeeded without redirect!
+    document.getElementById('stripe-modal').classList.remove('show');
+    if (_stripeResolve) { _stripeResolve({ success: true }); _stripeResolve = null; }
+
+  } catch(e) {
+    errEl.textContent = e.message || 'Payment failed. Please try again.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '🔒   Retry Payment';
+  }
+}
+
+async function fallbackToHostedCheckout() {
+  const esc = window._currentEscrow;
+  if (!esc) return;
+  try {
+    document.getElementById('stripe-pay-btn').disabled = true;
+    document.getElementById('stripe-pay-btn').textContent = 'Redirecting to Stripe…';
+    const r = await fetch('/api/create-escrow-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId: esc.huntId, prizeAmount: esc.prizeAmt, totalCents: esc.totalCents })
+    });
+    const d = await r.json();
+    if (d.url) { window.location = d.url; return; }
+    throw new Error(d.error || 'Could not create checkout');
+  } catch(e) {
+    document.getElementById('stripe-pay-error').textContent = 'Fallback failed: ' + e.message;
+    document.getElementById('stripe-pay-error').style.display = 'block';
+    document.getElementById('stripe-pay-btn').disabled = false;
+    document.getElementById('stripe-pay-btn').textContent = '🔒   Retry Payment';
+  }
+}
 </script>
 
 </body>
