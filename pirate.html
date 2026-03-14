@@ -1301,7 +1301,12 @@ function updateDtPreview() {
   document.getElementById('dt-preview').textContent = `📅 ${days[d.getDay()]}, ${months[month]} ${day}, ${year} at ${hour}:${min} ${dtAmPm}`;
 }
 
-window.addEventListener('load', () => { initDatePicker(); });
+window.addEventListener('load', () => {
+  initDatePicker();
+  // Initialize slider fills
+  updateDuration(document.getElementById('duration-slider').value);
+  updateClueCount(document.getElementById('clue-count-slider').value);
+});
 
 // ── AUTH ──────────────────────────────────────────────
 // ── AUTH ──────────────────────────────────────────────
