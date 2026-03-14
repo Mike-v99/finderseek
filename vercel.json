@@ -5,6 +5,12 @@
       "schedule": "0 8 * * *"
     }
   ],
+  "rewrites": [
+    {
+      "source": "/hunt.html",
+      "destination": "/quest.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*).html",
