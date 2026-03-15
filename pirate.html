@@ -677,7 +677,7 @@
         <label class="flabel">Prize Amount</label>
         <div style="position:relative">
           <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#22c55e;font-weight:700;font-size:16px;">$</span>
-          <input class="finput" id="prize" type="number" min="1" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);" oninput="updateEscrowBreakdown()"/>
+          <input class="finput" id="prize" type="number" min="1" max="100" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);" oninput="updateEscrowBreakdown()"/>
         </div>
       </div>
     </div>
@@ -1782,6 +1782,7 @@ function validate() {
   if (!city) { alert('Please enter a city.'); return false; }
   if (!hood) { alert('Please enter a precise location.'); return false; }
   if (!prize || prize < 1) { alert('Please enter a valid prize amount.'); return false; }
+  if (prize > 100) { alert('Prize limit is $100. Please enter $100 or less.'); return false; }
   if (!photoFile) { alert('Please upload a photo of the hiding spot.'); return false; }
   if (!/^[0-9]{6}$/.test(code)) { alert('Please complete your 6-digit secret code.'); return false; }
   if (!paySelected) { alert('Please choose a payment method.'); return false; }
