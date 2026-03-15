@@ -807,7 +807,7 @@
               <select class="dt-select" id="dt-year" onchange="updateDtPreview();updateDtDays()"></select>
             </div>
           </div>
-          <div style="margin-bottom:6px;"><span class="dt-label" style="text-align:center;display:block;">Time (8am – 6pm)</span></div>
+          <div style="margin-bottom:6px;"><span class="dt-label" id="time-picker-label" style="text-align:center;display:block;">Time (8am – 6pm)</span></div>
           <div class="dt-time-row">
             <select class="dt-select" id="dt-hour" onchange="updateDtPreview();updateEndTimeOptions()" style="max-width:80px;">
               <option>8</option><option>9</option><option>10</option><option>11</option>
@@ -881,6 +881,28 @@ const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 const NOTIFY_SECRET = 'fs-notify-2026';
+
+// ── DYNAMIC SETTINGS (loaded from Supabase) ──
+let QUEST_START_HOUR = 8, QUEST_END_HOUR = 18;
+function fmtHour(h){ return (h > 12 ? (h-12) : h) + ':00 ' + (h >= 12 ? 'PM' : 'AM'); }
+async function loadQuestSettings(){
+  try{
+    const r = await fetch(`${SB}/rest/v1/settings?select=*`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY } });
+    if(!r.ok) return;
+    const rows = await r.json();
+    const g = (k,d) => rows.find(r=>r.key===k)?.value ?? d;
+    QUEST_START_HOUR = parseInt(g('listing_start_hour','8'));
+    QUEST_END_HOUR = parseInt(g('listing_end_hour','18'));
+    // Update modal text
+    const hoursEl = document.getElementById('quest-hours-display');
+    if(hoursEl) hoursEl.textContent = fmtHour(QUEST_START_HOUR) + ' — ' + fmtHour(QUEST_END_HOUR);
+    const bodyEl = document.getElementById('quest-hours-body');
+    if(bodyEl) bodyEl.innerHTML = 'Please schedule your quest within these hours or choose <strong style="color:var(--cream);">Right Now</strong> if it\'s currently between ' + fmtHour(QUEST_START_HOUR).toLowerCase() + ' and ' + fmtHour(QUEST_END_HOUR).toLowerCase() + '.';
+    const timeLabel = document.getElementById('time-picker-label');
+    if(timeLabel) timeLabel.textContent = 'Time (' + fmtHour(QUEST_START_HOUR).toLowerCase().replace(':00 ','') + ' – ' + fmtHour(QUEST_END_HOUR).toLowerCase().replace(':00 ','') + ')';
+  }catch(e){ console.error('loadQuestSettings', e); }
+}
+loadQuestSettings();
 
 // ── MAP ──────────────────────────────────────────────
 let selectedLat = null, selectedLng = null;
@@ -1796,7 +1818,7 @@ function validate() {
   }
   let startTime = liveChoice === 'now' ? new Date() : new Date(document.getElementById('live-datetime').value);
   const hour = startTime.getHours();
-  if (hour < 8 || hour >= 18) { showTimeBlockedModal(); return false; }
+  if (hour < QUEST_START_HOUR || hour >= QUEST_END_HOUR) { showTimeBlockedModal(); return false; }
   return true;
 }
 
@@ -2019,8 +2041,8 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) 
     <div class="time-modal-icon">⏰</div>
     <div class="time-modal-title">Quest Hours Only</div>
     <div class="time-modal-body">For everyone's safety, quests can only start during daylight hours.</div>
-    <div class="time-modal-hours">8:00 AM — 6:00 PM</div>
-    <div class="time-modal-body" style="font-size:13px;margin-bottom:20px;">Please schedule your quest within these hours or choose <strong style="color:var(--cream);">Right Now</strong> if it's currently between 8am and 6pm.</div>
+    <div class="time-modal-hours" id="quest-hours-display">8:00 AM — 6:00 PM</div>
+    <div class="time-modal-body" id="quest-hours-body" style="font-size:13px;margin-bottom:20px;">Please schedule your quest within these hours or choose <strong style="color:var(--cream);">Right Now</strong> if it's currently between 8am and 6pm.</div>
     <button class="time-modal-close" onclick="closeTimeModal()">Got It 👍</button>
   </div>
 </div>
