@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
     // ── 2. Find & end expired active quests (no winner) ──────────
     const expiredRes = await fetch(
-      `${SB}/rest/v1/hunts?status=eq.active&ends_at=lte.${now}&winner_id=is.null&select=id,city,prize_desc,pirate_id,payment_type,escrow_status,stripe_payment_intent`,
+      `${SB}/rest/v1/hunts?status=eq.active&ends_at=lte.${now}&winner_id=is.null&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent`,
       { headers: H }
     );
     const expiredHunts = expiredRes.ok ? await expiredRes.json() : [];
@@ -72,18 +72,21 @@ export default async function handler(req, res) {
       // ── 3. Refund escrow if funded and no winner ──────────────
       if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
         try {
+          const refundAmount = hunt.prize_value || 0; // prize_value is in cents, excludes the 10% fee
+          const refundParams = new URLSearchParams({
+              'payment_intent': hunt.stripe_payment_intent,
+              'reason': 'requested_by_customer',
+              'metadata[type]': 'escrow_expired',
+              'metadata[huntId]': hunt.id,
+            });
+          if (refundAmount > 0) refundParams.set('amount', refundAmount);
           const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
               'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({
-              'payment_intent': hunt.stripe_payment_intent,
-              'reason': 'requested_by_customer',
-              'metadata[type]': 'escrow_expired',
-              'metadata[huntId]': hunt.id,
-            })
+            body: refundParams
           });
           const refund = await refundRes.json();
 
@@ -130,22 +133,25 @@ export default async function handler(req, res) {
 
     // ── 6. Safety net: refund any ended escrow quests with no winner that missed refund ─
     const missedRefunds = await fetch(
-      `${SB}/rest/v1/hunts?status=eq.ended&winner_id=is.null&escrow_status=eq.funded&stripe_payment_intent=not.is.null&select=id,stripe_payment_intent,payment_type`,
+      `${SB}/rest/v1/hunts?status=eq.ended&winner_id=is.null&escrow_status=eq.funded&stripe_payment_intent=not.is.null&select=id,stripe_payment_intent,payment_type,prize_value`,
       { headers: H }
     );
     const missedList = missedRefunds.ok ? await missedRefunds.json() : [];
     for (const hunt of missedList) {
       try {
+        const refundAmount = hunt.prize_value || 0;
+        const refundParams = new URLSearchParams({
+          'payment_intent': hunt.stripe_payment_intent,
+          'reason': 'requested_by_customer',
+        });
+        if (refundAmount > 0) refundParams.set('amount', refundAmount);
         const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
             'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: new URLSearchParams({
-            'payment_intent': hunt.stripe_payment_intent,
-            'reason': 'requested_by_customer',
-          })
+          body: refundParams
         });
         const refund = await refundRes.json();
         if (refund.id) {
