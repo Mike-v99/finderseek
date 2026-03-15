@@ -70,7 +70,7 @@ export default async function handler(req, res) {
       });
 
       // ── 3. Refund escrow if funded and no winner ──────────────
-      if (hunt.payment_type === 'escrow' && hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
+      if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
         try {
           const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
             method: 'POST',
@@ -114,7 +114,6 @@ export default async function handler(req, res) {
     results.push(`ended:${expiredHunts.length}`);
 
     // ── 5. Also end hunts WITH a winner that are still 'active' ─
-    //    (edge case: claim set winner_id but status stayed active)
     const wonButActive = await fetch(
       `${SB}/rest/v1/hunts?status=eq.active&winner_id=not.is.null`,
       { headers: H }
@@ -128,6 +127,38 @@ export default async function handler(req, res) {
       });
       results.push(`force_ended_won:${wonHunts.length}`);
     }
+
+    // ── 6. Safety net: refund any ended escrow quests with no winner that missed refund ─
+    const missedRefunds = await fetch(
+      `${SB}/rest/v1/hunts?status=eq.ended&winner_id=is.null&escrow_status=eq.funded&stripe_payment_intent=not.is.null&select=id,stripe_payment_intent,payment_type`,
+      { headers: H }
+    );
+    const missedList = missedRefunds.ok ? await missedRefunds.json() : [];
+    for (const hunt of missedList) {
+      try {
+        const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            'payment_intent': hunt.stripe_payment_intent,
+            'reason': 'requested_by_customer',
+          })
+        });
+        const refund = await refundRes.json();
+        if (refund.id) {
+          await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}`, {
+            method: 'PATCH',
+            headers: { ...H, 'Prefer': 'return=minimal' },
+            body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: refund.id })
+          });
+          results.push(`late_refund:${hunt.id}`);
+        }
+      } catch(e) { results.push(`late_refund_err:${hunt.id}`); }
+    }
+    if (missedList.length) results.push(`missed_refunds_checked:${missedList.length}`);
 
     console.log('[cron]', results.join(' | '), 'at', now);
     return res.status(200).json({ ok: true, results, time: now });
