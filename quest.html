@@ -365,6 +365,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .claim-success-detail{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:16px;padding:20px 24px;max-width:360px;margin-inline:auto;margin-bottom:24px;text-align:left;}
 .claim-success-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;}
 .claim-success-row:last-child{border-bottom:none;}
+.payout-opt{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}.payout-opt:hover{border-color:rgba(34,211,238,.3);color:var(--cream);}.payout-opt.selected{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.5);color:#22d3ee;}
 .csrlbl{color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
 .csrval{color:#4ade80;font-weight:700;}
 .btn-back-hunts{display:inline-block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;text-decoration:none;font-family:'Karla',sans-serif;transition:all .2s;}
@@ -575,11 +576,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <div class="claim-success" id="claim-success">
         <div class="claim-success-boom">🏆</div>
         <div class="claim-success-title">YOU WON!</div>
-        <p class="claim-success-sub">Congratulations! You found the treasure. Chat with the Pirate below to arrange your prize.</p>
+        <p class="claim-success-sub" id="cs-sub">Congratulations! You found the treasure.</p>
         <div class="claim-success-detail">
           <div class="claim-success-row"><span class="csrlbl">Prize</span><span class="csrval" id="cs-prize">—</span></div>
-          <div class="claim-success-row"><span class="csrlbl">Hunt</span><span class="csrval" id="cs-city">—</span></div>
+          <div class="claim-success-row"><span class="csrlbl">Quest</span><span class="csrval" id="cs-city">—</span></div>
           <div class="claim-success-row"><span class="csrlbl">Status</span><span class="csrval">✅ Confirmed</span></div>
+        </div>
+        <!-- ESCROW PAYOUT METHOD (shown only for escrow quests) -->
+        <div id="cs-payout-wrap" style="display:none;max-width:360px;margin:0 auto 24px;">
+          <div style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:16px;padding:20px 22px;text-align:left;">
+            <div style="font-family:'Bangers',cursive;font-size:20px;letter-spacing:2px;color:#22d3ee;margin-bottom:8px;">💰 Claim Your Prize</div>
+            <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:16px;">Your prize is secured via FinderSeek Escrow and will be paid out <strong style="color:#4ade80;">within 24 hours</strong>. Enter your preferred payout method below.</div>
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:rgba(255,255,255,.4);margin-bottom:6px;">Preferred Payout</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+              <button type="button" class="payout-opt" onclick="selectPayout('zelle',this)">Zelle</button>
+              <button type="button" class="payout-opt" onclick="selectPayout('venmo',this)">Venmo</button>
+              <button type="button" class="payout-opt" onclick="selectPayout('cashapp',this)">CashApp</button>
+            </div>
+            <input id="cs-payout-handle" placeholder="Enter your @handle, email, or phone" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(34,211,238,.2);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s;" onfocus="this.style.borderColor='rgba(34,211,238,.5)'" onblur="this.style.borderColor='rgba(34,211,238,.2)'"/>
+            <button onclick="submitPayoutPref()" style="width:100%;background:linear-gradient(135deg,#0891b2,#22d3ee);color:#0a1a1a;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;box-shadow:0 4px 20px rgba(34,211,238,.3);transition:all .2s;">Submit Payout Info →</button>
+            <div id="cs-payout-status" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:8px;"></div>
+          </div>
         </div>
 
         <!-- PRIZE CHAT -->
@@ -1219,6 +1236,15 @@ async function submitClaim() {
     document.getElementById('claim-form-state').style.display = 'none';
     document.getElementById('cs-prize').textContent = h.prize_desc || hunt.prize_desc || '—';
     document.getElementById('cs-city').textContent = h.city || hunt.city || '—';
+    // Show escrow payout section if applicable
+    const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
+    if (isEscrow) {
+      document.getElementById('cs-sub').textContent = 'Congratulations! Your prize is secured via FinderSeek Escrow and will be paid within 24 hours.';
+      document.getElementById('cs-payout-wrap').style.display = 'block';
+    } else {
+      document.getElementById('cs-sub').textContent = 'Congratulations! You found the treasure. Chat with the Pirate below to arrange your prize.';
+      document.getElementById('cs-payout-wrap').style.display = 'none';
+    }
     const s = document.getElementById('claim-success');
     s.classList.add('show');
     s.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1234,7 +1260,46 @@ async function submitClaim() {
   }
 }
 
-// ── AUTH ──────────────────────────────────────────────
+// ── PAYOUT PREFERENCE ────────────────────────────────
+let _payoutMethod = '';
+function selectPayout(method, el) {
+  _payoutMethod = method;
+  document.querySelectorAll('.payout-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  const input = document.getElementById('cs-payout-handle');
+  if (method === 'zelle') input.placeholder = 'Enter your Zelle email or phone';
+  else if (method === 'venmo') input.placeholder = 'Enter your Venmo @username';
+  else if (method === 'cashapp') input.placeholder = 'Enter your $cashtag';
+  else input.placeholder = 'Enter your @handle, email, or phone';
+}
+
+async function submitPayoutPref() {
+  const handle = document.getElementById('cs-payout-handle').value.trim();
+  if (!_payoutMethod) { document.getElementById('cs-payout-status').textContent = 'Please select a payout method'; return; }
+  if (!handle) { document.getElementById('cs-payout-status').textContent = 'Please enter your handle or info'; return; }
+  try {
+    // Save payout preference to the hunt record
+    await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}`, {
+      method: 'PATCH',
+      headers: { ...H, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ winner_payout_method: _payoutMethod, winner_payout_handle: handle })
+    });
+    // Also save to profile for future use
+    if (currentUser?.id) {
+      await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`, {
+        method: 'PATCH',
+        headers: { ...H, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ payout_method: _payoutMethod, payout_handle: handle })
+      });
+    }
+    document.getElementById('cs-payout-status').innerHTML = '<span style="color:#4ade80;">✅ Payout info saved! You\'ll receive your prize within 24 hours.</span>';
+    document.getElementById('cs-payout-handle').disabled = true;
+    document.querySelectorAll('.payout-opt').forEach(b => { b.disabled = true; b.style.opacity = '.5'; });
+  } catch(e) {
+    document.getElementById('cs-payout-status').textContent = 'Error saving — try again';
+  }
+}
+
 // ── AUTH ──────────────────────────────────────────────
 let currentUser = null, currentProfile = null;
 function getToken(){ return localStorage.getItem('fs_token'); }
