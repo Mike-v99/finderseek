@@ -85,9 +85,17 @@ function tplPrizeClaimed({ username, city, prize, winnerName, huntUrl }) {
   };
 }
 
-function tplYouWon({ username, city, prize, huntUrl }) {
+function tplYouWon({ username, city, prize, huntUrl, isEscrow }) {
+  const payoutSection = isEscrow
+    ? `<div class="highlight" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06);">
+        <div class="highlight-label" style="color:#4ade80;">💰 Payout Info</div>
+        <div class="highlight-val" style="color:#4ade80;font-size:16px;">Paid within 24 hours</div>
+      </div>
+      <p>Since this quest used <strong style="color:#22d3ee;">FinderSeek Escrow</strong>, your prize is guaranteed. We'll send your winnings within 24 hours.</p>
+      <p><strong style="color:#f5ead8;">Reply to this email</strong> with your preferred payout method (Zelle, Venmo, or CashApp) and we'll send your prize right away.</p>`
+    : `<p>The Pirate has been notified. Chat with them on the quest page to arrange how you receive your prize.</p>`;
   return {
-    subject: `🏆 You won the FinderSeek hunt in ${city}!`,
+    subject: `🏆 You won ${prize} on FinderSeek in ${city}!`,
     html: html('You Won!', `
       <h1>You Found the Treasure! 🏆</h1>
       <p>Congratulations ${username}! You successfully claimed the prize in <strong style="color:#f5ead8;">${city}</strong>.</p>
@@ -95,8 +103,8 @@ function tplYouWon({ username, city, prize, huntUrl }) {
         <div class="highlight-label">Your prize</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <p>The Pirate has been notified. Chat with them on the quest page to arrange how you receive your prize.</p>
-      <a href="${huntUrl}" class="btn">Open Pirate Chat →</a>
+      ${payoutSection}
+      <a href="${huntUrl}" class="btn">Open Quest Page →</a>
     `)
   };
 }
@@ -270,7 +278,8 @@ export default async function handler(req, res) {
         results.push(`pirate_notified:${pirate.email}`);
       }
       if (winner?.notify_hunt_won && winner?.email) {
-        const tpl = tplYouWon({ username: winner.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
+        const isEscrow = hunt.payment_type === 'escrow';
+        const tpl = tplYouWon({ username: winner.username, city: hunt.city, prize: hunt.prize_desc, huntUrl, isEscrow });
         await sendEmail(winner.email, tpl.subject, tpl.html);
         results.push(`winner_notified:${winner.email}`);
       }
