@@ -677,7 +677,7 @@
         <label class="flabel">Prize Amount</label>
         <div style="position:relative">
           <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#22c55e;font-weight:700;font-size:16px;">$</span>
-          <input class="finput" id="prize" type="number" min="1" max="100" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);" oninput="updateEscrowBreakdown()"/>
+          <input class="finput" id="prize" type="number" min="1" max="100" placeholder="Enter amount" style="padding-left:30px;font-size:16px;font-weight:700;border:1px solid rgba(34,197,94,.35);" oninput="if(this.value>100){this.value=100;}updateEscrowBreakdown()"/>
         </div>
       </div>
     </div>
