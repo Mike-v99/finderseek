@@ -1,0 +1,24 @@
+{
+  "name": "FinderSeek",
+  "short_name": "FinderSeek",
+  "description": "Real money hidden in your city. Follow AI-powered clues to find the treasure.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06050a",
+  "theme_color": "#c9890c",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
