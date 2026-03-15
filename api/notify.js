@@ -147,7 +147,7 @@ function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
         <div class="highlight-label" style="color:#4ade80;">💰 Escrow Refund</div>
         <div class="highlight-val" style="color:#4ade80;">Refund initiated</div>
       </div>
-      <p>Since you used FinderSeek Escrow, your full payment has been refunded to your original payment method. You should see it back on your statement within 5–10 business days depending on your bank.</p>`
+      <p>Since you used FinderSeek Escrow, your prize amount has been refunded to your original payment method. The 10% service fee is non-refundable. You should see the refund on your statement within 5–10 business days depending on your bank.</p>`
     : `<p>Since this was an Honor Code quest, no payment was collected.</p>`;
   return {
     subject: `⏰ Your quest in ${city} expired with no winner`,
