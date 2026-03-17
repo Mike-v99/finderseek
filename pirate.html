@@ -35,7 +35,7 @@
   .bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 20%,rgba(6,5,10,.45) 0%,rgba(6,5,10,.82) 55%,rgba(6,5,10,.98) 100%);}
   body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.45;}
 
-  nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(6,5,10,.7);backdrop-filter:blur(12px);width:100%;box-sizing:border-box;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:none;background:transparent;width:100%;box-sizing:border-box;}
   .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
   .nav-icon{width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
   .nav-name{font-size:17px;font-weight:700;color:var(--cream);}
@@ -108,7 +108,7 @@
   .step-txt{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;}
 
   /* FORM WRAP */
-  .form-wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:0 20px 80px;}
+  .form-wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:60px 20px 80px;}
 
   /* FORM CARD */
   .fcard{border-radius:20px;margin-bottom:16px;overflow:hidden;backdrop-filter:blur(14px);}
@@ -1453,7 +1453,7 @@ function updateNavAuth() {
     area.innerHTML = `<div class="mm-user-info">
       <div class="mm-user-avatar">${name[0].toUpperCase()}</div>
       <div><div class="mm-user-name">${name}</div><div class="mm-user-email">${currentUser.email||''}</div></div>
-    </div>`;
+    </div><a href="profile.html" style="display:block;margin-top:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--cream);text-decoration:none;font-family:Karla,sans-serif;text-align:center;">👤 My Profile</a>`;
   } else {
     area.innerHTML = `<button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🏴‍☠️ Sign In / Create Account</button>`;
   }
