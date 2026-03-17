@@ -204,11 +204,11 @@
   #pay-fs.selected{border-color:#22c55e;box-shadow:0 0 0 1px #22c55e,0 8px 32px rgba(34,197,94,.3);}
   #pay-fs.selected::before{opacity:1;}
   .pay-opt input{position:absolute;opacity:0;pointer-events:none;}
-  .pay-opt-icon{font-size:36px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px currentColor);}
-  .pay-opt-name{font-size:17px;font-weight:800;color:var(--cream);font-family:'Karla',sans-serif;letter-spacing:.3px;}
+  .pay-opt-icon{font-size:48px;margin-bottom:14px;display:block;filter:drop-shadow(0 4px 12px currentColor);}
+  .pay-opt-name{font-size:22px;font-weight:800;color:var(--cream);font-family:'Karla',sans-serif;letter-spacing:.3px;}
   #pay-honor.selected .pay-opt-name{color:#c4b5fd;}
   #pay-fs.selected .pay-opt-name{color:#4ade80;}
-  .pay-opt-tag{display:inline-block;margin-top:8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:20px;}
+  .pay-opt-tag{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:5px 14px;border-radius:20px;}
   #pay-honor .pay-opt-tag{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:#c4b5fd;}
   #pay-fs .pay-opt-tag{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
   .pay-check{display:none;}
@@ -749,7 +749,6 @@
           <span class="pay-opt-icon">🤝</span>
           <div class="pay-opt-name">Honor Code</div>
           <div class="pay-opt-tag">You pay directly</div>
-          <div class="pay-opt-learn">Tap to learn more →</div>
         </div>
         <div class="pay-opt" id="pay-fs" onclick="openPayPopup('finderseek')">
           <input type="radio" name="payment" value="finderseek"/>
@@ -757,7 +756,6 @@
           <span class="pay-opt-icon">🔒</span>
           <div class="pay-opt-name">FinderSeek Escrow</div>
           <div class="pay-opt-tag">+10% service fee</div>
-          <div class="pay-opt-learn">Tap to learn more →</div>
         </div>
       </div>
 
@@ -2145,24 +2143,16 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) 
 
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
-        <span style="font-size:20px;flex-shrink:0;">🏪</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;">Ask a local <strong>restaurant or coffee shop</strong> to hold the prize and hand it to the winner when they show the claim confirmation.</div>
+        <span style="font-size:20px;flex-shrink:0;">💸</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>You pay the winner</strong> via Zelle, Venmo, or in person.</div>
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="font-size:20px;flex-shrink:0;">💬</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;">Use the <strong>in-app chat</strong> to message the winner privately and coordinate prize delivery.</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>Chat in-app</strong> to coordinate delivery privately.</div>
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
-        <span style="font-size:20px;flex-shrink:0;">🤝</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;">Meet in a <strong>public place</strong> to hand off the prize directly — park, coffee shop, or anywhere safe.</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
-        <span style="font-size:20px;flex-shrink:0;">💸</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;">Send via <strong>Zelle or Venmo</strong> — you'll enter your handle below so the winner knows how to receive payment.</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
-        <span style="font-size:20px;flex-shrink:0;">🌧️</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;">If hiding cash physically, use a <strong>weatherproof envelope</strong> or zip-lock bag to keep it safe until found.</div>
+        <span style="font-size:20px;flex-shrink:0;">🆓</span>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No fees</strong> — FinderSeek doesn't charge anything.</div>
       </div>
     </div>
 
@@ -2187,19 +2177,19 @@ function showConfirmation({ city, hood, prize, code, payType, liveAt, huntId }) 
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="flex-shrink:0;width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;font-family:'DM Mono',monospace;">1</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>You pay upfront</strong> — prize amount + 10% FinderSeek fee via Stripe checkout after clue generation.</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>Pay upfront</strong> — prize + 10% fee via Stripe.</div>
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="flex-shrink:0;width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;font-family:'DM Mono',monospace;">2</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>FinderSeek holds the prize</strong> securely in escrow until a valid 6-digit code is submitted.</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>We hold it</strong> — prize secured until someone wins.</div>
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="flex-shrink:0;width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;font-family:'DM Mono',monospace;">3</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>Winner claims</strong> — FinderSeek notifies you and coordinates payment to the winner via Venmo or Zelle.</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>Winner gets paid</strong> — via Zelle, Venmo, or CashApp.</div>
       </div>
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
         <span style="flex-shrink:0;width:28px;height:28px;background:#7c3aed;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;">♻️</span>
-        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No winner?</strong> If the quest expires unclaimed, your prize is fully refunded — refund initiated within 24 hours! The 10% service fee is non-refundable.</div>
+        <div style="font-size:14px;color:#fff;line-height:1.6;"><strong>No winner?</strong> Prize refunded within 24 hrs. 10% fee non-refundable.</div>
       </div>
     </div>
 
