@@ -1373,7 +1373,7 @@ function updateNavAuth() {
     area.innerHTML = `<div class="mm-user-info">
       <div class="mm-user-avatar">${name[0].toUpperCase()}</div>
       <div><div class="mm-user-name">${name}</div><div class="mm-user-email">${currentUser.email||''}</div></div>
-    </div>`;
+    </div><a href="profile.html" style="display:block;margin-top:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--cream);text-decoration:none;font-family:Karla,sans-serif;text-align:center;">👤 My Profile</a>`;
   } else {
     area.innerHTML = `<button class="mm-signin-btn" onclick="closeMobileMenu();openAuthModal()">🔍 Sign In / Create Account</button>`;
   }
