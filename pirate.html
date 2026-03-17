@@ -1334,12 +1334,19 @@ let dtAmPm = 'AM';
 
 function initDatePicker() {
   const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
   const yearSel = document.getElementById('dt-year');
   for (let y = now.getFullYear(); y <= now.getFullYear() + 1; y++) {
     const o = document.createElement('option'); o.value = y; o.textContent = y; yearSel.appendChild(o);
   }
-  document.getElementById('dt-month').value = now.getMonth();
-  updateDtDays(); document.getElementById('dt-day').value = now.getDate(); updateDtPreview();
+  document.getElementById('dt-month').value = tomorrow.getMonth();
+  document.getElementById('dt-year').value = tomorrow.getFullYear();
+  updateDtDays();
+  document.getElementById('dt-day').value = tomorrow.getDate();
+  document.getElementById('dt-hour').value = '9';
+  setAmPm('AM');
+  updateDtPreview();
 }
 
 function updateDtDays() {
@@ -1815,6 +1822,7 @@ function selectLive(choice) {
   document.getElementById('live-now').classList.toggle('selected', choice === 'now');
   document.getElementById('live-schedule').classList.toggle('selected', choice === 'schedule');
   document.getElementById('schedule-wrap').classList.toggle('show', choice === 'schedule');
+  if (choice === 'schedule') { updateDtPreview(); updateEndTimeOptions(); }
 }
 function getCode() { return ['d1','d2','d3','d4','d5','d6'].map(id => document.getElementById(id).value).join(''); }
 
