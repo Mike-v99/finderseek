@@ -1194,7 +1194,10 @@ function getClaimCode() {
 function showClaimError(msg) {
   document.querySelectorAll('.claim-digit').forEach(d => d.classList.add('error'));
   document.getElementById('claim-error').textContent = msg;
-  setTimeout(() => document.querySelectorAll('.claim-digit').forEach(d => d.classList.remove('error')), 1200);
+  setTimeout(() => {
+    document.querySelectorAll('.claim-digit').forEach(d => { d.classList.remove('error'); d.value = ''; });
+    document.getElementById('c1')?.focus();
+  }, 1200);
 }
 
 async function submitClaim() {
@@ -1222,9 +1225,13 @@ async function submitClaim() {
 
     if (!h) { showClaimError('⚠️ Could not verify. Try again.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
     if (h.winner_id) { showClaimError('😔 This treasure has already been claimed!'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
-    if (h.status !== 'active') { showClaimError('⌛ This quest has ended.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
+    if (h.status === 'cancelled') { showClaimError('⚠️ This quest was removed.'); btn.disabled=false; btn.textContent='🏆 CLAIM MY PRIZE'; return; }
 
-    if (String(h.finder_code).trim() !== String(code).trim()) {
+    const dbCode = String(h.finder_code || '').trim().padStart(6, '0');
+    const userCode = String(code).trim().padStart(6, '0');
+    console.log('[claim] DB code:', dbCode, 'User code:', userCode, 'Match:', dbCode === userCode);
+
+    if (dbCode !== userCode) {
       showClaimError('❌ Wrong code — keep searching!');
       btn.disabled = false; btn.textContent = '🏆 CLAIM MY PRIZE';
       return;
