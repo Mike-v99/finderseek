@@ -757,25 +757,7 @@ async function loadHunt() {
       const isPirate = hunt.created_by === currentUser.id;
       const isWinner = hunt.winner_id === currentUser.id;
       if (isWinner) {
-        // Show the claim success screen with chat
-        document.getElementById('claim-form-state').style.display = 'none';
-        document.getElementById('cs-prize').textContent = hunt.prize_desc || '—';
-        document.getElementById('cs-city').textContent = hunt.city || '—';
-        const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
-        document.getElementById('cs-sub').textContent = isEscrow
-          ? 'Your prize is secured via FinderSeek Escrow.'
-          : 'Chat with the Pirate below to arrange your prize.';
-        if (isEscrow) document.getElementById('cs-payout-wrap').style.display = hunt.winner_payout_method ? 'none' : 'block';
-        else document.getElementById('cs-payout-wrap').style.display = 'none';
-        document.getElementById('claim-success').classList.add('show');
-        // Switch to Claim tab
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-        const claimTab = document.querySelector('[data-panel="claim"]');
-        if (claimTab) claimTab.classList.add('active');
-        const claimPanel = document.getElementById('panel-claim');
-        if (claimPanel) claimPanel.style.display = 'block';
-        startChat();
+        showWinnerChat();
       } else if (isPirate) {
         showPirateChat();
       }
@@ -1380,23 +1362,7 @@ window.addEventListener('load', async () => {
     const isPirate = hunt.created_by === currentUser.id;
     const isWinner = hunt.winner_id === currentUser.id;
     if (isWinner) {
-      document.getElementById('claim-form-state').style.display = 'none';
-      document.getElementById('cs-prize').textContent = hunt.prize_desc || '—';
-      document.getElementById('cs-city').textContent = hunt.city || '—';
-      const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
-      document.getElementById('cs-sub').textContent = isEscrow
-        ? 'Your prize is secured via FinderSeek Escrow.'
-        : 'Chat with the Pirate below to arrange your prize.';
-      if (isEscrow) document.getElementById('cs-payout-wrap').style.display = hunt.winner_payout_method ? 'none' : 'block';
-      else document.getElementById('cs-payout-wrap').style.display = 'none';
-      document.getElementById('claim-success').classList.add('show');
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-      const claimTab = document.querySelector('[data-panel="claim"]');
-      if (claimTab) claimTab.classList.add('active');
-      const claimPanel = document.getElementById('panel-claim');
-      if (claimPanel) claimPanel.style.display = 'block';
-      startChat();
+      showWinnerChat();
     } else if (isPirate) {
       showPirateChat();
     }
@@ -1594,6 +1560,50 @@ function handleChatKey(e) {
 
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showWinnerChat() {
+  // Show claim success in the claim panel
+  document.getElementById('claim-form-state').style.display = 'none';
+  document.getElementById('cs-prize').textContent = hunt.prize_desc || '—';
+  document.getElementById('cs-city').textContent = hunt.city || '—';
+  const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
+  document.getElementById('cs-sub').textContent = isEscrow
+    ? 'Your prize is secured via FinderSeek Escrow.'
+    : 'Chat with the Pirate below to arrange your prize.';
+  if (isEscrow) document.getElementById('cs-payout-wrap').style.display = hunt.winner_payout_method ? 'none' : 'block';
+  else document.getElementById('cs-payout-wrap').style.display = 'none';
+  document.getElementById('claim-success').classList.add('show');
+
+  // Also inject chat at the top of the hunt (clues) panel so it's visible on the default tab
+  if (!document.getElementById('winner-chat-panel')) {
+    const huntPanel = document.getElementById('panel-hunt');
+    if (huntPanel) {
+      const chatDiv = document.createElement('div');
+      chatDiv.id = 'winner-chat-panel';
+      chatDiv.style.cssText = 'max-width:520px;margin:0 auto 24px;padding:0 20px;';
+      chatDiv.innerHTML = `
+        <div class="chat-header" style="margin-bottom:16px;">
+          <div class="chat-header-icon">💬</div>
+          <div>
+            <div class="chat-header-title">Winner Chat</div>
+            <div class="chat-header-sub">Coordinate your prize — only you and the Pirate can see this</div>
+          </div>
+        </div>
+        <div class="chat-box">
+          <div class="chat-messages" id="chat-messages" style="height:300px;">
+            <div class="chat-empty">Loading messages…</div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="chat-input" rows="1" placeholder="Message the Pirate…" onkeydown="handleChatKey(event)"></textarea>
+            <button class="btn-chat-send" id="btn-chat-send" onclick="sendMessage()">➤</button>
+          </div>
+        </div>`;
+      const main = huntPanel.querySelector('.main') || huntPanel;
+      main.prepend(chatDiv);
+    }
+  }
+  startChat();
 }
 
 function showPirateChat() {
