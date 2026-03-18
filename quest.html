@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>FinderSeek — Quest</title>
 <meta name="description" content="Follow AI-powered clues to find real hidden cash in your city. Join the treasure quest, decode clues, and claim the prize before anyone else."/>
-<meta name="keywords" content="treasure quest, find hidden money, city clue game, real cash prize, scavenger hunt clues"/>
+<meta name="keywords" content="treasure quest, find hidden money, city clue game, real cash prize, scavenger quest clues"/>
 <link rel="canonical" href="https://finderseek.com/quest.html"/>
 <meta name="robots" content="index, follow"/>
 <meta property="og:type" content="article"/>
@@ -468,10 +468,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <div class="auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
     </div>
     <div id="signup-fields">
-      <div class="auth-field"><label class="auth-label">Hunter Name</label><input class="auth-input" id="auth-username" placeholder="e.g. TreasureHunter99" maxlength="20"/></div>
+      <div class="auth-field"><label class="auth-label">Seeker Name</label><input class="auth-input" id="auth-username" placeholder="e.g. TreasureSeeker99" maxlength="20"/></div>
       <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="auth-email-signup" type="email" placeholder="you@email.com"/></div>
       <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="auth-pass-signup" type="password" placeholder="At least 8 characters"/></div>
-      <button class="auth-btn auth-btn-primary" id="btn-signup" onclick="doSignup()">Join the Hunt 🔍</button>
+      <button class="auth-btn auth-btn-primary" id="btn-signup" onclick="doSignup()">Join the Quest 🔍</button>
     </div>
     <div id="login-fields" style="display:none;">
       <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="auth-email-login" type="email" placeholder="you@email.com"/></div>
@@ -495,7 +495,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- COUNTDOWN -->
 <div class="cd-outer f2"><div class="cd-wrap">
-  <div class="cd-label">⏳ HUNT ENDS IN</div>
+  <div class="cd-label">⏳ QUEST ENDS IN</div>
   <div class="cd-blocks">
     <div class="cd-block"><span class="cd-num" id="cd-d">00</span><div class="cd-unit">Days</div></div>
     <div class="cd-sep">:</div>
@@ -524,7 +524,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- TABS -->
 <div class="tabs-outer f4"><div class="tabs">
-  <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Hunt</div>
+  <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Quest</div>
   <div class="tab" onclick="showTab('claim',this)"><span class="tab-icon">🎯</span>Claim Prize</div>
   <div class="tab tab-link" onclick="window.location.href='index.html'"><span class="tab-icon">🏠</span>All Quests</div>
   <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Seekers Joined</div>
@@ -532,7 +532,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
 
-<!-- HUNT PANEL -->
+<!-- QUEST PANEL -->
 <div class="panel active" id="panel-hunt">
   <div class="main">
     <div class="sec-hd"><div class="sec-lbl">CLUES</div><div class="sec-line"></div></div>
@@ -652,19 +652,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="main">
     <div class="hunters-wrap">
 
-      <!-- FOLLOW THIS HUNT -->
+      <!-- FOLLOW THIS QUEST -->
       <div class="follow-bar" id="follow-bar">
         <div class="follow-bar-left">
-          <div class="follow-bar-title">Join the Hunt</div>
+          <div class="follow-bar-title">Join the Quest</div>
           <div class="follow-bar-sub" id="follow-count-sub">— seekers on this trail</div>
         </div>
-        <button class="btn-follow" id="btn-follow" onclick="toggleFollow()">🔍 I'm Hunting This</button>
+        <button class="btn-follow" id="btn-follow" onclick="toggleFollow()">🔍 I'm Seeking This</button>
       </div>
 
-      <!-- HUNTERS ON THIS HUNT -->
-      <div class="hunters-section-title">On This Quest <span id="this-hunt-count">0</span></div>
+      <!-- SEEKERS ON THIS QUEST -->
+      <div class="hunters-section-title">On This Quest <span id="this-quest-count">0</span></div>
       <div class="hunters-list-wrap" id="this-hunt-list">
-        <div class="statebox"><div class="si">🔍</div>No hunters yet — be the first!</div>
+        <div class="statebox"><div class="si">🔍</div>No seekers yet — be the first!</div>
       </div>
 
       <hr class="hunters-divider"/>
@@ -737,7 +737,7 @@ async function loadHunt() {
       return;
     }
     if (!Array.isArray(hunts) || !hunts.length) {
-      document.getElementById('prize-amt').innerHTML = Array.isArray(hunts) ? 'No hunts found' : (hunts?.message || 'DB error');
+      document.getElementById('prize-amt').innerHTML = Array.isArray(hunts) ? 'No quests found' : (hunts?.message || 'DB error');
       document.getElementById('prize-meta').textContent = '';
       return;
     }
@@ -834,7 +834,7 @@ function renderHunt() {
     }, 1000);
     document.getElementById('next-clue-cd').textContent = fmtShort(new Date(nextClue.reveal_at) - now);
   } else {
-    document.getElementById('next-clue-lbl').textContent = huntEnded ? '🏴‍☠️ Hunt Over' : (clues.length ? 'All Revealed!' : 'Coming soon');
+    document.getElementById('next-clue-lbl').textContent = huntEnded ? '🏴‍☠️ Quest Over' : (clues.length ? 'All Revealed!' : 'Coming soon');
     document.getElementById('next-clue-cd').textContent = '';
   }
 
@@ -1060,14 +1060,14 @@ async function loadHuntFollowers() {
     );
     const rows = r.ok ? await r.json() : [];
     const list = document.getElementById('this-hunt-list');
-    const countEl = document.getElementById('this-hunt-count');
+    const countEl = document.getElementById('this-quest-count');
     const subEl = document.getElementById('follow-count-sub');
 
     countEl.textContent = rows.length;
     subEl.textContent = `${rows.length} hunter${rows.length !== 1 ? 's' : ''} on this trail`;
 
     if (!rows.length) {
-      list.innerHTML = '<div class="statebox"><div class="si">🔍</div>No hunters yet — be the first!</div>';
+      list.innerHTML = '<div class="statebox"><div class="si">🔍</div>No seekers yet — be the first!</div>';
     } else {
       list.innerHTML = rows.map(row => {
         const p = row.profiles;
@@ -1103,7 +1103,7 @@ async function loadGlobalLeaderboard() {
     const list = document.getElementById('hunters-list');
     document.getElementById('leaderboard-count').textContent = data.length;
     if (!data.length) {
-      list.innerHTML = '<div class="statebox"><div class="si">🏆</div>No hunters yet — be the first!</div>';
+      list.innerHTML = '<div class="statebox"><div class="si">🏆</div>No seekers yet — be the first!</div>';
       return;
     }
     const medals = ['🥇','🥈','🥉'];
@@ -1120,7 +1120,7 @@ async function loadGlobalLeaderboard() {
       </div>`).join('');
   } catch(e) {
     document.getElementById('hunters-list').innerHTML =
-      '<div class="statebox"><div class="si">🏆</div>No hunters yet.</div>';
+      '<div class="statebox"><div class="si">🏆</div>No seekers yet.</div>';
   }
 }
 
@@ -1438,7 +1438,7 @@ async function doSignup() {
       body: JSON.stringify({ email, password: pass, data: { username } })
     });
     const d = await r.json();
-    if (d.error) { showAuthError(d.error.message || JSON.stringify(d.error)); btn.disabled=false; btn.textContent='Join the Hunt 🔍'; return; }
+    if (d.error) { showAuthError(d.error.message || JSON.stringify(d.error)); btn.disabled=false; btn.textContent='Join the Quest 🔍'; return; }
     if (d.access_token) {
       setToken(d.access_token); if(d.refresh_token)setRefresh(d.refresh_token); currentUser = d.user;
       await loadProfile(d.user.id); updateNavAuth();
@@ -1449,7 +1449,7 @@ async function doSignup() {
       setTimeout(() => switchAuthTab('login'), 2500);
     }
   } catch(e) { showAuthError('Something went wrong.'); }
-  btn.disabled=false; btn.textContent='Join the Hunt 🔍';
+  btn.disabled=false; btn.textContent='Join the Quest 🔍';
 }
 
 async function doLogin() {
