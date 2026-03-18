@@ -754,9 +754,29 @@ async function loadHunt() {
 
     // If hunt is ended and current user is pirate or winner, open the chat
     if (hunt.status === 'ended' && hunt.winner_id && currentUser) {
-      const isPirate = hunt.pirate_id === currentUser.id;
+      const isPirate = hunt.created_by === currentUser.id;
       const isWinner = hunt.winner_id === currentUser.id;
-      if (isPirate || isWinner) {
+      if (isWinner) {
+        // Show the claim success screen with chat
+        document.getElementById('claim-form-state').style.display = 'none';
+        document.getElementById('cs-prize').textContent = hunt.prize_desc || '—';
+        document.getElementById('cs-city').textContent = hunt.city || '—';
+        const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
+        document.getElementById('cs-sub').textContent = isEscrow
+          ? 'Your prize is secured via FinderSeek Escrow.'
+          : 'Chat with the Pirate below to arrange your prize.';
+        if (isEscrow) document.getElementById('cs-payout-wrap').style.display = hunt.winner_payout_method ? 'none' : 'block';
+        else document.getElementById('cs-payout-wrap').style.display = 'none';
+        document.getElementById('claim-success').classList.add('show');
+        // Switch to Claim tab
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+        const claimTab = document.querySelector('[data-panel="claim"]');
+        if (claimTab) claimTab.classList.add('active');
+        const claimPanel = document.getElementById('panel-claim');
+        if (claimPanel) claimPanel.style.display = 'block';
+        startChat();
+      } else if (isPirate) {
         showPirateChat();
       }
     }
