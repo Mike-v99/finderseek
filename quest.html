@@ -387,11 +387,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-follow-pirate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.5);}
 .btn-follow-pirate.following{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa;box-shadow:none;}
 .btn-fav{display:none;}
-.quest-info-bar{display:flex;align-items:center;justify-content:space-between;max-width:640px;margin:6px auto;padding:0 20px;}
-.qib-timer{display:flex;align-items:center;gap:6px;}
-.qib-timer-lbl{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;}
-.qib-timer-val{font-family:'Bangers',cursive;font-size:18px;color:var(--cream);letter-spacing:1px;}
-.btn-pin{background:transparent;border:1.5px solid rgba(34,211,238,.4);border-radius:10px;padding:7px 16px;font-size:12px;font-weight:700;color:#22d3ee;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;white-space:nowrap;}
+.cd-pin-col{flex:1;display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(255,255,255,.08);margin-left:12px;padding-left:12px;}
+.btn-pin{background:transparent;border:1.5px solid rgba(34,211,238,.35);border-radius:12px;padding:12px 10px;font-size:11px;font-weight:700;color:#22d3ee;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;text-align:center;line-height:1.4;width:100%;}
 .btn-pin:hover{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.6);}
 .btn-pin.pinned{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.5);color:#22d3ee;}
 .btn-back-hunts:hover{background:rgba(34,197,94,.2);transform:translateY(-1px);}
@@ -513,19 +510,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   </div>
 </div>
 
-<!-- COUNTDOWN -->
-<div class="cd-outer f2"><div class="cd-wrap">
-  <div class="cd-label">⏳ QUEST ENDS IN</div>
-  <div class="cd-blocks">
-    <div class="cd-block"><span class="cd-num" id="cd-d">00</span><div class="cd-unit">Days</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-block"><span class="cd-num" id="cd-h">00</span><div class="cd-unit">Hours</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-block"><span class="cd-num" id="cd-m">00</span><div class="cd-unit">Mins</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-block"><span class="cd-num" id="cd-s">00</span><div class="cd-unit">Secs</div></div>
+<!-- COUNTDOWN + PIN -->
+<div class="cd-outer f2"><div class="cd-wrap" style="display:flex;align-items:center;gap:0;">
+  <div style="flex:3;min-width:0;">
+    <div class="cd-label">⏳ QUEST ENDS IN</div>
+    <div class="cd-blocks">
+      <div class="cd-block"><span class="cd-num" id="cd-d">00</span><div class="cd-unit">Days</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-h">00</span><div class="cd-unit">Hours</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-m">00</span><div class="cd-unit">Mins</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-s">00</span><div class="cd-unit">Secs</div></div>
+    </div>
+    <div class="cd-sub" id="end-lbl">—</div>
   </div>
-  <div class="cd-sub" id="end-lbl">—</div>
+  <div class="cd-pin-col">
+    <button class="btn-pin" id="btn-pin" onclick="toggleFavorite()">📌<br/><span>Pin Quest</span></button>
+  </div>
 </div></div>
 
 <!-- STATS -->
@@ -554,15 +556,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="pirate-bar-right">
     <button class="btn-follow-pirate" id="btn-follow-pirate" onclick="toggleFollowPirate()">Follow</button>
   </div>
-</div>
-
-<!-- QUEST INFO BAR -->
-<div class="quest-info-bar f3">
-  <div class="qib-timer">
-    <span class="qib-timer-lbl">⏳ Ends in</span>
-    <span class="qib-timer-val" id="qib-timer-val">—</span>
-  </div>
-  <button class="btn-pin" id="btn-pin" onclick="toggleFavorite()">📌 Pin This Quest</button>
 </div>
 
 <!-- ACTION BAR (replaces tabs) -->
@@ -1665,10 +1658,10 @@ function updateFavBtn() {
   const btn = document.getElementById('btn-pin');
   if (!btn) return;
   if (_isFavorited) {
-    btn.textContent = '📌 Pinned';
+    btn.innerHTML = '📌<br/><span>Pinned</span>';
     btn.classList.add('pinned');
   } else {
-    btn.textContent = '📌 Pin This Quest';
+    btn.innerHTML = '📌<br/><span>Pin Quest</span>';
     btn.classList.remove('pinned');
   }
 }
