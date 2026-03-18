@@ -375,6 +375,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .csrlbl{color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
 .csrval{color:#4ade80;font-weight:700;}
 .btn-back-hunts{display:inline-block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;text-decoration:none;font-family:'Karla',sans-serif;transition:all .2s;}
+.pirate-bar{max-width:680px;margin:0 auto;padding:0 20px;position:relative;z-index:2;}
+.pirate-bar>div:first-child{display:flex;} /* fix for inner layout */
+.pirate-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(14,12,20,.85);border:1px solid rgba(201,137,12,.15);border-radius:16px;padding:12px 18px;margin:12px auto;max-width:640px;}
+.pirate-bar-left{display:flex;align-items:center;gap:12px;}
+.pirate-bar-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#0a0800;flex-shrink:0;}
+.pirate-bar-name{font-size:15px;font-weight:800;color:var(--cream);}
+.pirate-bar-stats{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.pirate-bar-right{display:flex;align-items:center;gap:8px;}
+.btn-follow-pirate{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;border-radius:10px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;box-shadow:0 3px 12px rgba(59,130,246,.3);}
+.btn-follow-pirate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.5);}
+.btn-follow-pirate.following{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa;box-shadow:none;}
+.btn-fav{background:none;border:1.5px solid rgba(251,191,36,.25);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .2s;color:var(--muted);}
+.btn-fav:hover{border-color:rgba(251,191,36,.5);color:#fbbf24;}
+.btn-fav.active{color:#fbbf24;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.08);}
 .btn-back-hunts:hover{background:rgba(34,197,94,.2);transform:translateY(-1px);}
 
 /* PRIZE CHAT */
@@ -522,6 +536,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="cdots" id="clue-dots"></div>
   </div>
 </div></div>
+
+<!-- PIRATE BAR -->
+<div class="pirate-bar f3" id="pirate-bar" style="display:none;">
+  <div class="pirate-bar-left">
+    <div class="pirate-bar-avatar" id="pb-avatar">?</div>
+    <div>
+      <div class="pirate-bar-name" id="pb-name">—</div>
+      <div class="pirate-bar-stats" id="pb-stats">—</div>
+    </div>
+  </div>
+  <div class="pirate-bar-right">
+    <button class="btn-fav" id="btn-fav" onclick="toggleFavorite()" title="Favorite this quest">☆</button>
+    <button class="btn-follow-pirate" id="btn-follow-pirate" onclick="toggleFollowPirate()">Follow</button>
+  </div>
+</div>
 
 <!-- TABS -->
 <div class="tabs-outer f4"><div class="tabs">
@@ -751,6 +780,7 @@ async function loadHunt() {
     renderHunt();
     loadLeaderboard();
     initHuntMap();
+    loadPirateBar();
 
     // If hunt is ended and current user is pirate or winner, open the chat
     if (hunt.status === 'ended' && hunt.winner_id && currentUser) {
@@ -1357,7 +1387,8 @@ window.addEventListener('load', async () => {
     } catch(e) {}
   }
   updateNavAuth();
-  // Re-check chat display now that auth is resolved
+  // Re-check chat display and pirate bar now that auth is resolved
+  loadPirateBar();
   if (hunt && hunt.winner_id && currentUser) {
     const isPirate = hunt.created_by === currentUser.id;
     const isWinner = hunt.winner_id === currentUser.id;
@@ -1560,6 +1591,121 @@ function handleChatKey(e) {
 
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PIRATE BAR / FOLLOW / FAVORITE ───────────────────
+let _isFollowing = false, _isFavorited = false, _pirateProfile = null;
+
+async function loadPirateBar() {
+  if (!hunt?.created_by) return;
+  try {
+    const r = await fetch(`${SB}/rest/v1/profiles?id=eq.${hunt.created_by}&select=id,username,followers_count,quests_created,total_prize_money`, { headers: H });
+    const d = await r.json();
+    _pirateProfile = Array.isArray(d) ? d[0] : d;
+    if (!_pirateProfile) return;
+    const bar = document.getElementById('pirate-bar');
+    bar.style.display = 'flex';
+    document.getElementById('pb-avatar').textContent = (_pirateProfile.username || '?')[0].toUpperCase();
+    document.getElementById('pb-name').textContent = '🏴‍☠️ ' + (_pirateProfile.username || 'Unknown');
+    const fc = _pirateProfile.followers_count || 0;
+    const qc = _pirateProfile.quests_created || 0;
+    document.getElementById('pb-stats').textContent = `${fc} follower${fc !== 1 ? 's' : ''} · ${qc} quest${qc !== 1 ? 's' : ''}`;
+
+    // Check if current user follows this pirate
+    if (currentUser?.id && currentUser.id !== hunt.created_by) {
+      const fr = await fetch(`${SB}/rest/v1/follows?follower_id=eq.${currentUser.id}&pirate_id=eq.${hunt.created_by}&select=id`, { headers: H });
+      const fd = await fr.json();
+      _isFollowing = Array.isArray(fd) && fd.length > 0;
+      updateFollowBtn();
+    } else if (currentUser?.id === hunt.created_by) {
+      document.getElementById('btn-follow-pirate').style.display = 'none';
+    }
+
+    // Check if current user favorited this quest
+    if (currentUser?.id) {
+      const fvr = await fetch(`${SB}/rest/v1/favorites?user_id=eq.${currentUser.id}&hunt_id=eq.${hunt.id}&select=id`, { headers: H });
+      const fvd = await fvr.json();
+      _isFavorited = Array.isArray(fvd) && fvd.length > 0;
+      updateFavBtn();
+    }
+  } catch(e) { console.error('[pirate-bar]', e); }
+}
+
+function updateFollowBtn() {
+  const btn = document.getElementById('btn-follow-pirate');
+  if (_isFollowing) {
+    btn.textContent = '✓ Following';
+    btn.classList.add('following');
+  } else {
+    btn.textContent = '+ Follow';
+    btn.classList.remove('following');
+  }
+}
+
+function updateFavBtn() {
+  const btn = document.getElementById('btn-fav');
+  btn.textContent = _isFavorited ? '★' : '☆';
+  btn.classList.toggle('active', _isFavorited);
+}
+
+async function toggleFollowPirate() {
+  if (!currentUser) { openAuthModal(() => toggleFollowPirate()); return; }
+  if (!hunt?.created_by || currentUser.id === hunt.created_by) return;
+  const btn = document.getElementById('btn-follow-pirate');
+  btn.disabled = true;
+  try {
+    if (_isFollowing) {
+      await fetch(`${SB}/rest/v1/follows?follower_id=eq.${currentUser.id}&pirate_id=eq.${hunt.created_by}`, {
+        method: 'DELETE', headers: { ...H, 'Prefer': 'return=minimal' }
+      });
+      _isFollowing = false;
+      if (_pirateProfile) _pirateProfile.followers_count = Math.max(0, (_pirateProfile.followers_count || 1) - 1);
+      // Decrement pirate's follower count
+      await fetch(`${SB}/rest/v1/profiles?id=eq.${hunt.created_by}`, {
+        method: 'PATCH', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ followers_count: _pirateProfile.followers_count })
+      });
+    } else {
+      await fetch(`${SB}/rest/v1/follows`, {
+        method: 'POST', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ follower_id: currentUser.id, pirate_id: hunt.created_by })
+      });
+      _isFollowing = true;
+      if (_pirateProfile) _pirateProfile.followers_count = (_pirateProfile.followers_count || 0) + 1;
+      await fetch(`${SB}/rest/v1/profiles?id=eq.${hunt.created_by}`, {
+        method: 'PATCH', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ followers_count: _pirateProfile.followers_count })
+      });
+    }
+    updateFollowBtn();
+    const fc = _pirateProfile?.followers_count || 0;
+    const qc = _pirateProfile?.quests_created || 0;
+    document.getElementById('pb-stats').textContent = `${fc} follower${fc !== 1 ? 's' : ''} · ${qc} quest${qc !== 1 ? 's' : ''}`;
+  } catch(e) { console.error('[follow]', e); }
+  finally { btn.disabled = false; }
+}
+
+async function toggleFavorite() {
+  if (!currentUser) { openAuthModal(() => toggleFavorite()); return; }
+  if (!hunt?.id) return;
+  const btn = document.getElementById('btn-fav');
+  btn.disabled = true;
+  try {
+    if (_isFavorited) {
+      await fetch(`${SB}/rest/v1/favorites?user_id=eq.${currentUser.id}&hunt_id=eq.${hunt.id}`, {
+        method: 'DELETE', headers: { ...H, 'Prefer': 'return=minimal' }
+      });
+      _isFavorited = false;
+    } else {
+      await fetch(`${SB}/rest/v1/favorites`, {
+        method: 'POST', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ user_id: currentUser.id, hunt_id: hunt.id })
+      });
+      _isFavorited = true;
+    }
+    updateFavBtn();
+  } catch(e) { console.error('[fav]', e); }
+  finally { btn.disabled = false; }
 }
 
 function showWinnerChat() {

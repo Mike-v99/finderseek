@@ -1979,6 +1979,20 @@ async function submitHunt(previewMode = false) {
     savedHuntId = saved?.id;
     console.log('Hunt saved! ID:', savedHuntId);
 
+    // Increment pirate's quest count
+    if (currentUser?.id && !previewMode) {
+      try {
+        const pr = await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}&select=quests_created,total_prize_money`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) } });
+        const pd = await pr.json();
+        if (pd?.[0]) {
+          await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`, {
+            method: 'PATCH', headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({ quests_created: (pd[0].quests_created || 0) + 1, total_prize_money: (pd[0].total_prize_money || 0) + (prize * 100) })
+          });
+        }
+      } catch(e) { console.error('Profile update error:', e); }
+    }
+
   } catch(e) {
     console.error('Submit error:', e);
     btn.disabled = false; previewBtn.disabled = false; btn.textContent = '🏴‍☠️   Hide My Treasure →';

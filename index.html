@@ -153,6 +153,22 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .hunt-section.open .hdr-chevron{transform:rotate(180deg);}
 .hunt-section-body{display:none;padding-top:12px;}
 .hunt-section.open .hunt-section-body{display:block;animation:fadeUp .3s both;}
+.pirate-lb{display:flex;flex-direction:column;gap:8px;}
+.plb-card{display:flex;align-items:center;gap:14px;background:rgba(14,12,20,.8);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 18px;transition:all .2s;cursor:default;}
+.plb-card:hover{border-color:rgba(201,137,12,.2);background:rgba(14,12,20,.95);}
+.plb-rank{font-family:'Bangers',cursive;font-size:22px;color:var(--muted);width:28px;text-align:center;flex-shrink:0;}
+.plb-rank.gold{color:#fbbf24;}.plb-rank.silver{color:#94a3b8;}.plb-rank.bronze{color:#d97706;}
+.plb-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#0a0800;flex-shrink:0;}
+.plb-info{flex:1;min-width:0;}
+.plb-name{font-size:15px;font-weight:800;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.plb-meta{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.plb-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.plb-stat{text-align:center;}
+.plb-stat-val{font-family:'Bangers',cursive;font-size:18px;color:var(--gold2);letter-spacing:1px;}
+.plb-stat-lbl{font-size:8px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;}
+.plb-follow{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:10px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;}
+.plb-follow:hover{transform:translateY(-1px);}
+.plb-follow.following{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#60a5fa;}
 
 .search-wrap{position:relative;margin-bottom:12px;display:flex;align-items:center;gap:0;max-width:100%;}
 .s-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px 0 0 14px;padding:14px 16px 14px 44px;font-size:14px;color:var(--cream);font-family:'Karla',sans-serif;outline:none;transition:border-color .2s,background .2s;}
@@ -530,6 +546,15 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
   </div>
   <div class="filters" id="filters" style="display:none;"></div>
 
+  <!-- PIRATE LEADERBOARD -->
+  <div class="hunt-section" id="sec-pirates">
+    <div class="hunt-section-hdr" style="background:linear-gradient(135deg,rgba(201,137,12,.08),rgba(201,137,12,.02));border-color:rgba(201,137,12,.15);" onclick="toggleSection('sec-pirates')">
+      <div class="hdr-left"><div class="hdr-icon">🏴‍☠️</div><div class="hdr-info"><div class="hdr-title" style="background:linear-gradient(135deg,#e8a820,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TOP PIRATES</div><div class="hdr-sub">Follow your favorites for quest notifications</div></div></div>
+      <div class="hdr-right"><div class="hdr-badge" style="background:rgba(201,137,12,.1);border:1px solid rgba(201,137,12,.25);color:#e8a820;" id="pirate-lb-count">—</div><div class="hdr-chevron">▼</div></div>
+    </div>
+    <div class="hunt-section-body"><div id="pirate-leaderboard" class="pirate-lb"></div></div>
+  </div>
+
   <div class="hunt-section" id="sec-active">
     <div class="hunt-section-hdr hdr-active" onclick="toggleSection('sec-active')">
       <div class="hdr-left"><div class="hdr-icon">&#127919;</div><div class="hdr-info"><div class="hdr-title">ACTIVE QUESTS</div><div class="hdr-sub">Live now &mdash; click any quest to start seeking</div></div></div>
@@ -633,6 +658,7 @@ async function loadHunts(){
     document.getElementById('live-count').textContent=allActive.length;
     document.getElementById('stat-hunts').textContent=allActive.length;
     renderAll();
+    loadPirateLeaderboard();
   }catch(e){document.getElementById('cards-active').innerHTML='<div class="statebox"><div class="si">\u26A0\uFE0F</div>Could not load hunts.</div>';}
 }
 
@@ -644,6 +670,113 @@ function renderAll(){
   document.getElementById('count-active').textContent=allActive.length;
   document.getElementById('count-scheduled').textContent=allScheduled.length;
   document.getElementById('count-completed').textContent=allCompleted.length;
+}
+
+// ── PIRATE LEADERBOARD ──────────────────────
+let _userFollows = new Set();
+
+async function loadPirateLeaderboard() {
+  try {
+    const r = await fetch(SB + '/rest/v1/profiles?quests_created=gt.0&order=followers_count.desc,quests_created.desc&limit=10&select=id,username,followers_count,quests_created,total_prize_money', { headers: H });
+    const pirates = r.ok ? await r.json() : [];
+    const container = document.getElementById('pirate-leaderboard');
+    document.getElementById('pirate-lb-count').textContent = pirates.length;
+
+    // Load current user's follows
+    if (currentUser?.id) {
+      const fr = await fetch(SB + '/rest/v1/follows?follower_id=eq.' + currentUser.id + '&select=pirate_id', { headers: H });
+      const fd = fr.ok ? await fr.json() : [];
+      _userFollows = new Set(fd.map(f => f.pirate_id));
+    }
+
+    if (!pirates.length) {
+      container.innerHTML = '<div class="statebox"><div class="si">🏴‍☠️</div>No pirates yet — be the first to hide treasure!</div>';
+      return;
+    }
+
+    container.innerHTML = pirates.map((p, i) => {
+      const rank = i + 1;
+      const rankCls = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+      const rankIcon = rank === 1 ? '👑' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+      const init = (p.username || '?')[0].toUpperCase();
+      const isFollowing = _userFollows.has(p.id);
+      const isSelf = currentUser?.id === p.id;
+      const followBtn = isSelf ? '' : `<button class="plb-follow ${isFollowing ? 'following' : ''}" onclick="event.stopPropagation();toggleLbFollow('${p.id}',this)">${isFollowing ? '✓ Following' : '+ Follow'}</button>`;
+      return `<div class="plb-card">
+        <div class="plb-rank ${rankCls}">${rankIcon}</div>
+        <div class="plb-avatar">${init}</div>
+        <div class="plb-info">
+          <div class="plb-name">🏴‍☠️ ${p.username || 'Unknown'}</div>
+          <div class="plb-meta">${p.followers_count || 0} followers · ${p.quests_created || 0} quests</div>
+        </div>
+        <div class="plb-right">
+          ${followBtn}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.error('[pirate-lb]', e); }
+}
+
+async function toggleLbFollow(pirateId, btn) {
+  if (!currentUser) { openAuthModal(() => toggleLbFollow(pirateId, btn)); return; }
+  btn.disabled = true;
+  try {
+    if (_userFollows.has(pirateId)) {
+      await fetch(SB + '/rest/v1/follows?follower_id=eq.' + currentUser.id + '&pirate_id=eq.' + pirateId, {
+        method: 'DELETE', headers: { ...H, 'Prefer': 'return=minimal' }
+      });
+      _userFollows.delete(pirateId);
+      // Decrement
+      const pr = await fetch(SB + '/rest/v1/profiles?id=eq.' + pirateId + '&select=followers_count', { headers: H });
+      const pd = await pr.json();
+      const cnt = Math.max(0, ((pd[0]?.followers_count || 1) - 1));
+      await fetch(SB + '/rest/v1/profiles?id=eq.' + pirateId, {
+        method: 'PATCH', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ followers_count: cnt })
+      });
+      btn.textContent = '+ Follow';
+      btn.classList.remove('following');
+    } else {
+      await fetch(SB + '/rest/v1/follows', {
+        method: 'POST', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ follower_id: currentUser.id, pirate_id: pirateId })
+      });
+      _userFollows.add(pirateId);
+      const pr = await fetch(SB + '/rest/v1/profiles?id=eq.' + pirateId + '&select=followers_count', { headers: H });
+      const pd = await pr.json();
+      const cnt = (pd[0]?.followers_count || 0) + 1;
+      await fetch(SB + '/rest/v1/profiles?id=eq.' + pirateId, {
+        method: 'PATCH', headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ followers_count: cnt })
+      });
+      btn.textContent = '✓ Following';
+      btn.classList.add('following');
+    }
+    // Refresh the meta text
+    loadPirateLeaderboard();
+  } catch(e) { console.error('[lb-follow]', e); }
+  finally { btn.disabled = false; }
+}
+
+// ── FAVORITES SORTING ───────────────────────
+let _userFavorites = new Set();
+
+async function loadFavorites() {
+  if (!currentUser?.id) return;
+  try {
+    const r = await fetch(SB + '/rest/v1/favorites?user_id=eq.' + currentUser.id + '&select=hunt_id', { headers: H });
+    const d = r.ok ? await r.json() : [];
+    _userFavorites = new Set(d.map(f => f.hunt_id));
+    // Re-sort active quests with favorites on top
+    if (_userFavorites.size > 0) {
+      allActive.sort((a, b) => {
+        const aFav = _userFavorites.has(a.id) ? 1 : 0;
+        const bFav = _userFavorites.has(b.id) ? 1 : 0;
+        return bFav - aFav;
+      });
+      renderAll();
+    }
+  } catch(e) {}
 }
 
 // ─── SEARCH DROPDOWN ───
@@ -683,7 +816,7 @@ function setToken(t){localStorage.setItem('fs_token',t);}
 function clearToken(){localStorage.removeItem('fs_token');}
 
 window.addEventListener('load',async()=>{
-  try{const r=await fetch(SB_AUTH+'/auth/v1/user',{headers:{'apikey':KEY_AUTH,'Authorization':'Bearer '+(getToken()||KEY_AUTH)}});if(r.ok){const u=await r.json();if(u&&u.id){currentUser=u;await loadProfile(u.id);updateNavAuth();}}}catch(e){}
+  try{const r=await fetch(SB_AUTH+'/auth/v1/user',{headers:{'apikey':KEY_AUTH,'Authorization':'Bearer '+(getToken()||KEY_AUTH)}});if(r.ok){const u=await r.json();if(u&&u.id){currentUser=u;await loadProfile(u.id);updateNavAuth();loadFavorites();loadPirateLeaderboard();}}}catch(e){}
 });
 
 async function loadProfile(uid){try{const r=await fetch(SB_AUTH+'/rest/v1/profiles?id=eq.'+uid+'&select=*',{headers:{'apikey':KEY_AUTH,'Authorization':'Bearer '+getToken()}});const d=await r.json();if(d&&d.length){currentProfile=d[0];checkBanned();}}catch(e){}}
