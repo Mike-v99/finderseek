@@ -685,7 +685,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <script>
 const SB  = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
 const NOTIFY_SECRET = 'fs-notify-2026'; // must match NOTIFY_SECRET env var in Vercel
 
 function fireNotify(event, huntId, extra = {}) {
@@ -1537,14 +1537,18 @@ async function sendMessage() {
       headers: { ...H, 'Prefer': 'return=minimal' },
       body: JSON.stringify({ hunt_id: hunt.id, sender_id: currentUser.id, body })
     });
-    if (!r.ok) throw new Error('Send failed');
+    if (!r.ok) {
+      const errText = await r.text();
+      console.error('[chat] Send failed:', r.status, errText);
+      alert('Could not send (' + r.status + '): ' + errText);
+      return;
+    }
     input.value = '';
     lastMsgCount = 0;
     await loadMessages();
     document.getElementById('chat-messages').scrollTop = 9999;
-    // Notify the other party
     fireNotify('chat_message', hunt.id, { senderId: currentUser.id, preview: body.slice(0, 80) });
-  } catch(e) { alert('Could not send. Try again.'); }
+  } catch(e) { console.error('[chat] Error:', e); alert('Could not send. Try again.'); }
   finally { btn.disabled = false; input?.focus(); }
 }
 
