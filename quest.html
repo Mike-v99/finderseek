@@ -789,6 +789,7 @@ async function loadHunt() {
 function renderHunt() {
   const now = Date.now();
   const endsAt = new Date(hunt.ends_at);
+  const isEnded = hunt.status === 'ended' || endsAt <= now;
 
   // Hero
   document.getElementById('prize-amt').innerHTML = '<span>' + (hunt.prize_desc || 'Mystery Prize') + '</span>';
@@ -796,30 +797,39 @@ function renderHunt() {
   document.title = 'FinderSeek — ' + (hunt.prize_desc||'Hunt') + ' · ' + (hunt.city||'');
 
   // End label
-  const endDate = endsAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  document.getElementById('end-lbl').textContent = 'Ends ' + endDate;
+  if (isEnded) {
+    document.getElementById('end-lbl').textContent = hunt.winner_id ? '🏆 Quest Complete — Winner Found!' : '⏰ Quest Ended';
+  } else {
+    const endDate = endsAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    document.getElementById('end-lbl').textContent = 'Ends ' + endDate;
+  }
 
   // Countdown
   clearInterval(mainTimer);
-  // Calculate total hunt duration for phase thresholds
-  const startsAt = new Date(hunt.starts_at);
-  const totalDuration = endsAt - startsAt;
-  const quarter = totalDuration / 4;
-
-  function setPhase() {
-    const remaining = endsAt - Date.now();
+  if (isEnded) {
+    updateCd(0);
     const wrap = document.querySelector('.cd-wrap');
-    wrap.classList.remove('phase-1','phase-2','phase-3','phase-4');
-    if (remaining <= 0)          wrap.classList.add('phase-4');
-    else if (remaining <= quarter)     wrap.classList.add('phase-4');   // last 25% → red
-    else if (remaining <= quarter * 2) wrap.classList.add('phase-3');   // 25-50% → orange
-    else if (remaining <= quarter * 3) wrap.classList.add('phase-2');   // 50-75% → yellow
-    else                               wrap.classList.add('phase-1');   // 75-100% → white
-  }
+    if (wrap) { wrap.classList.remove('phase-1','phase-2','phase-3','phase-4'); wrap.classList.add('phase-4'); }
+  } else {
+    const startsAt = new Date(hunt.starts_at);
+    const totalDuration = endsAt - startsAt;
+    const quarter = totalDuration / 4;
 
-  setPhase();
-  updateCd(endsAt - now);
-  mainTimer = setInterval(() => { updateCd(endsAt - Date.now()); setPhase(); }, 1000);
+    function setPhase() {
+      const remaining = endsAt - Date.now();
+      const wrap = document.querySelector('.cd-wrap');
+      wrap.classList.remove('phase-1','phase-2','phase-3','phase-4');
+      if (remaining <= 0)          wrap.classList.add('phase-4');
+      else if (remaining <= quarter)     wrap.classList.add('phase-4');
+      else if (remaining <= quarter * 2) wrap.classList.add('phase-3');
+      else if (remaining <= quarter * 3) wrap.classList.add('phase-2');
+      else                               wrap.classList.add('phase-1');
+    }
+
+    setPhase();
+    updateCd(endsAt - now);
+    mainTimer = setInterval(() => { updateCd(endsAt - Date.now()); setPhase(); }, 1000);
+  }
 
   // Clue dots & count
   // If quest has ended, all clues are revealed
@@ -1365,6 +1375,32 @@ window.addEventListener('load', async () => {
     } catch(e) {}
   }
   updateNavAuth();
+  // Re-check chat display now that auth is resolved
+  if (hunt && hunt.winner_id && currentUser) {
+    const isPirate = hunt.created_by === currentUser.id;
+    const isWinner = hunt.winner_id === currentUser.id;
+    if (isWinner) {
+      document.getElementById('claim-form-state').style.display = 'none';
+      document.getElementById('cs-prize').textContent = hunt.prize_desc || '—';
+      document.getElementById('cs-city').textContent = hunt.city || '—';
+      const isEscrow = hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek';
+      document.getElementById('cs-sub').textContent = isEscrow
+        ? 'Your prize is secured via FinderSeek Escrow.'
+        : 'Chat with the Pirate below to arrange your prize.';
+      if (isEscrow) document.getElementById('cs-payout-wrap').style.display = hunt.winner_payout_method ? 'none' : 'block';
+      else document.getElementById('cs-payout-wrap').style.display = 'none';
+      document.getElementById('claim-success').classList.add('show');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+      const claimTab = document.querySelector('[data-panel="claim"]');
+      if (claimTab) claimTab.classList.add('active');
+      const claimPanel = document.getElementById('panel-claim');
+      if (claimPanel) claimPanel.style.display = 'block';
+      startChat();
+    } else if (isPirate) {
+      showPirateChat();
+    }
+  }
 });
 
 async function loadProfile(uid) {
