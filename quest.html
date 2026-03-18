@@ -111,7 +111,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gold-bar{display:none;}
 
 /* HERO SECTION */
-.hero{position:relative;padding:20px 16px 16px;}
+.hero{position:relative;padding:14px 16px 10px;}
 
 .hero-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
 .hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
@@ -121,13 +121,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hero-city strong{color:var(--dim);}
 
 /* COUNTDOWN — redesigned */
-.cd-wrap{background:rgba(8,6,14,.9);border:1px solid rgba(201,137,12,.25);border-radius:16px;padding:14px 16px;margin:0;
+.cd-wrap{background:rgba(8,6,14,.9);border:1px solid rgba(201,137,12,.25);border-radius:14px;padding:10px 14px;margin:0;
   position:relative;overflow:hidden;}
 .cd-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.08),transparent 60%);pointer-events:none;}
 .cd-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:10px;text-align:center;}
 .cd-blocks{display:flex;align-items:center;justify-content:center;gap:8px;}
-.cd-block{text-align:center;min-width:58px;}
-.cd-num{font-family:'Bangers',cursive;font-size:clamp(34px,8vw,64px);font-weight:400;line-height:1;color:var(--cream);
+.cd-block{text-align:center;min-width:48px;}
+.cd-num{font-family:'Bangers',cursive;font-size:clamp(28px,6vw,48px);font-weight:400;line-height:1;color:var(--cream);
   letter-spacing:2px;
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:4px 10px;display:block;
   transition:color .4s, text-shadow .4s, border-color .4s;text-shadow:0 2px 12px rgba(0,0,0,.6);}
@@ -149,8 +149,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cd-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:12px;letter-spacing:.5px;}
 
 /* STATS ROW */
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 0;}
-.sbox{background:rgba(8,6,16,.95);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 14px;}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 0 0;}
+.sbox{background:rgba(8,6,16,.95);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;}
 .sbox-next{border-color:rgba(201,137,12,.35);box-shadow:0 4px 20px rgba(201,137,12,.1),inset 0 1px 0 rgba(201,137,12,.12);}
 .sbox-count{border-color:rgba(34,197,94,.35);box-shadow:0 4px 20px rgba(34,197,94,.08),inset 0 1px 0 rgba(34,197,94,.1);}
 .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;}
@@ -165,8 +165,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .next-clue-name{font-size:13px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif;margin-top:2px;}
 
 /* TABS */
-.tabs-outer{position:relative;z-index:2;padding:8px 0;}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tabs-outer{position:relative;z-index:2;padding:4px 0;}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
 .tab{flex:1;padding:16px 8px;text-align:center;font-size:13px;font-weight:800;cursor:pointer;
   border-radius:14px;border:2px solid transparent;transition:all .25s;letter-spacing:1px;
   font-family:'Karla',sans-serif;position:relative;overflow:hidden;text-transform:uppercase;}
@@ -203,7 +203,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cd-outer{padding-top:12px;}
 .stats-outer{padding-top:10px;}
 .stats-row{max-width:none;padding:0;}
-.tabs{max-width:680px;margin:0 auto;padding:10px 16px;}
+.tabs{max-width:680px;margin:0 auto;padding:6px 16px;}
 
 /* SECTION HEADER */
 .sec-hd{display:flex;align-items:center;gap:16px;margin:24px 0 18px;position:relative;}
@@ -377,11 +377,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-back-hunts{display:inline-block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;text-decoration:none;font-family:'Karla',sans-serif;transition:all .2s;}
 .pirate-bar{max-width:680px;margin:0 auto;padding:0 20px;position:relative;z-index:2;}
 .pirate-bar>div:first-child{display:flex;} /* fix for inner layout */
-.pirate-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(14,12,20,.85);border:1px solid rgba(201,137,12,.15);border-radius:16px;padding:12px 18px;margin:12px auto;max-width:640px;}
+.pirate-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(14,12,20,.85);border:1px solid rgba(201,137,12,.15);border-radius:12px;padding:8px 14px;margin:6px auto;max-width:640px;}
 .pirate-bar-left{display:flex;align-items:center;gap:12px;}
-.pirate-bar-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#0a0800;flex-shrink:0;}
-.pirate-bar-name{font-size:15px;font-weight:800;color:var(--cream);}
-.pirate-bar-stats{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.pirate-bar-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#0a0800;flex-shrink:0;}
+.pirate-bar-name{font-size:13px;font-weight:800;color:var(--cream);}
+.pirate-bar-stats{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
 .pirate-bar-right{display:flex;align-items:center;gap:8px;}
 .btn-follow-pirate{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;border-radius:10px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;box-shadow:0 3px 12px rgba(59,130,246,.3);}
 .btn-follow-pirate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.5);}
@@ -552,12 +552,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   </div>
 </div>
 
-<!-- TABS -->
+<!-- ACTION BAR (replaces tabs) -->
 <div class="tabs-outer f4"><div class="tabs">
-  <div class="tab active" onclick="showTab('hunt',this)"><span class="tab-icon">🗺️</span>Quest</div>
   <div class="tab" onclick="showTab('claim',this)"><span class="tab-icon">🎯</span>Claim Prize</div>
   <div class="tab tab-link" onclick="window.location.href='index.html'"><span class="tab-icon">🏠</span>All Quests</div>
-  <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Seekers Joined</div>
+  <div class="tab" onclick="showTab('hunters',this)"><span class="tab-icon">🏆</span>Seekers</div>
 </div></div>
 
 <div style="position:relative;z-index:2;max-width:680px;margin:0 auto;">
@@ -1198,15 +1197,14 @@ async function toggleFollow() {
 function showTab(name, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+  // Always keep hunt panel visible
+  document.getElementById('panel-hunt').classList.add('active');
+  if (name !== 'hunt') document.getElementById('panel-' + name).classList.add('active');
   el.classList.add('active');
   if (name === 'hunters') loadLeaderboard();
-  if (name === 'map') {
-    // Reset and reinit so radius reflects latest revealed clues
-    const mapEl = document.getElementById('hunt-map');
-    if (mapEl) mapEl._mapInited = false;
-    setTimeout(initHuntMap, 50);
-  }
+  // Scroll the selected panel into view
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 
