@@ -578,7 +578,15 @@ const TC={platinum:'tp',gold:'tg',silver:'ts',starter:'tst'};
 const PC={platinum:'pp',gold:'gp',silver:'sp',starter:'stp'};
 function fmt(ms){if(ms<=0)return'Ended';const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);return d+'d '+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';}
 
-function toggleSection(id){document.getElementById(id).classList.toggle('open');}
+function toggleSection(id){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+}
 
 function buildCards(list,container,type){
   const q=document.getElementById('search').value.toLowerCase().trim();
