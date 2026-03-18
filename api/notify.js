@@ -1,3 +1,4 @@
+// © 2026 FinderSeek. All rights reserved. Unauthorized copying, modification, or distribution prohibited.
 // api/notify.js
 // FinderSeek — Email notification handler via Resend
 //
@@ -258,6 +259,43 @@ export default async function handler(req, res) {
         const tpl = tplNewHuntInCity({ username: s.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
         await sendEmail(s.email, tpl.subject, tpl.html);
         results.push(`seeker_notified:${s.email}`);
+      }
+
+      // 3. Email all followers of this pirate
+      if (hunt.pirate_id || hunt.created_by) {
+        const pirateId = hunt.pirate_id || hunt.created_by;
+        const followers = await sbFetch(`follows?pirate_id=eq.${pirateId}&select=follower_id`);
+        if (followers?.length) {
+          const followerIds = followers.map(f => f.follower_id);
+          const notifiedIds = new Set((seekers || []).map(s => s.id)); // avoid double-emailing
+          for (const fid of followerIds) {
+            if (notifiedIds.has(fid) || fid === pirateId) continue;
+            const [follower] = await sbFetch(`profiles?id=eq.${fid}&select=username,email`);
+            if (follower?.email) {
+              const [pirateProfile] = await sbFetch(`profiles?id=eq.${pirateId}&select=username`);
+              const pirateName = pirateProfile?.username || 'A Pirate';
+              const tpl = {
+                subject: `🏴‍☠️ ${pirateName} just dropped a new quest in ${hunt.city}!`,
+                html: html('New Quest Alert', `
+                  <h1>New Quest From a Pirate You Follow! 🏴‍☠️</h1>
+                  <p>Hey ${follower.username}, <strong style="color:#e8a820;">${pirateName}</strong> just published a new treasure quest!</p>
+                  <div class="highlight">
+                    <div class="highlight-label">Prize</div>
+                    <div class="highlight-val">${hunt.prize_desc}</div>
+                  </div>
+                  <div class="highlight">
+                    <div class="highlight-label">Location</div>
+                    <div class="highlight-val">${hunt.city}</div>
+                  </div>
+                  <p>Be the first to solve the clues and claim the prize!</p>
+                  <a href="${huntUrl}" class="btn">Start Seeking →</a>
+                `)
+              };
+              await sendEmail(follower.email, tpl.subject, tpl.html);
+              results.push(`follower_notified:${follower.email}`);
+            }
+          }
+        }
       }
     }
 
