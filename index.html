@@ -607,7 +607,7 @@ async function loadHunts(){
     const[ra,rs,rc]=await Promise.all([
       fetch(SB+'/rest/v1/hunts?status=eq.active&order=prize_value.desc',{headers:H}),
       fetch(SB+'/rest/v1/hunts?status=eq.scheduled&order=starts_at.asc',{headers:H}),
-      fetch(SB+'/rest/v1/hunts?status=eq.ended&order=ends_at.desc&limit=10',{headers:H}),
+      fetch(SB+'/rest/v1/hunts?status=eq.ended&ends_at=gte.'+new Date(Date.now()-30*24*60*60*1000).toISOString()+'&order=ends_at.desc',{headers:H}),
     ]);
     const[active,scheduled,completed]=await Promise.all([ra.json(),rs.json(),rc.json()]);
     const allIds=[...(active||[]),...(scheduled||[]),...(completed||[])].map(h=>'"'+h.id+'"').join(',');
