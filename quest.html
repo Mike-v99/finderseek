@@ -386,9 +386,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-follow-pirate{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;border-radius:10px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;box-shadow:0 3px 12px rgba(59,130,246,.3);}
 .btn-follow-pirate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.5);}
 .btn-follow-pirate.following{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa;box-shadow:none;}
-.btn-fav{background:none;border:1.5px solid rgba(251,191,36,.25);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .2s;color:var(--muted);}
-.btn-fav:hover{border-color:rgba(251,191,36,.5);color:#fbbf24;}
-.btn-fav.active{color:#fbbf24;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.08);}
+.btn-fav{display:none;}
+.quest-info-bar{display:flex;align-items:center;justify-content:space-between;max-width:640px;margin:6px auto;padding:0 20px;}
+.qib-timer{display:flex;align-items:center;gap:6px;}
+.qib-timer-lbl{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;}
+.qib-timer-val{font-family:'Bangers',cursive;font-size:18px;color:var(--cream);letter-spacing:1px;}
+.btn-pin{background:transparent;border:1.5px solid rgba(34,211,238,.4);border-radius:10px;padding:7px 16px;font-size:12px;font-weight:700;color:#22d3ee;cursor:pointer;font-family:'Karla',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn-pin:hover{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.6);}
+.btn-pin.pinned{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.5);color:#22d3ee;}
 .btn-back-hunts:hover{background:rgba(34,197,94,.2);transform:translateY(-1px);}
 
 /* PRIZE CHAT */
@@ -547,9 +552,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     </div>
   </div>
   <div class="pirate-bar-right">
-    <button class="btn-fav" id="btn-fav" onclick="toggleFavorite()" title="Favorite this quest">☆</button>
     <button class="btn-follow-pirate" id="btn-follow-pirate" onclick="toggleFollowPirate()">Follow</button>
   </div>
+</div>
+
+<!-- QUEST INFO BAR -->
+<div class="quest-info-bar f3">
+  <div class="qib-timer">
+    <span class="qib-timer-lbl">⏳ Ends in</span>
+    <span class="qib-timer-val" id="qib-timer-val">—</span>
+  </div>
+  <button class="btn-pin" id="btn-pin" onclick="toggleFavorite()">📌 Pin This Quest</button>
 </div>
 
 <!-- ACTION BAR (replaces tabs) -->
@@ -733,6 +746,8 @@ function pad(n){return String(Math.floor(n)).padStart(2,'0');}
 function updateCd(ms) {
   if (ms <= 0) {
     ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    const qib = document.getElementById('qib-timer-val');
+    if (qib) qib.textContent = 'Ended';
     return;
   }
   const d = Math.floor(ms/86400000);
@@ -743,6 +758,12 @@ function updateCd(ms) {
   document.getElementById('cd-h').textContent = pad(h);
   document.getElementById('cd-m').textContent = pad(m);
   document.getElementById('cd-s').textContent = pad(s);
+  const qib = document.getElementById('qib-timer-val');
+  if (qib) {
+    if (d > 0) qib.textContent = `${d}d ${pad(h)}h ${pad(m)}m`;
+    else if (h > 0) qib.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+    else qib.textContent = `${pad(m)}m ${pad(s)}s`;
+  }
 }
 
 function fmtShort(ms) {
@@ -1641,9 +1662,15 @@ function updateFollowBtn() {
 }
 
 function updateFavBtn() {
-  const btn = document.getElementById('btn-fav');
-  btn.textContent = _isFavorited ? '★' : '☆';
-  btn.classList.toggle('active', _isFavorited);
+  const btn = document.getElementById('btn-pin');
+  if (!btn) return;
+  if (_isFavorited) {
+    btn.textContent = '📌 Pinned';
+    btn.classList.add('pinned');
+  } else {
+    btn.textContent = '📌 Pin This Quest';
+    btn.classList.remove('pinned');
+  }
 }
 
 async function toggleFollowPirate() {
