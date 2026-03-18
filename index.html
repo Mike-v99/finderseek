@@ -618,7 +618,14 @@ async function loadHunts(){
     const now=Date.now();
     allActive=allMappedActive.filter(h=>h.endsAt.getTime()>now);
     const expired=allMappedActive.filter(h=>h.endsAt.getTime()<=now);
-    allScheduled=(scheduled||[]).map(toHunt);allCompleted=[...expired,...(completed||[]).map(toHunt)];
+    allScheduled=(scheduled||[]).map(toHunt);
+    // Move scheduled quests that already ended to completed
+    const expiredScheduled=allScheduled.filter(h=>h.endsAt.getTime()<=now);
+    // Move scheduled quests that already started to active (if not ended)
+    const startedScheduled=allScheduled.filter(h=>h.startsAt.getTime()<=now&&h.endsAt.getTime()>now);
+    allScheduled=allScheduled.filter(h=>h.startsAt.getTime()>now);
+    allActive=[...allActive,...startedScheduled];
+    allCompleted=[...expired,...expiredScheduled,...(completed||[]).map(toHunt)];
     const allCities=[...new Set([...allActive,...allScheduled,...allCompleted].map(h=>h.city))];
     document.getElementById('filters').innerHTML='<button class="fpill active" onclick="setFilter(\'all\',this)">\uD83C\uDF0D All</button>'+allCities.map(c=>'<button class="fpill" onclick="setFilter(\''+c.replace(/'/g,"\\'")+'\''+',this)">\uD83D\uDCCD '+c+'</button>').join('');
     document.getElementById('live-count').textContent=allActive.length;
