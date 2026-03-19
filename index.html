@@ -98,24 +98,22 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 .hero-sub strong{color:var(--cream);font-weight:700;}
 
 .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
-.btn-cta{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 32px;border-radius:24px;cursor:pointer;text-decoration:none;border:1px solid transparent;font-family:'Karla',sans-serif;transition:all .3s;min-width:180px;position:relative;overflow:hidden;}
-.btn-cta::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.06) 55%,transparent 80%);animation:glisten 10s infinite;pointer-events:none;}
+.btn-cta{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 28px;border-radius:16px;cursor:pointer;text-decoration:none;border:1.5px solid transparent;font-family:'Karla',sans-serif;transition:all .3s;min-width:170px;position:relative;overflow:hidden;background:transparent;}
+.btn-cta::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.04) 45%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.04) 55%,transparent 80%);animation:glisten 10s infinite;pointer-events:none;}
 .btn-cta:nth-child(1)::after{animation-delay:1s;}
 .btn-cta:nth-child(2)::after{animation-delay:5s;}
 .btn-cta:nth-child(3)::after{animation-delay:9s;}
 @keyframes glisten{0%{left:-100%;}10%{left:150%;}100%{left:150%;}}
-.btn-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);}
 .btn-cta-eyebrow{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;opacity:.5;margin-bottom:4px;font-family:'DM Mono',monospace;}
-.btn-cta-icon{font-size:42px;margin-bottom:12px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));display:block;}
-.btn-cta-main{font-family:'Bangers',cursive;font-size:26px;letter-spacing:3px;line-height:1;display:block;}
-.btn-cta-arrow{font-size:14px;opacity:.35;margin-top:12px;transition:all .3s;display:block;}
-.btn-cta:hover .btn-cta-arrow{transform:translateY(3px);opacity:.8;}
-.btn-hide{background:linear-gradient(160deg,#0f1547 0%,#1a2590 50%,#0d1240 100%);color:#c8d4ff;border-color:rgba(80,100,255,.2);box-shadow:0 12px 40px rgba(20,30,160,.5),inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.2);}
-.btn-hide:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 56px rgba(20,30,160,.7),inset 0 1px 0 rgba(255,255,255,.12);border-color:rgba(80,100,255,.45);}
-.btn-find{background:linear-gradient(160deg,#7a5500 0%,#c9890c 50%,#8a6200 100%);color:#fff;border-color:rgba(255,200,60,.15);box-shadow:0 12px 40px rgba(180,120,0,.5),inset 0 1px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(0,0,0,.15);}
-.btn-find:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 56px rgba(180,120,0,.7),inset 0 1px 0 rgba(255,255,255,.2);border-color:rgba(255,200,60,.4);}
-.btn-how{background:linear-gradient(160deg,#2d0f6e 0%,#6d28d9 50%,#3a1580 100%);color:#ede0ff;border-color:rgba(167,139,250,.15);box-shadow:0 12px 40px rgba(80,20,180,.5),inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.2);}
-.btn-how:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 56px rgba(80,20,180,.7),inset 0 1px 0 rgba(255,255,255,.12);border-color:rgba(167,139,250,.4);}
+.btn-cta-icon{font-size:36px;margin-bottom:10px;display:block;}
+.btn-cta-main{font-family:'Bangers',cursive;font-size:24px;letter-spacing:2.5px;line-height:1;display:block;}
+.btn-cta-arrow{display:none;}
+.btn-hide{border-color:#3b82f6;color:#60a5fa;box-shadow:0 0 18px rgba(59,130,246,.18),inset 0 0 18px rgba(59,130,246,.05);}
+.btn-hide:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 32px rgba(59,130,246,.35),inset 0 0 24px rgba(59,130,246,.08);border-color:#60a5fa;}
+.btn-find{border-color:#e8a820;color:#fbbf24;box-shadow:0 0 18px rgba(232,168,32,.18),inset 0 0 18px rgba(232,168,32,.05);}
+.btn-find:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 32px rgba(232,168,32,.35),inset 0 0 24px rgba(232,168,32,.08);border-color:#fbbf24;}
+.btn-how{border-color:#8b5cf6;color:#a78bfa;box-shadow:0 0 18px rgba(139,92,246,.18),inset 0 0 18px rgba(139,92,246,.05);}
+.btn-how:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 32px rgba(139,92,246,.35),inset 0 0 24px rgba(139,92,246,.08);border-color:#a78bfa;}
 
 .stat-strip-wrap{display:flex;justify-content:center;margin-top:40px;max-width:600px;margin-inline:auto;padding:2px;border-radius:20px;background:linear-gradient(135deg,#c9890c,#f5c842,#a8781a,#e8a820,#c9890c);}.stat-strip{display:flex;width:100%;background:#0d0b18;border-radius:18px;overflow:hidden;align-items:stretch;}
 .stat-item{flex:1;text-align:center;padding:16px 8px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;}
@@ -270,11 +268,10 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
 
   /* CTA buttons: row on mobile too */
   .cta-row{gap:8px;margin-top:16px;padding:0 8px;flex-direction:row;align-items:stretch;justify-content:center;}
-  .btn-cta{padding:16px 10px;min-width:0;border-radius:16px;width:auto;flex:1;}
-  .btn-cta-icon{font-size:28px;margin-bottom:8px;}
+  .btn-cta{padding:16px 8px;min-width:0;border-radius:14px;width:auto;flex:1;}
+  .btn-cta-icon{font-size:26px;margin-bottom:6px;}
   .btn-cta-eyebrow{font-size:7px;letter-spacing:1.5px;margin-bottom:3px;}
-  .btn-cta-main{font-size:15px;letter-spacing:1.5px;}
-  .btn-cta-arrow{display:none;}
+  .btn-cta-main{font-size:14px;letter-spacing:1.5px;}
 
   /* Stat strip: full width, smaller text */
   .stat-strip-wrap{max-width:100%;margin-top:24px;}
@@ -501,9 +498,9 @@ nav{position:relative;z-index:10;display:flex;align-items:center;justify-content
     </div>
   </div>
   <div class="cta-row f2">
-    <a href="pirate.html" class="btn-cta btn-hide"><span class="btn-cta-icon">&#127988;&#8205;&#9760;&#65039;</span><div class="btn-cta-eyebrow">I want to</div><div class="btn-cta-main">Hide Treasure</div><div class="btn-cta-arrow">↓</div></a>
-    <a href="#hunts" class="btn-cta btn-find"><span class="btn-cta-icon">&#128269;</span><div class="btn-cta-eyebrow">I want to</div><div class="btn-cta-main">Find Treasure</div><div class="btn-cta-arrow">↓</div></a>
-    <a href="how-it-works.html" class="btn-cta btn-how"><span class="btn-cta-icon">&#128220;</span><div class="btn-cta-eyebrow">Learn</div><div class="btn-cta-main">How It Works</div><div class="btn-cta-arrow">→</div></a>
+    <a href="pirate.html" class="btn-cta btn-hide"><span class="btn-cta-icon">&#127988;&#8205;&#9760;&#65039;</span><div class="btn-cta-eyebrow">I want to</div><div class="btn-cta-main">Hide Treasure</div></a>
+    <a href="#hunts" class="btn-cta btn-find"><span class="btn-cta-icon">&#128269;</span><div class="btn-cta-eyebrow">I want to</div><div class="btn-cta-main">Find Treasure</div></a>
+    <a href="how-it-works.html" class="btn-cta btn-how"><span class="btn-cta-icon">&#128220;</span><div class="btn-cta-eyebrow">Learn</div><div class="btn-cta-main">How It Works</div></a>
   </div>
   <div class="stat-strip-wrap f3"><div class="stat-strip">
     <div class="stat-item" style="flex:0 0 auto;padding:0;overflow:hidden;border-radius:18px 0 0 18px;position:relative;width:150px;min-width:150px;">
