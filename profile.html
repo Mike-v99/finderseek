@@ -1,4 +1,3 @@
-
 <!-- © 2026 FinderSeek. All rights reserved. Unauthorized copying, modification, or distribution of this code is strictly prohibited. -->
 <!DOCTYPE html>
 <html lang="en">
@@ -300,7 +299,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div class="auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
     </div>
     <div id="signup-fields">
-      <div class="auth-field"><label class="auth-label">Player Name</label><input class="auth-input" id="su-username" placeholder="Your player name" autocomplete="username"/></div>
+      <div class="auth-field"><label class="auth-label">Player Handle</label><input class="auth-input" id="su-username" placeholder="Your handle" autocomplete="username"/></div>
       <div class="auth-field"><label class="auth-label">Email</label><input class="auth-input" id="su-email" type="email" placeholder="you@example.com"/></div>
       <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" id="su-pass" type="password" placeholder="Min 6 characters"/></div>
       <button class="auth-btn" onclick="doSignUp()">Create Account →</button>
@@ -378,7 +377,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div class="section-title">Profile Settings</div>
       <div class="section-sub">Update your public info</div>
       <div class="field-row">
-        <div class="field"><label class="field-label">Player Name</label><input class="field-input" id="f-username" placeholder="Your player name"/></div>
+        <div class="field"><label class="field-label">Player Handle</label><input class="field-input" id="f-username" placeholder="Your handle"/></div>
         <div class="field"><label class="field-label">City</label><input class="field-input" id="f-city" placeholder="e.g. Austin, TX"/></div>
       </div>
       <div class="field-row single">
@@ -463,9 +462,9 @@ function showTab(name,tabEl){document.querySelectorAll('.panel').forEach(p=>p.cl
 async function loadProfile(uid){const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${uid}&select=*`,{headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});const d=await r.json();if(!d?.length)return;currentProfile=d[0];const upgradeBtn=document.getElementById('nav-upgrade-btn');if(upgradeBtn)upgradeBtn.style.display=currentProfile?.is_pro?'none':'inline-flex';renderProfile();loadHuntHistory(uid);}
 function renderProfile(){const p=currentProfile;const name=p.username||'Hunter';document.getElementById('p-avatar').textContent=name[0].toUpperCase();document.getElementById('p-name').textContent=name;document.getElementById('p-city').textContent=p.city||'—';document.getElementById('p-joined').textContent=p.created_at?new Date(p.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';document.getElementById('p-finds').textContent=p.finds_count||0;document.getElementById('p-streak').textContent=p.streak||0;document.getElementById('f-username').value=p.username||'';document.getElementById('f-city').value=p.city||'';document.getElementById('f-email').value=p.email||currentUser?.email||'';const pwEmail=document.getElementById('pw-email-display');if(pwEmail)pwEmail.textContent=p.email||currentUser?.email||'—';document.getElementById('n-new-hunts').checked=p.notify_new_hunts!==false;document.getElementById('n-hunt-won').checked=p.notify_hunt_won!==false;document.getElementById('n-chat').checked=p.notify_chat!==false;document.getElementById('n-hunt-live').checked=p.notify_hunt_live!==false;}
 async function loadHuntHistory(uid){try{const[wonRes,hiddenRes]=await Promise.all([fetch(`${SB}/rest/v1/hunts?winner_id=eq.${uid}&select=id,city,prize_desc,found_at,status&order=found_at.desc&limit=10`,{headers:H}),fetch(`${SB}/rest/v1/hunts?pirate_id=eq.${uid}&select=id,city,prize_desc,starts_at,status&order=starts_at.desc&limit=10`,{headers:H}),]);const won=wonRes.ok?await wonRes.json():[];const hidden=hiddenRes.ok?await hiddenRes.json():[];document.getElementById('p-hunts-hidden').textContent=Array.isArray(hidden)?hidden.length:0;const container=document.getElementById('hunt-history');const all=[...(Array.isArray(won)?won.map(h=>({...h,role:'winner'})):[]),...(Array.isArray(hidden)?hidden.map(h=>({...h,role:'pirate'})):[]),].sort((a,b)=>new Date(b.found_at||b.starts_at)-new Date(a.found_at||a.starts_at));if(!all.length){container.innerHTML='<div class="hh-empty">No quest history yet — get out there! 🗺️</div>';return;}container.innerHTML=all.map(h=>{const date=h.found_at||h.starts_at;const dateStr=date?new Date(date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';const badge=h.role==='winner'?`<span class="hh-badge hh-won">🏆 Won</span>`:`<span class="hh-badge hh-played">🏴‍☠️ Hidden</span>`;return`<a class="hh-card" href="hunt.html?id=${h.id}"><div class="hh-left"><div class="hh-title">${h.prize_desc||'Mystery Prize'} · ${h.city||'—'}</div><div class="hh-meta">${dateStr}</div></div>${badge}</a>`;}).join('');}catch(e){document.getElementById('hunt-history').innerHTML='<div class="hh-empty">Could not load history.</div>';}}
-async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Player Name is required','error');btn.disabled=false;btn.textContent='Save Changes';return;}
+async function saveProfile(){const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Saving…';try{const username=document.getElementById('f-username').value.trim();const city=document.getElementById('f-city').value.trim();const email=document.getElementById('f-email').value.trim();if(!username){showToast('Player Handle is required','error');btn.disabled=false;btn.textContent='Save Changes';return;}
 // Check 30-day name change cooldown
-const nameChanged = username !== currentProfile.username;
+const nameChanged = username !== (currentProfile.username || '');
 if(nameChanged){
   const lastChange = currentProfile.username_changed_at;
   if(lastChange){
@@ -479,7 +478,21 @@ if(nameChanged){
 }
 const body = {username,city,email};
 if(nameChanged) body.username_changed_at = new Date().toISOString();
-const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Authorization':'Bearer '+getToken(),'Prefer':'return=minimal'},body:JSON.stringify(body)});if(!r.ok)throw new Error('Save failed');currentProfile={...currentProfile,...body};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
+const authH = {'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'};
+const r=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:authH,body:JSON.stringify(body)});
+if(!r.ok){
+  const errText = await r.text();
+  console.error('Save error:', r.status, errText);
+  // If username_changed_at column doesn't exist, retry without it
+  if(errText.includes('username_changed_at')){
+    delete body.username_changed_at;
+    const r2=await fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:authH,body:JSON.stringify(body)});
+    if(!r2.ok) throw new Error('Save failed');
+  } else {
+    throw new Error('Save failed');
+  }
+}
+currentProfile={...currentProfile,...body};document.getElementById('p-name').textContent=username;document.getElementById('p-avatar').textContent=username[0].toUpperCase();document.getElementById('p-city').textContent=city||'—';showToast('✅ Profile saved!','success');}catch(e){showToast('Error saving: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Save Changes';}}
 
 function showNameCooldownModal(daysLeft){
   let overlay = document.getElementById('name-cooldown-overlay');
@@ -491,12 +504,12 @@ function showNameCooldownModal(daysLeft){
       <div style="font-size:48px;margin-bottom:14px;">⏳</div>
       <div style="font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#f5ead8;margin-bottom:8px;">Name Change Cooldown</div>
       <div id="cooldown-msg" style="font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:24px;font-family:'Karla',sans-serif;"></div>
-      <div style="font-size:12px;color:#64748b;font-family:'DM Mono',monospace;margin-bottom:20px;">Player names can only be changed once every 30 days.</div>
+      <div style="font-size:12px;color:#64748b;font-family:'DM Mono',monospace;margin-bottom:20px;">Player handles can only be changed once every 30 days.</div>
       <button onclick="document.getElementById('name-cooldown-overlay').style.display='none'" style="background:linear-gradient(135deg,#b45309,#e8a820);color:#0a0800;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Karla',sans-serif;">Got it</button>
     </div>`;
     document.body.appendChild(overlay);
   }
-  document.getElementById('cooldown-msg').textContent = 'You can change your Player Name again in ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + '.';
+  document.getElementById('cooldown-msg').textContent = 'You can change your Player Handle again in ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + '.';
   overlay.style.display = 'flex';
 }
 
