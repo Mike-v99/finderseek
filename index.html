@@ -312,14 +312,27 @@ body::after {
 }
 .nav-center .nav-label { color: #e0e0e0; font-weight: 700; }
 
-/* Stagger animations */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.f1 { animation: fadeUp .5s .05s both; }
-.f2 { animation: fadeUp .5s .12s both; }
-.f3 { animation: fadeUp .5s .2s both; }
-.f4 { animation: fadeUp .5s .28s both; }
-.f5 { animation: fadeUp .5s .36s both; }
-.f6 { animation: fadeUp .5s .44s both; }
+/* Fly-in animation system */
+.el {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .6s ease-out, transform .6s ease-out;
+}
+.el.from-left { transform: translateX(-40px) translateY(0); }
+.el.from-right { transform: translateX(40px) translateY(0); }
+.el.from-scale { transform: scale(.7); }
+.el.show { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+
+/* Gold burst canvas overlay */
+.burst-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+  pointer-events: none;
+}
 
 /* Safe area padding for notch phones */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
@@ -331,30 +344,32 @@ body::after {
 </head>
 <body>
 
+<canvas class="burst-canvas" id="burstCanvas"></canvas>
+
 <div class="page">
 
   <!-- HERO -->
   <div class="hero">
-    <div class="logo f1">
+    <div class="logo el from-scale" data-d="300">
       <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
     </div>
-    <div class="tagline f2">Hidden Treasure. Real Adventure.</div>
-    <div class="f2"><span class="free-badge">FREE TO PLAY</span></div>
+    <div class="tagline el" data-d="600">Hidden Treasure. Real Adventure.</div>
+    <div class="el" data-d="750" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
 
     <!-- CTA BUTTONS -->
-    <div class="cta-row f3">
-      <a class="btn-cta btn-find" href="#">
+    <div class="cta-row">
+      <a class="btn-cta btn-find el from-left" data-d="950" href="#">
         <span class="btn-cta-icon">🔍</span>
         <span class="btn-cta-label">FIND TREASURE</span>
       </a>
-      <a class="btn-cta btn-hide" href="#">
+      <a class="btn-cta btn-hide el from-right" data-d="950" href="#">
         <span class="btn-cta-icon">🏴‍☠️</span>
         <span class="btn-cta-label">HIDE TREASURE</span>
       </a>
     </div>
 
     <!-- STATS STRIP -->
-    <div class="stats-wrap f4">
+    <div class="stats-wrap el from-scale" data-d="1150">
       <div class="stats-inner">
         <div class="stat">
           <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
@@ -377,7 +392,7 @@ body::after {
   </div>
 
   <!-- SEARCH -->
-  <div class="search-row f5">
+  <div class="search-row el from-right" data-d="1350">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Search quests..."/>
@@ -386,8 +401,8 @@ body::after {
   </div>
 
   <!-- QUEST SECTIONS -->
-  <div class="sections f6">
-    <div class="section section-active" onclick="this.classList.toggle('open')">
+  <div class="sections">
+    <div class="section section-active el from-left" data-d="1500" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -401,7 +416,7 @@ body::after {
       </div>
     </div>
 
-    <div class="section section-scheduled" onclick="this.classList.toggle('open')">
+    <div class="section section-scheduled el from-right" data-d="1650" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -415,7 +430,7 @@ body::after {
       </div>
     </div>
 
-    <div class="section section-completed" onclick="this.classList.toggle('open')">
+    <div class="section section-completed el from-left" data-d="1800" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -459,12 +474,74 @@ body::after {
 </nav>
 
 <script>
+// Nav switching
 function setNav(el) {
   document.querySelectorAll('.nav-item, .nav-center').forEach(function(n) {
     n.classList.remove('active');
   });
   el.classList.add('active');
 }
+
+// Gold burst animation
+function playGoldBurst() {
+  var canvas = document.getElementById('burstCanvas');
+  canvas.width = window.innerWidth * 2;
+  canvas.height = window.innerHeight * 2;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  var ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+  var cx = w / 2;
+  var cy = h * 0.18;
+  var start = performance.now();
+
+  function frame(t) {
+    var e = (t - start) / 1000;
+    ctx.clearRect(0, 0, w, h);
+    if (e < 1.6) {
+      var r = e < 0.5 ? (e / 0.5) * Math.max(w, h) * 0.8 : Math.max(w, h) * 0.8;
+      var alpha = e < 0.25 ? e / 0.25 : Math.max(0, 1 - (e - 0.25) / 1.1);
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, 'rgba(245,200,66,' + (alpha * 0.5) + ')');
+      g.addColorStop(0.3, 'rgba(232,168,32,' + (alpha * 0.25) + ')');
+      g.addColorStop(0.6, 'rgba(201,137,12,' + (alpha * 0.08) + ')');
+      g.addColorStop(1, 'rgba(201,137,12,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      // rays
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.15;
+      ctx.translate(cx, cy);
+      for (var i = 0; i < 12; i++) {
+        ctx.rotate(Math.PI / 6);
+        ctx.fillStyle = '#f5c842';
+        ctx.fillRect(-1, 0, 2, r * 0.6);
+      }
+      ctx.restore();
+    }
+    if (e < 2) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, w, h); canvas.style.display = 'none'; }
+  }
+  canvas.style.display = 'block';
+  requestAnimationFrame(frame);
+}
+
+// Trigger fly-in elements
+function triggerFlyIn() {
+  var els = document.querySelectorAll('.el');
+  els.forEach(function(el) {
+    var delay = parseInt(el.getAttribute('data-d')) || 0;
+    setTimeout(function() { el.classList.add('show'); }, delay);
+  });
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', function() {
+  playGoldBurst();
+  triggerFlyIn();
+});
 </script>
 
 </body>
