@@ -136,7 +136,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
 .el.show{opacity:1;transform:translateY(0);}
 
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
 </style>
 </head>
 <body>
