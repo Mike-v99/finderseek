@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#c8b48a;--muted:#8a7a5a;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
+:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#a8c8e0;--muted:#88a8c0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
@@ -125,7 +125,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,14,26,.98);border-top:1px solid rgba(255,255,255,.08);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
 .nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .nav-item svg{stroke:#555;stroke-width:1.8;}
-.nav-label{font-size:17px;color:#555;margin-top:5px;}
+.nav-label{font-size:17px;color:#88a8c0;margin-top:5px;}
 .nav-item.active svg{stroke:#f0f0f0;stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));}
 .nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
 .nav-center{text-align:center;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
@@ -153,13 +153,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.35),rgba(34,197,94,.1));">
       <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
-        <div style="font-size:17px;color:#c8b48a;margin-bottom:6px;position:relative;">Prize Amount</div>
+        <div style="font-size:17px;color:#a8c8e0;margin-bottom:6px;position:relative;">Prize Amount</div>
         <div id="prize-display" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
         <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
-          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#c8b48a;cursor:pointer;">$5</div>
-          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#c8b48a;cursor:pointer;">$10</div>
+          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$5</div>
+          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$10</div>
           <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:17px;font-weight:400;color:#4ade80;cursor:pointer;">$25</div>
-          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#c8b48a;cursor:pointer;">$50</div>
+          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$50</div>
         </div>
         <div style="position:relative;max-width:220px;margin:0 auto;">
           <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;font-weight:400;color:rgba(74,222,128,.4);">$</span>
@@ -392,7 +392,7 @@ function selPersona(el){
 }
 function selPrize(val,el){
   document.querySelectorAll('.prize-chip').forEach(function(c){
-    c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+    c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#a8c8e0';
   });
   el.style.background='rgba(74,222,128,.12)';el.style.borderColor='#4ade80';el.style.color='#4ade80';
   document.getElementById('prize-display').textContent='$'+val;
@@ -404,7 +404,7 @@ function customPrize(val){
   if(v>100){v=100;document.getElementById('prize-input').value=100;}
   if(v>0){
     document.querySelectorAll('.prize-chip').forEach(function(c){
-      c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+      c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#a8c8e0';
     });
     document.getElementById('prize-display').textContent='$'+v;
     updPay(v);
