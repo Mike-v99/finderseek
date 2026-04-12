@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>FinderSeek — Quest Detail</title>
+<title>FinderSeek — Start Quest</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#c8b48a;--muted:#8a7a5a;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
+:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#c8b48a;--muted:#8a7a5a;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
@@ -19,41 +19,107 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
 
 /* Borders */
-.silver-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.5),rgba(220,220,230,.25),rgba(160,160,175,.4),rgba(220,220,230,.3));}
-.silver-wrap-sm{border-radius:16px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.4),rgba(220,220,230,.15),rgba(160,160,175,.3));}
-.silver-wrap-btn{border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.3),rgba(220,220,230,.1),rgba(160,160,175,.25));}
-.green-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.3),rgba(74,222,128,.08));}
-.locked-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));}
+.silver-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.5),rgba(220,220,230,.25),rgba(160,160,175,.4),rgba(220,220,230,.3));margin-bottom:12px;}
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
-.inner-sm{background:rgba(13,11,24,.94);border-radius:15px;}
-.inner-btn{background:rgba(13,11,24,.92);border-radius:13px;}
-
-/* Spinning gold border */
-@keyframes rotateBorder{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-@keyframes prizeGlow{0%,100%{text-shadow:0 0 20px rgba(74,222,128,.3);}50%{text-shadow:0 0 40px rgba(74,222,128,.6),0 0 60px rgba(74,222,128,.2);}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
-
-.spin-wrap{border-radius:18px;padding:2px;position:relative;overflow:hidden;}
-.spin-bg{position:absolute;inset:-50%;background:conic-gradient(from 0deg,#c9890c,transparent,transparent,#f5c842,transparent,transparent,#e8a820,transparent,transparent,#c9890c);animation:rotateBorder 5s linear infinite;}
-.spin-inner{position:relative;background:rgba(13,11,24,.94);border-radius:16px;}
 
 /* Back */
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
-.back-btn:active{background:rgba(255,255,255,.08);}
 
-/* Hero */
-.hero-inner{padding:24px 16px;text-align:center;position:relative;overflow:hidden;}
-.hero-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(74,222,128,.05),transparent 55%);pointer-events:none;}
-.hero-shine{position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(220,220,230,.2),transparent);pointer-events:none;}
+@keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
-/* Timer */
-.timer-num{font-family:'Abril Fatface',serif;font-size:32px;color:var(--cream);background:rgba(255,255,255,.05);border:1px solid rgba(201,137,12,.2);border-radius:12px;padding:8px 14px;display:block;min-width:58px;text-align:center;}
+/* Page header */
+.page-header{text-align:center;margin-bottom:24px;position:relative;}
+.page-title{font-family:'Abril Fatface',serif;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-sub{font-size:16px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
-/* Clue cards */
-.clue-accent-on{height:2px;background:linear-gradient(90deg,var(--green-dark),rgba(74,222,128,.2),transparent);}
-.clue-accent-off{height:2px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent);}
-.clue-num-on{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#16a34a,var(--green));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#0a1a0a;flex-shrink:0;box-shadow:0 2px 12px rgba(34,197,94,.3);}
-.clue-num-off{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:rgba(255,255,255,.2);flex-shrink:0;}
+/* Step card */
+.step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
+.step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#cbd5e1;}
+.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
+.step-num-red{background:rgba(239,68,68,.12);border:1.5px solid rgba(239,68,68,.4);color:var(--red-light);}
+.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
+.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
+.step-icon{font-size:22px;}
+.step-title{font-size:18px;font-weight:700;color:var(--cream);}
+.step-body{padding:18px;}
+
+/* Form fields */
+.field{margin-bottom:18px;}
+.field:last-child{margin-bottom:0;}
+.flabel{display:block;font-size:16px;color:var(--dim);margin-bottom:8px;letter-spacing:1px;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;}
+.finput:focus{border-color:rgba(201,137,12,.5);}
+.finput::placeholder{color:var(--muted);}
+textarea.finput{resize:vertical;line-height:1.6;}
+
+/* Slider */
+.slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+.slider-val{font-family:'Abril Fatface',serif;font-size:28px;color:var(--blue-light);}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:16px;color:var(--muted);}
+
+/* Persona grid */
+.persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
+.persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
+.persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
+.persona-name{font-size:16px;font-weight:700;color:var(--cream);}
+.persona-desc{font-size:16px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.persona-check{position:absolute;top:8px;right:8px;font-size:16px;color:var(--gold2);display:none;}
+.persona-card.selected .persona-check{display:block;}
+
+/* Photo drop */
+.photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
+.photo-drop:hover{border-color:rgba(201,137,12,.4);}
+.photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:200;transition:all .2s;color:var(--cream);}
+.photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
+.photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
+.photo-btn-label{font-size:16px;font-weight:700;}
+.photo-or{font-size:16px;color:var(--muted);}
+
+/* Map placeholder */
+.map-box{width:100%;height:220px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(201,137,12,.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:16px;margin-bottom:10px;}
+
+/* Code entry */
+.code-wrap{display:flex;gap:8px;justify-content:center;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:700;color:var(--red-light);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit:focus{border-color:var(--red-light);box-shadow:0 0 12px rgba(239,68,68,.3);}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:16px;font-weight:700;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;transition:all .2s;}
+.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
+
+/* Payment options */
+.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
+.pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
+.pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
+.pay-opt-name{font-size:16px;font-weight:700;color:var(--cream);}
+.pay-opt-tag{font-size:16px;color:var(--muted);margin-top:4px;}
+
+/* Go live options */
+.golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
+.golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
+.golive-icon{font-size:28px;margin-bottom:6px;}
+.golive-name{font-size:16px;font-weight:700;color:var(--cream);}
+
+/* Warning card */
+.warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
+.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
+.warning-title{font-size:18px;font-weight:700;color:#fca5a5;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.warning-item{display:flex;align-items:center;gap:8px;font-size:16px;color:rgba(255,255,255,.7);}
+.warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:16px;color:rgba(252,165,165,.6);}
+
+/* Submit buttons */
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit:active{transform:scale(.97);}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:16px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
+.btn-preview:hover{border-color:rgba(255,255,255,.25);color:var(--cream);}
+.submit-note{font-size:16px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,14,26,.98);border-top:1px solid rgba(255,255,255,.08);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
@@ -76,110 +142,219 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 <body>
 <div class="page">
 
-  <!-- BACK -->
-  <a class="back-btn el" data-d="50" href="index.html">← Back</a>
-
-  <!-- HERO: Silver border -->
-  <div class="silver-wrap el" data-d="150" style="margin-bottom:10px;">
-    <div class="inner hero-inner">
-      <div class="hero-shine"></div>
-      <div class="hero-glow"></div>
-      <div style="font-size:16px;letter-spacing:2px;color:#e8a820;margin-bottom:8px;position:relative;">ACTIVE QUEST</div>
-      <div style="font-family:'Abril Fatface',serif;font-size:clamp(64px,16vw,76px);color:#4ade80;line-height:1;position:relative;animation:prizeGlow 3s ease-in-out infinite;">$75</div>
-      <div style="font-size:18px;font-weight:700;color:var(--cream);margin-top:8px;position:relative;">Houston, TX</div>
-      <div style="font-size:16px;color:var(--dim);margin-top:4px;position:relative;">CaptainJack</div>
-      <div style="display:inline-block;margin-top:10px;padding:4px 14px;border-radius:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);font-size:16px;font-weight:700;color:#e8a820;position:relative;">GOLD TIER</div>
-    </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;" class="el" data-d="50">
+    <a class="back-btn" href="index.html" style="margin-bottom:0;">← Back</a>
+    <div class="page-title" style="font-size:36px;">Start Quest</div>
+    <div style="width:90px;"></div>
   </div>
 
-  <!-- TIMER: Spinning gold border -->
-  <div class="spin-wrap el" data-d="300" style="margin-bottom:10px;">
-    <div class="spin-bg"></div>
-    <div class="spin-inner" style="padding:16px;text-align:center;">
-      <div style="font-size:16px;color:var(--dim);margin-bottom:10px;">TIME REMAINING</div>
-      <div style="display:flex;justify-content:center;gap:10px;align-items:center;">
-        <div style="text-align:center;"><span class="timer-num" id="cd-h">02</span><div style="font-size:16px;color:#e8a820;margin-top:4px;">hrs</div></div>
-        <div style="font-size:28px;color:rgba(201,137,12,.4);margin-bottom:18px;">:</div>
-        <div style="text-align:center;"><span class="timer-num" id="cd-m">14</span><div style="font-size:16px;color:#e8a820;margin-top:4px;">min</div></div>
-        <div style="font-size:28px;color:rgba(201,137,12,.4);margin-bottom:18px;">:</div>
-        <div style="text-align:center;"><span class="timer-num" id="cd-s">37</span><div style="font-size:16px;color:#e8a820;margin-top:4px;">sec</div></div>
+  <!-- PRIZE AMOUNT -->
+  <div class="el" data-d="200" style="margin-bottom:12px;">
+    <div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.35),rgba(34,197,94,.1));">
+      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
+        <div style="font-size:16px;color:#c8b48a;margin-bottom:6px;position:relative;">Prize Amount</div>
+        <div id="prize-display" style="font-family:'Abril Fatface',serif;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
+          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$5</div>
+          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$10</div>
+          <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:16px;font-weight:700;color:#4ade80;cursor:pointer;">$25</div>
+          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$50</div>
+        </div>
+        <div style="position:relative;max-width:220px;margin:0 auto;">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:rgba(74,222,128,.4);">$</span>
+          <input id="prize-input" type="number" min="1" max="100" placeholder="Custom (max $100)" oninput="customPrize(this.value)" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px 10px 32px;font-size:16px;color:#4ade80;font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;text-align:center;"/>
+        </div>
       </div>
-      <div style="font-size:16px;color:var(--dim);margin-top:10px;">Ends today at 6:00 PM</div>
     </div>
   </div>
 
-  <!-- STATS: Silver borders -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" class="el" data-d="450">
-    <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
-      <div style="font-size:16px;color:var(--dim);margin-bottom:8px;">Next Clue</div>
-      <div style="font-size:28px;font-weight:700;color:var(--yellow);">42:18</div>
-      <div style="font-size:16px;color:var(--yellow);margin-top:6px;font-weight:700;">Clue #4 incoming</div>
-    </div></div>
-    <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
-      <div style="font-size:16px;color:var(--dim);margin-bottom:8px;">Clues Unlocked</div>
-      <div style="font-size:28px;font-weight:700;color:var(--green);">3 <span style="font-size:18px;color:var(--muted);">/ 5</span></div>
-      <div style="display:flex;gap:5px;margin-top:10px;">
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);"></div>
+  <!-- STEP 1: Quest Duration & Clues -->
+  <div class="silver-wrap el" data-d="300">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-blue">1</div>
+        <span class="step-icon">⏱️</span>
+        <div class="step-title">Quest Duration</div>
       </div>
-    </div></div>
-  </div>
-
-  <!-- BUTTONS: Green-teal / Purple-pink diagonal -->
-  <div style="display:flex;gap:10px;margin-bottom:10px;" class="el" data-d="550">
-    <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#22c55e,#2dd4bf,#4ade80);">
-      <div class="inner-btn" style="padding:14px;text-align:center;font-size:16px;font-weight:700;color:var(--green);cursor:pointer;">📌 Pin Quest</div>
-    </div>
-    <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);">
-      <div class="inner-btn" style="padding:14px;text-align:center;font-size:16px;font-weight:700;color:#a78bfa;cursor:pointer;">📤 Share</div>
-    </div>
-  </div>
-
-  <!-- PIRATE BAR: Silver border -->
-  <div class="silver-wrap-btn el" data-d="600" style="margin-bottom:10px;">
-    <div class="inner-btn" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-radius:15px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#0a0800;flex-shrink:0;">CJ</div>
-        <div><div style="font-size:16px;font-weight:700;color:var(--cream);">CaptainJack</div><div style="font-size:16px;color:var(--dim);margin-top:2px;">4 quests · 12 followers</div></div>
+      <div class="step-body">
+        <div class="field">
+          <div class="slider-row"><span class="flabel">Duration</span><span class="slider-val" id="dur-val">24 Hours</span></div>
+          <input type="range" id="dur-slider" min="1" max="144" value="24" step="1" style="--pct:16.6%;" oninput="updDur(this)"/>
+          <div class="slider-ticks"><span>1 hr</span><span>12 hrs</span><span>1 day</span><span>3 days</span><span>6 days</span></div>
+        </div>
+        <div class="field">
+          <div class="slider-row"><span class="flabel">Number of Clues</span><span class="slider-val" id="clue-val">7 Clues</span></div>
+          <input type="range" id="clue-slider" min="3" max="10" value="7" step="1" style="--pct:57.1%;" oninput="updClue(this)"/>
+          <div class="slider-ticks"><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+        </div>
+        <div class="field">
+          <div class="flabel">🎭 Clue Style</div>
+          <div class="persona-grid">
+            <div class="persona-card selected" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span><div class="persona-name">Pirate</div><div class="persona-desc">Salty riddles</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🌸</span><div class="persona-name">Poetic</div><div class="persona-desc">Dreamlike</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤬</span><div class="persona-name">Insults</div><div class="persona-desc">Roast & taunt</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">😏</span><div class="persona-name">Sarcastic</div><div class="persona-desc">Dry wit</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤠</span><div class="persona-name">Hillbilly</div><div class="persona-desc">Country charm</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🧸</span><div class="persona-name">5 Year Old</div><div class="persona-desc">Super silly</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">👵</span><div class="persona-name">Grandma</div><div class="persona-desc">Sweet & warm</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏄</span><div class="persona-name">Surfer Bro</div><div class="persona-desc">Totally gnarly</div></div>
+            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🔍</span><div class="persona-name">Investigator</div><div class="persona-desc">True crime style</div></div>
+          </div>
+        </div>
       </div>
-      <div style="background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border-radius:12px;padding:10px 20px;font-size:16px;font-weight:700;cursor:pointer;">Follow</div>
     </div>
   </div>
 
-  <!-- CLUES -->
-  <div style="font-size:18px;font-weight:700;letter-spacing:2px;color:#e8a820;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
-
-  <div class="green-wrap el" data-d="750" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">1</div><div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--dim);margin-bottom:6px;">Clue #1 — Day 1</div><div style="font-size:16px;color:#fff;line-height:1.7;">Where the bayou bends and concrete meets the green, look where families gather on Sunday afternoons. The guardian of the east entrance holds a secret.</div></div></div></div></div>
-
-  <div class="green-wrap el" data-d="850" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">2</div><div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--dim);margin-bottom:6px;">Clue #2 — Day 1</div><div style="font-size:16px;color:#fff;line-height:1.7;">Three oaks stand in a row. The middle one whispers to those who look down, not up. Count the stones on the path — stop at seven.</div></div></div></div></div>
-
-  <div class="green-wrap el" data-d="950" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">3</div><div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--dim);margin-bottom:6px;">Clue #3 — Day 2</div><div style="font-size:16px;color:#fff;line-height:1.7;">The red bench faces west. Sit where the shadow points at noon and reach beneath where no one thinks to look.</div></div></div></div></div>
-
-  <div class="locked-wrap el" data-d="1050" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">4</div><div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--muted);margin-bottom:6px;">Clue #4</div><div style="font-size:16px;color:rgba(255,255,255,.2);">This clue hasn't been revealed yet.</div><div style="font-size:16px;color:var(--yellow);margin-top:6px;font-weight:700;">Drops in 42 min</div></div></div></div></div>
-
-  <div class="locked-wrap el" data-d="1100" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">5</div><div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--muted);margin-bottom:6px;">Clue #5 — Final Clue</div><div style="font-size:16px;color:rgba(255,255,255,.2);">This clue hasn't been revealed yet.</div></div></div></div></div>
-
-  <!-- CLAIM -->
-  <div style="font-size:18px;font-weight:700;letter-spacing:2px;color:#e8a820;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="1150">CLAIM PRIZE <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
-
-  <div class="green-wrap el" data-d="1200">
-    <div class="inner" style="padding:24px 18px;text-align:center;">
-      <div style="font-size:40px;margin-bottom:12px;">🔐</div>
-      <div style="font-family:'Abril Fatface',serif;font-size:28px;color:var(--cream);margin-bottom:8px;">Found It?</div>
-      <div style="font-size:16px;color:var(--dim);line-height:1.6;margin-bottom:20px;">Enter the 6-digit code from the hiding spot to claim your prize.</div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:18px;">
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d1" oninput="cN(this,'d2')" onkeydown="cP(event,this,'')"/>
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d2" oninput="cN(this,'d3')" onkeydown="cP(event,this,'d1')"/>
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d3" oninput="cN(this,'d4')" onkeydown="cP(event,this,'d2')"/>
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d4" oninput="cN(this,'d5')" onkeydown="cP(event,this,'d3')"/>
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="cN(this,'d6')" onkeydown="cP(event,this,'d4')"/>
-        <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:700;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
-      </div>
-      <button style="width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,#15803d,var(--green));color:#0a1a0a;box-shadow:0 4px 20px rgba(34,197,94,.35);" onclick="this.style.transform='scale(.97)';setTimeout(()=>this.style.transform='',150);">CLAIM PRIZE</button>
+  <!-- WARNING -->
+  <div class="warning-card el" data-d="400">
+    <div class="warning-title">⚠️ DO NOT HIDE NEAR</div>
+    <div class="warning-grid">
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Homes / apartments</div>
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Private property</div>
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Schools / daycares</div>
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Unsafe / dark areas</div>
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Inside vehicles</div>
+      <div class="warning-item"><span style="color:#f87171;">✖</span>Restricted areas</div>
     </div>
+    <div class="warning-note">Violations may result in quest removal and account ban.</div>
+  </div>
+
+  <!-- STEP 2: Photo -->
+  <div class="silver-wrap el" data-d="500">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-silver">2</div>
+        <span class="step-icon">📸</span>
+        <div class="step-title">Photo of Hiding Spot</div>
+      </div>
+      <div class="step-body">
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
+            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:10px;">📷</div>
+              <div style="font-size:16px;font-weight:700;color:#fbbf24;">Take Photo</div>
+            </div>
+          </div>
+          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
+            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:10px;">🖼️</div>
+              <div style="font-size:16px;font-weight:700;color:#a78bfa;">Gallery</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Location & Prize -->
+  <div class="silver-wrap el" data-d="600">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-gold">3</div>
+        <span class="step-icon">📍</span>
+        <div class="step-title">Where & How Much</div>
+      </div>
+      <div class="step-body">
+        <div class="field">
+          <label class="flabel">📍 Search Location</label>
+          <input class="finput" type="text" placeholder="Search address, park, landmark..."/>
+        </div>
+        <div class="field">
+          <div class="map-box">
+            <span style="font-size:28px;">🗺️</span>
+            <span>Tap to set location on map</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
+          <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park" style="border-color:rgba(239,68,68,.35);"></textarea>
+          <div style="font-size:16px;color:var(--dim);margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Secret Code -->
+  <div class="silver-wrap el" data-d="700">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-red">4</div>
+        <span class="step-icon">🔐</span>
+        <div class="step-title">Secret Finder Code</div>
+      </div>
+      <div class="step-body">
+        <div style="font-size:16px;color:var(--dim);margin-bottom:16px;text-align:center;">Write this code on a note and leave it at the hiding spot.</div>
+        <div class="code-wrap">
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c1" oninput="cN(this,'c2')" onkeydown="cP(event,this,'')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c2" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c3" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c4" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c5" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c6" oninput="cN(this,'')" onkeydown="cP(event,this,'c5')"/>
+        </div>
+        <button class="btn-gen-code" onclick="genCode()">🎲 Generate Random Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Payment Summary -->
+  <div class="silver-wrap el" data-d="800">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-purple">5</div>
+        <span class="step-icon">💳</span>
+        <div class="step-title">Payment</div>
+      </div>
+      <div class="step-body">
+        <div style="font-size:16px;color:var(--dim);margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
+        <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px;">
+          <div style="font-size:16px;letter-spacing:2px;color:var(--green);margin-bottom:14px;">PAYMENT BREAKDOWN</div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;color:#fff;margin-bottom:8px;">
+            <span>Prize amount</span><span id="pay-prize">$0.00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;color:var(--dim);margin-bottom:8px;">
+            <span>FinderSeek fee (10%)</span><span id="pay-fee">$0.00</span>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--green);">
+            <span>Total charged</span><span id="pay-total">$0.00</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;font-size:16px;color:var(--muted);line-height:1.6;">
+          🔒 Powered by Stripe · Prize refunded if quest expires unclaimed
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Go Live -->
+  <div class="silver-wrap el" data-d="900">
+    <div class="inner">
+      <div class="step-hdr">
+        <div class="step-num step-num-green">6</div>
+        <span class="step-icon">🚀</span>
+        <div class="step-title">When to Go Live</div>
+      </div>
+      <div class="step-body">
+        <div class="golive-opts">
+          <div class="golive-opt selected" onclick="selLive(this)">
+            <div class="golive-icon">⚡</div>
+            <div class="golive-name">Right Now</div>
+          </div>
+          <div class="golive-opt" onclick="selLive(this)">
+            <div class="golive-icon">📅</div>
+            <div class="golive-name">Schedule It</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="el" data-d="1000" style="margin-top:8px;">
+    <button class="btn-submit">+ &nbsp; CREATE QUEST →</button>
+    <button class="btn-preview">🗺️ &nbsp; SEE CLUES FIRST</button>
+    <div class="submit-note">Create Quest goes live instantly · See Clues First lets you review AI-generated clues before publishing</div>
   </div>
 
 </div>
@@ -188,7 +363,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 <nav class="bottom-nav">
   <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
   <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
-  <div class="nav-center active" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
+  <div class="nav-center" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
   <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><div class="nav-label">Pricing</div></div>
   <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
 </nav>
@@ -197,10 +372,70 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
 function cP(e,el,prev){if(e.key==='Backspace'&&!el.value&&prev)document.getElementById(prev).focus();}
-var totalSecs=2*3600+14*60+37;
-function tick(){if(totalSecs<=0)return;totalSecs--;document.getElementById('cd-h').textContent=String(Math.floor(totalSecs/3600)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');document.getElementById('cd-s').textContent=String(totalSecs%60).padStart(2,'0');}
-setInterval(tick,1000);
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.el').forEach(function(el){var d=parseInt(el.getAttribute('data-d'))||0;setTimeout(function(){el.classList.add('show');},d);});});
+
+function updDur(el){
+  var v=parseInt(el.value);
+  var pct=((v-1)/(144-1))*100;
+  el.style.setProperty('--pct',pct+'%');
+  var txt=v<24?v+' Hour'+(v>1?'s':''):Math.round(v/24*10)/10+' Day'+(v>=48?'s':'');
+  document.getElementById('dur-val').textContent=txt;
+}
+function updClue(el){
+  var v=parseInt(el.value);
+  var pct=((v-3)/(10-3))*100;
+  el.style.setProperty('--pct',pct+'%');
+  document.getElementById('clue-val').textContent=v+' Clues';
+}
+function selPersona(el){
+  document.querySelectorAll('.persona-card').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+}
+function selPrize(val,el){
+  document.querySelectorAll('.prize-chip').forEach(function(c){
+    c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+  });
+  el.style.background='rgba(74,222,128,.12)';el.style.borderColor='#4ade80';el.style.color='#4ade80';
+  document.getElementById('prize-display').textContent='$'+val;
+  document.getElementById('prize-input').value='';
+  updPay(val);
+}
+function customPrize(val){
+  var v=parseInt(val)||0;
+  if(v>100){v=100;document.getElementById('prize-input').value=100;}
+  if(v>0){
+    document.querySelectorAll('.prize-chip').forEach(function(c){
+      c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+    });
+    document.getElementById('prize-display').textContent='$'+v;
+    updPay(v);
+  }
+}
+function updPay(val){
+  var v=parseFloat(val)||0;
+  if(v>100)v=100;
+  var fee=Math.round(v*10)/100;
+  var total=v+fee;
+  document.getElementById('pay-prize').textContent='$'+v.toFixed(2);
+  document.getElementById('pay-fee').textContent='$'+fee.toFixed(2);
+  document.getElementById('pay-total').textContent='$'+total.toFixed(2);
+}
+function selLive(el){
+  document.querySelectorAll('.golive-opt').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+}
+function genCode(){
+  for(var i=1;i<=6;i++){
+    document.getElementById('c'+i).value=Math.floor(Math.random()*10);
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.el').forEach(function(el){
+    var d=parseInt(el.getAttribute('data-d'))||0;
+    setTimeout(function(){el.classList.add('show');},d);
+  });
+  updPay(25);
+});
 </script>
 </body>
 </html>
