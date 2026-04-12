@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#a8c8e0;--muted:#88a8c0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
+:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#a8c8e0;--muted:#a8c8e0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
@@ -51,7 +51,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .flabel{display:block;font-size:17px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
 .finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;}
 .finput:focus{border-color:rgba(201,137,12,.5);}
-.finput::placeholder{color:var(--muted);}
+.finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
@@ -125,7 +125,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,14,26,.98);border-top:1px solid rgba(255,255,255,.08);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
 .nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .nav-item svg{stroke:#555;stroke-width:1.8;}
-.nav-label{font-size:17px;color:#88a8c0;margin-top:5px;}
+.nav-label{font-size:17px;color:#a8c8e0;margin-top:5px;}
 .nav-item.active svg{stroke:#f0f0f0;stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));}
 .nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
 .nav-center{text-align:center;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
@@ -269,7 +269,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="field">
           <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
           <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park" style="border-color:rgba(239,68,68,.35);"></textarea>
-          <div style="font-size:17px;color:#88a8c0;margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
+          <div style="font-size:17px;color:#a8c8e0;margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
         </div>
       </div>
     </div>
