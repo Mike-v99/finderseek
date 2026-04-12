@@ -3,439 +3,568 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>FinderSeek — Start Quest</title>
+<title>FinderSeek — Home</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#a8c8e0;--muted:#a8c8e0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{height:100%;overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
+:root {
+  --ink: #0d0b18;
+  --cream: #f5ead8;
+  --gold: #c9890c;
+  --gold2: #e8a820;
+  --gold3: #f5c842;
+  --dim: #a8c8e0;
+  --muted: #a8c8e0;
+  --green: #4ade80;
+  --green-dark: #22c55e;
+  --green-deep: #15803d;
+  --teal: #2dd4bf;
+  --blue: #3b82f6;
+  --blue-light: #60a5fa;
+  --blue-pale: #93c5fd;
+  --red: #ef4444;
+  --red-light: #f87171;
+  --yellow: #fbbf24;
+  --gray: #94a3b8;
+  --gray-dark: #64748b;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; overflow-x: hidden; }
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 200;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201,137,12,.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(6,5,10,.3) 0%, rgba(6,5,10,.92) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 180px;
+  opacity: .4;
+}
 
-/* Borders */
-.silver-wrap{border-radius:18px;padding:1.5px;margin-bottom:12px;}
-.inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
+.page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-bottom: 60vh; }
 
-/* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
+/* HERO */
+.hero { text-align: center; padding: 16px 20px 16px; }
+.logo {
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 200;
+  font-size: clamp(48px, 12vw, 58px);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.logo-finder {
+  background: linear-gradient(90deg, var(--gold2), var(--gold3), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-seek { color: var(--cream); }
+.tagline { font-size: 17px; color: var(--dim); }
+.free-badge {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 17px;
+  color: var(--teal);
+  letter-spacing: 2px;
+  border: 1px solid rgba(45,212,191,.4);
+  border-radius: 20px;
+  padding: 6px 18px;
+  background: rgba(45,212,191,.08);
+}
 
-@keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
+/* CTA BUTTONS */
+.cta-row { display: flex; gap: 10px; margin: 24px 0 0; padding: 0 4px; }
+.btn-cta {
+  flex: 1;
+  border-radius: 18px;
+  padding: 24px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.btn-cta:active { transform: scale(.97); }
+.btn-find {
+  border: 2px solid var(--gold2);
+  background: linear-gradient(180deg, rgba(232,168,32,.1) 0%, rgba(232,168,32,.02) 100%);
+  box-shadow: 0 0 28px rgba(232,168,32,.1);
+}
+.btn-hide {
+  border: 2px solid var(--blue);
+  background: linear-gradient(180deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.02) 100%);
+  box-shadow: 0 0 28px rgba(59,130,246,.1);
+}
+.btn-cta-icon { font-size: 34px; margin-bottom: 10px; display: block; line-height: 1; }
+.btn-cta-label { font-size: 17px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
+.btn-find .btn-cta-label { color: var(--yellow); animation: glowPulseG 3s ease-in-out infinite; }
+.btn-hide .btn-cta-label { color: #fff; animation: glowPulseB 3s ease-in-out infinite .5s; }
+@keyframes glowPulseG { 0%,100% { text-shadow: 0 0 8px rgba(251,191,36,.4); } 50% { text-shadow: 0 0 20px rgba(251,191,36,.8), 0 0 40px rgba(251,191,36,.3); } }
+@keyframes glowPulseB { 0%,100% { text-shadow: 0 0 8px rgba(96,165,250,.4); } 50% { text-shadow: 0 0 20px rgba(96,165,250,.8), 0 0 40px rgba(96,165,250,.3); } }
 
-/* Page header */
-.page-header{text-align:center;margin-bottom:24px;position:relative;}
-.page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
-.page-sub{font-size:17px;color:var(--dim);margin-top:12px;line-height:1.8;}
+/* STATS STRIP */
+.stats-wrap {
+  margin-top: 22px;
+  padding: 2px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold), var(--gold3), #a8781a, var(--gold2), var(--gold));
+}
+.stats-inner {
+  display: flex;
+  background: var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.stat {
+  flex: 1;
+  text-align: center;
+  padding: 14px 4px;
+}
+.stat + .stat { border-left: 1px solid rgba(255,255,255,.07); }
+.stat-num { font-size: 22px; font-weight: 400; display: block; }
+.stat-lbl { font-size: 17px; color: #fff; display: block; margin-top: 2px; }
 
-/* Step card */
-.step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
-.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:400;flex-shrink:0;}
-.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
-.step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#cbd5e1;}
-.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
-.step-num-red{background:rgba(239,68,68,.12);border:1.5px solid rgba(239,68,68,.4);color:var(--red-light);}
-.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
-.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
-.step-icon{font-size:22px;}
-.step-title{font-size:18px;font-weight:400;color:#ffffff;}
-.step-body{padding:18px;}
+/* SEARCH */
+.search-row { display: flex; gap: 10px; align-items: center; margin: 18px 16px 18px; }
+.search-wrap {
+  flex: 1;
+  position: relative;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(200,200,215,.4);
+  border-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.search-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(220,220,230,.25), transparent);
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 14px 16px 14px 42px;
+  font-size: 17px;
+  color: var(--cream);
+  outline: none;
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 200;
+  -webkit-appearance: none;
+}
+.search-input::placeholder { color: rgba(255,255,255,.5); }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 17px; color: rgba(255,255,255,.3); z-index: 2; pointer-events: none; }
+.btn-livemap {
+  background: linear-gradient(135deg, #b91c1c, var(--red));
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-size: 17px;
+  font-weight: 400;
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(239,68,68,.25);
+}
+.pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(.85); } }
 
-/* Form fields */
-.field{margin-bottom:18px;}
-.field:last-child{margin-bottom:0;}
-.flabel{display:block;font-size:17px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
-.finput:focus{border-color:rgba(220,220,230,.6);}
-.finput::placeholder{color:#b8d4e8;}
-textarea.finput{resize:vertical;line-height:1.6;}
+/* SECTIONS */
+.sections { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.section {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.section:active { transform: scale(.98); }
+.section-active { border: 1.5px solid rgba(34,197,94,.3); }
+.section-scheduled { border: 1.5px solid rgba(251,191,36,.2); }
+.section-completed { border: 1.5px solid rgba(148,163,184,.15); }
+.section-accent {
+  height: 2px;
+}
+.section-active .section-accent { background: linear-gradient(90deg, var(--green-dark), var(--green), transparent); }
+.section-scheduled .section-accent { background: linear-gradient(90deg, var(--yellow), #f59e0b, transparent); }
+.section-completed .section-accent { background: linear-gradient(90deg, var(--gray), var(--gray-dark), transparent); }
+.section-body {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-left { display: flex; align-items: center; gap: 12px; }
+.num-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+.section-active .num-circle {
+  border: 2px solid var(--green);
+  color: var(--green);
+  box-shadow: 0 0 0 4px rgba(74,222,128,.12), 0 0 12px rgba(74,222,128,.2);
+}
+.section-scheduled .num-circle {
+  border: 2px solid var(--yellow);
+  color: var(--yellow);
+  box-shadow: 0 0 0 4px rgba(251,191,36,.12), 0 0 12px rgba(251,191,36,.2);
+}
+.section-completed .num-circle {
+  border: 2px solid var(--gray);
+  color: var(--gray);
+  box-shadow: 0 0 0 4px rgba(148,163,184,.08), 0 0 12px rgba(148,163,184,.15);
+}
+.section-title { font-size: 18px; font-weight: 400; letter-spacing: 2px; }
+.section-active .section-title {
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-scheduled .section-title {
+  background: linear-gradient(135deg, var(--blue-light), var(--blue-pale));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-completed .section-title { color: var(--red-light); }
+.section-prize { font-size: 22px; font-weight: 400; color: var(--green); }
+.section-chevron { color: inherit; font-size: 18px; margin-left: 8px; }
+.section-active .section-chevron { color: var(--green); }
+.section-scheduled .section-chevron { color: var(--yellow); }
+.section-completed .section-chevron { color: var(--gray); }
 
-/* Slider */
-.slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:28px;color:var(--blue-light);}
-input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
-.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:17px;color:var(--muted);}
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  border-radius: 0;
+  background: rgba(16,14,26,.98);
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 10px 4px 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  z-index: 50;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.nav-item {
+  text-align: center;
+  flex: 1;
+  padding: 6px 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-item svg { transition: filter .2s; }
+.nav-label { font-size: 17px; color: var(--muted); margin-top: 5px; transition: color .2s, text-shadow .2s; }
+.nav-item.active svg {
+  stroke: #f0f0f0;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));
+}
+.nav-item.active .nav-label {
+  color: #f0f0f0;
+  font-weight: 400;
+  text-shadow: 0 0 12px rgba(240,240,240,.6), 0 0 24px rgba(240,240,240,.3);
+}
+.nav-center {
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-orb {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4d4d4, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -26px auto 0;
+  box-shadow: 0 4px 20px rgba(255,255,255,.3), 0 0 0 3px rgba(16,14,26,.98);
+}
+.nav-center .nav-label { color: #e0e0e0; font-weight: 400; }
 
-/* Persona grid */
-.persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
-.persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
-.persona-name{font-size:17px;font-weight:400;color:#ffffff;}
-.persona-desc{font-size:17px;color:var(--muted);margin-top:4px;line-height:1.4;}
-.persona-check{position:absolute;top:8px;right:8px;font-size:17px;color:var(--gold2);display:none;}
-.persona-card.selected .persona-check{display:block;}
+/* Fly-in animation system */
+.el {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .6s ease-out, transform .6s ease-out;
+}
+.el.from-left { transform: translateX(-40px) translateY(0); }
+.el.from-right { transform: translateX(40px) translateY(0); }
+.el.from-scale { transform: scale(.7); }
+.el.show { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
 
-/* Photo drop */
-.photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
-.photo-drop:hover{border-color:rgba(201,137,12,.4);}
-.photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:200;transition:all .2s;color:var(--cream);}
-.photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
-.photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
-.photo-btn-label{font-size:17px;font-weight:400;}
-.photo-or{font-size:17px;color:var(--muted);}
+/* Gold burst canvas overlay */
+.burst-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+  pointer-events: none;
+}
 
-/* Map placeholder */
-.map-box{width:100%;height:220px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(201,137,12,.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:17px;margin-bottom:10px;}
-
-/* Code entry */
-.code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:400;color:var(--red-light);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
-.code-digit:focus{border-color:var(--red-light);box-shadow:0 0 12px rgba(239,68,68,.3);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:17px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;transition:all .2s;}
-.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
-
-/* Payment options */
-.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
-.pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
-.pay-opt-name{font-size:17px;font-weight:400;color:#ffffff;}
-.pay-opt-tag{font-size:17px;color:var(--muted);margin-top:4px;}
-
-/* Go live options */
-.golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
-.golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
-.golive-icon{font-size:28px;margin-bottom:6px;}
-.golive-name{font-size:17px;font-weight:400;color:#ffffff;}
-
-/* Warning card */
-.warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
-.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
-.warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.warning-item{display:flex;align-items:center;gap:8px;font-size:17px;color:#ffffff;}
-.warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:17px;color:#ffffff;}
-
-/* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
-.btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:17px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
-.btn-preview:hover{border-color:rgba(255,255,255,.25);color:var(--cream);}
-.submit-note{font-size:17px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
-
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,14,26,.98);border-top:1px solid rgba(255,255,255,.08);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
-.nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.nav-item svg{stroke:#555;stroke-width:1.8;}
-.nav-label{font-size:17px;color:#a8c8e0;margin-top:5px;}
-.nav-item.active svg{stroke:#f0f0f0;stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));}
-.nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
-.nav-center{text-align:center;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin:-26px auto 0;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
-.nav-center .nav-label{color:#e0e0e0;font-weight:400;}
-
-/* Fly-in */
-.el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
-.el.show{opacity:1;transform:translateY(0);}
-
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
+/* Safe area padding for notch phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .page { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .hero { padding-top: calc(16px + env(safe-area-inset-top)); }
+}
 </style>
 </head>
 <body>
+
+<canvas class="burst-canvas" id="burstCanvas"></canvas>
+
 <div class="page">
 
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;" class="el" data-d="50">
-    <a class="back-btn" href="index.html" style="margin-bottom:0;">← Back</a>
-    <div class="page-title" style="font-size:36px;">Start Quest</div>
-    <div style="width:90px;"></div>
-  </div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo el from-scale" data-d="300">
+      <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
+    </div>
+    <div class="tagline el" data-d="600">Hidden Treasure. Real Adventure.</div>
+    <div class="el" data-d="750" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
 
-  <!-- PRIZE AMOUNT -->
-  <div class="el" data-d="200" style="margin-bottom:12px;">
-    <div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.35),rgba(34,197,94,.1));">
-      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
-        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
-        <div style="font-size:17px;color:#4ade80;margin-bottom:6px;position:relative;font-weight:400;">Prize Amount</div>
-        <div id="prize-display" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
-        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
-          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$5</div>
-          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$10</div>
-          <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:17px;font-weight:400;color:#4ade80;cursor:pointer;">$25</div>
-          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$50</div>
+    <!-- CTA BUTTONS -->
+    <div class="cta-row">
+      <a class="btn-cta btn-find el from-left" data-d="950" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
+        <span class="btn-cta-icon">🔍</span>
+        <span class="btn-cta-label">FIND TREASURE</span>
+      </a>
+      <a class="btn-cta btn-hide el from-right" data-d="950" href="newquest.html">
+        <span class="btn-cta-icon" style="color:#a8c8e0;">+</span>
+        <span class="btn-cta-label">START QUEST</span>
+      </a>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-wrap el from-scale" data-d="1150">
+      <div class="stats-inner">
+        <div class="stat">
+          <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
+          <span class="stat-lbl">HIDDEN</span>
         </div>
-        <div style="position:relative;max-width:220px;margin:0 auto;">
-          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;font-weight:400;color:rgba(74,222,128,.4);">$</span>
-          <input id="prize-input" type="number" min="1" max="100" placeholder="Custom (max $100)" oninput="customPrize(this.value)" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px 10px 32px;font-size:17px;color:#4ade80;font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;text-align:center;"/>
+        <div class="stat">
+          <span class="stat-num" style="color:#2dd4bf;">3</span>
+          <span class="stat-lbl">ACTIVE</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:#4ade80;">12</span>
+          <span class="stat-lbl">SEEKERS</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:#fff;">5</span>
+          <span class="stat-lbl">CITIES</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STEP 1: Quest Duration & Clues -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(96,165,250,.35),rgba(96,165,250,.05));" data-d="300">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-blue">1</div>
-        <span class="step-icon">⏱️</span>
-        <div class="step-title">Quest Duration</div>
-      </div>
-      <div class="step-body">
-        <div class="field">
-          <div class="slider-row"><span class="flabel">Duration</span><span class="slider-val" id="dur-val">24 Hours</span></div>
-          <input type="range" id="dur-slider" min="1" max="144" value="24" step="1" style="--pct:16.6%;" oninput="updDur(this)"/>
-          <div class="slider-ticks"><span>1 hr</span><span>12 hrs</span><span>1 day</span><span>3 days</span><span>6 days</span></div>
+  <!-- SEARCH -->
+  <div class="search-row el from-right" data-d="1350">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Search quests..."/>
+    </div>
+    <button class="btn-livemap"><span class="pulse-dot"></span>LIVE MAP</button>
+  </div>
+
+  <!-- QUEST SECTIONS -->
+  <div class="sections" id="quest-sections">
+    <div class="section section-active el from-left" data-d="1500" onclick="this.classList.toggle('open')">
+      <div class="section-accent"></div>
+      <div class="section-body">
+        <div class="section-left">
+          <div class="num-circle">3</div>
+          <div class="section-title">ACTIVE</div>
         </div>
-        <div class="field">
-          <div class="slider-row"><span class="flabel">Number of Clues</span><span class="slider-val" id="clue-val">7 Clues</span></div>
-          <input type="range" id="clue-slider" min="3" max="10" value="7" step="1" style="--pct:57.1%;" oninput="updClue(this)"/>
-          <div class="slider-ticks"><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
-        </div>
-        <div class="field">
-          <div class="flabel">🎭 Clue Style</div>
-          <div class="persona-grid">
-            <div class="persona-card selected" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span><div class="persona-name">Pirate</div><div class="persona-desc">Salty riddles</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🌸</span><div class="persona-name">Poetic</div><div class="persona-desc">Dreamlike</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤬</span><div class="persona-name">Insults</div><div class="persona-desc">Roast & taunt</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">😏</span><div class="persona-name">Sarcastic</div><div class="persona-desc">Dry wit</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤠</span><div class="persona-name">Hillbilly</div><div class="persona-desc">Country charm</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🧸</span><div class="persona-name">5 Year Old</div><div class="persona-desc">Super silly</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">👵</span><div class="persona-name">Grandma</div><div class="persona-desc">Sweet & warm</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏄</span><div class="persona-name">Surfer Bro</div><div class="persona-desc">Totally gnarly</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🔍</span><div class="persona-name">Investigator</div><div class="persona-desc">True crime style</div></div>
-          </div>
+        <div style="display:flex;align-items:center;">
+          <span class="section-prize">$172</span>
+          <span class="section-chevron">▾</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- WARNING -->
-  <div class="warning-card el" data-d="400">
-    <div class="warning-title">⚠️ DO NOT HIDE NEAR</div>
-    <div class="warning-grid">
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Homes / apartments</div>
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Private property</div>
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Schools / daycares</div>
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Unsafe / dark areas</div>
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Inside vehicles</div>
-      <div class="warning-item"><span style="color:#f87171;">✖</span>Restricted areas</div>
-    </div>
-    <div class="warning-note">Violations may result in quest removal and account ban.</div>
-  </div>
-
-  <!-- STEP 2: Photo -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(148,163,184,.35),rgba(148,163,184,.05));" data-d="500">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-silver">2</div>
-        <span class="step-icon">📸</span>
-        <div class="step-title">Photo of Hiding Spot</div>
-      </div>
-      <div class="step-body">
-        <div style="display:flex;gap:10px;">
-          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
-            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
-              <div style="font-size:36px;margin-bottom:10px;">📷</div>
-              <div style="font-size:17px;font-weight:400;color:#fbbf24;">Take Photo</div>
-            </div>
-          </div>
-          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
-            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
-              <div style="font-size:36px;margin-bottom:10px;">🖼️</div>
-              <div style="font-size:17px;font-weight:400;color:#a78bfa;">Gallery</div>
-            </div>
-          </div>
+    <div class="section section-scheduled el from-right" data-d="1650" onclick="this.classList.toggle('open')">
+      <div class="section-accent"></div>
+      <div class="section-body">
+        <div class="section-left">
+          <div class="num-circle">2</div>
+          <div class="section-title">SCHEDULED</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <span class="section-prize">$75</span>
+          <span class="section-chevron">▾</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- STEP 3: Location & Prize -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(232,168,32,.35),rgba(232,168,32,.05));" data-d="600">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-gold">3</div>
-        <span class="step-icon">📍</span>
-        <div class="step-title">Where & How Much</div>
-      </div>
-      <div class="step-body">
-        <div class="field">
-          <label class="flabel">📍 Search Location</label>
-          <input class="finput" type="text" placeholder="Search address, park, landmark..."/>
+    <div class="section section-completed el from-left" data-d="1800" onclick="this.classList.toggle('open')">
+      <div class="section-accent"></div>
+      <div class="section-body">
+        <div class="section-left">
+          <div class="num-circle">8</div>
+          <div class="section-title">COMPLETED</div>
         </div>
-        <div class="field">
-          <div class="map-box">
-            <span style="font-size:28px;">🗺️</span>
-            <span>Tap to set location on map</span>
-          </div>
-        </div>
-        <div class="field">
-          <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
-          <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park" style="border-color:rgba(239,68,68,.35);"></textarea>
-          <div style="font-size:17px;color:#a8c8e0;margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
+        <div style="display:flex;align-items:center;">
+          <span class="section-prize">$430</span>
+          <span class="section-chevron">▾</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- STEP 4: Secret Code -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(248,113,113,.35),rgba(248,113,113,.05));" data-d="700">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-red">4</div>
-        <span class="step-icon">🔐</span>
-        <div class="step-title">Secret Finder Code</div>
-      </div>
-      <div class="step-body">
-        <div style="font-size:17px;color:#a8c8e0;margin-bottom:16px;text-align:center;">Write this code on a note and leave it at the hiding spot.</div>
-        <div class="code-wrap">
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c1" oninput="cN(this,'c2')" onkeydown="cP(event,this,'')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c2" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c3" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c4" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c5" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c6" oninput="cN(this,'')" onkeydown="cP(event,this,'c5')"/>
-        </div>
-        <button class="btn-gen-code" onclick="genCode()">🎲 Generate Random Code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 5: Payment Summary -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(74,222,128,.35),rgba(74,222,128,.05));" data-d="800">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-green">5</div>
-        <span class="step-icon">💳</span>
-        <div class="step-title">Payment</div>
-      </div>
-      <div class="step-body">
-        <div style="font-size:17px;color:#ffffff;margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
-        <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px;">
-          <div style="font-size:17px;letter-spacing:2px;color:var(--green);margin-bottom:14px;">PAYMENT BREAKDOWN</div>
-          <div style="display:flex;justify-content:space-between;font-size:17px;color:#fff;margin-bottom:8px;">
-            <span>Prize amount</span><span id="pay-prize">$0.00</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:17px;color:#ffffff;margin-bottom:8px;">
-            <span>FinderSeek fee (10%)</span><span id="pay-fee">$0.00</span>
-          </div>
-          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:400;color:var(--green);">
-            <span>Total charged</span><span id="pay-total">$0.00</span>
-          </div>
-        </div>
-        <div style="margin-top:14px;font-size:17px;color:#ffffff;line-height:1.6;">
-          🔒 Powered by Stripe · Prize refunded if quest expires unclaimed
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 6: Go Live -->
-  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(167,139,250,.35),rgba(167,139,250,.05));" data-d="900">
-    <div class="inner">
-      <div class="step-hdr">
-        <div class="step-num step-num-purple">6</div>
-        <span class="step-icon">🚀</span>
-        <div class="step-title">When to Go Live</div>
-      </div>
-      <div class="step-body">
-        <div class="golive-opts">
-          <div class="golive-opt selected" onclick="selLive(this)">
-            <div class="golive-icon">⚡</div>
-            <div class="golive-name">Right Now</div>
-          </div>
-          <div class="golive-opt" onclick="selLive(this)">
-            <div class="golive-icon">📅</div>
-            <div class="golive-name">Schedule It</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUBMIT -->
-  <div class="el" data-d="1000" style="margin-top:8px;">
-    <button class="btn-submit">+ &nbsp; CREATE QUEST →</button>
-    <button class="btn-preview">🗺️ &nbsp; SEE CLUES FIRST</button>
-    <div class="submit-note">Create Quest goes live instantly · See Clues First lets you review AI-generated clues before publishing</div>
   </div>
 
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
-  <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
-  <div class="nav-center" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
-  <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><div class="nav-label">Pricing</div></div>
-  <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
+  <div class="nav-item active" onclick="setNav(this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <div class="nav-label">Home</div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <div class="nav-label">How</div>
+  </div>
+  <div class="nav-center" onclick="setNav(this)">
+    <div class="nav-orb">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="nav-label">Quests</div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <div class="nav-label">Pricing</div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <div class="nav-label">Profile</div>
+  </div>
 </nav>
 
 <script>
-function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
-function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
-function cP(e,el,prev){if(e.key==='Backspace'&&!el.value&&prev)document.getElementById(prev).focus();}
-
-function updDur(el){
-  var v=parseInt(el.value);
-  var pct=((v-1)/(144-1))*100;
-  el.style.setProperty('--pct',pct+'%');
-  var txt=v<24?v+' Hour'+(v>1?'s':''):Math.round(v/24*10)/10+' Day'+(v>=48?'s':'');
-  document.getElementById('dur-val').textContent=txt;
-}
-function updClue(el){
-  var v=parseInt(el.value);
-  var pct=((v-3)/(10-3))*100;
-  el.style.setProperty('--pct',pct+'%');
-  document.getElementById('clue-val').textContent=v+' Clues';
-}
-function selPersona(el){
-  document.querySelectorAll('.persona-card').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected');
-}
-function selPrize(val,el){
-  document.querySelectorAll('.prize-chip').forEach(function(c){
-    c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#a8c8e0';
+// Nav switching
+function setNav(el) {
+  document.querySelectorAll('.nav-item, .nav-center').forEach(function(n) {
+    n.classList.remove('active');
   });
-  el.style.background='rgba(74,222,128,.12)';el.style.borderColor='#4ade80';el.style.color='#4ade80';
-  document.getElementById('prize-display').textContent='$'+val;
-  document.getElementById('prize-input').value='';
-  updPay(val);
-}
-function customPrize(val){
-  var v=parseInt(val)||0;
-  if(v>100){v=100;document.getElementById('prize-input').value=100;}
-  if(v>0){
-    document.querySelectorAll('.prize-chip').forEach(function(c){
-      c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#a8c8e0';
-    });
-    document.getElementById('prize-display').textContent='$'+v;
-    updPay(v);
-  }
-}
-function updPay(val){
-  var v=parseFloat(val)||0;
-  if(v>100)v=100;
-  var fee=Math.round(v*10)/100;
-  var total=v+fee;
-  document.getElementById('pay-prize').textContent='$'+v.toFixed(2);
-  document.getElementById('pay-fee').textContent='$'+fee.toFixed(2);
-  document.getElementById('pay-total').textContent='$'+total.toFixed(2);
-}
-function selLive(el){
-  document.querySelectorAll('.golive-opt').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected');
-}
-function genCode(){
-  for(var i=1;i<=6;i++){
-    document.getElementById('c'+i).value=Math.floor(Math.random()*10);
-  }
+  el.classList.add('active');
 }
 
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('.el').forEach(function(el){
-    var d=parseInt(el.getAttribute('data-d'))||0;
-    setTimeout(function(){el.classList.add('show');},d);
+// Gold burst animation
+function playGoldBurst() {
+  var canvas = document.getElementById('burstCanvas');
+  canvas.width = window.innerWidth * 2;
+  canvas.height = window.innerHeight * 2;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  var ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+  var cx = w / 2;
+  var cy = h * 0.18;
+  var start = performance.now();
+
+  function frame(t) {
+    var e = (t - start) / 1000;
+    ctx.clearRect(0, 0, w, h);
+    if (e < 1.6) {
+      var r = e < 0.5 ? (e / 0.5) * Math.max(w, h) * 0.8 : Math.max(w, h) * 0.8;
+      var alpha = e < 0.25 ? e / 0.25 : Math.max(0, 1 - (e - 0.25) / 1.1);
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, 'rgba(245,200,66,' + (alpha * 0.5) + ')');
+      g.addColorStop(0.3, 'rgba(232,168,32,' + (alpha * 0.25) + ')');
+      g.addColorStop(0.6, 'rgba(201,137,12,' + (alpha * 0.08) + ')');
+      g.addColorStop(1, 'rgba(201,137,12,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      // rays
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.15;
+      ctx.translate(cx, cy);
+      for (var i = 0; i < 12; i++) {
+        ctx.rotate(Math.PI / 6);
+        ctx.fillStyle = '#f5c842';
+        ctx.fillRect(-1, 0, 2, r * 0.6);
+      }
+      ctx.restore();
+    }
+    if (e < 2) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, w, h); canvas.style.display = 'none'; }
+  }
+  canvas.style.display = 'block';
+  requestAnimationFrame(frame);
+}
+
+// Trigger fly-in elements
+function triggerFlyIn() {
+  var els = document.querySelectorAll('.el');
+  els.forEach(function(el) {
+    var delay = parseInt(el.getAttribute('data-d')) || 0;
+    setTimeout(function() { el.classList.add('show'); }, delay);
   });
-  updPay(25);
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', function() {
+  playGoldBurst();
+  triggerFlyIn();
 });
 </script>
+
 </body>
 </html>
