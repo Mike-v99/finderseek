@@ -25,10 +25,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 /* Back */
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Quantico',sans-serif;}
 
+@keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
+
 /* Page header */
-.page-header{text-align:center;margin-bottom:24px;}
-.page-title{font-family:'Abril Fatface',serif;font-size:36px;color:var(--cream);}
-.page-sub{font-size:16px;color:var(--dim);margin-top:6px;line-height:1.5;}
+.page-header{text-align:center;margin-bottom:24px;position:relative;}
+.page-title{font-family:'Abril Fatface',serif;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-sub{font-size:16px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
@@ -140,12 +142,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <body>
 <div class="page">
 
-  <a class="back-btn el" data-d="50" href="index.html">← Back</a>
-
-  <div class="page-header el" data-d="150">
-    <div style="font-size:40px;margin-bottom:8px;">+</div>
-    <div class="page-title">New Quest</div>
-    <div class="page-sub">Hide treasure. Set the clues. Watch Seekers race to find it.</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;" class="el" data-d="50">
+    <a class="back-btn" href="index.html" style="margin-bottom:0;">← Back</a>
+    <div class="page-title" style="font-size:36px;">New Quest</div>
+    <div style="width:90px;"></div>
   </div>
 
   <!-- STEP 1: Quest Duration & Clues -->
@@ -340,7 +340,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
+  <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
   <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
   <div class="nav-center" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
   <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><div class="nav-label">Pricing</div></div>
