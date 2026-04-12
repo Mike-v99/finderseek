@@ -377,7 +377,7 @@ body::after {
 
     <!-- CTA BUTTONS -->
     <div class="cta-row">
-      <a class="btn-cta btn-find el from-left" data-d="950" href="quest.html">
+      <a class="btn-cta btn-find el from-left" data-d="950" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth'});">
         <span class="btn-cta-icon">🔍</span>
         <span class="btn-cta-label">FIND TREASURE</span>
       </a>
@@ -420,7 +420,7 @@ body::after {
   </div>
 
   <!-- QUEST SECTIONS -->
-  <div class="sections">
+  <div class="sections" id="quest-sections">
     <div class="section section-active el from-left" data-d="1500" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
