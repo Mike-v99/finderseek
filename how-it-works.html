@@ -40,10 +40,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .stop{position:relative;z-index:1;opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
 .stop.visible{opacity:1;transform:translateY(0);}
 
-.stop-left{display:flex;gap:12px;align-items:flex-start;width:78%;text-align:left;}
-.stop-right{display:flex;gap:12px;align-items:flex-start;width:78%;margin-left:auto;text-align:left;}
+.stop-left{width:78%;text-align:left;}
+.stop-right{width:78%;margin-left:auto;text-align:left;}
 
-.stop-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 
 .stop-title{font-size:17px;font-weight:400;margin-bottom:4px;}
 .stop-desc{font-size:17px;color:#ffffff;line-height:1.6;}
@@ -124,8 +123,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <div class="trail">
     <!-- Stop 1 -->
     <div class="stop stop-left">
-      <div class="stop-circle" style="background:rgba(251,191,36,.1);border:1.5px solid #fbbf24;">🎯</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#fbbf24;">1. Browse Active Quests</div>
         <div class="stop-desc">Go to the Active tab on the homepage and select a quest to join. See the prize amount, time remaining, and how many clues have dropped.</div>
         <!-- Mini mockup of active quests -->
@@ -145,20 +142,17 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
         </div>
-      </div>
     </div>
 
     <!-- L connector: left → right -->
     <div class="lconn">
-      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.2;"></div>
-      <div style="position:absolute;right:calc(22% + 24px);top:50%;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
     </div>
 
     <!-- Stop 2 -->
     <div class="stop stop-right">
-      <div class="stop-circle" style="background:rgba(52,211,153,.1);border:1.5px solid #34d399;">🗺️</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#34d399;">2. Decode AI Clues</div>
         <div class="stop-desc">Clues drop on a timer throughout the quest. Read each riddle carefully — they're written by AI in styles like Pirate, Poetic, Hillbilly, Sarcastic, and 5 more personas.</div>
         <!-- Mini mockup of clue cards -->
@@ -175,20 +169,17 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
         </div>
-      </div>
     </div>
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
     </div>
 
     <!-- Stop 3 -->
     <div class="stop stop-left">
-      <div class="stop-circle" style="background:rgba(244,114,182,.1);border:1.5px solid #f472b6;">🏃</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#f472b6;">3. Race to the Spot</div>
         <div class="stop-desc">Once you've decoded enough clues, head out in the real world. The treasure is hidden at a public location — a park, trail, landmark, or shopping area.</div>
         <!-- Mini mockup of map -->
@@ -205,14 +196,12 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           </div>
           <div style="text-align:center;font-size:17px;color:#a8c8e0;margin-top:8px;">Map zooms closer with each clue</div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
       </div>
-    </div>
 
     <!-- L connector: left → center -->
     <div class="lconn">
-      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.2;"></div>
       <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#e8a820;opacity:.2;"></div>
     </div>
 
@@ -252,8 +241,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <div class="trail">
     <!-- Stop 1 -->
     <div class="stop stop-right">
-      <div class="stop-circle" style="background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;">📍</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#60a5fa;">1. Pick a Public Hiding Spot</div>
         <div class="stop-desc">Choose a safe, accessible location — a park bench, trail marker, near a fountain, or a landmark. Drop a pin on the map and write a detailed description of the hiding spot. The better the details, the more fun the clues will be!</div>
         <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
@@ -266,20 +253,17 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
         </div>
-      </div>
     </div>
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
     </div>
 
     <!-- Stop 2 -->
     <div class="stop stop-left">
-      <div class="stop-circle" style="background:rgba(251,146,60,.1);border:1.5px solid #fb923c;">🔐</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#fb923c;">2. Hide the 6-Digit Code</div>
         <div class="stop-desc">Write a 6-digit code on a card or note. Hide it at your spot in a weatherproof way — a zip-lock bag works great. This is what Seekers will look for.</div>
         <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:16px;text-align:center;">
@@ -294,20 +278,17 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           <div style="font-size:17px;color:#a8c8e0;">Write this code and hide it at the spot</div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
         </div>
-      </div>
     </div>
 
     <!-- L connector: left → right -->
     <div class="lconn">
-      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.2;"></div>
-      <div style="position:absolute;right:calc(22% + 24px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
     </div>
 
     <!-- Stop 3 -->
     <div class="stop stop-right">
-      <div class="stop-circle" style="background:rgba(168,85,247,.1);border:1.5px solid #a855f7;">🤖</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#a855f7;">3. AI Writes Your Clues</div>
         <div class="stop-desc">Pick a clue persona — Pirate, Poetic, Insults, Sarcastic, Hillbilly, 5 Year Old, Grandma, Surfer Bro, or Investigator. AI generates all your clues automatically from your hiding spot description.</div>
         <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
@@ -321,20 +302,17 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
         </div>
-      </div>
     </div>
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
     </div>
 
     <!-- Stop 4 -->
     <div class="stop stop-left">
-      <div class="stop-circle" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;">💰</div>
-      <div style="flex:1;">
         <div class="stop-title" style="color:#4ade80;">4. Set Prize & Go Live</div>
         <div class="stop-desc">Choose your prize amount ($1-$100). Pay through Stripe (prize + 10% fee). Go live immediately or schedule it. When someone finds the code and claims, the prize auto-transfers to the winner.</div>
         <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
@@ -349,14 +327,12 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
             <div style="padding:12px;border-radius:10px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><div style="font-size:18px;margin-bottom:4px;">📅</div><div style="font-size:17px;font-weight:400;color:#fff;">Schedule</div></div>
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
       </div>
-    </div>
 
     <!-- L connector: left → center -->
     <div class="lconn">
-      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
-      <div style="position:absolute;left:24px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.2;"></div>
       <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
     </div>
 
