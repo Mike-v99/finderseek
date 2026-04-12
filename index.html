@@ -104,7 +104,10 @@ body::after {
   cursor: pointer;
   transition: transform .2s, box-shadow .2s;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .btn-cta:active { transform: scale(.97); }
 .btn-find {
@@ -117,8 +120,8 @@ body::after {
   background: linear-gradient(180deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.02) 100%);
   box-shadow: 0 0 28px rgba(59,130,246,.1);
 }
-.btn-cta-icon { font-size: 34px; margin-bottom: 10px; display: block; }
-.btn-cta-label { font-size: 18px; font-weight: 400; letter-spacing: 2px; }
+.btn-cta-icon { font-size: 34px; margin-bottom: 10px; display: block; line-height: 1; }
+.btn-cta-label { font-size: 17px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
 .btn-find .btn-cta-label { color: var(--yellow); animation: glowPulseG 3s ease-in-out infinite; }
 .btn-hide .btn-cta-label { color: #fff; animation: glowPulseB 3s ease-in-out infinite .5s; }
 @keyframes glowPulseG { 0%,100% { text-shadow: 0 0 8px rgba(251,191,36,.4); } 50% { text-shadow: 0 0 20px rgba(251,191,36,.8), 0 0 40px rgba(251,191,36,.3); } }
@@ -382,7 +385,7 @@ body::after {
         <span class="btn-cta-label">FIND TREASURE</span>
       </a>
       <a class="btn-cta btn-hide el from-right" data-d="950" href="newquest.html">
-        <span class="btn-cta-icon" style="font-size:68px;color:#a8c8e0;">+</span>
+        <span class="btn-cta-icon" style="color:#a8c8e0;">+</span>
         <span class="btn-cta-label">START QUEST</span>
       </a>
     </div>
