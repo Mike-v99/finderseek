@@ -64,7 +64,7 @@ body::after {
   opacity: .4;
 }
 
-.page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-bottom: 100px; }
+.page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-bottom: 60vh; }
 
 /* HERO */
 .hero { text-align: center; padding: 16px 20px 16px; }
@@ -377,7 +377,7 @@ body::after {
 
     <!-- CTA BUTTONS -->
     <div class="cta-row">
-      <a class="btn-cta btn-find el from-left" data-d="950" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth'});">
+      <a class="btn-cta btn-find el from-left" data-d="950" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
         <span class="btn-cta-icon">🔍</span>
         <span class="btn-cta-label">FIND TREASURE</span>
       </a>
