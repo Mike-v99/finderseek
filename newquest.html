@@ -42,13 +42,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
 .step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
 .step-icon{font-size:22px;}
-.step-title{font-size:18px;font-weight:400;color:var(--cream);}
+.step-title{font-size:18px;font-weight:400;color:#ffffff;}
 .step-body{padding:18px;}
 
 /* Form fields */
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
-.flabel{display:block;font-size:17px;color:var(--dim);margin-bottom:8px;letter-spacing:1px;}
+.flabel{display:block;font-size:17px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
 .finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;}
 .finput:focus{border-color:rgba(201,137,12,.5);}
 .finput::placeholder{color:var(--muted);}
@@ -66,7 +66,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
 .persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
 .persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
-.persona-name{font-size:17px;font-weight:400;color:var(--cream);}
+.persona-name{font-size:17px;font-weight:400;color:#ffffff;}
 .persona-desc{font-size:17px;color:var(--muted);margin-top:4px;line-height:1.4;}
 .persona-check{position:absolute;top:8px;right:8px;font-size:17px;color:var(--gold2);display:none;}
 .persona-card.selected .persona-check{display:block;}
@@ -96,7 +96,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
 .pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
 .pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
-.pay-opt-name{font-size:17px;font-weight:400;color:var(--cream);}
+.pay-opt-name{font-size:17px;font-weight:400;color:#ffffff;}
 .pay-opt-tag{font-size:17px;color:var(--muted);margin-top:4px;}
 
 /* Go live options */
@@ -104,15 +104,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
 .golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
 .golive-icon{font-size:28px;margin-bottom:6px;}
-.golive-name{font-size:17px;font-weight:400;color:var(--cream);}
+.golive-name{font-size:17px;font-weight:400;color:#ffffff;}
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
 .warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
-.warning-title{font-size:18px;font-weight:400;color:#fca5a5;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.warning-item{display:flex;align-items:center;gap:8px;font-size:17px;color:rgba(255,255,255,.7);}
-.warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:17px;color:rgba(252,165,165,.6);}
+.warning-item{display:flex;align-items:center;gap:8px;font-size:17px;color:#ffffff;}
+.warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:17px;color:#ffffff;}
 
 /* Submit buttons */
 .btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
@@ -153,7 +153,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.35),rgba(34,197,94,.1));">
       <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
-        <div style="font-size:17px;color:#a8c8e0;margin-bottom:6px;position:relative;">Prize Amount</div>
+        <div style="font-size:17px;color:#4ade80;margin-bottom:6px;position:relative;font-weight:400;">Prize Amount</div>
         <div id="prize-display" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
         <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
           <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:17px;font-weight:400;color:#a8c8e0;cursor:pointer;">$5</div>
@@ -269,7 +269,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="field">
           <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
           <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park" style="border-color:rgba(239,68,68,.35);"></textarea>
-          <div style="font-size:17px;color:var(--dim);margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
+          <div style="font-size:17px;color:#88a8c0;margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
         </div>
       </div>
     </div>
@@ -284,7 +284,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="step-title">Secret Finder Code</div>
       </div>
       <div class="step-body">
-        <div style="font-size:17px;color:var(--dim);margin-bottom:16px;text-align:center;">Write this code on a note and leave it at the hiding spot.</div>
+        <div style="font-size:17px;color:#a8c8e0;margin-bottom:16px;text-align:center;">Write this code on a note and leave it at the hiding spot.</div>
         <div class="code-wrap">
           <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c1" oninput="cN(this,'c2')" onkeydown="cP(event,this,'')"/>
           <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c2" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
@@ -307,13 +307,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="step-title">Payment</div>
       </div>
       <div class="step-body">
-        <div style="font-size:17px;color:var(--dim);margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
+        <div style="font-size:17px;color:#a8c8e0;margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
         <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px;">
           <div style="font-size:17px;letter-spacing:2px;color:var(--green);margin-bottom:14px;">PAYMENT BREAKDOWN</div>
           <div style="display:flex;justify-content:space-between;font-size:17px;color:#fff;margin-bottom:8px;">
             <span>Prize amount</span><span id="pay-prize">$0.00</span>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:17px;color:var(--dim);margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:17px;color:#a8c8e0;margin-bottom:8px;">
             <span>FinderSeek fee (10%)</span><span id="pay-fee">$0.00</span>
           </div>
           <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:400;color:var(--green);">
