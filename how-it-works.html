@@ -2,329 +2,436 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>FinderSeek — How It Works</title>
-<meta name="description" content="Learn how FinderSeek works. Pirates hide real cash in their city with cryptic clues. Seekers follow AI-powered clue drops to find the treasure and claim the prize."/>
-<meta name="keywords" content="how FinderSeek works, treasure hunt rules, scavenger hunt explained, real money game rules, city treasure quest guide"/>
-<link rel="canonical" href="https://finderseek.com/how-it-works.html"/>
-<meta name="robots" content="index, follow"/>
-<meta property="og:type" content="article"/>
-<meta property="og:url" content="https://finderseek.com/how-it-works.html"/>
-<meta property="og:title" content="How FinderSeek Works — Real Money Treasure Quests"/>
-<meta property="og:description" content="Pirates hide cash. Seekers solve clues. Winner takes the prize. Here is how it all works."/>
-<meta property="og:image" content="https://finderseek.com/og-image.jpg"/>
-<meta property="og:site_name" content="FinderSeek"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="How FinderSeek Works"/>
-<meta name="twitter:description" content="Pirates hide cash. Seekers solve clues. Winner takes the prize."/>
-<meta name="twitter:image" content="https://finderseek.com/og-image.jpg"/>
-<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-<link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#c9890c"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Karla:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--cream:#f5ead8;--dim:#c8b48a;--muted:#8a7a5a;--green:#22c55e;--border:rgba(201,137,12,0.2);}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Karla',sans-serif;min-height:100vh;overflow-x:hidden;width:100%;}
-
-.bg-img{position:fixed;inset:0;z-index:0;background:url('pirate sherlock trans.png') center top/cover no-repeat;opacity:.17;}
-.bg-vig{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(6,5,10,.2) 0%,rgba(6,5,10,.95) 80%);}
-body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.5;}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:none;background:transparent;width:100%;box-sizing:border-box;}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
-.nav-icon{width:36px;height:36px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,137,12,.4);}
-.nav-name{font-size:18px;font-weight:800;color:var(--cream);}
-.nav-name em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:20px;}
-@media(max-width:560px){.nav-name{display:none;}}
-.mobile-hamburger{background:none;border:1px solid rgba(201,137,12,.3);border-radius:8px;padding:6px 5px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;width:38px;height:38px;transition:border-color .2s;}
-.mobile-hamburger:hover{border-color:rgba(201,137,12,.6);}
-.mobile-hamburger span{display:block;width:18px;height:2px;background:var(--cream);border-radius:2px;transition:all .2s;}
-.mobile-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
-.mobile-hamburger.open span:nth-child(2){opacity:0;}
-.mobile-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
-.mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;}
-.mobile-menu-overlay.show{display:block;opacity:1;}
-.mobile-menu{position:fixed;top:0;right:-300px;width:280px;max-width:85vw;height:100vh;z-index:100;background:linear-gradient(180deg,#0f0d1a 0%,#0a0818 100%);border-left:1px solid rgba(201,137,12,.15);box-shadow:-8px 0 40px rgba(0,0,0,.5);transition:right .3s ease;display:flex;flex-direction:column;overflow-y:auto;}
-.mobile-menu.show{right:0;}
-.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
-.mm-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--cream);}
-.mm-logo em{font-style:italic;color:var(--gold);font-weight:300;}
-.mm-close{background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
-.mm-links{flex:1;padding:12px 0;}
-.mm-link{display:flex;align-items:center;gap:14px;padding:14px 20px;color:var(--cream);text-decoration:none;font-size:15px;font-weight:600;transition:background .15s;font-family:'Karla',sans-serif;}
-.mm-link:hover{background:rgba(255,255,255,.04);}
-.mm-link-icon{font-size:20px;width:28px;text-align:center;}
-.mm-arrow{margin-left:auto;color:var(--muted);font-size:20px;}
-.mm-link-pro{color:var(--gold2);}
-.mm-pro-badge{font-size:9px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border-radius:6px;padding:2px 6px;margin-left:6px;}
-
-.hero{position:relative;z-index:2;text-align:center;padding:70px 24px 56px;}
-.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.04) 0%,rgba(201,137,12,.02) 40%,transparent 70%);pointer-events:none;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:6px 18px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c4b5fd;font-family:'DM Mono',monospace;margin-bottom:24px;}
-.hero h1{font-family:'Bangers',cursive;font-size:clamp(52px,10vw,88px);letter-spacing:4px;line-height:.95;margin-bottom:18px;text-shadow:0 4px 24px rgba(0,0,0,.7);}
-.hero h1 em{color:var(--gold);font-style:normal;text-shadow:0 0 40px rgba(201,137,12,.4);}
-.hero-sub{font-size:17px;color:#ffffff;max-width:460px;margin-inline:auto;line-height:1.8;}
-
-.role-toggle{display:flex;gap:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;overflow:hidden;max-width:360px;margin:36px auto 0;}
-.rtab{flex:1;padding:14px 24px;text-align:center;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;border:none;font-family:'Karla',sans-serif;background:transparent;color:var(--muted);}
-.rtab.active.seeker{background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;}
-.rtab.active.pirate{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;}
-
-.wrap{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:60px 20px 80px;}
-.role-panel{display:none;}
-.role-panel.active{display:block;}
-
-.sec-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;}
-.sec-eyebrow.gold{color:var(--cream);}
-.sec-eyebrow.blue{color:#93c5fd;}
-.sec-title{font-family:'Bangers',cursive;font-size:clamp(32px,6vw,48px);letter-spacing:3px;margin-bottom:12px;line-height:1.05;}
-.sec-title.gold{background:linear-gradient(135deg,var(--gold2),#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.sec-title.blue{background:linear-gradient(135deg,#93c5fd,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.sec-desc{font-size:15px;color:#ffffff;line-height:1.8;margin-bottom:40px;max-width:540px;}
-
-.steps{display:flex;flex-direction:column;gap:0;margin-bottom:48px;}
-.step{display:flex;gap:20px;position:relative;padding-bottom:32px;}
-.step:last-child{padding-bottom:0;}
-.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
-.step-num{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bangers',cursive;font-size:22px;letter-spacing:1px;flex-shrink:0;position:relative;z-index:1;}
-.step-num.gold{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.2);color:var(--cream);box-shadow:0 0 12px rgba(255,255,255,.05);}
-.step-num.blue{background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(99,102,241,.15));border:2px solid rgba(99,102,241,.5);color:#93c5fd;box-shadow:0 0 20px rgba(99,102,241,.2);}
-.step-line{width:2px;flex:1;margin:6px 0;min-height:20px;}
-.step-line.gold{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.03));}
-.step-line.blue{background:linear-gradient(180deg,rgba(99,102,241,.4),rgba(99,102,241,.05));}
-.step-right{flex:1;padding-top:10px;}
-.step-icon{font-size:28px;margin-bottom:10px;}
-.step-head{font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;margin-bottom:8px;}
-.step-head.gold{color:var(--gold2);}
-.step-head.blue{color:#93c5fd;}
-.step-body{font-size:14px;color:rgba(255,255,255,.85);line-height:1.8;}
-.step-body strong{color:#ffffff;font-weight:700;}
-.step-pill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:.5px;margin-top:10px;}
-.step-pill.gold{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--cream);}
-.step-pill.blue{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;}
-.step-pill.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
-
-.gold-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);margin:40px 0;}
-
-.faq{margin-bottom:48px;padding:2px;border-radius:16px;background:linear-gradient(135deg,#c9890c,#f5c842,#a8781a,#e8a820,#c9890c);}
-.faq-inner{background:var(--ink);border-radius:14px;padding:4px;}
-.faq-item{border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:8px;background:rgba(10,8,18,.7);backdrop-filter:blur(10px);}
-.faq-q{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-weight:700;font-size:15px;gap:12px;transition:background .2s;}
-.faq-q:hover{background:rgba(255,255,255,.03);}
-.faq-q.open{background:rgba(255,255,255,.03);}
-.faq-arrow{font-size:12px;color:var(--muted);transition:transform .2s;flex-shrink:0;}
-.faq-q.open .faq-arrow{transform:rotate(180deg);}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-.faq-a.open{max-height:200px;}
-.faq-a-inner{padding:0 20px 18px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.8;border-top:1px solid rgba(255,255,255,.05);}
-
-.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:48px;}
-.cta-card{border-radius:18px;padding:28px 24px;text-align:center;position:relative;overflow:hidden;}
-.cta-card::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.05),transparent 60%);pointer-events:none;}
-.cta-card.seeker{background:linear-gradient(135deg,rgba(154,106,0,.2),rgba(201,137,12,.08));border:1px solid rgba(201,137,12,.3);}
-.cta-card.pirate{background:linear-gradient(135deg,rgba(26,32,144,.25),rgba(45,58,219,.1));border:1px solid rgba(45,58,219,.3);}
-.cta-card-icon{font-size:36px;margin-bottom:12px;}
-.cta-card-title{font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;margin-bottom:8px;}
-.cta-card.seeker .cta-card-title{color:var(--gold2);}
-.cta-card.pirate .cta-card-title{background:linear-gradient(135deg,#e0e4ff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.cta-card-desc{font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:20px;}
-.cta-btn{display:inline-block;border-radius:12px;padding:13px 28px;font-size:14px;font-weight:800;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:'Karla',sans-serif;}
-.cta-btn.seeker{background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;box-shadow:0 4px 20px rgba(201,137,12,.4);}
-.cta-btn.seeker:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,137,12,.6);}
-.cta-btn.pirate{background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;box-shadow:0 4px 20px rgba(26,32,144,.4);}
-.cta-btn.pirate:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,32,144,.6);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.f1{animation:fadeUp .6s .05s both}
-.f2{animation:fadeUp .6s .12s both}
-.f3{animation:fadeUp .6s .2s both}
-.f4{animation:fadeUp .6s .28s both}
-
-@media(max-width:540px){
-  .cta-grid{grid-template-columns:1fr;}
-  .step-num{width:40px;height:40px;font-size:18px;}
+:root{
+  --ink:#0a0810;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--yellow:#fbbf24;
+  --green:#4ade80;--blue:#3b82f6;--dim:#a8c8e0;--muted:#a8c8e0;
 }
-.btn-upgrade{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-family:"Karla",sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 2px 12px rgba(201,137,12,.45);transition:transform .2s,box-shadow .2s;white-space:nowrap;}.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,137,12,.65);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-/* Scroll-triggered step animations */
-.step{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
-.step.visible{opacity:1;transform:translateY(0);}
+.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.1),transparent 65%);pointer-events:none;z-index:0;}
 
-/* CTA card glisten */
-.cta-card{position:relative;overflow:hidden;}
-.cta-card::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 55%,transparent 80%);animation:ctaGlisten 8s infinite;pointer-events:none;}
-.cta-card:nth-child(1)::after{animation-delay:0s;}
-.cta-card:nth-child(2)::after{animation-delay:4s;}
-@keyframes ctaGlisten{0%{left:-100%;}10%{left:150%;}100%{left:150%;}}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 100px;}
 
-/* Floating sticky button — mobile only */
-.sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;padding:12px 16px;background:linear-gradient(180deg,transparent,rgba(6,5,10,.95) 30%);pointer-events:none;}
-.sticky-cta a{pointer-events:all;display:block;text-align:center;background:linear-gradient(135deg,#9a6a00,var(--gold2));color:#0a0800;font-size:15px;font-weight:800;font-family:'Karla',sans-serif;padding:14px;border-radius:14px;text-decoration:none;box-shadow:0 -2px 20px rgba(201,137,12,.4);transition:all .2s;}
-.sticky-cta a:hover{transform:translateY(-2px);box-shadow:0 -4px 28px rgba(201,137,12,.6);}
+/* Header */
+.hdr{padding:16px 16px 0;}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
 
-@media(max-width:640px){
-  .sticky-cta{display:block;}
-  .wrap{padding-bottom:100px;}
-}
+@keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
+@keyframes dashFlow{0%{stroke-dashoffset:20;}100%{stroke-dashoffset:0;}}
+.page-title{font-size:32px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
+
+/* Hero */
+.hero{text-align:center;padding:20px 16px 30px;}
+.hero-sub{font-size:17px;color:var(--dim);margin-top:8px;line-height:1.6;}
+.hero-pills{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.hero-pill{font-size:17px;padding:6px 14px;border-radius:50px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--dim);}
+
+/* Section labels */
+.section-label{font-size:17px;letter-spacing:3px;text-align:center;padding:24px 16px 16px;font-weight:400;}
+
+/* Trail container */
+.trail{position:relative;padding:0 16px;}
+
+/* SVG path */
+.trail-svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.trail-path{stroke-dasharray:8 6;opacity:.3;}
+
+/* Trail stops */
+.stop{position:relative;z-index:1;opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
+.stop.visible{opacity:1;transform:translateY(0);}
+
+.stop-left{display:flex;gap:16px;align-items:flex-start;margin-bottom:0;padding:0 0 0 8px;}
+.stop-right{display:flex;gap:16px;align-items:flex-start;flex-direction:row-reverse;text-align:right;margin-bottom:0;padding:0 8px 0 0;}
+
+.stop-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+
+.stop-title{font-size:18px;font-weight:400;margin-bottom:4px;}
+.stop-desc{font-size:17px;color:var(--dim);line-height:1.6;}
+
+/* Breadcrumb dots */
+.crumbs{display:flex;gap:6px;padding:12px 0;opacity:0;transform:translateY(20px);transition:opacity .6s ease .2s,transform .6s ease .2s;}
+.crumbs.visible{opacity:1;transform:translateY(0);}
+.crumbs-left{padding-left:32px;}
+.crumbs-right{justify-content:flex-end;padding-right:32px;}
+@keyframes dotPulse{0%,100%{opacity:.15;}50%{opacity:.7;}}
+.crumb{width:5px;height:5px;border-radius:50%;animation:dotPulse 2s ease-in-out infinite;}
+
+/* Image placeholder */
+.stop-img{margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;}
+.stop-img img{width:100%;display:block;opacity:.85;}
+.stop-img-fade{position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,var(--ink));pointer-events:none;}
+
+/* Placeholder for screenshots */
+.img-placeholder{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.06));border-radius:14px;border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--muted);font-size:17px;margin-top:12px;position:relative;overflow:hidden;}
+.img-placeholder::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,var(--ink));pointer-events:none;}
+
+/* X mark */
+@keyframes pulseX{0%,100%{text-shadow:0 0 12px rgba(232,168,32,.3);}50%{text-shadow:0 0 30px rgba(232,168,32,.6),0 0 50px rgba(232,168,32,.2);}}
+.x-mark{font-size:56px;color:var(--gold2);font-weight:400;animation:pulseX 3s ease-in-out infinite;}
+
+/* Divider */
+.map-divider{display:flex;align-items:center;gap:12px;padding:32px 24px;opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.map-divider.visible{opacity:1;transform:translateY(0);}
+.map-divider-line{flex:1;height:1px;}
+
+/* CTA */
+.cta-row{display:flex;gap:10px;padding:24px 16px 0;}
+.btn-seek{flex:1;padding:16px;border-radius:14px;font-size:17px;font-weight:400;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;}
+.btn-hide{flex:1;padding:16px;border-radius:14px;font-size:17px;font-weight:400;text-align:center;border:1.5px solid #60a5fa;color:#fff;text-decoration:none;font-family:'Noto Sans Display',sans-serif;}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;justify-content:space-around;padding:8px 4px 12px;z-index:100;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0;text-decoration:none;}
+.nav-item svg{stroke:var(--muted);stroke-width:1.8;fill:none;}
+.nav-label{font-size:17px;color:var(--muted);margin-top:5px;}
+.nav-item.active svg{stroke:#f0f0f0;}
+.nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6);}
+.nav-center{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;text-decoration:none;}
+.nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin-top:-28px;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
+.nav-center .nav-label{color:#e0e0e0;font-weight:400;}
+
+@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  "name": "How to Play FinderSeek",
-  "description": "A step-by-step guide to finding real hidden cash through FinderSeek treasure quests.",
-  "step": [
-    {
-      "@type": "HowToStep",
-      "name": "Browse Active Quests",
-      "text": "Visit FinderSeek and browse active treasure quests in your city. Each quest has a real cash prize hidden somewhere nearby."
-    },
-    {
-      "@type": "HowToStep",
-      "name": "Follow the Clues",
-      "text": "Clues are released throughout the quest duration. Read each clue carefully to narrow down the treasure location."
-    },
-    {
-      "@type": "HowToStep",
-      "name": "Find the Treasure",
-      "text": "Head out to the location you've decoded from the clues. Look for the hidden envelope with the secret 6-digit code."
-    },
-    {
-      "@type": "HowToStep",
-      "name": "Claim Your Prize",
-      "text": "Enter the 6-digit code on the quest page to claim your prize. The Pirate will be notified and you'll receive your cash reward."
-    }
-  ]
-}
-</script>
 </head>
 <body>
-<div class="bg-img"></div>
-<div class="bg-vig"></div>
+<div class="bg-glow"></div>
 
-<nav>
-  <a class="nav-logo" href="index.html">
-    <div class="nav-icon">🔍</div>
-    <div class="nav-name">Finder<em>Seek</em></div>
-  </a>
-  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileMenu()">
-    <span></span><span></span><span></span>
-  </button>
+<div class="page">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hdr-row">
+      <a class="back-btn" href="index.html">← Back</a>
+      <div class="page-title">How It Works</div>
+      <div style="width:90px;"></div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div style="font-size:17px;color:#fff;line-height:1.7;">FinderSeek is a real world skill-based game.</div>
+    <div style="font-size:17px;color:var(--dim);margin-top:8px;line-height:1.7;">
+      <span style="color:#e8a820;">Decode clues</span> — Be the first to win<br/>
+      <span style="color:#60a5fa;">Create the Quest</span> — Watch the Quest unfold
+    </div>
+    <div class="hero-pills">
+      <span class="hero-pill" style="color:#e8a820;border-color:rgba(232,168,32,.25);">Free to Play</span>
+      <span class="hero-pill" style="color:#4ade80;border-color:rgba(74,222,128,.25);">Real Cash Prizes</span>
+      <span class="hero-pill" style="color:#60a5fa;border-color:rgba(96,165,250,.25);">AI Clues</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ SEEKER PATH ═══════════ -->
+  <div class="section-label" style="color:#e8a820;">— SEEKER PATH —</div>
+  <div style="text-align:center;font-size:17px;color:var(--dim);padding:0 16px 20px;">Follow the clues. Find the treasure. Win real cash.</div>
+
+  <div class="trail">
+    <!-- Animated dashed curve trail -->
+    <svg style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;" viewBox="0 0 358 1100" preserveAspectRatio="none">
+      <path d="M42 20 C120 20, 200 50, 316 70 C358 80, 340 140, 300 160 C220 200, 80 180, 42 240 C10 280, 30 340, 100 360 C200 390, 316 370, 316 430 C316 490, 200 520, 100 530 C40 535, 30 580, 100 610 C180 640, 240 630, 180 700" fill="none" stroke="#c9890c" stroke-width="1.5" stroke-dasharray="6 4" opacity=".2" style="animation:dashFlow 1.5s linear infinite;"/>
+    </svg>
+    <!-- Stop 1 -->
+    <div class="stop stop-left">
+      <div class="stop-circle" style="background:rgba(251,191,36,.1);border:1.5px solid #fbbf24;">🎯</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#fbbf24;">1. Browse Active Quests</div>
+        <div class="stop-desc">Go to the Active tab on the homepage and select a quest to join. See the prize amount, time remaining, and how many clues have dropped.</div>
+        <!-- Mini mockup of active quests -->
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid rgba(34,197,94,.3);border-radius:12px;background:rgba(34,197,94,.04);margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,.15);border:1.5px solid rgba(34,197,94,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:400;color:#4ade80;">3</div>
+            <div style="font-size:15px;font-weight:400;color:#4ade80;">ACTIVE</div>
+            <div style="margin-left:auto;font-size:14px;color:#a8c8e0;">3 quests</div>
+          </div>
+          <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:14px;color:#fff;">Downtown Houston</div><div style="font-size:12px;color:#a8c8e0;margin-top:2px;">3 of 7 clues dropped</div></div>
+            <div style="font-size:16px;font-weight:400;color:#4ade80;">$50</div>
+          </div>
+          <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:14px;color:#fff;">Memorial Park</div><div style="font-size:12px;color:#a8c8e0;margin-top:2px;">1 of 5 clues dropped</div></div>
+            <div style="font-size:16px;font-weight:400;color:#4ade80;">$25</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-left">
+      <span class="crumb" style="background:#fbbf24;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#fbbf24;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#fbbf24;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#fbbf24;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#fbbf24;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 2 -->
+    <div class="stop stop-right">
+      <div class="stop-circle" style="background:rgba(52,211,153,.1);border:1.5px solid #34d399;">🗺️</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#34d399;">2. Decode AI Clues</div>
+        <div class="stop-desc">Clues drop on a timer throughout the quest. Read each riddle carefully — they're written by AI in styles like Pirate, Poetic, Hillbilly, Sarcastic, and 5 more personas.</div>
+        <!-- Mini mockup of clue cards -->
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="padding:12px;border-radius:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);margin-bottom:8px;position:relative;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#22c55e,#4ade80);border-radius:10px 0 0 10px;"></div>
+            <div style="font-size:12px;color:#fff;margin-bottom:4px;font-weight:400;">Clue #1 — Day 1</div>
+            <div style="font-size:13px;color:#fff;line-height:1.6;font-style:italic;">"Where the bayou bends and concrete meets the green, look where families gather on Sunday afternoons..."</div>
+          </div>
+          <div style="padding:12px;border-radius:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);position:relative;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#22c55e,#4ade80);border-radius:10px 0 0 10px;"></div>
+            <div style="font-size:12px;color:#fff;margin-bottom:4px;font-weight:400;">Clue #2 — Day 1</div>
+            <div style="font-size:13px;color:#fff;line-height:1.6;font-style:italic;">"Three oaks stand in a row. The middle one whispers to those who look down..."</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-right">
+      <span class="crumb" style="background:#34d399;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#34d399;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#34d399;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#34d399;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#34d399;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 3 -->
+    <div class="stop stop-left">
+      <div class="stop-circle" style="background:rgba(244,114,182,.1);border:1.5px solid #f472b6;">🏃</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#f472b6;">3. Race to the Spot</div>
+        <div class="stop-desc">Once you've decoded enough clues, head out in the real world. The treasure is hidden at a public location — a park, trail, landmark, or shopping area.</div>
+        <!-- Mini mockup of map -->
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="aspect-ratio:16/10;border-radius:10px;background:linear-gradient(135deg,rgba(34,60,34,.4),rgba(20,40,30,.6));border:1px solid rgba(74,222,128,.15);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;opacity:.15;">
+              <div style="position:absolute;top:20%;left:10%;width:60%;height:1px;background:#4ade80;"></div>
+              <div style="position:absolute;top:45%;left:25%;width:40%;height:1px;background:#4ade80;transform:rotate(-15deg);"></div>
+              <div style="position:absolute;top:70%;left:5%;width:80%;height:1px;background:#4ade80;"></div>
+              <div style="position:absolute;top:10%;left:40%;width:1px;height:60%;background:#4ade80;"></div>
+              <div style="position:absolute;top:30%;left:70%;width:1px;height:50%;background:#4ade80;"></div>
+            </div>
+            <div style="width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,.8);border:2px solid #fff;z-index:1;box-shadow:0 0 12px rgba(239,68,68,.5);"></div>
+          </div>
+          <div style="text-align:center;font-size:13px;color:#a8c8e0;margin-top:8px;">Map zooms closer with each clue</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-left">
+      <span class="crumb" style="background:#f472b6;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#f472b6;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#f472b6;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#f472b6;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#f472b6;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 4 - X -->
+    <div class="stop" style="text-align:center;padding:8px 0;">
+      <div class="x-mark">X</div>
+      <div style="font-size:20px;font-weight:400;color:#4ade80;margin-top:8px;">4. Enter Code & Win!</div>
+      <div style="font-size:17px;color:var(--dim);margin-top:6px;line-height:1.6;">Find the hidden envelope with the 6-digit code. Enter it in the app. First to submit wins the entire cash prize — sent automatically via Stripe.</div>
+      <!-- Mini mockup of code entry -->
+      <div style="max-width:280px;margin:12px auto 0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:16px;text-align:center;">
+        <div style="font-size:15px;color:#4ade80;margin-bottom:12px;font-weight:400;">Enter the 6-digit code</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">3</div>
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">7</div>
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">9</div>
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">2</div>
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">0</div>
+          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">4</div>
+        </div>
+        <div style="padding:10px;border-radius:10px;background:linear-gradient(135deg,rgba(34,197,94,.8),rgba(74,222,128,.9));font-size:14px;font-weight:400;color:#0a1a0a;">CLAIM PRIZE</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ DIVIDER ═══════════ -->
+  <div class="map-divider">
+    <div class="map-divider-line" style="background:linear-gradient(90deg,transparent,rgba(96,165,250,.3),transparent);"></div>
+    <div style="font-size:17px;color:rgba(96,165,250,.5);letter-spacing:2px;">or</div>
+    <div class="map-divider-line" style="background:linear-gradient(90deg,transparent,rgba(96,165,250,.3),transparent);"></div>
+  </div>
+
+  <!-- ═══════════ HIDER PATH ═══════════ -->
+  <div class="section-label" style="color:#60a5fa;">— HIDER PATH —</div>
+  <div style="text-align:center;font-size:17px;color:var(--dim);padding:0 16px 20px;">Hide the treasure. Set the prize. Watch Seekers race to find it.</div>
+
+  <div class="trail">
+    <!-- Animated blue dashed curve trail -->
+    <svg style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;" viewBox="0 0 358 1100" preserveAspectRatio="none">
+      <path d="M316 20 C238 20, 158 50, 42 70 C10 80, 20 140, 58 160 C138 200, 278 180, 316 240 C348 280, 328 340, 258 360 C158 390, 42 370, 42 430 C42 490, 158 520, 258 530 C318 535, 328 580, 258 610 C178 640, 118 630, 178 700" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6 4" opacity=".2" style="animation:dashFlow 1.5s linear infinite;"/>
+    </svg>
+    <!-- Stop 1 -->
+    <div class="stop stop-right">
+      <div class="stop-circle" style="background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;">📍</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#60a5fa;">1. Pick a Public Hiding Spot</div>
+        <div class="stop-desc">Choose a safe, accessible location — a park bench, trail marker, near a fountain, or a landmark. Drop a pin on the map and write a detailed description of the hiding spot. The better the details, the more fun the clues will be!</div>
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="border-radius:10px;border:1.5px solid rgba(200,200,215,.4);padding:12px 14px;font-size:14px;color:#b8d4e8;margin-bottom:10px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(220,220,230,.2),transparent);"></div>
+            Search address, park, landmark...
+          </div>
+          <div style="aspect-ratio:16/9;border-radius:10px;background:linear-gradient(135deg,rgba(34,60,34,.3),rgba(20,40,30,.5));border:1px solid rgba(201,137,12,.2);display:flex;align-items:center;justify-content:center;font-size:14px;color:#a8c8e0;">
+            <div style="text-align:center;"><span style="font-size:24px;display:block;margin-bottom:4px;">🗺️</span>Tap to set location</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-right">
+      <span class="crumb" style="background:#60a5fa;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#60a5fa;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#60a5fa;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#60a5fa;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#60a5fa;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 2 -->
+    <div class="stop stop-left">
+      <div class="stop-circle" style="background:rgba(251,146,60,.1);border:1.5px solid #fb923c;">🔐</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#fb923c;">2. Hide the 6-Digit Code</div>
+        <div class="stop-desc">Write a 6-digit code on a card or note. Hide it at your spot in a weatherproof way — a zip-lock bag works great. This is what Seekers will look for.</div>
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:16px;text-align:center;">
+          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;">
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">8</div>
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">4</div>
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">7</div>
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">2</div>
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">6</div>
+            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">1</div>
+          </div>
+          <div style="font-size:13px;color:#a8c8e0;">Write this code and hide it at the spot</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-left">
+      <span class="crumb" style="background:#fb923c;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#fb923c;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#fb923c;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#fb923c;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#fb923c;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 3 -->
+    <div class="stop stop-right">
+      <div class="stop-circle" style="background:rgba(168,85,247,.1);border:1.5px solid #a855f7;">🤖</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#a855f7;">3. AI Writes Your Clues</div>
+        <div class="stop-desc">Pick a clue persona — Pirate, Poetic, Insults, Sarcastic, Hillbilly, 5 Year Old, Grandma, Surfer Bro, or Investigator. AI generates all your clues automatically from your hiding spot description.</div>
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1.5px solid #e8a820;background:rgba(201,137,12,.08);"><span style="font-size:20px;display:block;">🏴‍☠️</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">Pirate</div></div>
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:20px;display:block;">🌸</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">Poetic</div></div>
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:20px;display:block;">🤬</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">Insults</div></div>
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:20px;display:block;">😏</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">Sarcastic</div></div>
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:20px;display:block;">🤠</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">Hillbilly</div></div>
+            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:20px;display:block;">🧸</span><div style="font-size:12px;font-weight:400;color:#fff;margin-top:4px;">5 Year Old</div></div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-right">
+      <span class="crumb" style="background:#a855f7;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#a855f7;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#a855f7;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#a855f7;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#a855f7;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- Stop 4 -->
+    <div class="stop stop-left">
+      <div class="stop-circle" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;">💰</div>
+      <div style="flex:1;">
+        <div class="stop-title" style="color:#4ade80;">4. Set Prize & Go Live</div>
+        <div class="stop-desc">Choose your prize amount ($1-$100). Pay through Stripe (prize + 10% fee). Go live immediately or schedule it. When someone finds the code and claims, the prize auto-transfers to the winner.</div>
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
+          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
+            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:14px;color:#a8c8e0;">$5</div>
+            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:14px;color:#a8c8e0;">$10</div>
+            <div style="padding:8px 14px;border-radius:8px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:14px;color:#4ade80;">$25</div>
+            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:14px;color:#a8c8e0;">$50</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="padding:12px;border-radius:10px;text-align:center;border:1.5px solid #a78bfa;background:rgba(139,92,246,.08);"><div style="font-size:18px;margin-bottom:4px;">⚡</div><div style="font-size:13px;font-weight:400;color:#fff;">Right Now</div></div>
+            <div style="padding:12px;border-radius:10px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><div style="font-size:18px;margin-bottom:4px;">📅</div><div style="font-size:13px;font-weight:400;color:#fff;">Schedule</div></div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="crumbs crumbs-left">
+      <span class="crumb" style="background:#4ade80;animation-delay:0s;"></span>
+      <span class="crumb" style="background:#4ade80;animation-delay:.2s;"></span>
+      <span class="crumb" style="background:#4ade80;animation-delay:.4s;"></span>
+      <span class="crumb" style="background:#4ade80;animation-delay:.6s;"></span>
+      <span class="crumb" style="background:#4ade80;animation-delay:.8s;"></span>
+    </div>
+
+    <!-- End -->
+    <div class="stop" style="text-align:center;padding:8px 0;">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(74,222,128,.1);border:2px solid #4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:17px;font-weight:400;color:#4ade80;">GO</div>
+      <div style="font-size:20px;font-weight:400;color:#4ade80;margin-top:12px;">Watch the Hunt Unfold!</div>
+      <div style="font-size:17px;color:var(--dim);margin-top:6px;line-height:1.6;">Get notified when someone claims your treasure. The prize auto-transfers — no action needed from you.</div>
+    </div>
+  </div>
+
+  <!-- CTAs -->
+  <div class="cta-row">
+    <a class="btn-seek" href="index.html">🔍 Find Treasure</a>
+    <a class="btn-hide" href="newquest.html">+ Start Quest</a>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
+  <div class="nav-item active" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
+  <div class="nav-center" onclick="window.location.href='index.html'"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
+  <div class="nav-item" onclick="window.location.href='gold.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="nav-label">Gold</div></div>
+  <div class="nav-item" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
 </nav>
 
-<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mm-header">
-    <div class="mm-logo">Finder<em>Seek</em></div>
-    <button class="mm-close" onclick="closeMobileMenu()">×</button>
-  </div>
-  <div class="mm-links">
-    <a href="index.html" class="mm-link"><span class="mm-link-icon">🔍</span>Browse Quests<span class="mm-arrow">›</span></a>
-    <a href="pirate.html" class="mm-link"><span class="mm-link-icon">🏴‍☠️</span>Hide Treasure<span class="mm-arrow">›</span></a>
-    <a href="mailto:finderseek1@gmail.com" class="mm-link"><span class="mm-link-icon">✉️</span>Contact<span class="mm-arrow">›</span></a>
-    <a href="pricing.html" class="mm-link mm-link-pro"><span class="mm-link-icon">⭐</span>Upgrade to Gold<span class="mm-pro-badge">PRO</span><span class="mm-arrow">›</span></a>
-  </div>
-</div>
-
-<div class="hero">
-  <div class="hero-eyebrow f1">📜 The Rules of the Hunt</div>
-  <h1 class="f1">How It <em>Works</em></h1>
-  <p class="hero-sub f2">Real treasure quests. Real cash prizes. Two roles — hide it or find it.</p>
-  <div class="role-toggle f3">
-    <button class="rtab seeker active" onclick="showRole('seeker')">🔍 I'm a Seeker</button>
-    <button class="rtab pirate" onclick="showRole('pirate')">🏴‍☠️ I'm a Pirate</button>
-  </div>
-</div>
-
-<div class="wrap">
-  <div class="role-panel active" id="panel-seeker">
-    <div class="sec-eyebrow gold">For Seekers</div>
-    <div class="sec-title gold">FIND THE TREASURE</div>
-    <p class="sec-desc">Follow clues to find a hidden 6-digit code. Enter it, claim the prize.</p>
-    <div class="steps">
-      <div class="step"><div class="step-left"><div class="step-num gold">1</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🎯</div><div class="step-head" style="color:#fbbf24;">BROWSE ACTIVE QUESTS</div><p class="step-body">Find a quest in your city. See the <strong>prize amount</strong>, clues dropped, and time left.</p><span class="step-pill gold">Free to browse</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">2</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">🗺️</div><div class="step-head" style="color:#34d399;">FOLLOW THE CLUES</div><p class="step-body">Clues drop on a timer. Wait longer for easier clues — but <strong>someone might beat you to it!</strong></p><span class="step-pill gold">AI-generated clues</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">3</div><div class="step-line gold"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#f472b6;">USE THE MAP</div><p class="step-body">The map <strong>zooms closer</strong> with each clue. The final clue narrows to 260ft with a photo.</p><span class="step-pill gold">3× zoom reveals</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num gold">4</div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#c4b5fd;">ENTER THE CODE & CLAIM</div><p class="step-body">Find the hiding spot, enter the <strong>6-digit code</strong> in the app. First to submit wins!</p><span class="step-pill green">Winner takes all</span></div></div>
-    </div>
-    <div class="gold-divider"></div>
-    <div class="faq">
-      <div class="faq-inner">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is it free to play?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Free to browse and follow clues. Sign up only to claim a prize.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I get paid?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">The Pirate sends your prize directly via Zelle or Venmo after you claim.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the code is already gone?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt shows as claimed. Check back — new quests drop regularly!</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How close do the maps get?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Final clue zooms to 260ft with a photo of the exact hiding spot.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="role-panel" id="panel-pirate">
-    <div class="sec-eyebrow blue">For Pirates</div>
-    <div class="sec-title blue">HIDE THE TREASURE</div>
-    <p class="sec-desc">Hide a 6-digit code, set a prize, let AI write the clues. Seekers race to find it.</p>
-    <div class="steps">
-      <div class="step"><div class="step-left"><div class="step-num blue">1</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">📍</div><div class="step-head" style="color:#38bdf8;">PICK YOUR HIDING SPOT</div><p class="step-body">Pick a <strong>public, accessible spot</strong> — park, trail, landmark. Drop a pin and describe the hiding place.</p><span class="step-pill blue">Any public location</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">2</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🔐</div><div class="step-head" style="color:#fb923c;">HIDE YOUR 6-DIGIT CODE</div><p class="step-body">Write a 6-digit code on a card and hide it at your spot. <strong>Keep it weatherproof!</strong></p><span class="step-pill blue">Physically hidden</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">3</div><div class="step-line blue"></div></div><div class="step-right"><div class="step-icon">🤖</div><div class="step-head" style="color:#e879f9;">AI GENERATES YOUR CLUES</div><p class="step-body">Pick a persona — Pirate, Gothic, Poetic, Comedy, Hillbilly, or Kid — and <strong>AI writes all your clues</strong> from your hiding spot description.</p><span class="step-pill blue">6 clue personas</span></div></div>
-      <div class="step"><div class="step-left"><div class="step-num blue">4</div></div><div class="step-right"><div class="step-icon">🚀</div><div class="step-head" style="color:#4ade80;">GO LIVE & WATCH THE HUNT</div><p class="step-body">Hunt goes live after approval. Get notified when someone claims — then pay via <strong>Zelle or Venmo</strong>.</p><span class="step-pill green">Notify on claim</span></div></div>
-    </div>
-    <div class="gold-divider"></div>
-    <div class="faq">
-      <div class="faq-inner">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What makes a good hiding spot?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Public, safe, accessible — park bench, under a rock, near a landmark. No private property.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I protect the code from weather?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Use a zip-lock bag or laminated card. Just keep it readable until found.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I edit clues before going live?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Yes — review and regenerate after AI creates them. Once live, clues are locked.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if nobody finds it?</span><span class="faq-arrow">▼</span></div><div class="faq-a"><div class="faq-a-inner">Hunt expires, you keep everything. Go retrieve your code and re-hide or keep the prize.</div></div></div>
-      </div>
-    </div>
-  </div>
-      <!-- WARNING CARD -->
-      <div style="margin:20px 0 0;background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(251,146,60,.08));border:1px solid rgba(239,68,68,.35);border-radius:18px;padding:22px 20px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:18px 18px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <span style="font-size:22px;">⚠️</span>
-          <div style="font-family:'Bangers',cursive;font-size:20px;letter-spacing:2px;color:#fca5a5;">DO NOT HIDE NEAR</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Homes or apartments</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Private property</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Schools or daycares</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Unsafe or dark areas</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Inside vehicles</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.75);font-family:'Karla',sans-serif;"><span style="color:#f87171;font-size:15px;">✖</span>Restricted areas</div>
-        </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.2);font-size:12px;color:rgba(252,165,165,.7);font-family:'DM Mono',monospace;letter-spacing:.3px;">Violations may result in quest removal and account ban.</div>
-      </div>
-
-  <div class="cta-grid f4">
-    <div class="cta-card seeker"><div class="cta-card-icon">🔍</div><div class="cta-card-title">START SEEKING</div><p class="cta-card-desc">Browse active quests in your area and start following the clues.</p><a href="index.html#quests" class="cta-btn seeker">View Active Quests →</a></div>
-    <div class="cta-card pirate"><div class="cta-card-icon">🏴‍☠️</div><div class="cta-card-title">BECOME A PIRATE</div><p class="cta-card-desc">Hide a code, write AI clues, and watch seekers race to find it.</p><a href="pirate.html" class="cta-btn pirate">Create a Hunt →</a></div>
-  </div>
-</div>
-
 <script>
-function showRole(role){document.querySelectorAll('.role-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+role).classList.add('active');document.querySelector('.rtab.'+role).classList.add('active');}
-function toggleFaq(el){const answer=el.nextElementSibling;const isOpen=el.classList.contains('open');document.querySelectorAll('.faq-q.open').forEach(q=>{q.classList.remove('open');q.nextElementSibling.classList.remove('open');});if(!isOpen){el.classList.add('open');answer.classList.add('open');}}
+function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 
-function toggleMobileMenu(){const m=document.getElementById('mobile-menu'),o=document.getElementById('mobile-menu-overlay'),b=document.getElementById('mobile-hamburger'),open=m.classList.contains('show');m.classList.toggle('show',!open);o.classList.toggle('show',!open);b.classList.toggle('open',!open);}
-function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('show');document.getElementById('mobile-menu-overlay').classList.remove('show');document.getElementById('mobile-hamburger').classList.remove('open');}
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});
 
-// Scroll-triggered step animations
-const stepObserver=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');stepObserver.unobserve(e.target);}});
-},{threshold:0.15});
-document.querySelectorAll('.step').forEach(s=>stepObserver.observe(s));
+document.querySelectorAll('.stop,.crumbs,.map-divider').forEach(function(el){
+  observer.observe(el);
+});
 </script>
-
-<!-- Floating sticky CTA — mobile only -->
-<div class="sticky-cta">
-  <a href="index.html#quests">🔍 Start Seeking →</a>
-</div>
-
-</body></html>
+</body>
+</html>
