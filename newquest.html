@@ -19,7 +19,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
 
 /* Borders */
-.silver-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.5),rgba(220,220,230,.25),rgba(160,160,175,.4),rgba(220,220,230,.3));margin-bottom:12px;}
+.silver-wrap{border-radius:18px;padding:1.5px;margin-bottom:12px;}
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
@@ -49,8 +49,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:17px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;}
-.finput:focus{border-color:rgba(201,137,12,.5);}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
@@ -170,7 +170,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 1: Quest Duration & Clues -->
-  <div class="silver-wrap el" data-d="300">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(96,165,250,.35),rgba(96,165,250,.05));" data-d="300">
     <div class="inner">
       <div class="step-hdr">
         <div class="step-num step-num-blue">1</div>
@@ -221,7 +221,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 2: Photo -->
-  <div class="silver-wrap el" data-d="500">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(148,163,184,.35),rgba(148,163,184,.05));" data-d="500">
     <div class="inner">
       <div class="step-hdr">
         <div class="step-num step-num-silver">2</div>
@@ -248,7 +248,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 3: Location & Prize -->
-  <div class="silver-wrap el" data-d="600">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(232,168,32,.35),rgba(232,168,32,.05));" data-d="600">
     <div class="inner">
       <div class="step-hdr">
         <div class="step-num step-num-gold">3</div>
@@ -276,7 +276,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 4: Secret Code -->
-  <div class="silver-wrap el" data-d="700">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(248,113,113,.35),rgba(248,113,113,.05));" data-d="700">
     <div class="inner">
       <div class="step-hdr">
         <div class="step-num step-num-red">4</div>
@@ -299,28 +299,28 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 5: Payment Summary -->
-  <div class="silver-wrap el" data-d="800">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(74,222,128,.35),rgba(74,222,128,.05));" data-d="800">
     <div class="inner">
       <div class="step-hdr">
-        <div class="step-num step-num-purple">5</div>
+        <div class="step-num step-num-green">5</div>
         <span class="step-icon">💳</span>
         <div class="step-title">Payment</div>
       </div>
       <div class="step-body">
-        <div style="font-size:17px;color:#a8c8e0;margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
+        <div style="font-size:17px;color:#ffffff;margin-bottom:16px;line-height:1.6;">Your prize is held securely by FinderSeek. When a Seeker claims the prize, it transfers to their account automatically.</div>
         <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:18px;">
           <div style="font-size:17px;letter-spacing:2px;color:var(--green);margin-bottom:14px;">PAYMENT BREAKDOWN</div>
           <div style="display:flex;justify-content:space-between;font-size:17px;color:#fff;margin-bottom:8px;">
             <span>Prize amount</span><span id="pay-prize">$0.00</span>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:17px;color:#a8c8e0;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:17px;color:#ffffff;margin-bottom:8px;">
             <span>FinderSeek fee (10%)</span><span id="pay-fee">$0.00</span>
           </div>
           <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:400;color:var(--green);">
             <span>Total charged</span><span id="pay-total">$0.00</span>
           </div>
         </div>
-        <div style="margin-top:14px;font-size:17px;color:var(--muted);line-height:1.6;">
+        <div style="margin-top:14px;font-size:17px;color:#ffffff;line-height:1.6;">
           🔒 Powered by Stripe · Prize refunded if quest expires unclaimed
         </div>
       </div>
@@ -328,10 +328,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <!-- STEP 6: Go Live -->
-  <div class="silver-wrap el" data-d="900">
+  <div class="silver-wrap el" style="background:linear-gradient(180deg,rgba(167,139,250,.35),rgba(167,139,250,.05));" data-d="900">
     <div class="inner">
       <div class="step-hdr">
-        <div class="step-num step-num-green">6</div>
+        <div class="step-num step-num-purple">6</div>
         <span class="step-icon">🚀</span>
         <div class="step-title">When to Go Live</div>
       </div>
