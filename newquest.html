@@ -29,12 +29,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 
 /* Page header */
 .page-header{text-align:center;margin-bottom:24px;position:relative;}
-.page-title{font-family:'Abril Fatface',serif;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
 .page-sub{font-size:16px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
-.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;flex-shrink:0;}
 .step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
 .step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#cbd5e1;}
 .step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
@@ -42,7 +42,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
 .step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
 .step-icon{font-size:22px;}
-.step-title{font-size:18px;font-weight:700;color:var(--cream);}
+.step-title{font-size:18px;font-weight:400;color:var(--cream);}
 .step-body{padding:18px;}
 
 /* Form fields */
@@ -56,7 +56,7 @@ textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:'Abril Fatface',serif;font-size:28px;color:var(--blue-light);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:28px;color:var(--blue-light);}
 input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
 .slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:16px;color:var(--muted);}
@@ -66,7 +66,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
 .persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
 .persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
-.persona-name{font-size:16px;font-weight:700;color:var(--cream);}
+.persona-name{font-size:16px;font-weight:400;color:var(--cream);}
 .persona-desc{font-size:16px;color:var(--muted);margin-top:4px;line-height:1.4;}
 .persona-check{position:absolute;top:8px;right:8px;font-size:16px;color:var(--gold2);display:none;}
 .persona-card.selected .persona-check{display:block;}
@@ -78,7 +78,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:200;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
-.photo-btn-label{font-size:16px;font-weight:700;}
+.photo-btn-label{font-size:16px;font-weight:400;}
 .photo-or{font-size:16px;color:var(--muted);}
 
 /* Map placeholder */
@@ -86,9 +86,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:700;color:var(--red-light);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:400;color:var(--red-light);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:var(--red-light);box-shadow:0 0 12px rgba(239,68,68,.3);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:16px;font-weight:700;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;transition:all .2s;}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:16px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;transition:all .2s;}
 .btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
@@ -96,7 +96,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
 .pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
 .pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
-.pay-opt-name{font-size:16px;font-weight:700;color:var(--cream);}
+.pay-opt-name{font-size:16px;font-weight:400;color:var(--cream);}
 .pay-opt-tag{font-size:16px;color:var(--muted);margin-top:4px;}
 
 /* Go live options */
@@ -104,20 +104,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
 .golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
 .golive-icon{font-size:28px;margin-bottom:6px;}
-.golive-name{font-size:16px;font-weight:700;color:var(--cream);}
+.golive-name{font-size:16px;font-weight:400;color:var(--cream);}
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
 .warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
-.warning-title{font-size:18px;font-weight:700;color:#fca5a5;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.warning-title{font-size:18px;font-weight:400;color:#fca5a5;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .warning-item{display:flex;align-items:center;gap:8px;font-size:16px;color:rgba(255,255,255,.7);}
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:16px;color:rgba(252,165,165,.6);}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:16px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.25);color:var(--cream);}
 .submit-note{font-size:16px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
@@ -127,10 +127,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .nav-item svg{stroke:#555;stroke-width:1.8;}
 .nav-label{font-size:16px;color:#555;margin-top:5px;}
 .nav-item.active svg{stroke:#f0f0f0;stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));}
-.nav-item.active .nav-label{color:#f0f0f0;font-weight:700;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
+.nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
 .nav-center{text-align:center;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin:-26px auto 0;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
-.nav-center .nav-label{color:#e0e0e0;font-weight:700;}
+.nav-center .nav-label{color:#e0e0e0;font-weight:400;}
 
 /* Fly-in */
 .el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
@@ -154,15 +154,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
         <div style="font-size:16px;color:#c8b48a;margin-bottom:6px;position:relative;">Prize Amount</div>
-        <div id="prize-display" style="font-family:'Abril Fatface',serif;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
+        <div id="prize-display" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
         <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
-          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$5</div>
-          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$10</div>
-          <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:16px;font-weight:700;color:#4ade80;cursor:pointer;">$25</div>
-          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$50</div>
+          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:400;color:#c8b48a;cursor:pointer;">$5</div>
+          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:400;color:#c8b48a;cursor:pointer;">$10</div>
+          <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:16px;font-weight:400;color:#4ade80;cursor:pointer;">$25</div>
+          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:400;color:#c8b48a;cursor:pointer;">$50</div>
         </div>
         <div style="position:relative;max-width:220px;margin:0 auto;">
-          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:rgba(74,222,128,.4);">$</span>
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;color:rgba(74,222,128,.4);">$</span>
           <input id="prize-input" type="number" min="1" max="100" placeholder="Custom (max $100)" oninput="customPrize(this.value)" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px 10px 32px;font-size:16px;color:#4ade80;font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;text-align:center;"/>
         </div>
       </div>
@@ -233,13 +233,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
           <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
             <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
               <div style="font-size:36px;margin-bottom:10px;">📷</div>
-              <div style="font-size:16px;font-weight:700;color:#fbbf24;">Take Photo</div>
+              <div style="font-size:16px;font-weight:400;color:#fbbf24;">Take Photo</div>
             </div>
           </div>
           <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
             <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
               <div style="font-size:36px;margin-bottom:10px;">🖼️</div>
-              <div style="font-size:16px;font-weight:700;color:#a78bfa;">Gallery</div>
+              <div style="font-size:16px;font-weight:400;color:#a78bfa;">Gallery</div>
             </div>
           </div>
         </div>
@@ -316,7 +316,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
           <div style="display:flex;justify-content:space-between;font-size:16px;color:var(--dim);margin-bottom:8px;">
             <span>FinderSeek fee (10%)</span><span id="pay-fee">$0.00</span>
           </div>
-          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--green);">
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:400;color:var(--green);">
             <span>Total charged</span><span id="pay-total">$0.00</span>
           </div>
         </div>
