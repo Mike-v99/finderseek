@@ -8,12 +8,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Quantico:wght@400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#c8b48a;--muted:#8a7a5a;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Quantico',sans-serif;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
@@ -23,7 +23,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Quantico',sans-serif;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
@@ -49,7 +49,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:16px;color:var(--dim);margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--cream);font-family:'Quantico',sans-serif;outline:none;-webkit-appearance:none;transition:border-color .2s;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s;}
 .finput:focus{border-color:rgba(201,137,12,.5);}
 .finput::placeholder{color:var(--muted);}
 textarea.finput{resize:vertical;line-height:1.6;}
@@ -75,7 +75,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Quantico',sans-serif;transition:all .2s;color:var(--cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:200;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:16px;font-weight:700;}
@@ -86,9 +86,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:700;color:var(--red-light);font-family:'Quantico',sans-serif;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);text-align:center;font-size:24px;font-weight:700;color:var(--red-light);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:var(--red-light);box-shadow:0 0 12px rgba(239,68,68,.3);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:16px;font-weight:700;color:var(--dim);font-family:'Quantico',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:16px;font-weight:700;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;transition:all .2s;}
 .btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
@@ -115,9 +115,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:16px;color:rgba(252,165,165,.6);}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;font-family:'Quantico',sans-serif;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:16px;font-weight:700;font-family:'Quantico',sans-serif;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:16px;font-weight:700;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.25);color:var(--cream);}
 .submit-note{font-size:16px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
@@ -146,6 +146,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <a class="back-btn" href="index.html" style="margin-bottom:0;">← Back</a>
     <div class="page-title" style="font-size:36px;">Start Quest</div>
     <div style="width:90px;"></div>
+  </div>
+
+  <!-- PRIZE AMOUNT -->
+  <div class="el" data-d="200" style="margin-bottom:12px;">
+    <div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.35),rgba(34,197,94,.1));">
+      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:24px 18px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(74,222,128,.05),transparent 50%);pointer-events:none;"></div>
+        <div style="font-size:16px;color:#c8b48a;margin-bottom:6px;position:relative;">Prize Amount</div>
+        <div id="prize-display" style="font-family:'Abril Fatface',serif;font-size:56px;position:relative;background:linear-gradient(90deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;margin-bottom:16px;">$25</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;position:relative;">
+          <div class="prize-chip" onclick="selPrize(5,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$5</div>
+          <div class="prize-chip" onclick="selPrize(10,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$10</div>
+          <div class="prize-chip active" onclick="selPrize(25,this)" style="padding:10px 16px;border-radius:10px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:16px;font-weight:700;color:#4ade80;cursor:pointer;">$25</div>
+          <div class="prize-chip" onclick="selPrize(50,this)" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700;color:#c8b48a;cursor:pointer;">$50</div>
+        </div>
+        <div style="position:relative;max-width:220px;margin:0 auto;">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:rgba(74,222,128,.4);">$</span>
+          <input id="prize-input" type="number" min="1" max="100" placeholder="Custom (max $100)" oninput="customPrize(this.value)" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px 10px 32px;font-size:16px;color:#4ade80;font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;text-align:center;"/>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- STEP 1: Quest Duration & Clues -->
@@ -208,11 +229,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="step-title">Photo of Hiding Spot</div>
       </div>
       <div class="step-body">
-        <div class="photo-drop">
-          <div class="photo-btns">
-            <div class="photo-btn"><span class="photo-btn-icon">📷</span><span class="photo-btn-label">Take Photo</span></div>
-            <div class="photo-or">or</div>
-            <div class="photo-btn"><span class="photo-btn-icon">🖼️</span><span class="photo-btn-label">Gallery</span></div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
+            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:10px;">📷</div>
+              <div style="font-size:16px;font-weight:700;color:#fbbf24;">Take Photo</div>
+            </div>
+          </div>
+          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
+            <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:10px;">🖼️</div>
+              <div style="font-size:16px;font-weight:700;color:#a78bfa;">Gallery</div>
+            </div>
           </div>
         </div>
       </div>
@@ -242,13 +270,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
           <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
           <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park" style="border-color:rgba(239,68,68,.35);"></textarea>
           <div style="font-size:16px;color:var(--dim);margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
-        </div>
-        <div class="field">
-          <label class="flabel">Prize Amount</label>
-          <div style="position:relative;">
-            <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--green);font-weight:700;font-size:18px;">$</span>
-            <input class="finput" id="prize-input" type="number" min="1" max="100" placeholder="Enter amount" style="padding-left:32px;font-weight:700;border-color:rgba(34,197,94,.35);" oninput="updPay(this.value)"/>
-          </div>
         </div>
       </div>
     </div>
@@ -369,6 +390,26 @@ function selPersona(el){
   document.querySelectorAll('.persona-card').forEach(function(c){c.classList.remove('selected');});
   el.classList.add('selected');
 }
+function selPrize(val,el){
+  document.querySelectorAll('.prize-chip').forEach(function(c){
+    c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+  });
+  el.style.background='rgba(74,222,128,.12)';el.style.borderColor='#4ade80';el.style.color='#4ade80';
+  document.getElementById('prize-display').textContent='$'+val;
+  document.getElementById('prize-input').value='';
+  updPay(val);
+}
+function customPrize(val){
+  var v=parseInt(val)||0;
+  if(v>100){v=100;document.getElementById('prize-input').value=100;}
+  if(v>0){
+    document.querySelectorAll('.prize-chip').forEach(function(c){
+      c.style.background='rgba(255,255,255,.04)';c.style.borderColor='rgba(255,255,255,.1)';c.style.color='#c8b48a';
+    });
+    document.getElementById('prize-display').textContent='$'+v;
+    updPay(v);
+  }
+}
 function updPay(val){
   var v=parseFloat(val)||0;
   if(v>100)v=100;
@@ -393,6 +434,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var d=parseInt(el.getAttribute('data-d'))||0;
     setTimeout(function(){el.classList.add('show');},d);
   });
+  updPay(25);
 });
 </script>
 </body>
