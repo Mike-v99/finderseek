@@ -24,7 +24,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
 
 @keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
-@keyframes dashFlow{0%{stroke-dashoffset:20;}100%{stroke-dashoffset:0;}}
 .page-title{font-size:32px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
 
 /* Hero */
@@ -38,30 +37,20 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
 /* Trail container */
 .trail{position:relative;padding:0 16px;}
-
-/* SVG path */
-.trail-svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;}
-.trail-path{stroke-dasharray:8 6;opacity:.3;}
-
-/* Trail stops */
 .stop{position:relative;z-index:1;opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
 .stop.visible{opacity:1;transform:translateY(0);}
 
-.stop-left{display:flex;gap:16px;align-items:flex-start;margin-bottom:0;padding:0 0 0 8px;}
-.stop-right{display:flex;gap:16px;align-items:flex-start;flex-direction:row-reverse;text-align:right;margin-bottom:0;padding:0 8px 0 0;}
+.stop-left{display:flex;gap:12px;align-items:flex-start;width:78%;text-align:left;}
+.stop-right{display:flex;gap:12px;align-items:flex-start;width:78%;margin-left:auto;text-align:left;}
 
-.stop-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.stop-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 
-.stop-title{font-size:18px;font-weight:400;margin-bottom:4px;}
-.stop-desc{font-size:17px;color:var(--dim);line-height:1.6;}
+.stop-title{font-size:17px;font-weight:400;margin-bottom:4px;}
+.stop-desc{font-size:15px;color:var(--dim);line-height:1.6;}
 
-/* Breadcrumb dots */
-.crumbs{display:flex;gap:6px;padding:12px 0;opacity:0;transform:translateY(20px);transition:opacity .6s ease .2s,transform .6s ease .2s;}
-.crumbs.visible{opacity:1;transform:translateY(0);}
-.crumbs-left{padding-left:32px;}
-.crumbs-right{justify-content:flex-end;padding-right:32px;}
-@keyframes dotPulse{0%,100%{opacity:.15;}50%{opacity:.7;}}
-.crumb{width:5px;height:5px;border-radius:50%;animation:dotPulse 2s ease-in-out infinite;}
+/* L-shaped connector */
+.lconn{height:55px;position:relative;margin:0 30px;opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.lconn.visible{opacity:1;transform:translateY(0);}
 
 /* Image placeholder */
 .stop-img{margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;}
@@ -133,10 +122,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <div style="text-align:center;font-size:17px;color:var(--dim);padding:0 16px 20px;">Follow the clues. Find the treasure. Win real cash.</div>
 
   <div class="trail">
-    <!-- Animated dashed curve trail -->
-    <svg style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;" viewBox="0 0 358 1100" preserveAspectRatio="none">
-      <path d="M42 20 C120 20, 200 50, 316 70 C358 80, 340 140, 300 160 C220 200, 80 180, 42 240 C10 280, 30 340, 100 360 C200 390, 316 370, 316 430 C316 490, 200 520, 100 530 C40 535, 30 580, 100 610 C180 640, 240 630, 180 700" fill="none" stroke="#c9890c" stroke-width="1.5" stroke-dasharray="6 4" opacity=".2" style="animation:dashFlow 1.5s linear infinite;"/>
-    </svg>
     <!-- Stop 1 -->
     <div class="stop stop-left">
       <div class="stop-circle" style="background:rgba(251,191,36,.1);border:1.5px solid #fbbf24;">🎯</div>
@@ -163,13 +148,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-left">
-      <span class="crumb" style="background:#fbbf24;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#fbbf24;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#fbbf24;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#fbbf24;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#fbbf24;animation-delay:.8s;"></span>
+    <!-- L connector: left → right -->
+    <div class="lconn">
+      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 24px);top:50%;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
     </div>
 
     <!-- Stop 2 -->
@@ -195,13 +178,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-right">
-      <span class="crumb" style="background:#34d399;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#34d399;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#34d399;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#34d399;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#34d399;animation-delay:.8s;"></span>
+    <!-- L connector: right → left -->
+    <div class="lconn">
+      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
     </div>
 
     <!-- Stop 3 -->
@@ -228,13 +209,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-left">
-      <span class="crumb" style="background:#f472b6;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#f472b6;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#f472b6;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#f472b6;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#f472b6;animation-delay:.8s;"></span>
+    <!-- L connector: left → center -->
+    <div class="lconn">
+      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.2;"></div>
+      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#e8a820;opacity:.2;"></div>
     </div>
 
     <!-- Stop 4 - X -->
@@ -271,10 +250,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <div style="text-align:center;font-size:17px;color:var(--dim);padding:0 16px 20px;">Hide the treasure. Set the prize. Watch Seekers race to find it.</div>
 
   <div class="trail">
-    <!-- Animated blue dashed curve trail -->
-    <svg style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;" viewBox="0 0 358 1100" preserveAspectRatio="none">
-      <path d="M316 20 C238 20, 158 50, 42 70 C10 80, 20 140, 58 160 C138 200, 278 180, 316 240 C348 280, 328 340, 258 360 C158 390, 42 370, 42 430 C42 490, 158 520, 258 530 C318 535, 328 580, 258 610 C178 640, 118 630, 178 700" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6 4" opacity=".2" style="animation:dashFlow 1.5s linear infinite;"/>
-    </svg>
     <!-- Stop 1 -->
     <div class="stop stop-right">
       <div class="stop-circle" style="background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;">📍</div>
@@ -294,13 +269,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-right">
-      <span class="crumb" style="background:#60a5fa;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#60a5fa;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#60a5fa;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#60a5fa;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#60a5fa;animation-delay:.8s;"></span>
+    <!-- L connector: right → left -->
+    <div class="lconn">
+      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
     </div>
 
     <!-- Stop 2 -->
@@ -324,13 +297,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-left">
-      <span class="crumb" style="background:#fb923c;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#fb923c;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#fb923c;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#fb923c;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#fb923c;animation-delay:.8s;"></span>
+    <!-- L connector: left → right -->
+    <div class="lconn">
+      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 24px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
     </div>
 
     <!-- Stop 3 -->
@@ -353,13 +324,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-right">
-      <span class="crumb" style="background:#a855f7;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#a855f7;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#a855f7;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#a855f7;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#a855f7;animation-delay:.8s;"></span>
+    <!-- L connector: right → left -->
+    <div class="lconn">
+      <div style="position:absolute;right:calc(22% + 24px);top:0;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
     </div>
 
     <!-- Stop 4 -->
@@ -384,13 +353,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="crumbs crumbs-left">
-      <span class="crumb" style="background:#4ade80;animation-delay:0s;"></span>
-      <span class="crumb" style="background:#4ade80;animation-delay:.2s;"></span>
-      <span class="crumb" style="background:#4ade80;animation-delay:.4s;"></span>
-      <span class="crumb" style="background:#4ade80;animation-delay:.6s;"></span>
-      <span class="crumb" style="background:#4ade80;animation-delay:.8s;"></span>
+    <!-- L connector: left → center -->
+    <div class="lconn">
+      <div style="position:absolute;left:24px;top:0;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;left:24px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
     </div>
 
     <!-- End -->
@@ -429,7 +396,7 @@ var observer=new IntersectionObserver(function(entries){
   });
 },{threshold:0.15,rootMargin:'0px 0px -50px 0px'});
 
-document.querySelectorAll('.stop,.crumbs,.map-divider').forEach(function(el){
+document.querySelectorAll('.stop,.map-divider,.lconn').forEach(function(el){
   observer.observe(el);
 });
 </script>
