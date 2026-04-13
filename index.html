@@ -98,8 +98,8 @@ body::after {
 .cta-row { display: flex; gap: 10px; margin: 24px 0 0; padding: 0 4px; }
 .btn-cta {
   flex: 1;
+  aspect-ratio: 1;
   border-radius: 18px;
-  padding: 24px 12px;
   text-align: center;
   cursor: pointer;
   transition: transform .2s, box-shadow .2s;
@@ -108,6 +108,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
 }
 .btn-cta:active { transform: scale(.97); }
 .btn-find {
@@ -120,7 +121,7 @@ body::after {
   background: linear-gradient(180deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.02) 100%);
   box-shadow: 0 0 28px rgba(59,130,246,.1);
 }
-.btn-cta-icon { font-size: 34px; margin-bottom: 10px; display: block; line-height: 1; }
+.btn-cta-icon { font-size: 34px; display: block; line-height: 1; }
 .btn-cta-label { font-size: 17px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
 .btn-find .btn-cta-label { color: var(--yellow); animation: glowPulseG 3s ease-in-out infinite; }
 .btn-hide .btn-cta-label { color: #fff; animation: glowPulseB 3s ease-in-out infinite .5s; }
