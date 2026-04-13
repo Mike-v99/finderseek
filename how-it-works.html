@@ -16,65 +16,19 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
 .bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.1),transparent 65%);pointer-events:none;z-index:0;}
 
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 100px;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 0 100px;}
 
-/* Header */
-.hdr{padding:16px 16px 0;}
-.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
 
 @keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
-.page-title{font-size:33px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
+.page-title{font-size:28px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.5),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
 
-/* Hero */
-.hero{text-align:center;padding:20px 16px 30px;}
-.hero-sub{font-size:18px;color:var(--dim);margin-top:8px;line-height:1.6;}
-.hero-pills{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
-.hero-pill{font-size:18px;padding:6px 14px;border-radius:50px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--dim);}
+.el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
+.el.visible{opacity:1;transform:translateY(0);}
 
-/* Section labels */
-.section-label{font-size:18px;letter-spacing:3px;text-align:center;padding:24px 16px 16px;font-weight:400;}
+.step-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.step-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:400;flex-shrink:0;}
 
-/* Trail container */
-.trail{position:relative;padding:0 16px;}
-.stop{position:relative;z-index:1;opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
-.stop.visible{opacity:1;transform:translateY(0);}
-
-.stop-left{width:78%;text-align:left;}
-.stop-right{width:78%;margin-left:auto;text-align:left;}
-
-
-.stop-title{font-size:18px;font-weight:400;margin-bottom:4px;}
-.stop-desc{font-size:18px;color:#ffffff;line-height:1.6;}
-
-/* L-shaped connector */
-.lconn{height:55px;position:relative;margin:0 30px;opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
-.lconn.visible{opacity:1;transform:translateY(0);}
-
-/* Image placeholder */
-.stop-img{margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;}
-.stop-img img{width:100%;display:block;opacity:.85;}
-.stop-img-fade{position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,var(--ink));pointer-events:none;}
-
-/* Placeholder for screenshots */
-.img-placeholder{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.06));border-radius:14px;border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--muted);font-size:18px;margin-top:12px;position:relative;overflow:hidden;}
-.img-placeholder::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,var(--ink));pointer-events:none;}
-
-/* X mark */
-@keyframes pulseX{0%,100%{text-shadow:0 0 12px rgba(232,168,32,.3);}50%{text-shadow:0 0 30px rgba(232,168,32,.6),0 0 50px rgba(232,168,32,.2);}}
-.x-mark{font-size:57px;color:var(--gold2);font-weight:400;animation:pulseX 3s ease-in-out infinite;}
-
-/* Divider */
-.map-divider{display:flex;align-items:center;gap:12px;padding:32px 24px;opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
-.map-divider.visible{opacity:1;transform:translateY(0);}
-.map-divider-line{flex:1;height:1px;}
-
-/* CTA */
-.cta-row{display:flex;gap:10px;padding:24px 16px 0;}
-.btn-seek{flex:1;padding:16px;border-radius:14px;font-size:18px;font-weight:400;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;}
-.btn-hide{flex:1;padding:16px;border-radius:14px;font-size:18px;font-weight:400;text-align:center;border:1.5px solid #60a5fa;color:#fff;text-decoration:none;font-family:'Noto Sans Display',sans-serif;}
-
-/* Bottom Nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;justify-content:space-around;padding:8px 4px 12px;z-index:100;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0;text-decoration:none;}
 .nav-item svg{stroke:var(--muted);stroke-width:1.8;fill:none;}
@@ -94,276 +48,92 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 <div class="page">
 
   <!-- Header -->
-  <div class="hdr">
-    <div class="hdr-row">
+  <div style="padding:0 16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <a class="back-btn" href="index.html">← Back</a>
       <div class="page-title">How It Works</div>
       <div style="width:90px;"></div>
     </div>
   </div>
 
-  <!-- ═══════════ SEEKER PATH ═══════════ -->
-  <div class="section-label" style="color:#e8a820;">— SEEKER PATH —</div>
-  <div style="display:flex;gap:6px;justify-content:center;padding:0 16px 6px;flex-wrap:wrap;">
-    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);color:#e8a820;">Free to Play</span>
-    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Real Cash</span>
-    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);color:#60a5fa;">AI Clues</span>
-  </div>
-  <div style="text-align:center;font-size:18px;color:var(--dim);padding:8px 16px 20px;">Follow the clues. Find the treasure. Win real cash.</div>
+  <!-- ══ FIND TREASURE ══ -->
+  <div class="el" style="text-align:center;font-size:18px;color:#e8a820;letter-spacing:3px;padding:0 0 16px;font-weight:400;">🔍 FIND TREASURE</div>
 
-  <div class="trail">
-    <!-- Stop 1 -->
-    <div class="stop stop-left">
-        <div class="stop-title" style="color:#fbbf24;">1. Browse Active Quests</div>
-        <div class="stop-desc">Tap the Active tab and pick a quest. See the prize, time left, and clues dropped.</div>
-        <!-- Mini mockup of active quests -->
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid rgba(34,197,94,.3);border-radius:12px;background:rgba(34,197,94,.04);margin-bottom:8px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,.15);border:1.5px solid rgba(34,197,94,.4);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">3</div>
-            <div style="font-size:18px;font-weight:400;color:#4ade80;">ACTIVE</div>
-            <div style="margin-left:auto;font-size:18px;color:#a8c8e0;">3 quests</div>
-          </div>
-          <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
-            <div><div style="font-size:18px;color:#fff;">Downtown Houston</div><div style="font-size:18px;color:#a8c8e0;margin-top:2px;">3 of 7 clues dropped</div></div>
-            <div style="font-size:18px;font-weight:400;color:#4ade80;">$50</div>
-          </div>
-          <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">
-            <div><div style="font-size:18px;color:#fff;">Memorial Park</div><div style="font-size:18px;color:#a8c8e0;margin-top:2px;">1 of 5 clues dropped</div></div>
-            <div style="font-size:18px;font-weight:400;color:#4ade80;">$25</div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
+  <div style="padding:0 20px;" class="el">
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(251,191,36,.1);border:1.5px solid #fbbf24;color:#fbbf24;">1</div>
+      <div style="font-size:18px;color:#fff;">Browse quests with real cash prizes</div>
     </div>
-
-    <!-- L connector: left → right -->
-    <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.3;"></div>
-      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#34d399;opacity:.3;"></div>
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(52,211,153,.1);border:1.5px solid #34d399;color:#34d399;">2</div>
+      <div style="font-size:18px;color:#fff;">Follow AI clues dropped on a timer</div>
     </div>
-
-    <!-- Stop 2 -->
-    <div class="stop stop-right">
-        <div class="stop-title" style="color:#34d399;">2. Decode AI Clues</div>
-        <div class="stop-desc">AI clues drop on a timer. 9 persona styles — Pirate, Poetic, Hillbilly & more.</div>
-        <!-- Example clue -->
-        <div style="margin-top:10px;padding:12px;border-radius:10px;border:1px solid rgba(232,168,32,.2);background:rgba(232,168,32,.04);">
-          <div style="font-size:18px;color:#e8a820;margin-bottom:4px;">🏴‍☠️ Pirate Clue Example:</div>
-          <div style="font-size:18px;color:#fff;font-style:italic;line-height:1.6;">"Arrr, where the iron serpent crosses the creek, look beneath the third stone on the eastern bank..."</div>
-        </div>
-        <!-- Mini mockup of clue cards -->
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="padding:12px;border-radius:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);margin-bottom:8px;position:relative;">
-            <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#22c55e,#4ade80);border-radius:10px 0 0 10px;"></div>
-            <div style="font-size:18px;color:#fff;margin-bottom:4px;font-weight:400;">Clue #1 — Day 1</div>
-            <div style="font-size:18px;color:#fff;line-height:1.6;font-style:italic;">"Where the bayou bends and concrete meets the green, look where families gather on Sunday afternoons..."</div>
-          </div>
-          <div style="padding:12px;border-radius:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);position:relative;">
-            <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#22c55e,#4ade80);border-radius:10px 0 0 10px;"></div>
-            <div style="font-size:18px;color:#fff;margin-bottom:4px;font-weight:400;">Clue #2 — Day 1</div>
-            <div style="font-size:18px;color:#fff;line-height:1.6;font-style:italic;">"Three oaks stand in a row. The middle one whispers to those who look down..."</div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(244,114,182,.1);border:1.5px solid #f472b6;color:#f472b6;">3</div>
+      <div style="font-size:18px;color:#fff;">Race to the spot, find the 6-digit code</div>
     </div>
-
-    <!-- L connector: right → left -->
-    <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#34d399;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.3;"></div>
-    </div>
-
-    <!-- Stop 3 -->
-    <div class="stop stop-left">
-        <div class="stop-title" style="color:#f472b6;">3. Race to the Spot</div>
-        <div class="stop-desc">Decode the clues, head outside. The treasure is at a public park, trail, or landmark.</div>
-        <!-- Mini mockup of map -->
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="aspect-ratio:16/10;border-radius:10px;background:linear-gradient(135deg,rgba(34,60,34,.4),rgba(20,40,30,.6));border:1px solid rgba(74,222,128,.15);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-            <div style="position:absolute;inset:0;opacity:.15;">
-              <div style="position:absolute;top:20%;left:10%;width:60%;height:1px;background:#4ade80;"></div>
-              <div style="position:absolute;top:45%;left:25%;width:40%;height:1px;background:#4ade80;transform:rotate(-15deg);"></div>
-              <div style="position:absolute;top:70%;left:5%;width:80%;height:1px;background:#4ade80;"></div>
-              <div style="position:absolute;top:10%;left:40%;width:1px;height:60%;background:#4ade80;"></div>
-              <div style="position:absolute;top:30%;left:70%;width:1px;height:50%;background:#4ade80;"></div>
-            </div>
-            <div style="width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,.8);border:2px solid #fff;z-index:1;box-shadow:0 0 12px rgba(239,68,68,.5);"></div>
-          </div>
-          <div style="text-align:center;font-size:18px;color:#a8c8e0;margin-top:8px;">Map zooms closer with each clue</div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-      </div>
-
-    <!-- L connector: left → center -->
-    <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#f472b6;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.3;"></div>
-      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#e8a820;opacity:.3;"></div>
-    </div>
-
-    <!-- Stop 4 - X -->
-    <div class="stop" style="text-align:center;padding:8px 0;">
-      <div class="x-mark">X</div>
-      <div style="font-size:21px;font-weight:400;color:#4ade80;margin-top:8px;">4. Enter Code & Win!</div>
-      <div style="font-size:18px;color:var(--dim);margin-top:6px;line-height:1.6;">Find the 6-digit code. Enter it in the app. First to submit wins!</div>
-      <!-- Mini mockup of code entry -->
-      <div style="max-width:280px;margin:12px auto 0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:16px;text-align:center;">
-        <div style="font-size:18px;color:#4ade80;margin-bottom:12px;font-weight:400;">Enter the 6-digit code</div>
-        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">3</div>
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">7</div>
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">9</div>
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">2</div>
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">0</div>
-          <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#4ade80;">4</div>
-        </div>
-        <div style="padding:10px;border-radius:10px;background:linear-gradient(135deg,rgba(34,197,94,.8),rgba(74,222,128,.9));font-size:18px;font-weight:400;color:#0a1a0a;">CLAIM PRIZE</div>
-        <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-      </div>
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;color:#4ade80;">4</div>
+      <div style="font-size:18px;color:#fff;">Enter the code — <span style="color:#4ade80;">win the cash!</span></div>
     </div>
   </div>
 
-  <!-- Mid-page CTA -->
-  <div class="stop" style="text-align:center;padding:20px 16px;">
-    <a href="index.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">🔍 Find Treasure Now</a>
+  <div class="el" style="text-align:center;padding:0 16px 24px;">
+    <a href="index.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">🔍 Find Treasure</a>
   </div>
 
-  <!-- ═══════════ DIVIDER ═══════════ -->
-  <div class="map-divider">
-    <div class="map-divider-line" style="background:linear-gradient(90deg,transparent,rgba(96,165,250,.3),transparent);"></div>
-    <div style="font-size:18px;color:rgba(96,165,250,.5);letter-spacing:2px;">or</div>
-    <div class="map-divider-line" style="background:linear-gradient(90deg,transparent,rgba(96,165,250,.3),transparent);"></div>
+  <!-- Divider -->
+  <div class="el" style="display:flex;align-items:center;gap:12px;padding:0 24px;">
+    <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.25),transparent);"></div>
+    <div style="font-size:18px;color:rgba(96,165,250,.4);letter-spacing:2px;">or</div>
+    <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.25),transparent);"></div>
   </div>
 
-  <!-- ═══════════ HIDER PATH ═══════════ -->
-  <div class="section-label" style="color:#60a5fa;">— HIDER PATH —</div>
-  <div style="text-align:center;font-size:18px;color:var(--dim);padding:0 16px 20px;">Hide the treasure. Set the prize. Watch Seekers race to find it.</div>
+  <!-- ══ START A QUEST ══ -->
+  <div class="el" style="text-align:center;font-size:18px;color:#60a5fa;letter-spacing:3px;padding:24px 0 16px;font-weight:400;">🏴‍☠️ START A QUEST</div>
 
-  <div class="trail">
-    <!-- Stop 1 -->
-    <div class="stop stop-right">
-        <div class="stop-title" style="color:#60a5fa;">1. Pick a Public Hiding Spot</div>
-        <div class="stop-desc">Pick a safe public spot — park, trail, or landmark. Drop a pin and describe it well. Better details = better clues!</div>
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="border-radius:10px;border:1.5px solid rgba(200,200,215,.4);padding:12px 14px;font-size:18px;color:#b8d4e8;margin-bottom:10px;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(220,220,230,.2),transparent);"></div>
-            Search address, park, landmark...
-          </div>
-          <div style="aspect-ratio:16/9;border-radius:10px;background:linear-gradient(135deg,rgba(34,60,34,.3),rgba(20,40,30,.5));border:1px solid rgba(201,137,12,.2);display:flex;align-items:center;justify-content:center;font-size:18px;color:#a8c8e0;">
-            <div style="text-align:center;"><span style="font-size:25px;display:block;margin-bottom:4px;">🗺️</span>Tap to set location</div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
+  <div style="padding:0 20px;" class="el">
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;color:#60a5fa;">1</div>
+      <div style="font-size:18px;color:#fff;">Pick a public spot, hide a 6-digit code</div>
     </div>
-
-    <!-- L connector: right → left -->
-    <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.3;"></div>
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(168,85,247,.1);border:1.5px solid #a855f7;color:#a855f7;">2</div>
+      <div style="font-size:18px;color:#fff;">AI writes the clues from your description</div>
     </div>
-
-    <!-- Stop 2 -->
-    <div class="stop stop-left">
-        <div class="stop-title" style="color:#fb923c;">2. Hide the 6-Digit Code</div>
-        <div class="stop-desc">Write a code on a card, hide it in a zip-lock bag. Seekers will hunt for this.</div>
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:16px;text-align:center;">
-          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;">
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">8</div>
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">4</div>
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">7</div>
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">2</div>
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">6</div>
-            <div style="width:36px;height:42px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#f87171;">1</div>
-          </div>
-          <div style="font-size:18px;color:#a8c8e0;">Write this code and hide it at the spot</div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
-    </div>
-
-    <!-- L connector: left → right -->
-    <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fb923c;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.3;"></div>
-      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.3;"></div>
-    </div>
-
-    <!-- Stop 3 -->
-    <div class="stop stop-right">
-        <div class="stop-title" style="color:#a855f7;">3. AI Writes Your Clues</div>
-        <div class="stop-desc">Pick a persona — Pirate, Poetic, Hillbilly & more. AI writes all clues from your description.</div>
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1.5px solid #e8a820;background:rgba(201,137,12,.08);"><span style="font-size:21px;display:block;">🏴‍☠️</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">Pirate</div></div>
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:21px;display:block;">🌸</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">Poetic</div></div>
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:21px;display:block;">🤬</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">Insults</div></div>
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:21px;display:block;">😏</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">Sarcastic</div></div>
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:21px;display:block;">🤠</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">Hillbilly</div></div>
-            <div style="border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><span style="font-size:21px;display:block;">🧸</span><div style="font-size:18px;font-weight:400;color:#fff;margin-top:4px;">5 Year Old</div></div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-        </div>
-    </div>
-
-    <!-- L connector: right → left -->
-    <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#a855f7;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
-    </div>
-
-    <!-- Stop 4 -->
-    <div class="stop stop-left">
-        <div class="stop-title" style="color:#4ade80;">4. Set Prize & Go Live</div>
-        <div class="stop-desc">Set your prize ($1-$100), pay via Stripe. Go live or schedule. Prize auto-transfers when found.</div>
-        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
-          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
-            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:18px;color:#a8c8e0;">$5</div>
-            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:18px;color:#a8c8e0;">$10</div>
-            <div style="padding:8px 14px;border-radius:8px;background:rgba(74,222,128,.12);border:1px solid #4ade80;font-size:18px;color:#4ade80;">$25</div>
-            <div style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:18px;color:#a8c8e0;">$50</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="padding:12px;border-radius:10px;text-align:center;border:1.5px solid #a78bfa;background:rgba(139,92,246,.08);"><div style="font-size:18px;margin-bottom:4px;">⚡</div><div style="font-size:18px;font-weight:400;color:#fff;">Right Now</div></div>
-            <div style="padding:12px;border-radius:10px;text-align:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);"><div style="font-size:18px;margin-bottom:4px;">📅</div><div style="font-size:18px;font-weight:400;color:#fff;">Schedule</div></div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
-      </div>
-
-    <!-- L connector: left → center -->
-    <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.3;"></div>
-      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
-    </div>
-
-    <!-- End -->
-    <div class="stop" style="text-align:center;padding:8px 0;">
-      <div style="width:64px;height:64px;border-radius:50%;background:rgba(74,222,128,.1);border:2px solid #4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:18px;font-weight:400;color:#4ade80;">GO</div>
-      <div style="font-size:21px;font-weight:400;color:#4ade80;margin-top:12px;">Watch the Hunt Unfold!</div>
-      <div style="font-size:18px;color:var(--dim);margin-top:6px;line-height:1.6;">Get notified on claim. Prize auto-transfers — no action needed.</div>
+    <div class="step-row">
+      <div class="step-num" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;color:#4ade80;">3</div>
+      <div style="font-size:18px;color:#fff;">Set prize ($1-$100), go live — <span style="color:#4ade80;">watch the hunt!</span></div>
     </div>
   </div>
 
-  <!-- ═══════════ TRUST SECTION ═══════════ -->
-  <div class="stop" style="padding:24px 16px;">
+  <div class="el" style="text-align:center;padding:0 16px 24px;">
+    <a href="newquest.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;border:1.5px solid #60a5fa;color:#fff;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">+ Start Quest</a>
+  </div>
+
+  <!-- Trust icons -->
+  <div class="el" style="padding:20px 20px 0;border-top:1px solid rgba(255,255,255,.06);">
+    <div style="display:flex;justify-content:space-around;text-align:center;">
+      <div><div style="font-size:22px;margin-bottom:4px;">🔒</div><div style="font-size:18px;color:#a8c8e0;">Stripe<br/>payments</div></div>
+      <div><div style="font-size:22px;margin-bottom:4px;">⚡</div><div style="font-size:18px;color:#a8c8e0;">Auto<br/>payouts</div></div>
+      <div><div style="font-size:22px;margin-bottom:4px;">🎯</div><div style="font-size:18px;color:#a8c8e0;">Skill<br/>based</div></div>
+      <div><div style="font-size:22px;margin-bottom:4px;">🆓</div><div style="font-size:18px;color:#a8c8e0;">Free to<br/>play</div></div>
+    </div>
+  </div>
+
+  <!-- How Do I Get Paid -->
+  <div class="el" style="padding:24px 16px 0;">
     <div style="border-radius:18px;padding:1.5px;background:linear-gradient(180deg,rgba(74,222,128,.3),rgba(74,222,128,.05));">
-      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:22px 18px;text-align:center;">
-        <div style="font-size:21px;font-weight:400;color:#4ade80;margin-bottom:12px;">How Do I Get Paid?</div>
-        <div style="display:flex;flex-direction:column;gap:10px;text-align:left;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Payments powered by Stripe</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Prize auto-transfers when code is claimed</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>No action needed — it's automatic</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Refunded if quest expires unclaimed</div>
+      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:22px 18px;">
+        <div style="font-size:21px;font-weight:400;color:#4ade80;margin-bottom:14px;text-align:center;">How Do I Get Paid?</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Payments powered by Stripe</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Prize auto-transfers when code is claimed</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>No action needed — it's automatic</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Refunded if quest expires unclaimed</div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- CTAs -->
-  <div class="cta-row">
-    <a class="btn-seek" href="index.html">🔍 Find Treasure</a>
-    <a class="btn-hide" href="newquest.html">+ Start Quest</a>
   </div>
 
 </div>
@@ -382,15 +152,11 @@ function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(f
 
 var observer=new IntersectionObserver(function(entries){
   entries.forEach(function(entry){
-    if(entry.isIntersecting){
-      entry.target.classList.add('visible');
-    }
+    if(entry.isIntersecting){entry.target.classList.add('visible');}
   });
-},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});
+},{threshold:0.15,rootMargin:'0px 0px -30px 0px'});
 
-document.querySelectorAll('.stop,.map-divider,.lconn').forEach(function(el){
-  observer.observe(el);
-});
+document.querySelectorAll('.el').forEach(function(el){observer.observe(el);});
 </script>
 </body>
 </html>
