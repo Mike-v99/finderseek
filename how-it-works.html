@@ -104,7 +104,12 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
   <!-- ═══════════ SEEKER PATH ═══════════ -->
   <div class="section-label" style="color:#e8a820;">— SEEKER PATH —</div>
-  <div style="text-align:center;font-size:18px;color:var(--dim);padding:0 16px 20px;">Follow the clues. Find the treasure. Win real cash.</div>
+  <div style="display:flex;gap:6px;justify-content:center;padding:0 16px 6px;flex-wrap:wrap;">
+    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);color:#e8a820;">Free to Play</span>
+    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Real Cash</span>
+    <span style="font-size:18px;padding:5px 14px;border-radius:50px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);color:#60a5fa;">AI Clues</span>
+  </div>
+  <div style="text-align:center;font-size:18px;color:var(--dim);padding:8px 16px 20px;">Follow the clues. Find the treasure. Win real cash.</div>
 
   <div class="trail">
     <!-- Stop 1 -->
@@ -132,15 +137,20 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: left → right -->
     <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.2;"></div>
-      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fbbf24;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fbbf24,#34d399);opacity:.3;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#34d399;opacity:.3;"></div>
     </div>
 
     <!-- Stop 2 -->
     <div class="stop stop-right">
         <div class="stop-title" style="color:#34d399;">2. Decode AI Clues</div>
         <div class="stop-desc">AI clues drop on a timer. 9 persona styles — Pirate, Poetic, Hillbilly & more.</div>
+        <!-- Example clue -->
+        <div style="margin-top:10px;padding:12px;border-radius:10px;border:1px solid rgba(232,168,32,.2);background:rgba(232,168,32,.04);">
+          <div style="font-size:18px;color:#e8a820;margin-bottom:4px;">🏴‍☠️ Pirate Clue Example:</div>
+          <div style="font-size:18px;color:#fff;font-style:italic;line-height:1.6;">"Arrr, where the iron serpent crosses the creek, look beneath the third stone on the eastern bank..."</div>
+        </div>
         <!-- Mini mockup of clue cards -->
         <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:rgba(13,11,24,.95);padding:12px;">
           <div style="padding:12px;border-radius:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);margin-bottom:8px;position:relative;">
@@ -159,9 +169,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#34d399;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#34d399;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#f472b6,#34d399);opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#f472b6;opacity:.3;"></div>
     </div>
 
     <!-- Stop 3 -->
@@ -186,9 +196,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: left → center -->
     <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#f472b6;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.2;"></div>
-      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#e8a820;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#f472b6;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:linear-gradient(90deg,#f472b6,#e8a820);opacity:.3;"></div>
+      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#e8a820;opacity:.3;"></div>
     </div>
 
     <!-- Stop 4 - X -->
@@ -211,6 +221,11 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
         <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(transparent,var(--ink));pointer-events:none;"></div>
       </div>
     </div>
+  </div>
+
+  <!-- Mid-page CTA -->
+  <div class="stop" style="text-align:center;padding:20px 16px;">
+    <a href="index.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">🔍 Find Treasure Now</a>
   </div>
 
   <!-- ═══════════ DIVIDER ═══════════ -->
@@ -243,9 +258,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#60a5fa;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#60a5fa);opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#fb923c;opacity:.3;"></div>
     </div>
 
     <!-- Stop 2 -->
@@ -268,9 +283,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: left → right -->
     <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fb923c;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.2;"></div>
-      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#fb923c;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#fb923c,#a855f7);opacity:.3;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:50%;width:2px;height:50%;background:#a855f7;opacity:.3;"></div>
     </div>
 
     <!-- Stop 3 -->
@@ -292,9 +307,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: right → left -->
     <div class="lconn">
-      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#a855f7;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;right:calc(22% + 10px);top:0;width:2px;height:50%;background:#a855f7;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;right:calc(22% + 24px);height:2px;background:linear-gradient(90deg,#4ade80,#a855f7);opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
     </div>
 
     <!-- Stop 4 -->
@@ -317,9 +332,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
     <!-- L connector: left → center -->
     <div class="lconn">
-      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
-      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.2;"></div>
-      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#4ade80;opacity:.2;"></div>
+      <div style="position:absolute;left:10px;top:0;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
+      <div style="position:absolute;left:10px;top:50%;width:calc(50% - 24px);height:2px;background:#4ade80;opacity:.3;"></div>
+      <div style="position:absolute;left:50%;top:50%;width:2px;height:50%;background:#4ade80;opacity:.3;"></div>
     </div>
 
     <!-- End -->
@@ -327,6 +342,21 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
       <div style="width:64px;height:64px;border-radius:50%;background:rgba(74,222,128,.1);border:2px solid #4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:18px;font-weight:400;color:#4ade80;">GO</div>
       <div style="font-size:21px;font-weight:400;color:#4ade80;margin-top:12px;">Watch the Hunt Unfold!</div>
       <div style="font-size:18px;color:var(--dim);margin-top:6px;line-height:1.6;">Get notified on claim. Prize auto-transfers — no action needed.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TRUST SECTION ═══════════ -->
+  <div class="stop" style="padding:24px 16px;">
+    <div style="border-radius:18px;padding:1.5px;background:linear-gradient(180deg,rgba(74,222,128,.3),rgba(74,222,128,.05));">
+      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:22px 18px;text-align:center;">
+        <div style="font-size:21px;font-weight:400;color:#4ade80;margin-bottom:12px;">How Do I Get Paid?</div>
+        <div style="display:flex;flex-direction:column;gap:10px;text-align:left;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Payments powered by Stripe</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Prize auto-transfers when code is claimed</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>No action needed — it's automatic</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:#fff;"><span style="color:#4ade80;">✓</span>Refunded if quest expires unclaimed</div>
+        </div>
+      </div>
     </div>
   </div>
 
