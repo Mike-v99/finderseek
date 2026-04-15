@@ -167,7 +167,7 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
   <!-- Sign out -->
   <div class="el">
-    <button class="btn-signout">Sign Out</button>
+    <button class="btn-signout" onclick="signOut()">Sign Out</button>
   </div>
 
   <!-- Version -->
@@ -187,6 +187,48 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 </nav>
 
 <script>
+const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+
+function signOut(){
+  // Clear local storage token
+  localStorage.removeItem('fs_token');
+  localStorage.removeItem('sb-qeiuycuasjkopxfkmggp-auth-token');
+  // Call Supabase sign out
+  fetch(SB+'/auth/v1/logout',{
+    method:'POST',
+    headers:{'apikey':KEY,'Authorization':'Bearer '+(localStorage.getItem('fs_token')||KEY)}
+  }).catch(()=>{});
+  // Clear all session storage too
+  sessionStorage.clear();
+  // Redirect to home
+  window.location.href='index.html';
+}
+
+// Load real profile data if logged in
+async function loadProfile(){
+  const token=localStorage.getItem('fs_token');
+  if(!token)return;
+  try{
+    const r=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if(!r.ok)return;
+    const user=await r.json();
+    if(!user?.id)return;
+    // Fetch profile
+    const pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    const pd=await pr.json();
+    if(pd&&pd.length>0){
+      const p=pd[0];
+      // Update avatar
+      const initials=(p.username||user.email||'??').substring(0,2).toUpperCase();
+      document.querySelector('.avatar').textContent=initials;
+      // Update name
+      document.querySelector('.avatar').nextElementSibling.textContent=p.username||user.email;
+    }
+  }catch(e){console.log('Profile load error:',e);}
+}
+loadProfile();
+
 var observer=new IntersectionObserver(function(entries){
   entries.forEach(function(entry){
     if(entry.isIntersecting){entry.target.classList.add('visible');}
