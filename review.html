@@ -18,10 +18,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://js.stripe.com/v3/"></script>
 <style>
-:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#a8c8e0;--muted:#8fa8bd;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
+:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 .page{max-width:520px;margin:0 auto;padding:16px 16px 120px;}
@@ -50,12 +50,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .clue-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:18px;flex-shrink:0;}
 .clue-label{font-size:18px;color:var(--muted);flex:1;}
 .clue-label strong{color:var(--cream);font-weight:400;}
-.clue-text{font-size:18px;color:var(--cream);line-height:1.55;font-weight:200;padding:4px 0 2px;}
-.clue-edit-textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:18px;color:var(--cream);font-family:inherit;font-weight:200;line-height:1.55;outline:none;resize:vertical;}
+.clue-text{font-size:18px;color:var(--cream);line-height:1.55;font-weight:300;padding:4px 0 2px;}
+.clue-edit-textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:18px;color:var(--cream);font-family:inherit;font-weight:300;line-height:1.55;outline:none;resize:vertical;}
 .clue-edit-textarea:focus{border-color:rgba(232,168,32,.5);}
 
 .clue-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:18px;color:var(--cream);cursor:pointer;font-family:inherit;font-weight:200;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
+.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:18px;color:var(--cream);cursor:pointer;font-family:inherit;font-weight:300;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
 .clue-btn:hover{background:rgba(255,255,255,.08);}
 .clue-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;border:none;font-weight:400;}
 .clue-btn.pro{background:var(--purple-bg);border-color:rgba(167,139,250,.3);color:var(--purple);}

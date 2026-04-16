@@ -9,10 +9,10 @@
 <style>
 :root{
   --ink:#0a0810;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--yellow:#fbbf24;
-  --green:#4ade80;--blue:#3b82f6;--dim:#a8c8e0;--muted:#a8c8e0;
+  --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 
 /* Background glow */
 .bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
@@ -29,7 +29,7 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 @keyframes pulseGreen{0%,100%{box-shadow:0 0 12px rgba(74,222,128,.2);}50%{box-shadow:0 0 28px rgba(74,222,128,.4);}}
 
 /* Back button */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:200;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:300;}
 
 /* Header row */
 .hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
@@ -103,7 +103,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="gold-tagline" style="font-size:18px;color:var(--gold2);letter-spacing:3px;margin:12px 0 10px;position:relative;">✦ FINDERSEEK GOLD ✦</div>
 
       <div id="gold-price-row" style="position:relative;margin-bottom:6px;">
-        <span style="font-size:56px;font-weight:200;color:#fff;">$3</span><span style="font-size:32px;font-weight:200;color:#fff;">.99</span><span style="font-size:18px;color:var(--dim);">/month</span>
+        <span style="font-size:56px;font-weight:200;color:#fff;">$3</span><span style="font-size:32px;font-weight:300;color:#fff;">.99</span><span style="font-size:18px;color:var(--dim);">/month</span>
       </div>
 
       <div id="gold-badge-row" style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:18px;color:#4ade80;font-weight:400;position:relative;">
