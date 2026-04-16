@@ -13,6 +13,8 @@
 //   hunt.html     → event: 'chat_message'
 //   cron          → event: 'hunt_expired'
 
+import { verifyAdminToken } from './_admin-auth.js';
+
 const RESEND_URL = 'https://api.resend.com/emails';
 const FROM = 'FinderSeek <notifications@mylocalpaws.com>';
 const SITE_URL   = 'https://finderseek.com';
@@ -217,9 +219,14 @@ async function sbFetch(path, opts = {}) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Simple shared secret to prevent abuse
+  // Accept either: notify secret OR admin token
   const secret = req.headers['x-finderseek-secret'];
-  if (secret !== process.env.NOTIFY_SECRET) {
+  const adminToken = req.headers['x-admin-token'];
+
+  const validSecret = secret && (secret === process.env.NOTIFY_SECRET || secret === process.env.FINDERSEEK_NOTIFY_SECRET);
+  const validAdmin = adminToken ? await verifyAdminToken(adminToken) : false;
+
+  if (!validSecret && !validAdmin) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
