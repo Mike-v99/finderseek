@@ -159,7 +159,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
 
   <div id="q-clues-container">
-    <div style="padding:30px;text-align:center;color:var(--muted);font-size:14px;">Loading clues…</div>
+    <div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">Loading clues…</div>
   </div>
 
   <!-- CLAIM -->
@@ -185,7 +185,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- TOAST -->
-<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -360,7 +360,7 @@ function renderClues() {
   var container = document.getElementById('q-clues-container');
   var now = new Date();
   if (currentClues.length === 0) {
-    container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:14px;">No clues yet for this quest.</div>';
+    container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">No clues yet for this quest.</div>';
     return;
   }
 
@@ -379,7 +379,7 @@ function renderClues() {
         '<div style="flex:1;">' +
           '<div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
           '<div style="font-size:18px;color:#fff;line-height:1.7;">' + escapeHtml(c.clue_text) + '</div>' +
-          (c.tier === 'pro' ? '<div style="font-size:13px;color:#e8a820;margin-top:8px;">🥇 GOLD CLUE</div>' : '') +
+          (c.tier === 'pro' ? '<div style="font-size:18px;color:#e8a820;margin-top:8px;">🥇 GOLD CLUE</div>' : '') +
         '</div></div></div></div>'
       );
     } else {
@@ -392,8 +392,8 @@ function renderClues() {
         '<div style="flex:1;">' +
           '<div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
           '<div style="font-size:18px;color:rgba(255,255,255,.2);">This clue hasn\'t been revealed yet.</div>' +
-          '<div style="font-size:14px;color:var(--yellow);margin-top:6px;font-weight:400;">Drops in ' + dropsIn + '</div>' +
-          (c.tier === 'pro' ? '<div style="font-size:13px;color:#e8a820;margin-top:6px;">🥇 GOLD CLUE</div>' : '') +
+          '<div style="font-size:18px;color:var(--yellow);margin-top:6px;font-weight:400;">Drops in ' + dropsIn + '</div>' +
+          (c.tier === 'pro' ? '<div style="font-size:18px;color:#e8a820;margin-top:6px;">🥇 GOLD CLUE</div>' : '') +
         '</div></div></div></div>'
       );
     }

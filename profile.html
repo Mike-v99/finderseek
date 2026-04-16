@@ -79,7 +79,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(42px,11vw,52px);line-height:1.1;margin-bottom:10px;">
           <span style="background:linear-gradient(90deg,#e8a820,#f5c842,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Finder</span><span style="color:#f5ead8;">Seek</span>
         </div>
-        <div style="font-size:16px;color:#a8c8e0;">Hidden Treasure. Real Adventure.</div>
+        <div style="font-size:18px;color:#a8c8e0;">Hidden Treasure. Real Adventure.</div>
       </div>
 
       <!-- Tab toggle -->
@@ -92,21 +92,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="lg-anim lg-rise-1" style="display:flex;flex-direction:column;gap:10px;">
         <div id="gate-username-wrap" style="display:none;">
           <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
-            style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+            style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
         </div>
         <input id="gate-email" type="email" autocomplete="username" placeholder="Email" name="email"
-          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
         <input id="gate-password" type="password" autocomplete="current-password" placeholder="Password" name="password"
-          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
 
-        <div id="gate-forgot" style="text-align:right;font-size:13px;color:#e8a820;cursor:pointer;margin-top:-2px;" onclick="gateForgotPassword()">Forgot password?</div>
+        <div id="gate-forgot" style="text-align:right;font-size:18px;color:#e8a820;cursor:pointer;margin-top:-2px;" onclick="gateForgotPassword()">Forgot password?</div>
 
         <button id="gate-submit" onclick="gateSubmit()"
-          style="padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(201,137,12,.25);transition:transform .15s;">Continue</button>
+          style="padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(201,137,12,.25);transition:transform .15s;">Continue</button>
       </div>
 
       <!-- OR divider -->
-      <div class="lg-anim lg-rise-2" style="display:flex;align-items:center;gap:10px;color:#8fa8bd;font-size:11px;margin:20px 0;letter-spacing:1px;">
+      <div class="lg-anim lg-rise-2" style="display:flex;align-items:center;gap:10px;color:#8fa8bd;font-size:18px;margin:20px 0;letter-spacing:1px;">
         <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
         <span>OR</span>
         <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
@@ -115,22 +115,22 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <!-- Social -->
       <div class="lg-anim lg-rise-3">
         <button onclick="gateSocial('apple')"
-          style="width:100%;padding:13px;border-radius:12px;background:#000;border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;transition:transform .15s;">
+          style="width:100%;padding:13px;border-radius:12px;background:#000;border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;transition:transform .15s;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
           Continue with Apple
         </button>
         <button onclick="gateSocial('google')"
-          style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s;">
+          style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:18px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s;">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
       </div>
 
       <!-- Error -->
-      <div id="gate-err" style="font-size:13px;color:#f87171;margin-top:14px;min-height:18px;text-align:center;"></div>
+      <div id="gate-err" style="font-size:18px;color:#f87171;margin-top:14px;min-height:18px;text-align:center;"></div>
 
       <!-- Legal -->
-      <div class="lg-anim lg-fade" style="font-size:11px;color:#8fa8bd;text-align:center;margin-top:22px;line-height:1.6;">
+      <div class="lg-anim lg-fade" style="font-size:18px;color:#8fa8bd;text-align:center;margin-top:22px;line-height:1.6;">
         By continuing, you agree to our<br/>
         <a href="terms.html" style="color:#e8a820;text-decoration:none;">Terms</a> and <a href="terms.html" style="color:#e8a820;text-decoration:none;">Privacy Policy</a>
       </div>
@@ -140,7 +140,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <style>
-.auth-tab{flex:1;padding:11px;border-radius:9px;text-align:center;font-size:14px;color:#8fa8bd;cursor:pointer;transition:all .2s;font-weight:400;}
+.auth-tab{flex:1;padding:11px;border-radius:9px;text-align:center;font-size:18px;color:#8fa8bd;cursor:pointer;transition:all .2s;font-weight:400;}
 .auth-tab-active{background:rgba(201,137,12,.15);color:#e8a820;font-weight:500;}
 #login-gate input:focus{border-color:rgba(232,168,32,.5) !important;}
 #login-gate button:active{transform:scale(.98);}
@@ -167,7 +167,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 
 <!-- Toast -->
-<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
 <div class="page">
 
@@ -209,52 +209,59 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="payout-content" style="display:flex;align-items:center;gap:14px;">
         <div style="font-size:32px;flex-shrink:0;">💳</div>
         <div style="flex:1;">
-          <div id="payout-title" style="font-size:16px;color:#fff;margin-bottom:4px;">Loading…</div>
-          <div id="payout-sub" style="font-size:14px;color:var(--dim);">—</div>
+          <div id="payout-title" style="font-size:18px;color:#fff;margin-bottom:4px;">Loading…</div>
+          <div id="payout-sub" style="font-size:18px;color:var(--dim);">—</div>
         </div>
       </div>
-      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
+      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
     </div>
   </div>
 
   <!-- Payout onboarding modal -->
   <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;" onclick="closePayoutModal()"></div>
-  <div id="payout-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(99,91,255,.3);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);">
-    <div style="width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 20px;"></div>
-    <button onclick="closePayoutModal()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;">✕</button>
+  <div id="payout-modal" style="display:none;position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;pointer-events:none;">
+    <div id="payout-modal-inner" style="background:#0d0b18;border:1px solid rgba(99,91,255,.25);border-radius:24px;max-width:420px;width:100%;padding:28px 24px 24px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.9);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;">
+      <button onclick="closePayoutModal()" aria-label="Close" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;">✕</button>
 
-    <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:48px;margin-bottom:12px;">🏦</div>
-      <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:6px;">Set up your payouts</div>
-      <div style="font-size:14px;color:var(--dim);line-height:1.5;">You'll be redirected to Stripe to securely link your bank account. Takes about 2 minutes.</div>
+      <!-- Stripe logo -->
+      <div style="text-align:center;margin-bottom:20px;">
+        <svg width="80" height="34" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M113.985 21.654c0-7.842-3.792-14.022-11.058-14.022-7.302 0-11.694 6.18-11.694 13.95 0 9.21 5.202 13.878 12.648 13.878 3.636 0 6.384-.828 8.46-1.998v-6.144c-2.076 1.044-4.464 1.686-7.494 1.686-2.97 0-5.598-1.044-5.94-4.644h14.97c0-.396.108-1.98.108-2.706zm-15.15-2.916c0-3.456 2.112-4.896 4.038-4.896 1.854 0 3.864 1.44 3.864 4.896h-7.902zM80.247 7.632c-2.988 0-4.896 1.404-5.976 2.376l-.396-1.89H67.05v35.262l7.326-1.548.018-8.568c1.116.81 2.754 1.962 5.49 1.962 5.544 0 10.602-4.464 10.602-14.31-.018-9.018-5.148-13.284-10.242-13.284zm-1.8 20.43c-1.836 0-2.916-.648-3.672-1.458l-.036-11.502c.828-.9 1.926-1.512 3.708-1.512 2.826 0 4.788 3.186 4.788 7.218 0 4.14-1.926 7.254-4.788 7.254zM56.682 6.102l7.344-1.566V-1.5l-7.344 1.548v6.054zM56.682 8.316h7.344v27h-7.344v-27zM48.15 10.224l-.468-1.908h-6.696v27h7.326V16.206c1.728-2.268 4.662-1.836 5.58-1.512V8.316c-.954-.36-4.464-1.026-5.742 1.908zM33.534 2.568l-7.164 1.53-.018 24.696c0 4.554 3.42 7.926 7.974 7.926 2.52 0 4.374-.468 5.4-.99v-5.958c-.99.396-5.886 1.818-5.886-2.736V14.652h5.886V8.316h-5.886l-.306-5.748zM12.294 15.372c0-1.188.99-1.656 2.592-1.656 2.322 0 5.238.702 7.56 1.944V8.91c-2.538-1.008-5.04-1.404-7.56-1.404C8.772 7.506 4.398 10.98 4.398 16.362c0 8.388 11.538 7.038 11.538 10.674 0 1.404-1.224 1.854-2.916 1.854-2.52 0-5.76-.99-8.316-2.376v6.858c2.826 1.224 5.706 1.728 8.316 1.728 6.264 0 10.584-3.114 10.584-8.514-.018-9.054-11.31-7.434-11.31-10.86z" transform="translate(0,10)" fill="#635bff"/>
+        </svg>
+      </div>
+
+      <div style="text-align:center;margin-bottom:22px;">
+        <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:6px;">Set up your payouts</div>
+        <div style="font-size:18px;color:var(--dim);line-height:1.5;">You'll be redirected to Stripe to securely link your bank account. Takes about 2 minutes.</div>
+      </div>
+
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(99,91,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔒</div>
+          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Secure & private</strong> — Stripe handles everything. We never see your bank details.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Instant setup</strong> — just your email, bank account, and a quick ID check.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,32,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💰</div>
+          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Get paid automatically</strong> — when you win, prizes go straight to your bank.</div>
+        </div>
+      </div>
+
+      <button id="payout-modal-btn" onclick="handlePayoutBtn()" style="width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);transition:transform .15s;">
+        Continue to Stripe →
+      </button>
+      <div style="text-align:center;font-size:18px;color:var(--muted);margin-top:12px;">Powered by Stripe · Trusted by millions of businesses</div>
     </div>
-
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-        <div style="width:32px;height:32px;border-radius:8px;background:rgba(99,91,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔒</div>
-        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Secure & private</strong> — Stripe handles everything. We never see your bank details.</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-        <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
-        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Instant setup</strong> — just your email, bank account, and a quick ID check.</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,32,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💰</div>
-        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Get paid automatically</strong> — when you win, prizes go straight to your bank.</div>
-      </div>
-    </div>
-
-    <button id="payout-modal-btn" onclick="handlePayoutBtn()" style="width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);transition:transform .15s;">
-      Continue to Stripe →
-    </button>
-    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Powered by Stripe · Trusted by millions of businesses</div>
   </div>
 
   <!-- Joined Quests -->
   <div class="el">
     <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Joined Quests</div>
     <div id="joined-quests" style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);">
-      <div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;">Loading…</div>
+      <div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
     </div>
   </div>
 
@@ -648,7 +655,7 @@ async function loadJoinedQuests(){
     var rows = (d || []).filter(function(x){ return x.hunts; }).map(function(x){ return x.hunts; });
 
     if (rows.length === 0) {
-      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;font-style:italic;">No quests joined yet — <a href="index.html" style="color:var(--gold2);">find one</a></div>';
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;font-style:italic;">No quests joined yet — <a href="index.html" style="color:var(--gold2);">find one</a></div>';
       return;
     }
 
@@ -661,16 +668,16 @@ async function loadJoinedQuests(){
         '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.02);cursor:pointer;'+borderTop+'">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+dotColor+';flex-shrink:0;box-shadow:0 0 8px '+dotColor+'66;"></div>' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
-            '<div style="font-size:13px;color:var(--dim);">'+subText+'</div>' +
+            '<div style="font-size:18px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:18px;color:var(--dim);">'+subText+'</div>' +
           '</div>' +
-          '<div style="font-size:16px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
+          '<div style="font-size:18px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
         '</div>'
       );
     }).join('');
   } catch(e) {
     console.error('Joined quests error', e);
-    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;">Unable to load quests</div>';
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Unable to load quests</div>';
   }
 }
 
@@ -735,17 +742,22 @@ async function loadConnectStatus(){
 function showPayoutModal(){
   document.getElementById('payout-modal-backdrop').style.display = 'block';
   var modal = document.getElementById('payout-modal');
-  modal.style.display = 'block';
-  setTimeout(function(){ modal.style.transform = 'translateY(0)'; }, 10);
+  var inner = document.getElementById('payout-modal-inner');
+  modal.style.display = 'flex';
+  setTimeout(function(){
+    inner.style.transform = 'scale(1)';
+    inner.style.opacity = '1';
+  }, 10);
 }
 
 function closePayoutModal(){
-  var modal = document.getElementById('payout-modal');
-  modal.style.transform = 'translateY(100%)';
+  var inner = document.getElementById('payout-modal-inner');
+  inner.style.transform = 'scale(0.9)';
+  inner.style.opacity = '0';
   setTimeout(function(){
-    modal.style.display = 'none';
+    document.getElementById('payout-modal').style.display = 'none';
     document.getElementById('payout-modal-backdrop').style.display = 'none';
-  }, 350);
+  }, 300);
 }
 
 async function handlePayoutBtn(){
