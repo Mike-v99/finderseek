@@ -13,7 +13,7 @@
 //   hunt.html     → event: 'chat_message'
 //   cron          → event: 'hunt_expired'
 
-import { verifyAdminToken } from './_admin-auth.js';
+import { verifyAdminToken } from '../lib/admin-auth.js';
 
 const RESEND_URL = 'https://api.resend.com/emails';
 const FROM = 'FinderSeek <notifications@mylocalpaws.com>';
