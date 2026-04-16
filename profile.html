@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>FinderSeek — Profile</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&display=swap" rel="stylesheet"/>
 <style>
@@ -308,11 +309,17 @@ const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET = 'fs-notify-2026';
 
+// Initialize Supabase client (handles PKCE flow, session storage, token refresh)
+const supaClient = window.supabase.createClient(SB, KEY);
+
 let currentUser = null;
 let currentProfile = null;
 let connectStatus = null;
 
-function getToken(){ return localStorage.getItem('fs_token') || ''; }
+function getToken(){
+  // Check Supabase client session first, fall back to localStorage
+  return localStorage.getItem('fs_token') || '';
+}
 
 function showToast(msg, type){
   var t = document.getElementById('toast');
@@ -438,11 +445,14 @@ async function gateSignUp(){
 
 async function gateSocial(provider){
   try {
-    // OAuth redirect — Supabase returns to Site URL with token in hash.
-    // index.html catches the token and redirects to profile.html.
-    var redirectTo = window.location.origin + '/';
-    var url = SB + '/auth/v1/authorize?provider=' + provider + '&redirect_to=' + encodeURIComponent(redirectTo);
-    window.location.href = url;
+    var { data, error } = await supaClient.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: window.location.origin + '/profile.html'
+      }
+    });
+    if (error) throw error;
+    // Supabase client handles the redirect automatically
   } catch(e) {
     document.getElementById('gate-err').textContent = e.message;
   }
@@ -468,18 +478,26 @@ async function gateForgotPassword(){
   } catch(e) { err.textContent = e.message; }
 }
 
-// Handle OAuth callback — Supabase returns tokens in URL hash
-function handleOAuthCallback(){
-  if (!window.location.hash) return false;
-  var params = new URLSearchParams(window.location.hash.substring(1));
-  var token = params.get('access_token');
-  var refresh = params.get('refresh_token');
-  if (!token) return false;
-  localStorage.setItem('fs_token', token);
-  if (refresh) localStorage.setItem('fs_refresh', refresh);
-  // Clean up URL
-  window.history.replaceState({}, '', window.location.pathname);
-  return true;
+// Handle OAuth callback — Supabase JS client exchanges the code automatically
+async function handleOAuthCallback(){
+  try {
+    // getSession() will detect the OAuth callback params in the URL
+    // and exchange the code for a session (PKCE flow)
+    var { data, error } = await supaClient.auth.getSession();
+    if (error) { console.error('OAuth session error:', error); return false; }
+    if (data.session) {
+      localStorage.setItem('fs_token', data.session.access_token);
+      if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+      // Clean up URL
+      if (window.location.hash || window.location.search.includes('code=')) {
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+      return true;
+    }
+  } catch(e) {
+    console.error('OAuth callback error:', e);
+  }
+  return false;
 }
 
 function signOut(){
@@ -740,8 +758,11 @@ function handleUrlRedirects(){
 //  INIT
 // ============================================================
 // Check if returning from Google/Apple OAuth
-handleOAuthCallback();
-loadProfile();
+// Init — check for OAuth callback first, then load profile
+(async function(){
+  await handleOAuthCallback();
+  loadProfile();
+})();
 
 var observer = new IntersectionObserver(function(entries){
   entries.forEach(function(entry){
