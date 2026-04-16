@@ -97,7 +97,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .pm-row strong{color:var(--cream);font-weight:400;}
 .pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;font-size:18px;}
 .pm-row.total strong{color:var(--gold2);font-size:20px;font-weight:400;}
-#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:48px;}
+#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:240px;}
 #pm-error{color:#f87171;font-size:18px;margin-bottom:12px;min-height:18px;text-align:center;}
 .pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
 .pm-pay-btn:active{transform:scale(.98);}
@@ -511,22 +511,55 @@ async function openPaymentModal(){
     });
     stripePayEl = stripeElements.create('payment');
     // Wait for the element to actually mount in the iframe before enabling the button
+    var mountTimeout = setTimeout(function(){
+      if (!stripeReady) {
+        document.getElementById('pm-error').textContent = 'Payment form took too long to load. Please check your connection or try again.';
+        payBtn.textContent = 'Try again';
+        payBtn.disabled = false;
+        payBtn.onclick = function(){
+          clientSecret = null; stripeElements = null; stripePayEl = null; stripeReady = false;
+          document.getElementById('pm-stripe-element').innerHTML = '';
+          openPaymentModal();
+        };
+      }
+    }, 8000);
     stripePayEl.on('ready', function(){
+      clearTimeout(mountTimeout);
       stripeReady = true;
       payBtn.disabled = false;
       payBtn.textContent = 'Pay $' + total.toFixed(2);
       payBtn.onclick = submitPayment;
     });
     stripePayEl.on('loaderror', function(ev){
+      clearTimeout(mountTimeout);
+      console.error('Stripe loaderror:', ev);
       document.getElementById('pm-error').textContent = 'Payment form failed to load: ' + (ev.error?.message || 'Unknown error');
       payBtn.textContent = 'Try again';
       payBtn.disabled = false;
       payBtn.onclick = function(){
         clientSecret = null; stripeElements = null; stripePayEl = null; stripeReady = false;
+        document.getElementById('pm-stripe-element').innerHTML = '';
         openPaymentModal();
       };
     });
-    stripePayEl.mount('#pm-stripe-element');
+    try {
+      // Delay mount slightly so the modal is fully rendered/visible
+      setTimeout(function(){
+        try { stripePayEl.mount('#pm-stripe-element'); } catch(e) {
+          clearTimeout(mountTimeout);
+          console.error('Stripe mount error:', e);
+          document.getElementById('pm-error').textContent = 'Could not load payment form: ' + e.message;
+          payBtn.textContent = 'Try again';
+          payBtn.disabled = false;
+        }
+      }, 400);
+    } catch(e) {
+      clearTimeout(mountTimeout);
+      console.error('Stripe mount error:', e);
+      document.getElementById('pm-error').textContent = 'Could not load payment form: ' + e.message;
+      payBtn.textContent = 'Try again';
+      payBtn.disabled = false;
+    }
   } else if (stripeReady) {
     // Already mounted from a previous open — just re-enable
     payBtn.disabled = false;
