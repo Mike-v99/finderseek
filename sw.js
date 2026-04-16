@@ -6,7 +6,6 @@ const PRECACHE = [
   '/quest.html',
   '/review.html',
   '/how-it-works.html',
-  '/pricing.html',
   '/profile.html',
   '/gold.html',
   '/newquest.html',

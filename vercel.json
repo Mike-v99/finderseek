@@ -15,6 +15,16 @@
       "source": "/pirate",
       "destination": "/newquest.html",
       "permanent": true
+    },
+    {
+      "source": "/pricing.html",
+      "destination": "/gold.html",
+      "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/gold.html",
+      "permanent": true
     }
   ],
   "rewrites": [
