@@ -15,28 +15,38 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.08),transparent 65%);pointer-events:none;z-index:0;}
+.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
 
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 120px;}
 
 .el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
 .el.visible{opacity:1;transform:translateY(0);}
 
-.avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,rgba(232,168,32,.15),rgba(232,168,32,.05));border:2px solid rgba(232,168,32,.3);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:400;color:#e8a820;margin:0 auto 12px;}
+.avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(232,168,32,.2),rgba(232,168,32,.08));border:2.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:400;color:#e8a820;margin:0 auto 14px;box-shadow:0 0 30px rgba(232,168,32,.1);}
+
+.section-label{font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;display:flex;align-items:center;gap:8px;}
+.section-label::before{content:'';width:3px;height:16px;border-radius:2px;background:linear-gradient(180deg,var(--gold2),var(--gold));}
 
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
-.stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px 14px;text-align:center;}
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 14px;text-align:center;transition:border-color .3s;}
+.stat:hover{border-color:rgba(232,168,32,.2);}
 .stat-val{font-size:28px;font-weight:400;margin-bottom:4px;}
 .stat-label{font-size:18px;color:var(--dim);}
 
-.menu{display:flex;flex-direction:column;gap:1px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);}
-.menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,.02);cursor:pointer;transition:background .2s;text-decoration:none;}
-.menu-item:active{background:rgba(255,255,255,.06);}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;transition:border-color .3s;}
+.card:hover{border-color:rgba(255,255,255,.12);}
+
+.menu{display:flex;flex-direction:column;gap:1px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+.menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,.03);cursor:pointer;transition:background .2s;text-decoration:none;}
+.menu-item:active{background:rgba(255,255,255,.08);}
+.menu-item+.menu-item{border-top:1px solid rgba(255,255,255,.05);}
 
 .btn-signout{display:block;width:100%;padding:16px;border-radius:14px;font-size:18px;font-weight:400;text-align:center;border:1.5px solid rgba(239,68,68,.3);color:#f87171;background:rgba(239,68,68,.05);cursor:pointer;font-family:'Noto Sans Display',sans-serif;margin-top:20px;transition:background .2s;appearance:none;}
 .btn-signout:active{background:rgba(239,68,68,.12);}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;justify-content:space-around;padding:8px 4px 12px;z-index:9999;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(232,168,32,.15),transparent);margin:24px 0;}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,16,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:flex-end;justify-content:space-around;padding:8px 4px 12px;z-index:9999;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0;text-decoration:none;}
 .nav-item svg{stroke:var(--muted);stroke-width:1.8;fill:none;}
 .nav-label{font-size:18px;color:var(--muted);margin-top:5px;}
@@ -204,8 +214,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- Payout Setup (Stripe Connect) -->
   <div class="el" id="payout-section" style="display:none;margin-top:16px;">
-    <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Payout Account</div>
-    <div id="payout-box" style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);padding:18px;background:rgba(255,255,255,.02);">
+    <div class="section-label">Payout Account</div>
+    <div id="payout-box" class="card">
       <div id="payout-content" style="display:flex;align-items:center;gap:14px;">
         <div style="font-size:32px;flex-shrink:0;">💳</div>
         <div style="flex:1;">
@@ -257,17 +267,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
 
+  <div class="divider"></div>
+
   <!-- Joined Quests -->
   <div class="el">
-    <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Joined Quests</div>
-    <div id="joined-quests" style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);">
-      <div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
+    <div class="section-label">Joined Quests</div>
+    <div id="joined-quests" class="card">
+      <div style="padding:4px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
     </div>
   </div>
 
+  <div class="divider"></div>
+
   <!-- Menu group 1 -->
-  <div class="el" style="margin-top:24px;">
-    <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Menu</div>
+  <div class="el" style="margin-top:0;">
+    <div class="section-label">Menu</div>
     <div class="menu">
       <div class="menu-item" onclick="window.location.href='newquest.html'">
         <span style="font-size:22px;width:32px;text-align:center;">✨</span>
@@ -722,7 +736,7 @@ async function loadConnectStatus(){
       btn.textContent = 'Set Up Payouts';
     } else if (!d.ready) {
       title.textContent = 'Setup incomplete';
-      sub.textContent = 'Finish verifying your account to receive payouts';
+      sub.textContent = 'Verify your account to receive payouts';
       btn.style.display = 'block';
       btn.textContent = 'Complete Setup →';
     } else {
