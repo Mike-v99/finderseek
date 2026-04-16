@@ -142,7 +142,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .submit-note{font-size:18px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,8,16,.92);border-top:1px solid rgba(255,255,255,.06);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,8,16,.92);border-top:1px solid rgba(255,255,255,.06);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease, opacity .2s ease;}
+body.kb-up .bottom-nav{transform:translateX(-50%) translateY(120%);opacity:0;pointer-events:none;}
 .nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .nav-item svg{stroke:#d0e4f0;stroke-width:1.8;}
 .nav-label{font-size:18px;color:#d0e4f0;margin-top:5px;}
@@ -845,6 +846,13 @@ document.addEventListener('DOMContentLoaded',function(){
     setTimeout(function(){el.classList.add('show');},d);
   });
   updPay(25);
+
+  // Hide bottom nav when virtual keyboard is likely up (input focused)
+  var focusEls = document.querySelectorAll('input, textarea');
+  focusEls.forEach(function(el){
+    el.addEventListener('focus', function(){ document.body.classList.add('kb-up'); });
+    el.addEventListener('blur',  function(){ document.body.classList.remove('kb-up'); });
+  });
 
   // Restore form from previous session
   restoreFormState();
