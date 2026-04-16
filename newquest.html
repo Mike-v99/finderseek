@@ -430,6 +430,22 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="nav-item" onclick="window.location.href='profile.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
 </nav>
 
+<!-- AI Clue Generation Loading Overlay -->
+<div id="ai-loading" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;">
+  <div id="ai-spinner" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(232,168,32,.15);border-top-color:#e8a820;animation:aiSpin 1s linear infinite;margin-bottom:24px;"></div>
+  <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:8px;">AI Clues Generating</div>
+  <div id="ai-loading-sub" style="font-size:18px;color:#d0e4f0;margin-bottom:24px;">This usually takes 5-10 seconds</div>
+  <div style="display:flex;gap:6px;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#e8a820;animation:aiPulse 1.4s ease-in-out infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#e8a820;animation:aiPulse 1.4s ease-in-out .2s infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#e8a820;animation:aiPulse 1.4s ease-in-out .4s infinite;"></div>
+  </div>
+</div>
+<style>
+@keyframes aiSpin { to { transform: rotate(360deg); } }
+@keyframes aiPulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+</style>
+
 <script>
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
@@ -653,22 +669,26 @@ async function createQuest(previewMode){
 
     // ── 7. Generate clues via Claude ─────────────────────────
     btn.textContent = '⏳ Generating clues...';
-    const clueRes = await fetch('/api/generate-clues', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        description: hidingSpot,
-        clueCount: clueCount,
-        lat: selectedLat,
-        lng: selectedLng,
-        persona: persona,
-      })
-    });
-    const clueData = await clueRes.json();
-    if (!clueRes.ok || !clueData.clues) {
-      console.error('Clue generation error:', clueData);
-      throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
-    }
+    var aiOverlay = document.getElementById('ai-loading');
+    aiOverlay.style.display = 'flex';
+    try {
+      const clueRes = await fetch('/api/generate-clues', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          description: hidingSpot,
+          clueCount: clueCount,
+          lat: selectedLat,
+          lng: selectedLng,
+          persona: persona,
+        })
+      });
+      const clueData = await clueRes.json();
+      aiOverlay.style.display = 'none';
+      if (!clueRes.ok || !clueData.clues) {
+        console.error('Clue generation error:', clueData);
+        throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
+      }
 
     // ── 8. Insert clues into Supabase ───────────────────────
     btn.textContent = '⏳ Saving clues...';
@@ -726,6 +746,7 @@ async function createQuest(previewMode){
 
   } catch(err) {
     console.error('Create quest error:', err);
+    document.getElementById('ai-loading').style.display = 'none';
     showToast('Error: '+err.message, 'error');
     btn.disabled = false; previewBtn.disabled = false;
     btn.textContent = '+ \u00a0 CREATE QUEST →';
