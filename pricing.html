@@ -175,6 +175,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 </style>
+<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -398,6 +399,13 @@ async function doLogin(){
     setTimeout(()=>{closeAuthModal();startCheckout();},1200);
   }catch(e){showAuthError('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Sign In →';
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
 }
 </script>
 </body>

@@ -1,5 +1,5 @@
 // sw.js — FinderSeek Service Worker
-const CACHE_NAME = 'finderseek-v1';
+const CACHE_NAME = 'finderseek-v2';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -8,9 +8,13 @@ const PRECACHE = [
   '/how-it-works.html',
   '/pricing.html',
   '/profile.html',
+  '/gold.html',
+  '/newquest.html',
   '/manifest.json',
   '/favicon.ico',
-  '/og-image.jpg'
+  '/og-image.jpg',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 // Install — cache core pages

@@ -4,8 +4,8 @@
   "description": "Real money hidden in your city. Follow AI-powered clues to find the treasure.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#06050a",
-  "theme_color": "#c9890c",
+  "background_color": "#0a0810",
+  "theme_color": "#0a0810",
   "orientation": "portrait",
   "icons": [
     {

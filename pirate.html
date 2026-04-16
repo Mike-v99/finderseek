@@ -487,6 +487,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
+<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -2477,5 +2478,12 @@ function showTosModal(){if(localStorage.getItem('fs_tos_accepted'))return;_tosCh
 function acceptTos(){if(!_tosChecked)return;localStorage.setItem('fs_tos_accepted','1');if(currentUser?.id){fetch(`${SB}/rest/v1/profiles?id=eq.${currentUser.id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({tos_accepted:true,tos_accepted_at:new Date().toISOString()})}).catch(()=>{});}document.getElementById('tos-overlay').classList.remove('show');}
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+}
+</script>
 </body>
 </html>

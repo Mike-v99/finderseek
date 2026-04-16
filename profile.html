@@ -51,6 +51,13 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 </style>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#0a0810"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -740,6 +747,13 @@ var observer = new IntersectionObserver(function(entries){
   });
 }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+}
 </script>
 </body>
 </html>
