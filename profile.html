@@ -51,14 +51,33 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 <body>
 <div class="bg-glow"></div>
 
+<!-- Login gate (shown if not authenticated) -->
+<div id="login-gate" style="display:none;position:fixed;inset:0;background:rgba(10,8,16,.96);z-index:9998;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(12px);">
+  <div style="max-width:380px;width:100%;text-align:center;">
+    <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+    <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:10px;">Sign In</div>
+    <div style="font-size:15px;color:var(--dim);margin-bottom:24px;line-height:1.6;">Access your profile, quests, and payouts.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <input id="gate-email" type="email" placeholder="Email" style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;"/>
+      <input id="gate-password" type="password" placeholder="Password" style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;"/>
+      <button onclick="gateSignIn()" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:16px;font-weight:400;font-family:inherit;cursor:pointer;margin-top:4px;">Sign In</button>
+      <button onclick="gateSignUp()" style="padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--cream);font-size:15px;font-family:inherit;cursor:pointer;">Create Account</button>
+      <div id="gate-err" style="font-size:13px;color:#f87171;margin-top:6px;min-height:18px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+
 <div class="page">
 
   <!-- Profile header -->
   <div class="el" style="text-align:center;padding:10px 0 0;">
-    <div class="avatar">CS</div>
-    <div style="font-size:24px;font-weight:400;color:#fff;">CaptainSeeker</div>
-    <div style="font-size:18px;color:var(--dim);margin-top:4px;">Member since April 2026</div>
-    <div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 14px;border-radius:20px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);">
+    <div class="avatar" id="p-avatar">??</div>
+    <div id="p-name" style="font-size:24px;font-weight:400;color:#fff;">Loading…</div>
+    <div id="p-since" style="font-size:18px;color:var(--dim);margin-top:4px;">—</div>
+    <div id="p-gold-badge" style="display:none;align-items:center;gap:6px;margin-top:10px;padding:4px 14px;border-radius:20px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);">
       <span style="font-size:18px;">👑</span>
       <span style="font-size:18px;color:#e8a820;font-weight:400;">Gold Member</span>
     </div>
@@ -67,43 +86,43 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <!-- Stats -->
   <div class="el stats">
     <div class="stat">
-      <div class="stat-val" style="color:#4ade80;">$127</div>
+      <div class="stat-val" id="s-won" style="color:#4ade80;">$0</div>
       <div class="stat-label">Total Won</div>
     </div>
     <div class="stat">
-      <div class="stat-val" style="color:#fbbf24;">5</div>
+      <div class="stat-val" id="s-finds" style="color:#fbbf24;">0</div>
       <div class="stat-label">Quests Won</div>
     </div>
     <div class="stat">
-      <div class="stat-val" style="color:#60a5fa;">3</div>
+      <div class="stat-val" id="s-created" style="color:#60a5fa;">0</div>
       <div class="stat-label">Quests Created</div>
     </div>
     <div class="stat">
-      <div class="stat-val" style="color:#a855f7;">12</div>
+      <div class="stat-val" id="s-joined" style="color:#a855f7;">0</div>
       <div class="stat-label">Quests Joined</div>
+    </div>
+  </div>
+
+  <!-- Payout Setup (Stripe Connect) -->
+  <div class="el" id="payout-section" style="display:none;margin-top:16px;">
+    <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Payout Account</div>
+    <div id="payout-box" style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);padding:18px;background:rgba(255,255,255,.02);">
+      <div id="payout-content" style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:32px;flex-shrink:0;">💳</div>
+        <div style="flex:1;">
+          <div id="payout-title" style="font-size:16px;color:#fff;margin-bottom:4px;">Loading…</div>
+          <div id="payout-sub" style="font-size:14px;color:var(--dim);">—</div>
+        </div>
+      </div>
+      <button id="payout-btn" onclick="handlePayoutBtn()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
     </div>
   </div>
 
   <!-- Joined Quests -->
   <div class="el">
     <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Joined Quests</div>
-    <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);">
-      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.02);">
-        <div style="width:10px;height:10px;border-radius:50%;background:#4ade80;flex-shrink:0;box-shadow:0 0 8px rgba(74,222,128,.4);"></div>
-        <div style="flex:1;">
-          <div style="font-size:18px;color:#fff;">Downtown Houston</div>
-          <div style="font-size:18px;color:var(--dim);">5 of 7 clues dropped</div>
-        </div>
-        <div style="font-size:18px;font-weight:400;color:#4ade80;">$50</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.02);border-top:1px solid rgba(255,255,255,.04);">
-        <div style="width:10px;height:10px;border-radius:50%;background:#4ade80;flex-shrink:0;box-shadow:0 0 8px rgba(74,222,128,.4);"></div>
-        <div style="flex:1;">
-          <div style="font-size:18px;color:#fff;">Midtown Trail</div>
-          <div style="font-size:18px;color:var(--dim);">2 of 4 clues dropped</div>
-        </div>
-        <div style="font-size:18px;font-weight:400;color:#4ade80;">$10</div>
-      </div>
+    <div id="joined-quests" style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);">
+      <div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;">Loading…</div>
     </div>
   </div>
 
@@ -111,16 +130,16 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   <div class="el" style="margin-top:24px;">
     <div style="font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;">Menu</div>
     <div class="menu">
-      <div class="menu-item">
+      <div class="menu-item" onclick="window.location.href='pirate.html'">
         <span style="font-size:22px;width:32px;text-align:center;">🏴‍☠️</span>
         <span style="font-size:18px;color:#fff;flex:1;">My Created Quests</span>
-        <span style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:#60a5fa;">3</span>
+        <span id="m-created-count" style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:#60a5fa;">0</span>
         <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
       </div>
       <a class="menu-item" href="gold.html">
         <span style="font-size:22px;width:32px;text-align:center;">👑</span>
         <span style="font-size:18px;color:#fff;flex:1;">Gold Membership</span>
-        <span style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:#4ade80;">Active</span>
+        <span id="m-gold-status" style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8;">Free</span>
         <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
       </a>
       <div class="menu-item">
@@ -189,52 +208,340 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 <script>
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET = 'fs-notify-2026';
+
+let currentUser = null;
+let currentProfile = null;
+let connectStatus = null;
+
+function getToken(){ return localStorage.getItem('fs_token') || ''; }
+
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  if (type === 'error') t.style.borderColor = 'rgba(239,68,68,.5)';
+  else if (type === 'success') t.style.borderColor = 'rgba(74,222,128,.5)';
+  else t.style.borderColor = 'rgba(201,137,12,.3)';
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(function(){
+    t.style.transform = 'translateX(-50%) translateY(-120%)';
+  }, 4000);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, function(c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+
+// ============================================================
+//  AUTH GATE
+// ============================================================
+function showGate(){
+  document.getElementById('login-gate').style.display = 'flex';
+}
+
+async function gateSignIn(){
+  var email = document.getElementById('gate-email').value.trim();
+  var pw = document.getElementById('gate-password').value;
+  var err = document.getElementById('gate-err');
+  err.textContent = '';
+  if (!email || !pw) { err.textContent = 'Enter your email and password'; return; }
+  try {
+    var r = await fetch(SB+'/auth/v1/token?grant_type=password', {
+      method:'POST',
+      headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({ email: email, password: pw })
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error_description || d.msg || 'Sign-in failed');
+    localStorage.setItem('fs_token', d.access_token);
+    if (d.refresh_token) localStorage.setItem('fs_refresh', d.refresh_token);
+    document.getElementById('login-gate').style.display = 'none';
+    loadProfile();
+  } catch(e) { err.textContent = e.message; }
+}
+
+async function gateSignUp(){
+  var email = document.getElementById('gate-email').value.trim();
+  var pw = document.getElementById('gate-password').value;
+  var err = document.getElementById('gate-err');
+  err.textContent = '';
+  if (!email || !pw) { err.textContent = 'Enter email and password'; return; }
+  if (pw.length < 6) { err.textContent = 'Password must be 6+ characters'; return; }
+  try {
+    var r = await fetch(SB+'/auth/v1/signup', {
+      method:'POST',
+      headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({ email: email, password: pw })
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error_description || d.msg || 'Sign-up failed');
+    if (d.access_token) {
+      localStorage.setItem('fs_token', d.access_token);
+      if (d.refresh_token) localStorage.setItem('fs_refresh', d.refresh_token);
+      document.getElementById('login-gate').style.display = 'none';
+      loadProfile();
+    } else {
+      err.textContent = 'Check your email to confirm your account';
+    }
+  } catch(e) { err.textContent = e.message; }
+}
 
 function signOut(){
-  // Clear local storage token
-  localStorage.removeItem('fs_token');
-  localStorage.removeItem('sb-qeiuycuasjkopxfkmggp-auth-token');
-  // Call Supabase sign out
-  fetch(SB+'/auth/v1/logout',{
+  var token = getToken();
+  fetch(SB+'/auth/v1/logout', {
     method:'POST',
-    headers:{'apikey':KEY,'Authorization':'Bearer '+(localStorage.getItem('fs_token')||KEY)}
+    headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}
   }).catch(()=>{});
-  // Clear all session storage too
+  localStorage.removeItem('fs_token');
+  localStorage.removeItem('fs_refresh');
+  localStorage.removeItem('sb-qeiuycuasjkopxfkmggp-auth-token');
   sessionStorage.clear();
-  // Redirect to home
-  window.location.href='index.html';
+  window.location.href = 'index.html';
 }
 
-// Load real profile data if logged in
+// ============================================================
+//  PROFILE
+// ============================================================
 async function loadProfile(){
-  const token=localStorage.getItem('fs_token');
-  if(!token)return;
-  try{
-    const r=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if(!r.ok)return;
-    const user=await r.json();
-    if(!user?.id)return;
-    // Fetch profile
-    const pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    const pd=await pr.json();
-    if(pd&&pd.length>0){
-      const p=pd[0];
-      // Update avatar
-      const initials=(p.username||user.email||'??').substring(0,2).toUpperCase();
-      document.querySelector('.avatar').textContent=initials;
-      // Update name
-      document.querySelector('.avatar').nextElementSibling.textContent=p.username||user.email;
-    }
-  }catch(e){console.log('Profile load error:',e);}
+  var token = getToken();
+  if (!token) { showGate(); return; }
+
+  try {
+    var r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (r.status === 401) { localStorage.removeItem('fs_token'); showGate(); return; }
+    if (!r.ok) throw new Error('Failed to load user');
+    currentUser = await r.json();
+
+    // Fetch profile row
+    var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
+      headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var pd = await pr.json();
+    currentProfile = (pd && pd[0]) || null;
+
+    // Render header
+    renderHeader();
+    renderStats();
+
+    // Load additional data in parallel
+    await Promise.all([
+      loadJoinedQuests(),
+      loadCreatedCount(),
+      loadConnectStatus(),
+      handleUrlRedirects(),
+    ]);
+  } catch(e) {
+    console.error('Profile load error', e);
+    showToast('Error loading profile: '+e.message, 'error');
+  }
 }
+
+function renderHeader(){
+  var u = currentUser;
+  var p = currentProfile || {};
+  var name = p.username || u.email?.split('@')[0] || 'Anonymous';
+  var initials = name.substring(0,2).toUpperCase();
+
+  document.getElementById('p-avatar').textContent = initials;
+  document.getElementById('p-name').textContent = name;
+
+  var createdAt = u.created_at || p.created_at;
+  if (createdAt) {
+    var d = new Date(createdAt);
+    var monthName = d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    document.getElementById('p-since').textContent = 'Member since ' + monthName;
+  }
+
+  // Gold badge
+  var isPro = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
+  if (isPro) {
+    document.getElementById('p-gold-badge').style.display = 'inline-flex';
+    var gs = document.getElementById('m-gold-status');
+    gs.textContent = 'Active';
+    gs.style.background = 'rgba(74,222,128,.1)';
+    gs.style.borderColor = 'rgba(74,222,128,.25)';
+    gs.style.color = '#4ade80';
+  }
+}
+
+function renderStats(){
+  var p = currentProfile || {};
+  var totalWon = Math.round((p.total_won || 0) / 100);
+  document.getElementById('s-won').textContent = '$' + totalWon;
+  document.getElementById('s-finds').textContent = p.finds_count || 0;
+  document.getElementById('s-created').textContent = p.quests_created || 0;
+  document.getElementById('m-created-count').textContent = p.quests_created || 0;
+  document.getElementById('s-joined').textContent = p.quests_joined || 0;
+}
+
+// ============================================================
+//  JOINED QUESTS
+// ============================================================
+async function loadJoinedQuests(){
+  var token = getToken();
+  var container = document.getElementById('joined-quests');
+  try {
+    // Load hunts this user has find_reports on OR won
+    var r = await fetch(SB+'/rest/v1/find_reports?user_id=eq.'+currentUser.id+'&select=hunt_id,hunts(id,city,neighborhood,prize_value,status,ends_at,winner_id)&limit=5&order=created_at.desc', {
+      headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var d = await r.json();
+    var rows = (d || []).filter(function(x){ return x.hunts; }).map(function(x){ return x.hunts; });
+
+    if (rows.length === 0) {
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;font-style:italic;">No quests joined yet — <a href="index.html" style="color:var(--gold2);">find one</a></div>';
+      return;
+    }
+
+    container.innerHTML = rows.map(function(h, idx){
+      var prizeDollars = Math.round((h.prize_value || 0) / 100);
+      var dotColor = h.status === 'active' ? '#4ade80' : (h.status === 'ended' ? '#94a3b8' : '#fbbf24');
+      var subText = h.status === 'active' ? 'Active now' : (h.winner_id === currentUser.id ? '🏆 You won!' : h.status);
+      var borderTop = idx > 0 ? 'border-top:1px solid rgba(255,255,255,.04);' : '';
+      return (
+        '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.02);cursor:pointer;'+borderTop+'">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:'+dotColor+';flex-shrink:0;box-shadow:0 0 8px '+dotColor+'66;"></div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:13px;color:var(--dim);">'+subText+'</div>' +
+          '</div>' +
+          '<div style="font-size:16px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
+        '</div>'
+      );
+    }).join('');
+  } catch(e) {
+    console.error('Joined quests error', e);
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;">Unable to load quests</div>';
+  }
+}
+
+async function loadCreatedCount(){
+  var token = getToken();
+  try {
+    var r = await fetch(SB+'/rest/v1/hunts?created_by=eq.'+currentUser.id+'&select=id', {
+      headers: {'apikey':KEY,'Authorization':'Bearer '+token,'Prefer':'count=exact'}
+    });
+    var d = await r.json();
+    var count = (d || []).length;
+    if (count > 0) {
+      document.getElementById('s-created').textContent = count;
+      document.getElementById('m-created-count').textContent = count;
+    }
+  } catch(e) { console.error('Created count error', e); }
+}
+
+// ============================================================
+//  STRIPE CONNECT
+// ============================================================
+async function loadConnectStatus(){
+  var section = document.getElementById('payout-section');
+  var title = document.getElementById('payout-title');
+  var sub = document.getElementById('payout-sub');
+  var btn = document.getElementById('payout-btn');
+  section.style.display = 'block';
+
+  try {
+    var r = await fetch('/api/connect-status', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    var d = await r.json();
+    connectStatus = d;
+
+    if (!d.connected) {
+      title.textContent = 'No payout account';
+      sub.textContent = 'Set up a payout account to receive prize money';
+      btn.style.display = 'block';
+      btn.textContent = 'Set Up Payouts';
+    } else if (!d.ready) {
+      title.textContent = 'Setup incomplete';
+      sub.textContent = 'Finish verifying your account to receive payouts';
+      btn.style.display = 'block';
+      btn.textContent = 'Complete Setup →';
+    } else {
+      title.innerHTML = '<span style="color:#4ade80;">✓ Payouts enabled</span>';
+      sub.textContent = 'Prizes will be sent directly to your bank';
+      btn.style.display = 'none';
+    }
+  } catch(e) {
+    console.error('Connect status error', e);
+    title.textContent = 'Payout account';
+    sub.textContent = 'Unable to load status';
+    btn.style.display = 'block';
+    btn.textContent = 'Set Up Payouts';
+  }
+}
+
+async function handlePayoutBtn(){
+  var btn = document.getElementById('payout-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Loading...';
+  try {
+    var r = await fetch('/api/connect-onboard', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Failed to create onboarding link');
+    showToast('Opening Stripe onboarding...', 'success');
+    setTimeout(function(){ window.location.href = d.url; }, 400);
+  } catch(e) {
+    console.error('Connect onboard error', e);
+    showToast('Error: '+e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Set Up Payouts';
+  }
+}
+
+// ============================================================
+//  URL REDIRECTS / HOOKS
+// ============================================================
+function handleUrlRedirects(){
+  var params = new URLSearchParams(window.location.search);
+
+  // Returning from Stripe Connect onboarding
+  if (params.get('connect') === 'complete') {
+    showToast('✅ Payout account set up!', 'success');
+    // Re-load status
+    setTimeout(loadConnectStatus, 600);
+    window.history.replaceState({}, '', 'profile.html');
+  } else if (params.get('connect') === 'refresh') {
+    showToast('Link expired — try again', 'error');
+    window.history.replaceState({}, '', 'profile.html');
+  }
+
+  // Won a prize but needed to onboard — claim flow
+  var claimId = params.get('claim');
+  if (claimId) {
+    showToast('🏆 You won a prize! Set up payouts to receive it.', 'success');
+    setTimeout(function(){
+      document.getElementById('payout-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1200);
+  }
+
+  // Redirect after login
+  var redirect = params.get('redirect');
+  if (redirect && getToken()) {
+    setTimeout(function(){ window.location.href = redirect; }, 300);
+  }
+}
+
+// ============================================================
+//  INIT
+// ============================================================
 loadProfile();
 
-var observer=new IntersectionObserver(function(entries){
+var observer = new IntersectionObserver(function(entries){
   entries.forEach(function(entry){
-    if(entry.isIntersecting){entry.target.classList.add('visible');}
+    if (entry.isIntersecting) entry.target.classList.add('visible');
   });
-},{threshold:0.15,rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.el').forEach(function(el){observer.observe(el);});
+}, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
 </script>
 </body>
 </html>
