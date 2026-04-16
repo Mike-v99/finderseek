@@ -5,6 +5,18 @@
       "schedule": "0 8 * * *"
     }
   ],
+  "redirects": [
+    {
+      "source": "/pirate.html",
+      "destination": "/newquest.html",
+      "permanent": true
+    },
+    {
+      "source": "/pirate",
+      "destination": "/newquest.html",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/hunt.html",

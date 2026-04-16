@@ -1,10 +1,10 @@
 // sw.js — FinderSeek Service Worker
-const CACHE_NAME = 'finderseek-v2';
+const CACHE_NAME = 'finderseek-v3';
 const PRECACHE = [
   '/',
   '/index.html',
   '/quest.html',
-  '/pirate.html',
+  '/review.html',
   '/how-it-works.html',
   '/pricing.html',
   '/profile.html',

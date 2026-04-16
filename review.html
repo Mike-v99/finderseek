@@ -1,0 +1,536 @@
+<!-- © 2026 FinderSeek. All rights reserved. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>FinderSeek — Review Quest</title>
+<meta name="description" content="Review and edit your AI-generated treasure hunt clues before launch."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#0a0810"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#a8c8e0;--muted:#8fa8bd;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{overflow-x:hidden;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:200;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
+.page{max-width:520px;margin:0 auto;padding:16px 16px 120px;}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.page{padding-bottom:calc(120px + env(safe-area-inset-bottom));}}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;}
+.back-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cream);flex-shrink:0;}
+.page-title{font-size:20px;font-weight:400;color:var(--cream);}
+
+.hdr{text-align:center;padding:8px 0 24px;}
+.hdr h1{font-size:32px;font-weight:200;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;}
+.hdr p{font-size:15px;color:var(--dim);line-height:1.5;}
+
+.quest-meta{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.quest-meta .prize{font-size:22px;font-weight:400;color:var(--gold2);}
+.quest-meta .sep{width:1px;align-self:stretch;background:var(--border);}
+.quest-meta .detail{flex:1;font-size:12px;color:var(--muted);line-height:1.5;}
+.quest-meta .detail strong{color:var(--cream);font-weight:400;display:block;font-size:13px;}
+
+.tier-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-bg);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--purple);margin-left:auto;letter-spacing:0.5px;}
+.tier-badge.free{background:rgba(168,200,224,.08);border-color:rgba(168,200,224,.2);color:var(--dim);}
+
+.clue-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s;}
+.clue-card.editing{border-color:rgba(232,168,32,.4);}
+.clue-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.clue-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;flex-shrink:0;}
+.clue-label{font-size:13px;color:var(--muted);flex:1;}
+.clue-label strong{color:var(--cream);font-weight:400;}
+.clue-text{font-size:15px;color:var(--cream);line-height:1.55;font-weight:200;padding:4px 0 2px;}
+.clue-edit-textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--cream);font-family:inherit;font-weight:200;line-height:1.55;outline:none;resize:vertical;}
+.clue-edit-textarea:focus{border-color:rgba(232,168,32,.5);}
+
+.clue-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--cream);cursor:pointer;font-family:inherit;font-weight:200;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
+.clue-btn:hover{background:rgba(255,255,255,.08);}
+.clue-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;border:none;font-weight:400;}
+.clue-btn.pro{background:var(--purple-bg);border-color:rgba(167,139,250,.3);color:var(--purple);}
+.clue-btn.pro:hover{background:rgba(167,139,250,.18);}
+.clue-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+.pro-unlock{background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(217,70,239,.08));border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;}
+.pro-unlock a{color:var(--purple);text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;}
+
+.time-editor{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--muted);}
+.time-editor input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--cream);font-family:'DM Mono',monospace;outline:none;}
+
+.confirm-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(10,8,16,.98) 40%);padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));z-index:50;}
+.confirm-footer-inner{max-width:520px;margin:0 auto;}
+.confirm-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#15803d,#22c55e);color:#042813;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 6px 24px rgba(34,197,94,.25);transition:transform .15s;}
+.confirm-btn:active{transform:scale(.98);}
+.confirm-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Toast */
+.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:12px 18px;color:#f5ead8;font-size:14px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{border-color:rgba(239,68,68,.5);}
+.toast.success{border-color:rgba(34,197,94,.5);}
+
+/* Loading skeleton */
+.skel{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.08),rgba(255,255,255,.03));background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;border-radius:8px;}
+@keyframes skel{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ====== PAYMENT MODAL ====== */
+.pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
+.pm-backdrop.show{opacity:1;pointer-events:auto;}
+.pm-sheet{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(232,168,32,.25);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);}
+.pm-sheet.show{transform:translateY(0);}
+.pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
+.pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
+.pm-sub{font-size:13px;color:var(--dim);text-align:center;margin-bottom:22px;}
+.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
+.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;color:var(--dim);}
+.pm-row strong{color:var(--cream);font-weight:400;}
+.pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;font-size:16px;}
+.pm-row.total strong{color:var(--gold2);font-size:20px;font-weight:400;}
+#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:48px;}
+#pm-error{color:#f87171;font-size:13px;margin-bottom:12px;min-height:18px;text-align:center;}
+.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
+.pm-pay-btn:active{transform:scale(.98);}
+.pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
+.pm-secure{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:0.5px;}
+
+/* Safe close button */
+.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
+</style>
+</head>
+<body>
+<div class="status-strip" aria-hidden="true"></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="page">
+  <div class="topbar">
+    <div class="back-btn" onclick="history.back()" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <div class="page-title">Review your quest</div>
+    <div style="width:40px;"></div>
+  </div>
+
+  <div class="hdr">
+    <h1>Your AI-generated clues</h1>
+    <p>Tap any clue to edit it, then confirm to fund your quest.</p>
+  </div>
+
+  <div id="quest-meta-wrap"></div>
+
+  <div id="clues-list">
+    <!-- populated by JS; show skeleton while loading -->
+    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
+    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
+    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
+  </div>
+</div>
+
+<div class="confirm-footer" id="confirm-footer" style="display:none;">
+  <div class="confirm-footer-inner">
+    <button class="confirm-btn" id="confirm-btn" onclick="openPaymentModal()">
+      Looks Good — Fund Quest →
+    </button>
+  </div>
+</div>
+
+<!-- ====== PAYMENT MODAL ====== -->
+<div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
+<div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+  <div class="pm-handle"></div>
+  <button class="pm-close" onclick="closePaymentModal()" aria-label="Close">✕</button>
+  <div class="pm-title" id="pm-title">Fund your quest</div>
+  <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
+
+  <div class="pm-breakdown" id="pm-breakdown"></div>
+
+  <div id="pm-stripe-element"></div>
+  <div id="pm-error"></div>
+  <button class="pm-pay-btn" id="pm-pay-btn" onclick="submitPayment()">Pay now</button>
+  <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
+</div>
+
+<script>
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET = 'fs-notify-2026';
+const STRIPE_PUBLIC_KEY = 'pk_live_51SEeS9I5oOLcrCkoLi99l2tAGTotaLsxlPEoNcKqrZhARB8CTA82cokMj2tXKNJ79GPg1Hy4bpokQYrc3jpzYGef00EoR5idyy';
+
+function getToken(){ return localStorage.getItem('fs_token') || ''; }
+function getParam(n){ return new URLSearchParams(window.location.search).get(n); }
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(()=>t.className = 'toast', 3500);
+}
+
+let currentUser = null;
+let currentProfile = null;
+let hunt = null;
+let clues = [];
+
+async function init(){
+  const huntId = getParam('id');
+  if (!huntId) {
+    showToast('No quest ID', 'error');
+    setTimeout(()=>window.location.href='newquest.html', 1500);
+    return;
+  }
+
+  // Fetch auth
+  const token = getToken();
+  if (!token) {
+    showToast('Please sign in', 'error');
+    setTimeout(()=>window.location.href='profile.html', 1500);
+    return;
+  }
+  try {
+    const r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (!r.ok) throw new Error('auth failed');
+    currentUser = await r.json();
+  } catch(e) {
+    localStorage.removeItem('fs_token');
+    window.location.href='profile.html';
+    return;
+  }
+
+  // Fetch profile for is_pro flag
+  try {
+    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    const pd = await pr.json();
+    currentProfile = (pd && pd[0]) || {};
+  } catch(e) { currentProfile = {}; }
+
+  // Fetch hunt
+  const hr = await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId+'&select=*', {
+    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+  });
+  const hd = await hr.json();
+  if (!hd || !hd[0]) {
+    showToast('Quest not found', 'error');
+    setTimeout(()=>window.location.href='newquest.html', 1500);
+    return;
+  }
+  hunt = hd[0];
+
+  // Verify ownership
+  if (hunt.created_by !== currentUser.id && hunt.pirate_id !== currentUser.id) {
+    showToast("That's not your quest", 'error');
+    setTimeout(()=>window.location.href='profile.html', 1500);
+    return;
+  }
+
+  // Fetch clues
+  const cr = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=*&order=clue_number.asc', {
+    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+  });
+  clues = await cr.json();
+  if (!Array.isArray(clues) || clues.length === 0) {
+    showToast('No clues found for this quest', 'error');
+    return;
+  }
+
+  renderMeta();
+  renderClues();
+  document.getElementById('confirm-footer').style.display = 'block';
+}
+
+function renderMeta(){
+  const prize = (hunt.prize_value || 0) / 100;
+  const fee = Math.round(prize * 0.10 * 100) / 100;
+  const total = prize + fee;
+  const start = new Date(hunt.starts_at);
+  const end = new Date(hunt.ends_at);
+  const durHours = Math.round((end - start) / (1000*60*60));
+
+  document.getElementById('quest-meta-wrap').innerHTML = `
+    <div class="quest-meta">
+      <div class="prize">$${prize.toFixed(2)}</div>
+      <div class="sep"></div>
+      <div class="detail">
+        <strong>${clues.length} clues over ${durHours}h</strong>
+        ${hunt.neighborhood || hunt.city || ''}
+      </div>
+    </div>`;
+}
+
+function renderClues(){
+  const isPro = !!currentProfile.is_pro;
+  const list = document.getElementById('clues-list');
+  list.innerHTML = clues.map((c, i) => renderClue(c, i, isPro)).join('');
+  if (!isPro) {
+    list.innerHTML += `
+      <div class="pro-unlock" style="margin-top:14px;">
+        <span>✨</span>
+        <span>Upgrade to Pro to regenerate clues and tweak reveal times</span>
+        <a href="gold.html">Go Gold →</a>
+      </div>`;
+  }
+}
+
+function renderClue(c, idx, isPro){
+  const revealDate = c.reveal_at ? new Date(c.reveal_at) : null;
+  const revealStr = revealDate ? revealDate.toLocaleString('en-US', {
+    weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'
+  }) : '';
+  const tierBadge = c.tier === 'pro'
+    ? '<span class="tier-badge">Pro tier</span>'
+    : '<span class="tier-badge free">Free tier</span>';
+
+  return `
+    <div class="clue-card" id="clue-${c.id}">
+      <div class="clue-head">
+        <div class="clue-num">${c.clue_number}</div>
+        <div class="clue-label">
+          <strong>Clue ${c.clue_number}</strong>
+          Reveals ${escapeHtml(revealStr)}
+        </div>
+        ${tierBadge}
+      </div>
+      <div class="clue-text" id="clue-text-${c.id}">${escapeHtml(c.clue_text)}</div>
+      <div class="clue-actions" id="clue-actions-${c.id}">
+        <button class="clue-btn" onclick="startEdit('${c.id}')">✏️ Edit text</button>
+        ${isPro ? `<button class="clue-btn pro" onclick="regenerateClue('${c.id}')">✨ Regenerate</button>` : ''}
+        ${isPro ? `<button class="clue-btn pro" onclick="editTime('${c.id}')">🕒 Change time</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function startEdit(clueId){
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const card = document.getElementById('clue-'+clueId);
+  card.classList.add('editing');
+  document.getElementById('clue-text-'+clueId).innerHTML =
+    `<textarea class="clue-edit-textarea" id="clue-input-${clueId}">${escapeHtml(c.clue_text)}</textarea>`;
+  document.getElementById('clue-actions-'+clueId).innerHTML = `
+    <button class="clue-btn primary" onclick="saveEdit('${clueId}')">Save</button>
+    <button class="clue-btn" onclick="cancelEdit('${clueId}')">Cancel</button>`;
+  document.getElementById('clue-input-'+clueId).focus();
+}
+
+async function saveEdit(clueId){
+  const newText = document.getElementById('clue-input-'+clueId).value.trim();
+  if (!newText) { showToast('Clue cannot be empty', 'error'); return; }
+  try {
+    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_text: newText })
+    });
+    if (!r.ok) throw new Error('save failed');
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    cancelEdit(clueId);
+    showToast('Saved', 'success');
+  } catch(e) {
+    showToast('Save failed — try again', 'error');
+  }
+}
+
+function cancelEdit(clueId){
+  const card = document.getElementById('clue-'+clueId);
+  card.classList.remove('editing');
+  renderClues();
+}
+
+async function regenerateClue(clueId){
+  if (!currentProfile.is_pro) { showToast('Upgrade to Pro to regenerate', 'error'); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const card = document.getElementById('clue-'+clueId);
+  const actionsEl = document.getElementById('clue-actions-'+clueId);
+  actionsEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:4px 0;">✨ Generating new clue...</div>';
+
+  try {
+    const r = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hunt.hiding_spot || hunt.neighborhood || '',
+        clueCount: clues.length,
+        lat: hunt.lat, lng: hunt.lng,
+        persona: hunt.clue_persona || 'pirate',
+        singleClue: { position: c.clue_number, totalCount: clues.length }
+      })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.clue) throw new Error(d.error || 'Generation failed');
+
+    // Save new clue text to Supabase
+    const pr = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_text: d.clue.text })
+    });
+    if (!pr.ok) throw new Error('save failed');
+    c.clue_text = d.clue.text;
+    renderClues();
+    showToast('✨ New clue generated', 'success');
+  } catch(e) {
+    showToast('Regenerate failed — try again', 'error');
+    renderClues();
+  }
+}
+
+function editTime(clueId){
+  if (!currentProfile.is_pro) { showToast('Upgrade to Pro to change times', 'error'); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const current = c.reveal_at ? new Date(c.reveal_at).toISOString().slice(0,16) : '';
+  const start = new Date(hunt.starts_at).toISOString().slice(0,16);
+  const end = new Date(hunt.ends_at).toISOString().slice(0,16);
+  const card = document.getElementById('clue-'+clueId);
+  document.getElementById('clue-actions-'+clueId).innerHTML = `
+    <div class="time-editor">
+      <input type="datetime-local" id="time-input-${clueId}" value="${current}" min="${start}" max="${end}"/>
+      <button class="clue-btn primary" onclick="saveTime('${clueId}')">Save</button>
+      <button class="clue-btn" onclick="renderClues()">Cancel</button>
+    </div>`;
+}
+
+async function saveTime(clueId){
+  const val = document.getElementById('time-input-'+clueId).value;
+  if (!val) { showToast('Pick a time', 'error'); return; }
+  const iso = new Date(val).toISOString();
+  try {
+    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ reveal_at: iso })
+    });
+    if (!r.ok) throw new Error('save failed');
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.reveal_at = iso;
+    renderClues();
+    showToast('Time updated', 'success');
+  } catch(e) {
+    showToast('Save failed', 'error');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  PAYMENT MODAL (embedded Stripe)
+// ════════════════════════════════════════════════════
+let stripe = null, stripeElements = null, stripePayEl = null, clientSecret = null;
+
+async function openPaymentModal(){
+  // Render breakdown
+  const prize = (hunt.prize_value || 0) / 100;
+  const fee = Math.round(prize * 0.10 * 100) / 100;
+  const total = prize + fee;
+  document.getElementById('pm-breakdown').innerHTML = `
+    <div class="pm-row"><span>Prize to winner</span><strong>$${prize.toFixed(2)}</strong></div>
+    <div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$${fee.toFixed(2)}</strong></div>
+    <div class="pm-row total"><span>Total today</span><strong>$${total.toFixed(2)}</strong></div>`;
+  document.getElementById('pm-error').textContent = '';
+
+  // Show modal
+  document.getElementById('pm-backdrop').classList.add('show');
+  document.getElementById('pm-sheet').classList.add('show');
+
+  // Init Stripe if needed
+  if (!stripe) stripe = Stripe(STRIPE_PUBLIC_KEY);
+
+  // Request PaymentIntent if we don't have one
+  if (!clientSecret) {
+    try {
+      const r = await fetch('/api/create-escrow-intent', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+        body: JSON.stringify({
+          userId: currentUser.id,
+          email: currentUser.email,
+          huntId: hunt.id,
+          prizeAmount: prize,
+          totalCents: Math.round(total * 100)
+        })
+      });
+      const d = await r.json();
+      if (!r.ok || !d.clientSecret) throw new Error(d.error || 'Could not start payment');
+      clientSecret = d.clientSecret;
+    } catch(e) {
+      document.getElementById('pm-error').textContent = e.message;
+      return;
+    }
+
+    // Mount Stripe Elements
+    stripeElements = stripe.elements({
+      clientSecret,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#e8a820',
+          colorBackground: '#14121f',
+          colorText: '#f5ead8',
+          colorDanger: '#f87171',
+          fontFamily: 'Noto Sans Display, system-ui, sans-serif',
+          borderRadius: '10px'
+        }
+      }
+    });
+    stripePayEl = stripeElements.create('payment');
+    stripePayEl.mount('#pm-stripe-element');
+  }
+}
+
+function closePaymentModal(){
+  document.getElementById('pm-backdrop').classList.remove('show');
+  document.getElementById('pm-sheet').classList.remove('show');
+}
+
+async function submitPayment(){
+  const btn = document.getElementById('pm-pay-btn');
+  const errEl = document.getElementById('pm-error');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    const { error } = await stripe.confirmPayment({
+      elements: stripeElements,
+      confirmParams: {
+        return_url: window.location.origin + '/profile.html?quest=funded&id=' + hunt.id
+      }
+    });
+    if (error) throw new Error(error.message);
+    // On success, Stripe redirects to return_url — no code after this runs
+  } catch(e) {
+    errEl.textContent = e.message || 'Payment failed';
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+  }
+}
+
+// ════════════════════════════════════════════════════
+// Service worker
+// ════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+}
+
+// Init
+init();
+</script>
+</body>
+</html>
