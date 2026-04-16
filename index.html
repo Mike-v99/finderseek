@@ -274,10 +274,29 @@ body::after {
 }
 .section-completed .section-title { color: var(--red-light); }
 .section-prize { font-size: 22px; font-weight: 400; color: var(--green); }
-.section-chevron { color: inherit; font-size: 18px; margin-left: 8px; }
+.section-chevron { color: inherit; font-size: 18px; margin-left: 8px; transition: transform .25s; }
 .section-active .section-chevron { color: var(--green); }
 .section-scheduled .section-chevron { color: var(--yellow); }
 .section-completed .section-chevron { color: var(--gray); }
+.section.open .section-chevron { transform: rotate(180deg); }
+
+/* Quest list (expanded inside section) */
+.quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
+.section.open .quest-list { max-height: 2000px; }
+.quest-row { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; transition: background .15s; }
+.quest-row:hover { background: rgba(255,255,255,.03); }
+.quest-row:active { background: rgba(255,255,255,.06); }
+.quest-row-left { flex: 1; min-width: 0; }
+.quest-row-title { font-size: 15px; color: var(--cream); font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quest-row-meta { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.quest-row-meta .dot { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
+.quest-row-prize { font-size: 18px; font-weight: 400; color: var(--green); flex-shrink: 0; }
+.section-scheduled .quest-row-prize { color: var(--yellow); }
+.section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
+.quest-empty { padding: 20px 16px; text-align: center; color: var(--muted); font-size: 13px; font-style: italic; }
+.quest-loading { padding: 16px; text-align: center; color: var(--muted); font-size: 13px; }
+.quest-loading::after { content: '⋯'; animation: dots 1.4s infinite; margin-left: 4px; }
+@keyframes dots { 0%, 20% { content: '⋯'; } 40% { content: '⋯⋯'; } 60% { content: '⋯⋯⋯'; } }
 
 /* BOTTOM NAV */
 .bottom-nav {
@@ -425,45 +444,54 @@ body::after {
 
   <!-- QUEST SECTIONS -->
   <div class="sections" id="quest-sections">
-    <div class="section section-active el from-left" data-d="1500" onclick="this.classList.toggle('open')">
+    <div class="section section-active el from-left" data-d="1500" id="sec-active" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
-          <div class="num-circle">3</div>
+          <div class="num-circle" id="count-active">0</div>
           <div class="section-title">ACTIVE</div>
         </div>
         <div style="display:flex;align-items:center;">
-          <span class="section-prize">$172</span>
+          <span class="section-prize" id="prize-active">$0</span>
           <span class="section-chevron">▾</span>
         </div>
       </div>
+      <div class="quest-list" id="list-active" onclick="event.stopPropagation();">
+        <div class="quest-loading">Loading quests</div>
+      </div>
     </div>
 
-    <div class="section section-scheduled el from-right" data-d="1650" onclick="this.classList.toggle('open')">
+    <div class="section section-scheduled el from-right" data-d="1650" id="sec-scheduled" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
-          <div class="num-circle">2</div>
+          <div class="num-circle" id="count-scheduled">0</div>
           <div class="section-title">SCHEDULED</div>
         </div>
         <div style="display:flex;align-items:center;">
-          <span class="section-prize">$75</span>
+          <span class="section-prize" id="prize-scheduled">$0</span>
           <span class="section-chevron">▾</span>
         </div>
       </div>
+      <div class="quest-list" id="list-scheduled" onclick="event.stopPropagation();">
+        <div class="quest-loading">Loading quests</div>
+      </div>
     </div>
 
-    <div class="section section-completed el from-left" data-d="1800" onclick="this.classList.toggle('open')">
+    <div class="section section-completed el from-left" data-d="1800" id="sec-completed" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
-          <div class="num-circle">8</div>
+          <div class="num-circle" id="count-completed">0</div>
           <div class="section-title">COMPLETED</div>
         </div>
         <div style="display:flex;align-items:center;">
-          <span class="section-prize">$430</span>
+          <span class="section-prize" id="prize-completed">$0</span>
           <span class="section-chevron">▾</span>
         </div>
+      </div>
+      <div class="quest-list" id="list-completed" onclick="event.stopPropagation();">
+        <div class="quest-loading">Loading quests</div>
       </div>
     </div>
   </div>
@@ -564,7 +592,132 @@ function triggerFlyIn() {
 window.addEventListener('DOMContentLoaded', function() {
   playGoldBurst();
   triggerFlyIn();
+  loadQuests();
 });
+
+// ============================================================
+//  SUPABASE QUEST LOADING
+// ============================================================
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+function timeUntil(iso) {
+  if (!iso) return '';
+  var now = new Date();
+  var t = new Date(iso);
+  var diff = t - now;
+  if (diff <= 0) return 'now';
+  var h = Math.floor(diff / 3600000);
+  var d = Math.floor(h / 24);
+  if (d > 0) return 'in ' + d + 'd';
+  if (h > 0) return 'in ' + h + 'h';
+  var m = Math.floor(diff / 60000);
+  return 'in ' + m + 'm';
+}
+
+function timeAgo(iso) {
+  if (!iso) return '';
+  var now = new Date();
+  var t = new Date(iso);
+  var diff = now - t;
+  var h = Math.floor(diff / 3600000);
+  var d = Math.floor(h / 24);
+  if (d > 0) return d + 'd ago';
+  if (h > 0) return h + 'h ago';
+  var m = Math.floor(diff / 60000);
+  return Math.max(0, m) + 'm ago';
+}
+
+function renderQuestRow(q, status) {
+  var prizeDollars = Math.round((q.prize_value || 0) / 100);
+  var location = escapeHtml(q.neighborhood || q.city || 'Unknown location');
+  var meta = '';
+  if (status === 'active')        meta = 'Ends ' + timeUntil(q.ends_at);
+  else if (status === 'scheduled') meta = 'Starts ' + timeUntil(q.starts_at);
+  else if (status === 'completed') meta = q.found_at ? 'Found ' + timeAgo(q.found_at) : 'Expired ' + timeAgo(q.ends_at);
+
+  return (
+    '<div class="quest-row" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">' +
+      '<div class="quest-row-left">' +
+        '<div class="quest-row-title">' + location + '</div>' +
+        '<div class="quest-row-meta">' +
+          '<span>' + escapeHtml(q.city || '') + '</span>' +
+          (meta ? '<span class="dot"></span><span>' + meta + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="quest-row-prize">$' + prizeDollars + '</div>' +
+    '</div>'
+  );
+}
+
+async function fetchQuests(status) {
+  // For 'completed' include both ended and any with winner
+  var query;
+  if (status === 'completed') {
+    query = '?status=eq.ended&order=ends_at.desc&limit=20';
+  } else {
+    query = '?status=eq.' + status + '&order=' + (status === 'active' ? 'ends_at' : 'starts_at') + '.asc&limit=20';
+  }
+  // Only return funded escrow OR honor-payment hunts (don't show unpaid drafts)
+  // Plus: select specific columns we need
+  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type';
+  try {
+    var r = await fetch(SB + '/rest/v1/hunts' + query + select, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+    });
+    if (!r.ok) {
+      console.error('Fetch quests failed', status, r.status);
+      return [];
+    }
+    var data = await r.json();
+    // Filter out unfunded escrow hunts
+    return (data || []).filter(function(q) {
+      if (q.payment_type === 'finderseek' || q.payment_type === 'escrow') {
+        return q.escrow_status === 'funded' || q.escrow_status === 'paid' || q.escrow_status === 'pending_payout' || q.escrow_status === 'refunded';
+      }
+      return true; // honor payments don't have escrow
+    });
+  } catch (e) {
+    console.error('Fetch error', e);
+    return [];
+  }
+}
+
+function renderSection(status, quests) {
+  var listEl = document.getElementById('list-' + status);
+  var countEl = document.getElementById('count-' + status);
+  var prizeEl = document.getElementById('prize-' + status);
+
+  countEl.textContent = quests.length;
+  var totalPrize = quests.reduce(function(sum, q) { return sum + Math.round((q.prize_value || 0) / 100); }, 0);
+  prizeEl.textContent = '$' + totalPrize;
+
+  if (quests.length === 0) {
+    var msg = status === 'active' ? 'No active quests right now — be the first to hide treasure!' :
+              status === 'scheduled' ? 'No scheduled quests coming up.' :
+              'No completed quests yet.';
+    listEl.innerHTML = '<div class="quest-empty">' + msg + '</div>';
+    return;
+  }
+  listEl.innerHTML = quests.map(function(q) { return renderQuestRow(q, status); }).join('');
+}
+
+async function loadQuests() {
+  var [active, scheduled, completed] = await Promise.all([
+    fetchQuests('active'),
+    fetchQuests('scheduled'),
+    fetchQuests('completed'),
+  ]);
+  renderSection('active', active);
+  renderSection('scheduled', scheduled);
+  renderSection('completed', completed);
+}
 </script>
 
 </body>

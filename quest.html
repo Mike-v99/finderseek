@@ -84,11 +84,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
     <div class="inner hero-inner">
       <div class="hero-shine"></div>
       <div class="hero-glow"></div>
-      <div style="font-size:18px;letter-spacing:2px;color:#e8a820;margin-bottom:8px;position:relative;">ACTIVE QUEST</div>
-      <div style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(64px,16vw,76px);color:#4ade80;line-height:1;position:relative;animation:prizeGlow 3s ease-in-out infinite;">$75</div>
-      <div style="font-size:18px;font-weight:400;color:#ffffff;margin-top:8px;position:relative;">Houston, TX</div>
-      <div style="font-size:18px;color:#a8c8e0;margin-top:4px;position:relative;">CaptainJack</div>
-      <div style="display:inline-block;margin-top:10px;padding:4px 14px;border-radius:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);font-size:18px;font-weight:400;color:#e8a820;position:relative;">GOLD TIER</div>
+      <div id="q-status-label" style="font-size:18px;letter-spacing:2px;color:#e8a820;margin-bottom:8px;position:relative;">ACTIVE QUEST</div>
+      <div id="q-prize" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(64px,16vw,76px);color:#4ade80;line-height:1;position:relative;animation:prizeGlow 3s ease-in-out infinite;">$0</div>
+      <div id="q-location" style="font-size:18px;font-weight:400;color:#ffffff;margin-top:8px;position:relative;">Loading…</div>
+      <div id="q-pirate" style="font-size:18px;color:#a8c8e0;margin-top:4px;position:relative;">—</div>
+      <div id="q-tier" style="display:inline-block;margin-top:10px;padding:4px 14px;border-radius:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);font-size:18px;font-weight:400;color:#e8a820;position:relative;">QUEST</div>
     </div>
   </div>
 
@@ -104,7 +104,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
         <div style="font-size:28px;color:rgba(201,137,12,.4);margin-bottom:18px;">:</div>
         <div style="text-align:center;"><span class="timer-num" id="cd-s">37</span><div style="font-size:18px;color:#e8a820;margin-top:4px;">sec</div></div>
       </div>
-      <div style="font-size:18px;color:var(--dim);margin-top:10px;">Ends today at 6:00 PM</div>
+      <div id="q-end-label" style="font-size:18px;color:var(--dim);margin-top:10px;">—</div>
     </div>
   </div>
 
@@ -112,19 +112,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" class="el" data-d="450">
     <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
       <div style="font-size:18px;color:#ffffff;margin-bottom:8px;">Next Clue</div>
-      <div style="font-size:28px;font-weight:400;color:var(--yellow);">42:18</div>
-      <div style="font-size:18px;color:var(--yellow);margin-top:6px;font-weight:400;">Clue #4 incoming</div>
+      <div id="q-next-clue-time" style="font-size:28px;font-weight:400;color:var(--yellow);">—</div>
+      <div id="q-next-clue-label" style="font-size:18px;color:var(--yellow);margin-top:6px;font-weight:400;">—</div>
     </div></div>
     <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
       <div style="font-size:18px;color:#ffffff;margin-bottom:8px;">Clues Unlocked</div>
-      <div style="font-size:28px;font-weight:400;color:var(--green);">3 <span style="font-size:18px;color:var(--muted);">/ 5</span></div>
-      <div style="display:flex;gap:5px;margin-top:10px;">
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);"></div>
-        <div style="width:24px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);"></div>
-      </div>
+      <div style="font-size:28px;font-weight:400;color:var(--green);"><span id="q-unlocked">0</span> <span style="font-size:18px;color:var(--muted);">/ <span id="q-total-clues">0</span></span></div>
+      <div id="q-clue-bars" style="display:flex;gap:5px;margin-top:10px;"></div>
     </div></div>
   </div>
 
@@ -152,15 +146,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
   <!-- CLUES -->
   <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
 
-  <div class="green-wrap el" data-d="750" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">1</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #1 — Day 1</div><div style="font-size:18px;color:#fff;line-height:1.7;">Where the bayou bends and concrete meets the green, look where families gather on Sunday afternoons. The guardian of the east entrance holds a secret.</div></div></div></div></div>
-
-  <div class="green-wrap el" data-d="850" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">2</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #2 — Day 1</div><div style="font-size:18px;color:#fff;line-height:1.7;">Three oaks stand in a row. The middle one whispers to those who look down, not up. Count the stones on the path — stop at seven.</div></div></div></div></div>
-
-  <div class="green-wrap el" data-d="950" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">3</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #3 — Day 2</div><div style="font-size:18px;color:#fff;line-height:1.7;">The red bench faces west. Sit where the shadow points at noon and reach beneath where no one thinks to look.</div></div></div></div></div>
-
-  <div class="locked-wrap el" data-d="1050" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">4</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #4</div><div style="font-size:18px;color:rgba(255,255,255,.2);">This clue hasn't been revealed yet.</div><div style="font-size:18px;color:var(--yellow);margin-top:6px;font-weight:400;">Drops in 42 min</div></div></div></div></div>
-
-  <div class="locked-wrap el" data-d="1100" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">5</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #5 — Final Clue</div><div style="font-size:18px;color:rgba(255,255,255,.2);">This clue hasn't been revealed yet.</div></div></div></div></div>
+  <div id="q-clues-container">
+    <div style="padding:30px;text-align:center;color:var(--muted);font-size:14px;">Loading clues…</div>
+  </div>
 
   <!-- CLAIM -->
   <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="1150">CLAIM PRIZE <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
@@ -178,11 +166,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
         <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:400;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="cN(this,'d6')" onkeydown="cP(event,this,'d4')"/>
         <input style="width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(74,222,128,.25);text-align:center;font-size:24px;font-weight:400;color:var(--green);font-family:'Noto Sans Display',sans-serif;font-weight:200;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
       </div>
-      <button style="width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,#15803d,var(--green));color:#0a1a0a;box-shadow:0 4px 20px rgba(34,197,94,.35);" onclick="this.style.transform='scale(.97)';setTimeout(()=>this.style.transform='',150);">CLAIM PRIZE</button>
+      <button id="btn-claim" style="width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:200;cursor:pointer;background:linear-gradient(135deg,#15803d,var(--green));color:#0a1a0a;box-shadow:0 4px 20px rgba(34,197,94,.35);" onclick="claimPrize()">CLAIM PRIZE</button>
     </div>
   </div>
 
 </div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -197,10 +188,309 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
 function cP(e,el,prev){if(e.key==='Backspace'&&!el.value&&prev)document.getElementById(prev).focus();}
-var totalSecs=2*3600+14*60+37;
-function tick(){if(totalSecs<=0)return;totalSecs--;document.getElementById('cd-h').textContent=String(Math.floor(totalSecs/3600)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');document.getElementById('cd-s').textContent=String(totalSecs%60).padStart(2,'0');}
-setInterval(tick,1000);
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.el').forEach(function(el){var d=parseInt(el.getAttribute('data-d'))||0;setTimeout(function(){el.classList.add('show');},d);});});
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.el').forEach(function(el){
+    var d=parseInt(el.getAttribute('data-d'))||0;
+    setTimeout(function(){el.classList.add('show');},d);
+  });
+  loadQuest();
+});
+
+// ============================================================
+//  SUPABASE QUEST LOADER
+// ============================================================
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET = 'fs-notify-2026';
+
+let currentHunt = null;
+let currentClues = [];
+let totalSecs = 0;
+
+function getQuestId() {
+  var p = new URLSearchParams(window.location.search);
+  return p.get('id');
+}
+
+function getToken(){ return localStorage.getItem('fs_token') || ''; }
+
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  if (type === 'error') t.style.borderColor = 'rgba(239,68,68,.5)';
+  else if (type === 'success') t.style.borderColor = 'rgba(74,222,128,.5)';
+  else t.style.borderColor = 'rgba(201,137,12,.3)';
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(function(){
+    t.style.transform = 'translateX(-50%) translateY(-120%)';
+  }, 4000);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, function(c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+
+function fmtTimeRemaining(ms) {
+  if (ms <= 0) return '00:00';
+  var m = Math.floor(ms / 60000);
+  var s = Math.floor((ms % 60000) / 1000);
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+async function loadQuest() {
+  var id = getQuestId();
+  if (!id) {
+    showToast('No quest specified', 'error');
+    setTimeout(()=>{ window.location.href = 'index.html'; }, 1500);
+    return;
+  }
+
+  try {
+    // Fetch hunt + pirate profile + clues in parallel
+    var [huntRes, cluesRes] = await Promise.all([
+      fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select=*', {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}
+      }),
+      fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc', {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}
+      })
+    ]);
+
+    var huntData = await huntRes.json();
+    var cluesData = await cluesRes.json();
+
+    if (!huntData || huntData.length === 0) {
+      showToast('Quest not found', 'error');
+      setTimeout(()=>{ window.location.href = 'index.html'; }, 1500);
+      return;
+    }
+
+    currentHunt = huntData[0];
+    currentClues = cluesData || [];
+
+    // Try to load pirate profile (optional)
+    if (currentHunt.pirate_id) {
+      try {
+        var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created', {
+          headers: {'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}
+        });
+        var pd = await pr.json();
+        if (pd && pd[0]) currentHunt._pirate = pd[0];
+      } catch(e){}
+    }
+
+    renderHunt();
+    renderClues();
+    startTimer();
+  } catch(e) {
+    console.error('Load quest error:', e);
+    showToast('Error loading quest: '+e.message, 'error');
+  }
+}
+
+function renderHunt() {
+  var h = currentHunt;
+  var prizeDollars = Math.round((h.prize_value || 0) / 100);
+
+  document.getElementById('q-prize').textContent = '$' + prizeDollars;
+  document.getElementById('q-location').textContent = h.city || h.neighborhood || 'Unknown';
+  document.getElementById('q-pirate').textContent = h._pirate?.username || 'Anonymous Pirate';
+
+  var statusLabel = (h.status || 'active').toUpperCase() + ' QUEST';
+  document.getElementById('q-status-label').textContent = statusLabel;
+
+  // Tier label
+  var tier = prizeDollars >= 50 ? 'GOLD TIER' : prizeDollars >= 20 ? 'SILVER TIER' : 'BRONZE TIER';
+  document.getElementById('q-tier').textContent = tier;
+
+  // End label
+  if (h.ends_at) {
+    var endDate = new Date(h.ends_at);
+    var today = new Date();
+    var sameDay = endDate.toDateString() === today.toDateString();
+    var label = sameDay
+      ? 'Ends today at ' + endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
+      : 'Ends ' + endDate.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    document.getElementById('q-end-label').textContent = label;
+  }
+
+  // Clue progress
+  var now = new Date();
+  var unlocked = currentClues.filter(function(c){ return new Date(c.reveal_at) <= now; }).length;
+  document.getElementById('q-unlocked').textContent = unlocked;
+  document.getElementById('q-total-clues').textContent = currentClues.length;
+
+  // Bar visualization
+  var bars = '';
+  for (var i = 0; i < currentClues.length; i++) {
+    var on = i < unlocked;
+    bars += '<div style="width:24px;height:6px;border-radius:3px;background:' + (on ? 'var(--green);box-shadow:0 0 8px rgba(74,222,128,.5)' : 'rgba(255,255,255,.08)') + ';"></div>';
+  }
+  document.getElementById('q-clue-bars').innerHTML = bars;
+
+  // Next clue countdown
+  var nextClue = currentClues.find(function(c){ return new Date(c.reveal_at) > now; });
+  if (nextClue) {
+    var diffMs = new Date(nextClue.reveal_at) - now;
+    document.getElementById('q-next-clue-time').textContent = fmtTimeRemaining(diffMs);
+    document.getElementById('q-next-clue-label').textContent = 'Clue #' + nextClue.clue_number + ' incoming';
+  } else {
+    document.getElementById('q-next-clue-time').textContent = 'All revealed';
+    document.getElementById('q-next-clue-label').textContent = '';
+  }
+}
+
+function renderClues() {
+  var container = document.getElementById('q-clues-container');
+  var now = new Date();
+  if (currentClues.length === 0) {
+    container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:14px;">No clues yet for this quest.</div>';
+    return;
+  }
+
+  var html = currentClues.map(function(c, idx) {
+    var revealAt = new Date(c.reveal_at);
+    var revealed = revealAt <= now;
+    var dateLabel = c.day_label || 'Day ' + Math.ceil((idx+1) / Math.max(1, Math.ceil(currentClues.length/3)));
+    var isFinal = idx === currentClues.length - 1;
+    var titleSuffix = isFinal ? ' — Final Clue' : ' — ' + dateLabel;
+
+    if (revealed) {
+      return (
+        '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div>' +
+        '<div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;">' +
+        '<div class="clue-num-on">' + c.clue_number + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
+          '<div style="font-size:18px;color:#fff;line-height:1.7;">' + escapeHtml(c.clue_text) + '</div>' +
+          (c.tier === 'pro' ? '<div style="font-size:13px;color:#e8a820;margin-top:8px;">🥇 GOLD CLUE</div>' : '') +
+        '</div></div></div></div>'
+      );
+    } else {
+      var diffMs = revealAt - now;
+      var dropsIn = diffMs > 3600000 ? Math.round(diffMs/3600000) + 'h' : Math.round(diffMs/60000) + ' min';
+      return (
+        '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div>' +
+        '<div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;">' +
+        '<div class="clue-num-off">' + c.clue_number + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
+          '<div style="font-size:18px;color:rgba(255,255,255,.2);">This clue hasn\'t been revealed yet.</div>' +
+          '<div style="font-size:14px;color:var(--yellow);margin-top:6px;font-weight:400;">Drops in ' + dropsIn + '</div>' +
+          (c.tier === 'pro' ? '<div style="font-size:13px;color:#e8a820;margin-top:6px;">🥇 GOLD CLUE</div>' : '') +
+        '</div></div></div></div>'
+      );
+    }
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function startTimer() {
+  if (!currentHunt || !currentHunt.ends_at) return;
+  var endsAt = new Date(currentHunt.ends_at);
+  function tick() {
+    var now = new Date();
+    var diff = endsAt - now;
+    if (diff <= 0) {
+      document.getElementById('cd-h').textContent = '00';
+      document.getElementById('cd-m').textContent = '00';
+      document.getElementById('cd-s').textContent = '00';
+      return;
+    }
+    totalSecs = Math.floor(diff / 1000);
+    document.getElementById('cd-h').textContent = String(Math.floor(totalSecs/3600)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(totalSecs%60).padStart(2,'0');
+
+    // Refresh "next clue" countdown
+    var nextClue = currentClues.find(function(c){ return new Date(c.reveal_at) > now; });
+    if (nextClue) {
+      var diffNext = new Date(nextClue.reveal_at) - now;
+      var t = document.getElementById('q-next-clue-time');
+      if (t) t.textContent = fmtTimeRemaining(diffNext);
+      // If we just unlocked a clue, re-render
+      if (diffNext <= 1000) setTimeout(()=>{ renderHunt(); renderClues(); }, 1100);
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ============================================================
+//  CLAIM PRIZE
+// ============================================================
+async function claimPrize() {
+  var btn = document.getElementById('btn-claim');
+  if (!currentHunt) return;
+
+  // Check user logged in
+  var token = getToken();
+  if (!token) {
+    showToast('Please sign in to claim', 'error');
+    setTimeout(()=>{ window.location.href = 'profile.html?redirect=quest.html?id='+currentHunt.id; }, 1200);
+    return;
+  }
+
+  // Get the entered code
+  var code = ['d1','d2','d3','d4','d5','d6'].map(function(id){ return document.getElementById(id).value; }).join('');
+  if (code.length !== 6) {
+    showToast('Enter all 6 digits', 'error');
+    return;
+  }
+
+  // Verify the code
+  if (code !== currentHunt.finder_code) {
+    showToast('❌ Wrong code — keep searching!', 'error');
+    btn.style.transform = 'scale(.97)';
+    setTimeout(()=>{ btn.style.transform = ''; }, 150);
+    return;
+  }
+
+  // Get current user ID
+  btn.disabled = true;
+  btn.textContent = '⏳ Verifying...';
+  try {
+    var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var user = await ur.json();
+    if (!user?.id) throw new Error('Authentication failed');
+
+    // Trigger transfer-prize API
+    btn.textContent = '⏳ Sending prize...';
+    var tr = await fetch('/api/transfer-prize', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-finderseek-secret': NOTIFY_SECRET
+      },
+      body: JSON.stringify({ huntId: currentHunt.id, winnerId: user.id })
+    });
+    var trd = await tr.json();
+
+    if (trd.needs_onboarding) {
+      showToast('🎉 You won! Setting up payout...', 'success');
+      setTimeout(()=>{ window.location.href = 'profile.html?claim='+currentHunt.id; }, 1500);
+      return;
+    }
+
+    if (trd.success) {
+      showToast('🎉 Prize sent! $' + (trd.amount) + ' on its way to your account', 'success');
+      btn.textContent = '✅ CLAIMED!';
+      btn.style.background = 'linear-gradient(135deg,#15803d,var(--green))';
+    } else {
+      throw new Error(trd.error || trd.message || 'Transfer failed');
+    }
+  } catch(e) {
+    console.error('Claim error:', e);
+    showToast('Error: '+e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'CLAIM PRIZE';
+  }
+}
 </script>
 </body>
 </html>

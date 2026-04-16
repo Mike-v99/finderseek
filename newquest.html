@@ -156,6 +156,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .el.show{opacity:1;transform:translateY(0);}
 
 @supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
+
+/* Toast & loader */
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(--cream);font-size:15px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
+.toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
+.btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -210,15 +217,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="field">
           <div class="flabel">🎭 Clue Style</div>
           <div class="persona-grid">
-            <div class="persona-card selected" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span><div class="persona-name">Pirate</div><div class="persona-desc">Salty riddles</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🌸</span><div class="persona-name">Poetic</div><div class="persona-desc">Dreamlike</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤬</span><div class="persona-name">Insults</div><div class="persona-desc">Roast & taunt</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">😏</span><div class="persona-name">Sarcastic</div><div class="persona-desc">Dry wit</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤠</span><div class="persona-name">Hillbilly</div><div class="persona-desc">Country charm</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🧸</span><div class="persona-name">5 Year Old</div><div class="persona-desc">Super silly</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">👵</span><div class="persona-name">Grandma</div><div class="persona-desc">Sweet & warm</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏄</span><div class="persona-name">Surfer Bro</div><div class="persona-desc">Totally gnarly</div></div>
-            <div class="persona-card" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🔍</span><div class="persona-name">Investigator</div><div class="persona-desc">True crime style</div></div>
+            <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏴‍☠️</span><div class="persona-name">Pirate</div><div class="persona-desc">Salty riddles</div></div>
+            <div class="persona-card" data-persona="poetic" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🌸</span><div class="persona-name">Poetic</div><div class="persona-desc">Dreamlike</div></div>
+            <div class="persona-card" data-persona="insults" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤬</span><div class="persona-name">Insults</div><div class="persona-desc">Roast & taunt</div></div>
+            <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">😏</span><div class="persona-name">Sarcastic</div><div class="persona-desc">Dry wit</div></div>
+            <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🤠</span><div class="persona-name">Hillbilly</div><div class="persona-desc">Country charm</div></div>
+            <div class="persona-card" data-persona="kid" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🧸</span><div class="persona-name">5 Year Old</div><div class="persona-desc">Super silly</div></div>
+            <div class="persona-card" data-persona="grandma" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">👵</span><div class="persona-name">Grandma</div><div class="persona-desc">Sweet & warm</div></div>
+            <div class="persona-card" data-persona="surfer" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🏄</span><div class="persona-name">Surfer Bro</div><div class="persona-desc">Totally gnarly</div></div>
+            <div class="persona-card" data-persona="investigator" onclick="selPersona(this)"><div class="persona-check">✓</div><span class="persona-emoji">🔍</span><div class="persona-name">Investigator</div><div class="persona-desc">True crime style</div></div>
           </div>
         </div>
       </div>
@@ -295,7 +302,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         </div>
         <div class="field">
           <label class="flabel" style="color:#fff;">⭐ Describe the Hiding Spot</label>
-          <textarea class="finput" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park"></textarea>
+          <textarea class="finput" id="hiding-spot" rows="3" placeholder="e.g. Under the third bench near the fountain in Memorial Park"></textarea>
           <div style="font-size:18px;color:#a8c8e0;margin-top:6px;">Good spots: Parks · Shopping areas · Public spaces</div>
         </div>
       </div>
@@ -364,11 +371,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       </div>
       <div class="step-body">
         <div class="golive-opts">
-          <div class="golive-opt selected" onclick="selLive(this)">
+          <div class="golive-opt selected" data-live="now" onclick="selLive(this)">
             <div class="golive-icon">⚡</div>
             <div class="golive-name">Right Now</div>
           </div>
-          <div class="golive-opt" onclick="selLive(this)">
+          <div class="golive-opt" data-live="schedule" onclick="selLive(this)">
             <div class="golive-icon">📅</div>
             <div class="golive-name">Schedule It</div>
           </div>
@@ -379,12 +386,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
   <!-- SUBMIT -->
   <div class="el" data-d="1000" style="margin-top:8px;">
-    <button class="btn-submit">+ &nbsp; CREATE QUEST →</button>
-    <button class="btn-preview">🗺️ &nbsp; SEE CLUES FIRST</button>
+    <button class="btn-submit" id="btn-create" onclick="createQuest(false)">+ &nbsp; CREATE QUEST →</button>
+    <button class="btn-preview" id="btn-preview" onclick="createQuest(true)">🗺️ &nbsp; SEE CLUES FIRST</button>
     <div class="submit-note">Create Quest goes live instantly · See Clues First lets you review AI-generated clues before publishing</div>
   </div>
 
 </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -455,6 +465,235 @@ function genCode(){
     document.getElementById('c'+i).value=Math.floor(Math.random()*10);
   }
 }
+
+// ============================================================
+//  SUPABASE + AUTH
+// ============================================================
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET = 'fs-notify-2026';
+
+let currentUser = null;
+let currentProfile = null;
+
+function getToken(){ return localStorage.getItem('fs_token') || ''; }
+
+async function loadCurrentUser(){
+  const token = getToken();
+  if (!token) return null;
+  try {
+    const r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (!r.ok) return null;
+    const u = await r.json();
+    if (!u?.id) return null;
+    currentUser = u;
+    // Load profile too
+    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+u.id+'&select=*', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    const pd = await pr.json();
+    currentProfile = pd?.[0] || null;
+    return u;
+  } catch(e){ console.error('Auth check failed', e); return null; }
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+// ============================================================
+//  CREATE QUEST
+// ============================================================
+async function createQuest(previewMode){
+  const btn = document.getElementById('btn-create');
+  const previewBtn = document.getElementById('btn-preview');
+
+  // ── 1. Auth check ─────────────────────────────────────────
+  if (!currentUser) {
+    await loadCurrentUser();
+    if (!currentUser) {
+      showToast('Please sign in to create a quest', 'error');
+      setTimeout(()=>{ window.location.href = 'profile.html?redirect=newquest.html'; }, 1200);
+      return;
+    }
+  }
+
+  // ── 2. Gather form values ─────────────────────────────────
+  const prizeText = document.getElementById('prize-display').textContent.replace(/[^\d.]/g,'');
+  const prize = parseFloat(prizeText) || 0;
+  const duration = parseInt(document.getElementById('dur-slider').value);
+  const clueCount = parseInt(document.getElementById('clue-slider').value);
+  const persona = document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate';
+  const hidingSpot = document.getElementById('hiding-spot').value.trim();
+  const searchAddress = document.getElementById('map-search').value.trim();
+  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).value).join('');
+  const liveMode = document.querySelector('.golive-opt.selected')?.dataset.live || 'now';
+
+  // ── 3. Validation ─────────────────────────────────────────
+  if (prize < 1 || prize > 100) return showToast('Prize must be between $1 and $100', 'error');
+  if (!hidingSpot || hidingSpot.length < 10) return showToast('Describe the hiding spot in more detail', 'error');
+  if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
+  if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
+
+  // ── 4. Disable buttons + show progress ────────────────────
+  btn.disabled = true; previewBtn.disabled = true;
+  btn.textContent = '⏳ Creating quest...';
+
+  try {
+    // ── 5. Compute timing ───────────────────────────────────
+    const now = new Date();
+    const startsAt = liveMode === 'now' ? now : now; // TODO: schedule picker
+    const endsAt = new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
+    const status = liveMode === 'now' ? 'pending_payment' : 'scheduled';
+
+    // Extract city from search address
+    const parts = searchAddress.split(',').map(s => s.trim());
+    const city = parts.length >= 2 ? parts[parts.length - 2] : (parts[0] || 'Unknown');
+
+    // ── 6. Insert hunt into Supabase ────────────────────────
+    btn.textContent = '⏳ Saving quest...';
+    const huntRes = await fetch(SB+'/rest/v1/hunts', {
+      method:'POST',
+      headers:{
+        'apikey':KEY,
+        'Authorization':'Bearer '+getToken(),
+        'Content-Type':'application/json',
+        'Prefer':'return=representation'
+      },
+      body: JSON.stringify({
+        week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+        prize_desc: '$'+prize+' Cash',
+        prize_value: Math.round(prize * 100),
+        starts_at: startsAt.toISOString(),
+        ends_at: endsAt.toISOString(),
+        status: status,
+        city: city,
+        finder_code: code,
+        payment_type: 'finderseek',
+        escrow_status: 'pending',
+        neighborhood: searchAddress.split(',')[0] || '',
+        pirate_id: currentUser.id,
+        created_by: currentUser.id,
+        lat: selectedLat,
+        lng: selectedLng,
+        hiding_spot: hidingSpot,
+        clue_persona: persona,
+        clue_count: clueCount,
+      })
+    });
+
+    const huntData = await huntRes.json();
+    if (!huntRes.ok) {
+      console.error('Supabase hunt insert error:', huntData);
+      throw new Error(huntData?.message || 'Failed to save quest');
+    }
+    const hunt = Array.isArray(huntData) ? huntData[0] : huntData;
+    const huntId = hunt.id;
+    console.log('Quest saved with ID:', huntId);
+
+    // ── 7. Generate clues via Claude ─────────────────────────
+    btn.textContent = '⏳ Generating clues...';
+    const clueRes = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hidingSpot,
+        clueCount: clueCount,
+        lat: selectedLat,
+        lng: selectedLng,
+        persona: persona,
+      })
+    });
+    const clueData = await clueRes.json();
+    if (!clueRes.ok || !clueData.clues) {
+      console.error('Clue generation error:', clueData);
+      throw new Error(clueData?.error || 'Failed to generate clues');
+    }
+
+    // ── 8. Insert clues into Supabase ───────────────────────
+    btn.textContent = '⏳ Saving clues...';
+    const clueRows = clueData.clues.map((c, idx) => {
+      const stagger = duration / clueCount;
+      const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 60 * 60 * 1000);
+      return {
+        hunt_id: huntId,
+        clue_number: c.number || (idx + 1),
+        tier: idx < Math.ceil(clueCount / 2) ? 'free' : 'pro',
+        reveal_at: revealAt.toISOString(),
+        clue_text: c.text || '',
+        is_photo: false,
+        day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
+        date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+      };
+    });
+
+    const cluesPostRes = await fetch(SB+'/rest/v1/clues', {
+      method:'POST',
+      headers:{
+        'apikey':KEY,
+        'Authorization':'Bearer '+getToken(),
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body: JSON.stringify(clueRows)
+    });
+    if (!cluesPostRes.ok) {
+      const err = await cluesPostRes.text();
+      console.error('Clue insert error:', err);
+      throw new Error('Failed to save clues');
+    }
+
+    // ── 9. If preview mode, send to a review screen ─────────
+    if (previewMode) {
+      showToast('✅ Quest draft saved! Redirecting to review...', 'success');
+      setTimeout(()=>{ window.location.href = 'pirate.html?review='+huntId; }, 1500);
+      return;
+    }
+
+    // ── 10. Trigger escrow checkout ──────────────────────────
+    btn.textContent = '⏳ Setting up payment...';
+    const fee = Math.round(prize * 0.10 * 100) / 100;
+    const totalCents = Math.round((prize + fee) * 100);
+
+    const checkoutRes = await fetch('/api/create-escrow-checkout', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-finderseek-secret': NOTIFY_SECRET
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        email: currentUser.email,
+        huntId: huntId,
+        prizeAmount: prize,
+        totalCents: totalCents,
+      })
+    });
+    const checkoutData = await checkoutRes.json();
+    if (!checkoutRes.ok || !checkoutData.url) {
+      console.error('Checkout error:', checkoutData);
+      throw new Error(checkoutData?.error || 'Failed to set up payment');
+    }
+
+    // ── 11. Redirect to Stripe Checkout ──────────────────────
+    showToast('Redirecting to secure payment...', 'success');
+    setTimeout(()=>{ window.location.href = checkoutData.url; }, 800);
+
+  } catch(err) {
+    console.error('Create quest error:', err);
+    showToast('Error: '+err.message, 'error');
+    btn.disabled = false; previewBtn.disabled = false;
+    btn.textContent = '+ \u00a0 CREATE QUEST →';
+  }
+}
+
+// Load current user on page load
+loadCurrentUser();
 
 document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.el').forEach(function(el){
