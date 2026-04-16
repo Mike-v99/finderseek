@@ -2,19 +2,21 @@
 // Creates a Stripe Connect Express account for a winner and returns the onboarding URL
 // Called when a winner claims a prize and needs to set up their payout
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { createClient } = require('@supabase/supabase-js');
+import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Verify request is from our app
-  if (req.headers['x-finderseek-secret'] !== process.env.FINDERSEEK_NOTIFY_SECRET) {
+  // Verify request is from our app (accept either secret name)
+  const secret = req.headers['x-finderseek-secret'];
+  if (secret !== process.env.FINDERSEEK_NOTIFY_SECRET && secret !== process.env.NOTIFY_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -69,4 +71,4 @@ module.exports = async (req, res) => {
     console.error('[Connect Onboard Error]', err);
     return res.status(500).json({ error: err.message });
   }
-};
+}

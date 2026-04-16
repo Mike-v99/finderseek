@@ -11,7 +11,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const secret = req.headers['x-finderseek-secret'];
-  if (secret !== process.env.NOTIFY_SECRET) return res.status(401).json({ error: 'Unauthorized' });
+  if (secret !== process.env.NOTIFY_SECRET && secret !== process.env.FINDERSEEK_NOTIFY_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
   const { userId, email, huntId, prizeAmount, totalCents } = req.body;
   if (!userId || !email || !huntId || !totalCents) {

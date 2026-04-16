@@ -1,18 +1,21 @@
 // api/connect-status.js
 // Checks if a user's Stripe Connect account is fully set up and can receive payouts
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { createClient } = require('@supabase/supabase-js');
+import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  if (req.headers['x-finderseek-secret'] !== process.env.FINDERSEEK_NOTIFY_SECRET) {
+  // Accept either secret name
+  const secret = req.headers['x-finderseek-secret'];
+  if (secret !== process.env.FINDERSEEK_NOTIFY_SECRET && secret !== process.env.NOTIFY_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -50,4 +53,4 @@ module.exports = async (req, res) => {
     console.error('[Connect Status Error]', err);
     return res.status(500).json({ error: err.message });
   }
-};
+}
