@@ -2444,10 +2444,10 @@ async function fallbackToHostedCheckout() {
   try {
     document.getElementById('stripe-pay-btn').disabled = true;
     document.getElementById('stripe-pay-btn').textContent = 'Redirecting to Stripe…';
-    const r = await fetch('/api/create-escrow-checkout', {
+    const r = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email, huntId: esc.huntId, prizeAmount: esc.prizeAmt, totalCents: esc.totalCents })
+      body: JSON.stringify({ type: 'escrow', userId: currentUser.id, email: currentUser.email, huntId: esc.huntId, prizeAmount: esc.prizeAmt, totalCents: esc.totalCents })
     });
     const d = await r.json();
     if (d.url) { window.location = d.url; return; }

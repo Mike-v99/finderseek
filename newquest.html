@@ -660,13 +660,14 @@ async function createQuest(previewMode){
     const fee = Math.round(prize * 0.10 * 100) / 100;
     const totalCents = Math.round((prize + fee) * 100);
 
-    const checkoutRes = await fetch('/api/create-escrow-checkout', {
+    const checkoutRes = await fetch('/api/create-checkout', {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
         'x-finderseek-secret': NOTIFY_SECRET
       },
       body: JSON.stringify({
+        type: 'escrow',
         userId: currentUser.id,
         email: currentUser.email,
         huntId: huntId,
