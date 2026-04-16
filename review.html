@@ -70,7 +70,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 .confirm-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(10,8,16,.98) 40%);padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));z-index:50;}
 .confirm-footer-inner{max-width:520px;margin:0 auto;}
-.confirm-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#15803d,#22c55e);color:#042813;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 6px 24px rgba(34,197,94,.25);transition:transform .15s;}
+.confirm-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 6px 24px rgba(34,197,94,.35);transition:transform .15s;}
 .confirm-btn:active{transform:scale(.98);}
 .confirm-btn:disabled{opacity:.5;cursor:not-allowed;}
 
@@ -444,6 +444,7 @@ async function saveTime(clueId){
 //  PAYMENT MODAL (embedded Stripe)
 // ════════════════════════════════════════════════════
 let stripe = null, stripeElements = null, stripePayEl = null, clientSecret = null;
+let stripeReady = false;
 
 async function openPaymentModal(){
   // Render breakdown
@@ -459,6 +460,11 @@ async function openPaymentModal(){
   // Show modal
   document.getElementById('pm-backdrop').classList.add('show');
   document.getElementById('pm-sheet').classList.add('show');
+
+  // Disable pay button until Stripe Elements is ready
+  const payBtn = document.getElementById('pm-pay-btn');
+  payBtn.disabled = true;
+  payBtn.textContent = 'Loading payment form...';
 
   // Init Stripe if needed
   if (!stripe) stripe = Stripe(STRIPE_PUBLIC_KEY);
@@ -482,6 +488,9 @@ async function openPaymentModal(){
       clientSecret = d.clientSecret;
     } catch(e) {
       document.getElementById('pm-error').textContent = e.message;
+      payBtn.textContent = 'Try again';
+      payBtn.disabled = false;
+      payBtn.onclick = function(){ clientSecret = null; openPaymentModal(); };
       return;
     }
 
@@ -501,7 +510,28 @@ async function openPaymentModal(){
       }
     });
     stripePayEl = stripeElements.create('payment');
+    // Wait for the element to actually mount in the iframe before enabling the button
+    stripePayEl.on('ready', function(){
+      stripeReady = true;
+      payBtn.disabled = false;
+      payBtn.textContent = 'Pay $' + total.toFixed(2);
+      payBtn.onclick = submitPayment;
+    });
+    stripePayEl.on('loaderror', function(ev){
+      document.getElementById('pm-error').textContent = 'Payment form failed to load: ' + (ev.error?.message || 'Unknown error');
+      payBtn.textContent = 'Try again';
+      payBtn.disabled = false;
+      payBtn.onclick = function(){
+        clientSecret = null; stripeElements = null; stripePayEl = null; stripeReady = false;
+        openPaymentModal();
+      };
+    });
     stripePayEl.mount('#pm-stripe-element');
+  } else if (stripeReady) {
+    // Already mounted from a previous open — just re-enable
+    payBtn.disabled = false;
+    payBtn.textContent = 'Pay $' + total.toFixed(2);
+    payBtn.onclick = submitPayment;
   }
 }
 
