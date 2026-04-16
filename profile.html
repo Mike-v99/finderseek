@@ -213,8 +213,41 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <div id="payout-sub" style="font-size:14px;color:var(--dim);">—</div>
         </div>
       </div>
-      <button id="payout-btn" onclick="handlePayoutBtn()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
+      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
     </div>
+  </div>
+
+  <!-- Payout onboarding modal -->
+  <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;" onclick="closePayoutModal()"></div>
+  <div id="payout-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(99,91,255,.3);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);">
+    <div style="width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 20px;"></div>
+    <button onclick="closePayoutModal()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;">✕</button>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:48px;margin-bottom:12px;">🏦</div>
+      <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:6px;">Set up your payouts</div>
+      <div style="font-size:14px;color:var(--dim);line-height:1.5;">You'll be redirected to Stripe to securely link your bank account. Takes about 2 minutes.</div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(99,91,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔒</div>
+        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Secure & private</strong> — Stripe handles everything. We never see your bank details.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
+        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Instant setup</strong> — just your email, bank account, and a quick ID check.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,32,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💰</div>
+        <div style="font-size:13px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Get paid automatically</strong> — when you win, prizes go straight to your bank.</div>
+      </div>
+    </div>
+
+    <button id="payout-modal-btn" onclick="handlePayoutBtn()" style="width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);transition:transform .15s;">
+      Continue to Stripe →
+    </button>
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Powered by Stripe · Trusted by millions of businesses</div>
   </div>
 
   <!-- Joined Quests -->
@@ -699,8 +732,24 @@ async function loadConnectStatus(){
   }
 }
 
+function showPayoutModal(){
+  document.getElementById('payout-modal-backdrop').style.display = 'block';
+  var modal = document.getElementById('payout-modal');
+  modal.style.display = 'block';
+  setTimeout(function(){ modal.style.transform = 'translateY(0)'; }, 10);
+}
+
+function closePayoutModal(){
+  var modal = document.getElementById('payout-modal');
+  modal.style.transform = 'translateY(100%)';
+  setTimeout(function(){
+    modal.style.display = 'none';
+    document.getElementById('payout-modal-backdrop').style.display = 'none';
+  }, 350);
+}
+
 async function handlePayoutBtn(){
-  var btn = document.getElementById('payout-btn');
+  var btn = document.getElementById('payout-modal-btn');
   btn.disabled = true;
   btn.textContent = '⏳ Loading...';
   try {
@@ -711,13 +760,12 @@ async function handlePayoutBtn(){
     });
     var d = await r.json();
     if (!r.ok || !d.url) throw new Error(d.error || 'Failed to create onboarding link');
-    showToast('Opening Stripe onboarding...', 'success');
-    setTimeout(function(){ window.location.href = d.url; }, 400);
+    window.location.href = d.url;
   } catch(e) {
     console.error('Connect onboard error', e);
     showToast('Error: '+e.message, 'error');
     btn.disabled = false;
-    btn.textContent = 'Set Up Payouts';
+    btn.textContent = 'Continue to Stripe →';
   }
 }
 
@@ -729,12 +777,15 @@ function handleUrlRedirects(){
 
   // Returning from Stripe Connect onboarding
   if (params.get('connect') === 'complete') {
-    showToast('✅ Payout account set up!', 'success');
-    // Re-load status
+    showToast('🎉 Payout account connected! You\'re all set to receive prizes.', 'success');
     setTimeout(loadConnectStatus, 600);
+    setTimeout(function(){
+      var ps = document.getElementById('payout-section');
+      if (ps) ps.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1000);
     window.history.replaceState({}, '', 'profile.html');
   } else if (params.get('connect') === 'refresh') {
-    showToast('Link expired — try again', 'error');
+    showToast('Link expired — tap Set Up Payouts to try again', 'error');
     window.history.replaceState({}, '', 'profile.html');
   }
 
