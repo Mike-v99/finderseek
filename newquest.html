@@ -671,24 +671,23 @@ async function createQuest(previewMode){
     btn.textContent = '⏳ Generating clues...';
     var aiOverlay = document.getElementById('ai-loading');
     aiOverlay.style.display = 'flex';
-    try {
-      const clueRes = await fetch('/api/generate-clues', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          description: hidingSpot,
-          clueCount: clueCount,
-          lat: selectedLat,
-          lng: selectedLng,
-          persona: persona,
-        })
-      });
-      const clueData = await clueRes.json();
-      aiOverlay.style.display = 'none';
-      if (!clueRes.ok || !clueData.clues) {
-        console.error('Clue generation error:', clueData);
-        throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
-      }
+    const clueRes = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hidingSpot,
+        clueCount: clueCount,
+        lat: selectedLat,
+        lng: selectedLng,
+        persona: persona,
+      })
+    });
+    const clueData = await clueRes.json();
+    aiOverlay.style.display = 'none';
+    if (!clueRes.ok || !clueData.clues) {
+      console.error('Clue generation error:', clueData);
+      throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
+    }
 
     // ── 8. Insert clues into Supabase ───────────────────────
     btn.textContent = '⏳ Saving clues...';
