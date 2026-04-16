@@ -93,9 +93,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
             style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
         </div>
-        <input id="gate-email" type="email" autocomplete="email" placeholder="Email"
+        <input id="gate-email" type="email" autocomplete="username" placeholder="Email" name="email"
           style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
-        <input id="gate-password" type="password" autocomplete="current-password" placeholder="Password"
+        <input id="gate-password" type="password" autocomplete="current-password" placeholder="Password" name="password"
           style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
 
         <div id="gate-forgot" style="text-align:right;font-size:13px;color:#e8a820;cursor:pointer;margin-top:-2px;" onclick="gateForgotPassword()">Forgot password?</div>
@@ -341,11 +341,11 @@ let authMode = 'signin'; // 'signin' or 'signup'
 function showGate(){
   var gate = document.getElementById('login-gate');
   gate.style.display = 'block';
-  // Remove & re-add animate-in class to restart the animation on re-show
   gate.classList.remove('animate-in');
-  // Force reflow so the restart takes effect
   void gate.offsetWidth;
   gate.classList.add('animate-in');
+  // Focus email after animation settles (prevents password autofill from stealing focus)
+  setTimeout(function(){ document.getElementById('gate-email').focus(); }, 600);
 }
 
 function closeGate(){
@@ -362,6 +362,7 @@ function switchAuthTab(mode){
   document.getElementById('gate-submit').textContent = mode === 'signin' ? 'Sign in' : 'Create account';
   document.getElementById('gate-password').setAttribute('autocomplete', mode === 'signin' ? 'current-password' : 'new-password');
   document.getElementById('gate-err').textContent = '';
+  document.getElementById('gate-err').style.color = '#f87171';
 }
 
 async function gateSubmit(){
