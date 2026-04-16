@@ -70,10 +70,15 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
 .el.show{opacity:1;transform:translateY(0);}
 
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 <div class="page">
 
   <!-- BACK -->

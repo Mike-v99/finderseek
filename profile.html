@@ -45,10 +45,15 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin-top:-28px;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
 .nav-center .nav-label{color:#e0e0e0;font-weight:400;}
 
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(120px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(120px + env(safe-area-inset-bottom));}}
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 <div class="bg-glow"></div>
 
 <!-- Login gate (shown if not authenticated) -->

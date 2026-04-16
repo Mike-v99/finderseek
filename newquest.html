@@ -155,7 +155,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
 .el.show{opacity:1;transform:translateY(0);}
 
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));padding-top:env(safe-area-inset-top);}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
 
 /* Toast & loader */
 .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(--cream);font-size:15px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
@@ -163,9 +163,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
 .toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
 .btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 <div class="page">
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;" class="el" data-d="50">

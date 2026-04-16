@@ -170,9 +170,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   nav{padding:10px 12px;}
   .pcard{padding:24px 20px;}
 }
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 
 <!-- AUTH MODAL -->
 <div class="auth-modal" id="auth-modal">

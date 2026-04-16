@@ -380,11 +380,16 @@ body::after {
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottom-nav { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   .page { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-  .hero { padding-top: calc(16px + env(safe-area-inset-top)); }
+  .hero { padding-top: 16px; }
 }
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 
 <canvas class="burst-canvas" id="burstCanvas"></canvas>
 

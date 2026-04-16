@@ -479,12 +479,17 @@
   .stripe-pay-fallback{display:block;text-align:center;font-size:12px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;margin-top:6px;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;transition:color .2s;}
   .stripe-pay-fallback:hover{color:rgba(255,255,255,.6);}
   .stripe-secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-top:16px;letter-spacing:.5px;}
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
+<div class="status-strip" aria-hidden="true"></div>
 <div class="bg-img"></div><div class="bg-vig"></div>
 
 <nav>
