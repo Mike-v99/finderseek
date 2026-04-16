@@ -52,20 +52,101 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 <div class="bg-glow"></div>
 
 <!-- Login gate (shown if not authenticated) -->
-<div id="login-gate" style="display:none;position:fixed;inset:0;background:rgba(10,8,16,.96);z-index:9998;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(12px);">
-  <div style="max-width:380px;width:100%;text-align:center;">
-    <div style="font-size:48px;margin-bottom:16px;">🔒</div>
-    <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:10px;">Sign In</div>
-    <div style="font-size:15px;color:var(--dim);margin-bottom:24px;line-height:1.6;">Access your profile, quests, and payouts.</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <input id="gate-email" type="email" placeholder="Email" style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;"/>
-      <input id="gate-password" type="password" placeholder="Password" style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;"/>
-      <button onclick="gateSignIn()" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:16px;font-weight:400;font-family:inherit;cursor:pointer;margin-top:4px;">Sign In</button>
-      <button onclick="gateSignUp()" style="padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--cream);font-size:15px;font-family:inherit;cursor:pointer;">Create Account</button>
-      <div id="gate-err" style="font-size:13px;color:#f87171;margin-top:6px;min-height:18px;"></div>
+<div id="login-gate" style="display:none;position:fixed;inset:0;background:rgba(10,8,16,.98);z-index:9998;overflow-y:auto;backdrop-filter:blur(12px);">
+  <div style="min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px 20px;">
+    <div style="max-width:400px;width:100%;">
+
+      <!-- Brand -->
+      <div class="lg-anim lg-drop" style="text-align:center;margin-bottom:28px;">
+        <div style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(42px,11vw,52px);line-height:1.1;margin-bottom:10px;">
+          <span style="background:linear-gradient(90deg,#e8a820,#f5c842,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Finder</span><span style="color:#f5ead8;">Seek</span>
+        </div>
+        <div style="font-size:16px;color:#a8c8e0;">Hidden Treasure. Real Adventure.</div>
+      </div>
+
+      <!-- Tab toggle -->
+      <div style="display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin-bottom:20px;">
+        <div id="tab-signin" class="auth-tab auth-tab-active lg-anim lg-slide-right" onclick="switchAuthTab('signin')">Sign in</div>
+        <div id="tab-signup" class="auth-tab lg-anim lg-slide-left" onclick="switchAuthTab('signup')">Create account</div>
+      </div>
+
+      <!-- Form -->
+      <div class="lg-anim lg-rise-1" style="display:flex;flex-direction:column;gap:10px;">
+        <div id="gate-username-wrap" style="display:none;">
+          <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
+            style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+        </div>
+        <input id="gate-email" type="email" autocomplete="email" placeholder="Email"
+          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+        <input id="gate-password" type="password" autocomplete="current-password" placeholder="Password"
+          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;"/>
+
+        <div id="gate-forgot" style="text-align:right;font-size:13px;color:#e8a820;cursor:pointer;margin-top:-2px;" onclick="gateForgotPassword()">Forgot password?</div>
+
+        <button id="gate-submit" onclick="gateSubmit()"
+          style="padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(201,137,12,.25);transition:transform .15s;">Continue</button>
+      </div>
+
+      <!-- OR divider -->
+      <div class="lg-anim lg-rise-2" style="display:flex;align-items:center;gap:10px;color:#8fa8bd;font-size:11px;margin:20px 0;letter-spacing:1px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+        <span>OR</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      </div>
+
+      <!-- Social -->
+      <div class="lg-anim lg-rise-3">
+        <button onclick="gateSocial('apple')"
+          style="width:100%;padding:13px;border-radius:12px;background:#000;border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;transition:transform .15s;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          Continue with Apple
+        </button>
+        <button onclick="gateSocial('google')"
+          style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s;">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+      </div>
+
+      <!-- Error -->
+      <div id="gate-err" style="font-size:13px;color:#f87171;margin-top:14px;min-height:18px;text-align:center;"></div>
+
+      <!-- Legal -->
+      <div class="lg-anim lg-fade" style="font-size:11px;color:#8fa8bd;text-align:center;margin-top:22px;line-height:1.6;">
+        By continuing, you agree to our<br/>
+        <a href="terms.html" style="color:#e8a820;text-decoration:none;">Terms</a> and <a href="terms.html" style="color:#e8a820;text-decoration:none;">Privacy Policy</a>
+      </div>
+
     </div>
   </div>
 </div>
+
+<style>
+.auth-tab{flex:1;padding:11px;border-radius:9px;text-align:center;font-size:14px;color:#8fa8bd;cursor:pointer;transition:all .2s;font-weight:400;}
+.auth-tab-active{background:rgba(201,137,12,.15);color:#e8a820;font-weight:500;}
+#login-gate input:focus{border-color:rgba(232,168,32,.5) !important;}
+#login-gate button:active{transform:scale(.98);}
+
+/* Split-curtains entrance animation */
+@keyframes lgDrop { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lgSlideRight { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes lgSlideLeft { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes lgRise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lgFade { from { opacity: 0; } to { opacity: 1; } }
+
+.lg-anim { opacity: 0; }
+#login-gate.animate-in .lg-drop { animation: lgDrop 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+#login-gate.animate-in .lg-slide-right { animation: lgSlideRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+#login-gate.animate-in .lg-slide-left { animation: lgSlideLeft 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+#login-gate.animate-in .lg-rise-1 { animation: lgRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both; }
+#login-gate.animate-in .lg-rise-2 { animation: lgRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both; }
+#login-gate.animate-in .lg-rise-3 { animation: lgRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.82s both; }
+#login-gate.animate-in .lg-fade { animation: lgFade 0.5s 1.05s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  #login-gate .lg-anim { opacity: 1 !important; animation: none !important; }
+}
+</style>
 
 <!-- Toast -->
 <div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
@@ -238,16 +319,42 @@ function escapeHtml(s) {
 // ============================================================
 //  AUTH GATE
 // ============================================================
+let authMode = 'signin'; // 'signin' or 'signup'
+
 function showGate(){
-  document.getElementById('login-gate').style.display = 'flex';
+  var gate = document.getElementById('login-gate');
+  gate.style.display = 'block';
+  // Remove & re-add animate-in class to restart the animation on re-show
+  gate.classList.remove('animate-in');
+  // Force reflow so the restart takes effect
+  void gate.offsetWidth;
+  gate.classList.add('animate-in');
+}
+
+function switchAuthTab(mode){
+  authMode = mode;
+  document.getElementById('tab-signin').classList.toggle('auth-tab-active', mode === 'signin');
+  document.getElementById('tab-signup').classList.toggle('auth-tab-active', mode === 'signup');
+  document.getElementById('gate-username-wrap').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('gate-forgot').style.display = mode === 'signin' ? 'block' : 'none';
+  document.getElementById('gate-submit').textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+  document.getElementById('gate-password').setAttribute('autocomplete', mode === 'signin' ? 'current-password' : 'new-password');
+  document.getElementById('gate-err').textContent = '';
+}
+
+async function gateSubmit(){
+  if (authMode === 'signin') return gateSignIn();
+  return gateSignUp();
 }
 
 async function gateSignIn(){
   var email = document.getElementById('gate-email').value.trim();
   var pw = document.getElementById('gate-password').value;
   var err = document.getElementById('gate-err');
+  var btn = document.getElementById('gate-submit');
   err.textContent = '';
   if (!email || !pw) { err.textContent = 'Enter your email and password'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
   try {
     var r = await fetch(SB+'/auth/v1/token?grant_type=password', {
       method:'POST',
@@ -255,26 +362,38 @@ async function gateSignIn(){
       body: JSON.stringify({ email: email, password: pw })
     });
     var d = await r.json();
-    if (!r.ok) throw new Error(d.error_description || d.msg || 'Sign-in failed');
+    if (!r.ok) throw new Error(d.error_description || d.msg || 'Incorrect email or password');
     localStorage.setItem('fs_token', d.access_token);
     if (d.refresh_token) localStorage.setItem('fs_refresh', d.refresh_token);
     document.getElementById('login-gate').style.display = 'none';
     loadProfile();
-  } catch(e) { err.textContent = e.message; }
+  } catch(e) {
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
 }
 
 async function gateSignUp(){
   var email = document.getElementById('gate-email').value.trim();
   var pw = document.getElementById('gate-password').value;
+  var username = document.getElementById('gate-username').value.trim();
   var err = document.getElementById('gate-err');
+  var btn = document.getElementById('gate-submit');
   err.textContent = '';
+  if (!username) { err.textContent = 'Pick a username'; return; }
+  if (username.length < 3) { err.textContent = 'Username must be 3+ characters'; return; }
   if (!email || !pw) { err.textContent = 'Enter email and password'; return; }
   if (pw.length < 6) { err.textContent = 'Password must be 6+ characters'; return; }
+  btn.disabled = true; btn.textContent = 'Creating account...';
   try {
     var r = await fetch(SB+'/auth/v1/signup', {
       method:'POST',
       headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body: JSON.stringify({ email: email, password: pw })
+      body: JSON.stringify({
+        email: email,
+        password: pw,
+        data: { username: username }
+      })
     });
     var d = await r.json();
     if (!r.ok) throw new Error(d.error_description || d.msg || 'Sign-up failed');
@@ -284,9 +403,59 @@ async function gateSignUp(){
       document.getElementById('login-gate').style.display = 'none';
       loadProfile();
     } else {
-      err.textContent = 'Check your email to confirm your account';
+      err.style.color = '#4ade80';
+      err.textContent = '✓ Check your email to confirm your account';
+      btn.disabled = false; btn.textContent = 'Create account';
     }
+  } catch(e) {
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = 'Create account';
+  }
+}
+
+async function gateSocial(provider){
+  try {
+    // OAuth redirect — returns here with token in URL hash
+    var redirectTo = window.location.origin + '/profile.html';
+    var url = SB + '/auth/v1/authorize?provider=' + provider + '&redirect_to=' + encodeURIComponent(redirectTo);
+    window.location.href = url;
+  } catch(e) {
+    document.getElementById('gate-err').textContent = e.message;
+  }
+}
+
+async function gateForgotPassword(){
+  var email = document.getElementById('gate-email').value.trim();
+  var err = document.getElementById('gate-err');
+  err.style.color = '#f87171';
+  if (!email) { err.textContent = 'Enter your email first, then tap forgot password'; return; }
+  try {
+    var r = await fetch(SB+'/auth/v1/recover', {
+      method:'POST',
+      headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({ email: email })
+    });
+    if (!r.ok) {
+      var d = await r.json();
+      throw new Error(d.error_description || d.msg || 'Failed to send reset email');
+    }
+    err.style.color = '#4ade80';
+    err.textContent = '✓ Check your email for a reset link';
   } catch(e) { err.textContent = e.message; }
+}
+
+// Handle OAuth callback — Supabase returns tokens in URL hash
+function handleOAuthCallback(){
+  if (!window.location.hash) return false;
+  var params = new URLSearchParams(window.location.hash.substring(1));
+  var token = params.get('access_token');
+  var refresh = params.get('refresh_token');
+  if (!token) return false;
+  localStorage.setItem('fs_token', token);
+  if (refresh) localStorage.setItem('fs_refresh', refresh);
+  // Clean up URL
+  window.history.replaceState({}, '', window.location.pathname);
+  return true;
 }
 
 function signOut(){
@@ -311,9 +480,19 @@ async function loadProfile(){
 
   try {
     var r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if (r.status === 401) { localStorage.removeItem('fs_token'); showGate(); return; }
-    if (!r.ok) throw new Error('Failed to load user');
+    // Any auth failure (401/403/etc) or invalid token → clear and show login
+    if (!r.ok) {
+      localStorage.removeItem('fs_token');
+      localStorage.removeItem('fs_refresh');
+      showGate();
+      return;
+    }
     currentUser = await r.json();
+    if (!currentUser?.id) {
+      localStorage.removeItem('fs_token');
+      showGate();
+      return;
+    }
 
     // Fetch profile row
     var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
@@ -326,16 +505,18 @@ async function loadProfile(){
     renderHeader();
     renderStats();
 
-    // Load additional data in parallel
-    await Promise.all([
-      loadJoinedQuests(),
-      loadCreatedCount(),
-      loadConnectStatus(),
-      handleUrlRedirects(),
+    // Load additional data in parallel (don't let failures block the UI)
+    Promise.all([
+      loadJoinedQuests().catch(e => console.error('joined quests:', e)),
+      loadCreatedCount().catch(e => console.error('created count:', e)),
+      loadConnectStatus().catch(e => console.error('connect status:', e)),
     ]);
+    handleUrlRedirects();
   } catch(e) {
     console.error('Profile load error', e);
-    showToast('Error loading profile: '+e.message, 'error');
+    // Network error — clear token to be safe and show login
+    localStorage.removeItem('fs_token');
+    showGate();
   }
 }
 
@@ -534,6 +715,8 @@ function handleUrlRedirects(){
 // ============================================================
 //  INIT
 // ============================================================
+// Check if returning from Google/Apple OAuth
+handleOAuthCallback();
 loadProfile();
 
 var observer = new IntersectionObserver(function(entries){
