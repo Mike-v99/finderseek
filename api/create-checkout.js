@@ -56,7 +56,7 @@ async function createGoldCheckout({ userId, email, username }, origin, res) {
       'subscription_data[metadata][username]': username || '',
       'metadata[userId]': userId,
       'success_url': `${origin}/gold.html?upgraded=true`,
-      'cancel_url': `${origin}/pricing.html?cancelled=true`,
+      'cancel_url': `${origin}/gold.html?cancelled=true`,
     })
   });
 
