@@ -81,20 +81,20 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
   </div>
 
   <!-- HERO: Spinning gold border card -->
-  <div style="border-radius:20px;padding:2px;position:relative;overflow:hidden;animation:pulseGold 4s ease-in-out infinite;margin-bottom:24px;">
+  <div id="gold-hero" style="border-radius:20px;padding:2px;position:relative;overflow:hidden;animation:pulseGold 4s ease-in-out infinite;margin-bottom:24px;">
     <div style="position:absolute;inset:-50%;background:conic-gradient(from 0deg,#c9890c,transparent 15%,transparent 35%,#f5c842,transparent 50%,transparent 70%,#e8a820,transparent 85%,transparent,#c9890c);animation:rotateBorder 5s linear infinite;"></div>
     <div style="position:relative;background:rgba(13,11,24,.95);border-radius:18px;padding:32px 20px;text-align:center;">
       <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(201,137,12,.06),transparent 55%);pointer-events:none;border-radius:18px;"></div>
 
       <div style="font-size:56px;position:relative;animation:float 3s ease-in-out infinite;">👑</div>
 
-      <div style="font-size:18px;color:var(--gold2);letter-spacing:3px;margin:12px 0 10px;position:relative;">✦ FINDERSEEK GOLD ✦</div>
+      <div id="gold-tagline" style="font-size:18px;color:var(--gold2);letter-spacing:3px;margin:12px 0 10px;position:relative;">✦ FINDERSEEK GOLD ✦</div>
 
-      <div style="position:relative;margin-bottom:6px;">
+      <div id="gold-price-row" style="position:relative;margin-bottom:6px;">
         <span style="font-size:56px;font-weight:200;color:#fff;">$3</span><span style="font-size:32px;font-weight:200;color:#fff;">.99</span><span style="font-size:18px;color:var(--dim);">/month</span>
       </div>
 
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:18px;color:#4ade80;font-weight:400;position:relative;">
+      <div id="gold-badge-row" style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:18px;color:#4ade80;font-weight:400;position:relative;">
         🎁 First month FREE
       </div>
     </div>
@@ -137,10 +137,10 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
   <!-- CTA -->
   <div style="margin-top:20px;animation:fadeUp .6s ease-out both;animation-delay:.5s;">
-    <button onclick="startCheckout()" style="width:100%;padding:20px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;cursor:pointer;animation:pulseGold 3s ease-in-out infinite;transition:transform .15s;">
+    <button id="gold-cta" onclick="startCheckout()" style="width:100%;padding:20px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;cursor:pointer;animation:pulseGold 3s ease-in-out infinite;transition:transform .15s;">
       👑 Try Gold Free for 30 Days
     </button>
-    <div style="text-align:center;font-size:18px;color:var(--dim);margin-top:10px;line-height:1.6;">
+    <div id="gold-cta-note" style="text-align:center;font-size:18px;color:var(--dim);margin-top:10px;line-height:1.6;">
       Then $3.99/mo · Cancel anytime<br/>
       🔒 Powered by Stripe
     </div>
@@ -214,6 +214,9 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
 </div>
 
+<!-- Toast -->
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:15px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
@@ -224,9 +227,164 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 </nav>
 
 <script>
-function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
-function toggleFaq(el){el.parentElement.classList.toggle('open');}
-function startCheckout(){alert('Stripe Checkout would open here');}
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET = 'fs-notify-2026';
+
+let currentUser = null;
+let currentProfile = null;
+
+function getToken(){ return localStorage.getItem('fs_token') || ''; }
+
+function setNav(el){
+  document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function toggleFaq(el){ el.parentElement.classList.toggle('open'); }
+
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  if (type === 'error') t.style.borderColor = 'rgba(239,68,68,.5)';
+  else if (type === 'success') t.style.borderColor = 'rgba(74,222,128,.5)';
+  else t.style.borderColor = 'rgba(201,137,12,.3)';
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(function(){
+    t.style.transform = 'translateX(-50%) translateY(-120%)';
+  }, 4000);
+}
+
+// ============================================================
+//  LOAD USER + GOLD STATUS
+// ============================================================
+async function loadStatus(){
+  var token = getToken();
+  if (!token) return; // Show default upgrade UI
+
+  try {
+    var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (!ur.ok) return;
+    currentUser = await ur.json();
+    if (!currentUser?.id) return;
+
+    var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var pd = await pr.json();
+    currentProfile = (pd && pd[0]) || null;
+
+    var isPro = currentProfile?.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date());
+    if (isPro) renderActiveState();
+  } catch(e) { console.error('Gold status error', e); }
+}
+
+function renderActiveState(){
+  document.getElementById('gold-tagline').innerHTML = '✦ YOU\'RE GOLD ✦';
+  document.getElementById('gold-tagline').style.color = '#4ade80';
+
+  // Show renewal/expiry instead of price
+  var expiresStr = 'Active';
+  if (currentProfile.pro_expires) {
+    var d = new Date(currentProfile.pro_expires);
+    expiresStr = 'Renews ' + d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  }
+  document.getElementById('gold-price-row').innerHTML =
+    '<span style="font-size:24px;font-weight:400;color:#4ade80;">✓ Membership Active</span>';
+
+  document.getElementById('gold-badge-row').outerHTML =
+    '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:15px;color:#4ade80;font-weight:400;position:relative;margin-top:8px;">' + expiresStr + '</div>';
+
+  // Swap CTA to manage subscription
+  var cta = document.getElementById('gold-cta');
+  cta.innerHTML = '⚙️ Manage Subscription';
+  cta.style.animation = 'none';
+  cta.style.background = 'rgba(255,255,255,.06)';
+  cta.style.color = '#fff';
+  cta.style.border = '1px solid rgba(255,255,255,.12)';
+  cta.onclick = openBillingPortal;
+
+  document.getElementById('gold-cta-note').innerHTML =
+    'Thanks for supporting FinderSeek 🙏<br/>🔒 Powered by Stripe';
+}
+
+// ============================================================
+//  CHECKOUT
+// ============================================================
+async function startCheckout(){
+  var btn = document.getElementById('gold-cta');
+
+  if (!currentUser) {
+    showToast('Please sign in first', 'error');
+    setTimeout(function(){ window.location.href = 'profile.html?redirect=gold.html'; }, 1200);
+    return;
+  }
+
+  btn.disabled = true;
+  var originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Opening checkout...';
+
+  try {
+    var r = await fetch('/api/create-checkout', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({
+        userId: currentUser.id,
+        email: currentUser.email,
+        username: currentProfile?.username || ''
+      })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed');
+    window.location.href = d.url;
+  } catch(e) {
+    console.error('Checkout error', e);
+    showToast('Error: '+e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+async function openBillingPortal(){
+  var btn = document.getElementById('gold-cta');
+  btn.disabled = true;
+  var originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Opening portal...';
+
+  try {
+    var r = await fetch('/api/billing-portal', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Failed to open portal');
+    window.location.href = d.url;
+  } catch(e) {
+    console.error('Portal error', e);
+    showToast('Error: '+e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// ============================================================
+//  URL HOOKS
+// ============================================================
+function handleUrlParams(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('upgraded') === 'true') {
+    showToast('🎉 Welcome to Gold! Perks unlocking now...', 'success');
+    window.history.replaceState({}, '', 'gold.html');
+    // Force a profile reload after a short delay (webhook may still be processing)
+    setTimeout(loadStatus, 2000);
+  }
+}
+
+// Init
+loadStatus();
+handleUrlParams();
 </script>
 </body>
 </html>
