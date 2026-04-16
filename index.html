@@ -547,6 +547,28 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </nav>
 
 <script>
+// ── OAuth callback catch (Google/Apple may redirect here) ──
+(function(){
+  // Check for hash fragment (implicit flow)
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    var params = new URLSearchParams(window.location.hash.substring(1));
+    var token = params.get('access_token');
+    var refresh = params.get('refresh_token');
+    if (token) {
+      localStorage.setItem('fs_token', token);
+      if (refresh) localStorage.setItem('fs_refresh', refresh);
+      window.location.replace('profile.html');
+      return;
+    }
+  }
+  // Check for PKCE code (code flow — Supabase JS client will exchange it)
+  if (window.location.search.includes('code=')) {
+    // Redirect to profile.html with the code — Supabase client there will handle exchange
+    window.location.replace('profile.html' + window.location.search);
+    return;
+  }
+})();
+
 // Nav switching
 function setNav(el) {
   document.querySelectorAll('.nav-item, .nav-center').forEach(function(n) {
