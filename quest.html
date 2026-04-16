@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -384,15 +386,41 @@ function renderClues() {
     var isFinal = idx === currentClues.length - 1;
     var titleSuffix = isFinal ? ' — Final Clue' : ' — ' + dateLabel;
 
+    // Parse map data from photo_url — format: "map:1320", "map:500", "map:100", or a real URL
+    var mapInfo = null;
+    var photoUrl = null;
+    if (c.is_photo && c.photo_url) {
+      if (c.photo_url.indexOf('map:') === 0) {
+        mapInfo = { radiusFt: parseInt(c.photo_url.split(':')[1]) };
+      } else {
+        photoUrl = c.photo_url;
+        mapInfo = { radiusFt: 100 }; // last clue with real photo also gets 100ft map
+      }
+    }
+
     if (revealed) {
+      var mapLabel = '';
+      var mapBlock = '';
+      if (mapInfo && currentHunt.lat && currentHunt.lng) {
+        var label = mapInfo.radiusFt >= 1000
+          ? (Math.round(mapInfo.radiusFt / 528) / 10) + ' mile radius'
+          : mapInfo.radiusFt + ' ft radius';
+        mapLabel = '<div style="font-size:18px;color:#e8a820;margin:10px 0 6px;">📍 ' + label + '</div>';
+        mapBlock = '<div id="clue-map-' + c.id + '" class="clue-map" data-lat="' + currentHunt.lat + '" data-lng="' + currentHunt.lng + '" data-radius="' + mapInfo.radiusFt + '" style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-top:8px;border:1px solid rgba(232,168,32,.25);"></div>';
+      }
+      var photoBlock = photoUrl
+        ? '<img src="' + photoUrl + '" style="width:100%;border-radius:12px;margin-top:10px;border:1px solid rgba(232,168,32,.25);" alt="Hiding spot"/>'
+        : '';
+
       return (
         '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div>' +
         '<div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;">' +
         '<div class="clue-num-on">' + c.clue_number + '</div>' +
-        '<div style="flex:1;">' +
+        '<div style="flex:1;min-width:0;">' +
           '<div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:6px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
           '<div style="font-size:18px;color:#fff;line-height:1.7;">' + escapeHtml(c.clue_text) + '</div>' +
           (c.tier === 'pro' ? '<div style="font-size:18px;color:#e8a820;margin-top:8px;">🥇 GOLD CLUE</div>' : '') +
+          mapLabel + mapBlock + photoBlock +
         '</div></div></div></div>'
       );
     } else {
@@ -413,6 +441,47 @@ function renderClues() {
   }).join('');
 
   container.innerHTML = html;
+
+  // Initialize Leaflet maps for each revealed clue with a map
+  setTimeout(function() {
+    document.querySelectorAll('.clue-map').forEach(function(el) {
+      if (el._mapInit) return;
+      el._mapInit = true;
+      var lat = parseFloat(el.dataset.lat);
+      var lng = parseFloat(el.dataset.lng);
+      var radiusFt = parseInt(el.dataset.radius);
+      // Radius in feet → meters → appropriate Leaflet zoom
+      // 1320ft (quarter mile) → zoom 16, 500ft → zoom 18, 100ft → zoom 19
+      var zoom = radiusFt >= 1000 ? 16 : radiusFt >= 400 ? 18 : 19;
+      var m = L.map(el, {
+        zoomControl: false,
+        scrollWheelZoom: false,
+        dragging: false,
+        doubleClickZoom: false,
+        touchZoom: false,
+        attributionControl: false,
+      }).setView([lat, lng], zoom);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+      // Circle overlay showing the search area
+      var radiusM = radiusFt * 0.3048;
+      L.circle([lat, lng], {
+        radius: radiusM,
+        color: '#e8a820',
+        fillColor: '#e8a820',
+        fillOpacity: 0.15,
+        weight: 2,
+      }).addTo(m);
+      // Center marker
+      L.circleMarker([lat, lng], {
+        radius: 6,
+        color: '#fff',
+        fillColor: '#e8a820',
+        fillOpacity: 1,
+        weight: 2,
+      }).addTo(m);
+    });
+  }, 50);
+}
 }
 
 function startTimer() {
