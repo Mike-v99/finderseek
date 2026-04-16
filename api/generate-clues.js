@@ -1,14 +1,33 @@
+// api/generate-clues.js
+// Generates treasure hunt clues using Claude based on hiding spot description and persona
+//
+// Env vars needed:
+//   ANTHROPIC_API_KEY — from console.anthropic.com
+
+const PERSONA_STYLES = {
+  pirate: 'Write like a salty pirate captain — use "ye", "arrr", nautical metaphors, treasure maps, doubloons. Dramatic and seafaring.',
+  poetic: 'Write in dreamlike, lyrical verse — soft imagery, gentle metaphors of nature, light, and shadow. Evocative and tender.',
+  insults: 'Roast the seeker mercilessly while giving clues — playful taunts, mock their effort, but always slip the real hint inside the burn.',
+  sarcastic: 'Dry, witty, deadpan — eye-roll energy. Treat each clue like the seeker should already have figured this out.',
+  hillbilly: 'Country folksy charm — "y\'all", down-home talk, references to porches, biscuits, hound dogs, granny\'s shed.',
+  kid: 'Like a 5-year-old wrote it — silly, excited, lots of "and then" and "BUT THE BEST PART IS". Innocent and giggly.',
+  grandma: 'Sweet warm grandmother voice — "dearie", baking metaphors, gentle encouragement, references to bygone days.',
+  surfer: 'Totally gnarly surfer bro — "dude", "stoked", "bro", "killer waves", chill beach vibes.',
+  investigator: 'True-crime documentary narrator — clinical, suspenseful, present-tense observations like a detective\'s field notes.',
+};
+
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { description, clueCount, lat, lng, prompt: customPrompt } = req.body;
+  const { description, clueCount, lat, lng, persona, prompt: customPrompt } = req.body;
 
   if (!description || !clueCount) {
     return res.status(400).json({ error: 'Missing description or clueCount' });
   }
+
+  const styleHint = PERSONA_STYLES[persona] || PERSONA_STYLES.pirate;
 
   const prompt = customPrompt || `You are writing treasure hunt clues for FinderSeek, a real-money treasure hunt app.
 
@@ -17,13 +36,14 @@ The Pirate has hidden real cash and described the hiding spot as:
 
 ${lat && lng ? `Location coordinates: ${lat}, ${lng}` : ''}
 
+VOICE & STYLE: ${styleHint}
+
 Write exactly ${clueCount} clues. They must be:
-- Vague and poetic — like riddles, not directions
-- Build progressively — each clue narrows in slightly more than the last
+- Vague at first, then progressively more specific — each clue narrows in slightly more than the last
 - Written in second person ("you", "your")
 - Between 1-3 sentences each
-- Evocative, mysterious, fun
 - The final 3 clues should be the most specific, referencing what someone might see up close
+- Stay in character (the voice/style above) throughout
 
 Return ONLY a JSON array like this (no markdown, no explanation):
 [
@@ -40,7 +60,7 @@ Return ONLY a JSON array like this (no markdown, no explanation):
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 2000,
         messages: [{ role: 'user', content: prompt }]
       })
