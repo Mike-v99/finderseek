@@ -709,13 +709,25 @@ async function createQuest(previewMode){
     const clueRows = clueData.clues.map((c, idx) => {
       const stagger = duration / clueCount;
       const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 60 * 60 * 1000);
+      // Pro tier: last 2 clues if 5+, last 1 if 4 or fewer
+      const proCount = clueCount >= 5 ? 2 : 1;
+      const tier = idx >= (clueCount - proCount) ? 'pro' : 'free';
+      // Zoomed maps: last 3 clues get progressively tighter zoom
+      // 3rd to last = quarter mile (1320ft), 2nd to last = 500ft, last = 100ft + photo
+      const fromEnd = clueCount - 1 - idx;
+      let hasMap = false;
+      let mapPhotoUrl = null;
+      if (fromEnd === 2) { hasMap = true; mapPhotoUrl = 'map:1320'; }      // quarter mile
+      else if (fromEnd === 1) { hasMap = true; mapPhotoUrl = 'map:500'; }   // 500 feet
+      else if (fromEnd === 0) { hasMap = true; mapPhotoUrl = photoUrl || 'map:100'; } // 100ft + photo if uploaded
       return {
         hunt_id: huntId,
         clue_number: c.number || (idx + 1),
-        tier: idx < Math.ceil(clueCount / 2) ? 'free' : 'pro',
+        tier: tier,
         reveal_at: revealAt.toISOString(),
         clue_text: c.text || '',
-        is_photo: false,
+        is_photo: hasMap,
+        photo_url: mapPhotoUrl,
         day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
         date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
       };
