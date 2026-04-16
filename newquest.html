@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -175,6 +175,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 <link rel="apple-touch-icon" href="/icon-192.png"/>
+<script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -702,42 +703,26 @@ async function createQuest(previewMode){
       throw new Error('Failed to save clues');
     }
 
-    // ── 9. If preview mode, send to a review screen ─────────
+    // ── 9. If preview mode, send to review screen ─────────
     if (previewMode) {
       showToast('✅ Quest draft saved! Redirecting to review...', 'success');
-      setTimeout(()=>{ window.location.href = 'pirate.html?review='+huntId; }, 1500);
+      setTimeout(()=>{ window.location.href = 'review.html?id='+huntId; }, 1200);
       return;
     }
 
-    // ── 10. Trigger escrow checkout ──────────────────────────
+    // ── 10. Open the embedded payment modal ─────────────────
     btn.textContent = '⏳ Setting up payment...';
-    const fee = Math.round(prize * 0.10 * 100) / 100;
-    const totalCents = Math.round((prize + fee) * 100);
-
-    const checkoutRes = await fetch('/api/create-checkout', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-finderseek-secret': NOTIFY_SECRET
-      },
-      body: JSON.stringify({
-        type: 'escrow',
-        userId: currentUser.id,
-        email: currentUser.email,
-        huntId: huntId,
-        prizeAmount: prize,
-        totalCents: totalCents,
-      })
+    await openPaymentModal({
+      userId: currentUser.id,
+      email: currentUser.email,
+      huntId: huntId,
+      prize: prize,
     });
-    const checkoutData = await checkoutRes.json();
-    if (!checkoutRes.ok || !checkoutData.url) {
-      console.error('Checkout error:', checkoutData);
-      throw new Error(checkoutData?.error || 'Failed to set up payment');
-    }
-
-    // ── 11. Redirect to Stripe Checkout ──────────────────────
-    showToast('Redirecting to secure payment...', 'success');
-    setTimeout(()=>{ window.location.href = checkoutData.url; }, 800);
+    // Button re-enable; user now interacts with modal
+    btn.disabled = false;
+    previewBtn.disabled = false;
+    btn.textContent = 'Start Quest';
+    return;
 
   } catch(err) {
     console.error('Create quest error:', err);
@@ -1004,5 +989,117 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<!-- ====== PAYMENT MODAL ====== -->
+<div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
+<div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+  <div class="pm-handle"></div>
+  <button class="pm-close" onclick="closePaymentModal()" aria-label="Close">✕</button>
+  <div class="pm-title" id="pm-title">Fund your quest</div>
+  <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
+  <div class="pm-breakdown" id="pm-breakdown"></div>
+  <div id="pm-stripe-element"></div>
+  <div id="pm-error"></div>
+  <button class="pm-pay-btn" id="pm-pay-btn" onclick="submitPayment()">Pay now</button>
+  <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
+</div>
+
+<style>
+.pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
+.pm-backdrop.show{opacity:1;pointer-events:auto;}
+.pm-sheet{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(232,168,32,.25);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);}
+.pm-sheet.show{transform:translateY(0);}
+.pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
+.pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
+.pm-sub{font-size:13px;color:#a8c8e0;text-align:center;margin-bottom:22px;line-height:1.5;}
+.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:20px;}
+.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;color:#a8c8e0;}
+.pm-row strong{color:#f5ead8;font-weight:400;}
+.pm-row.total{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:6px;font-size:16px;}
+.pm-row.total strong{color:#e8a820;font-size:20px;font-weight:400;}
+#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin-bottom:14px;min-height:48px;}
+#pm-error{color:#f87171;font-size:13px;margin-bottom:12px;min-height:18px;text-align:center;}
+.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
+.pm-pay-btn:active{transform:scale(.98);}
+.pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
+.pm-secure{text-align:center;font-size:11px;color:#8fa8bd;margin-top:12px;letter-spacing:0.5px;}
+.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
+</style>
+
+<script>
+// ═══════ PAYMENT MODAL ═══════
+const STRIPE_PUBLIC_KEY_NQ = 'pk_live_51SEeS9I5oOLcrCkoLi99l2tAGTotaLsxlPEoNcKqrZhARB8CTA82cokMj2tXKNJ79GPg1Hy4bpokQYrc3jpzYGef00EoR5idyy';
+let _stripe = null, _stripeElements = null, _stripeCs = null, _currentHuntId = null;
+
+async function openPaymentModal({ userId, email, huntId, prize }) {
+  _currentHuntId = huntId;
+  const fee = Math.round(prize * 0.10 * 100) / 100;
+  const total = prize + fee;
+  document.getElementById('pm-breakdown').innerHTML = `
+    <div class="pm-row"><span>Prize to winner</span><strong>$${prize.toFixed(2)}</strong></div>
+    <div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$${fee.toFixed(2)}</strong></div>
+    <div class="pm-row total"><span>Total today</span><strong>$${total.toFixed(2)}</strong></div>`;
+  document.getElementById('pm-error').textContent = '';
+
+  document.getElementById('pm-backdrop').classList.add('show');
+  document.getElementById('pm-sheet').classList.add('show');
+
+  if (!_stripe) _stripe = Stripe(STRIPE_PUBLIC_KEY_NQ);
+
+  if (!_stripeCs) {
+    try {
+      const r = await fetch('/api/create-escrow-intent', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+        body: JSON.stringify({ userId, email, huntId, prizeAmount: prize, totalCents: Math.round(total * 100) })
+      });
+      const d = await r.json();
+      if (!r.ok || !d.clientSecret) throw new Error(d.error || 'Could not start payment');
+      _stripeCs = d.clientSecret;
+    } catch(e) {
+      document.getElementById('pm-error').textContent = e.message;
+      return;
+    }
+    _stripeElements = _stripe.elements({
+      clientSecret: _stripeCs,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#e8a820', colorBackground: '#14121f', colorText: '#f5ead8',
+          colorDanger: '#f87171', fontFamily: 'Noto Sans Display, system-ui, sans-serif', borderRadius: '10px'
+        }
+      }
+    });
+    const el = _stripeElements.create('payment');
+    el.mount('#pm-stripe-element');
+  }
+}
+
+function closePaymentModal(){
+  document.getElementById('pm-backdrop').classList.remove('show');
+  document.getElementById('pm-sheet').classList.remove('show');
+}
+
+async function submitPayment(){
+  const btn = document.getElementById('pm-pay-btn');
+  const errEl = document.getElementById('pm-error');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    const { error } = await _stripe.confirmPayment({
+      elements: _stripeElements,
+      confirmParams: {
+        return_url: window.location.origin + '/profile.html?quest=funded&id=' + (_currentHuntId || '')
+      }
+    });
+    if (error) throw new Error(error.message);
+  } catch(e) {
+    errEl.textContent = e.message || 'Payment failed';
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+  }
+}
+</script>
+
 </body>
 </html>
