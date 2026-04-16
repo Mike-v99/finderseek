@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -517,11 +518,12 @@ const NOTIFY_SECRET = 'fs-notify-2026';
 let currentUser = null;
 let currentProfile = null;
 
+// Initialize Supabase JS client (handles PKCE flow, session storage, token refresh)
+const supaClient = window.supabase.createClient(SB, KEY);
+
 function getToken(){
-  // Check our manual token first
   var t = localStorage.getItem('fs_token');
   if (t) return t;
-  // Fall back to Supabase JS client session storage
   try {
     var keys = Object.keys(localStorage);
     for (var i = 0; i < keys.length; i++) {
@@ -535,19 +537,18 @@ function getToken(){
 }
 
 async function loadCurrentUser(){
-  const token = getToken();
-  if (!token) return null;
   try {
-    const r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if (!r.ok) return null;
-    const u = await r.json();
-    if (!u?.id) return null;
-    currentUser = u;
-    // Load profile too
-    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+u.id+'&select=*', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    // Use Supabase client — auto-refreshes tokens
+    const { data: { session } } = await supaClient.auth.getSession();
+    if (!session || !session.user) return null;
+    currentUser = session.user;
+    // Load profile
+    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+session.user.id+'&select=*', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+session.access_token}
+    });
     const pd = await pr.json();
     currentProfile = pd?.[0] || null;
-    return u;
+    return session.user;
   } catch(e){ console.error('Auth check failed', e); return null; }
 }
 
@@ -752,6 +753,7 @@ async function createQuest(previewMode){
     // ── 9. If preview mode, send to review screen ─────────
     if (previewMode) {
       showToast('✅ Quest draft saved! Redirecting to review...', 'success');
+      clearFormState();
       setTimeout(()=>{ window.location.href = 'review.html?id='+huntId; }, 1200);
       return;
     }
@@ -782,14 +784,89 @@ async function createQuest(previewMode){
 // Load current user on page load
 loadCurrentUser();
 
+// ── FORM PERSISTENCE ──────────────────────────────────────────
+// Saves form state to sessionStorage so back-navigation restores it
+const FORM_KEY = 'fs_newquest_form';
+
+function saveFormState() {
+  try {
+    var state = {
+      prize: document.getElementById('prize-display')?.textContent || '',
+      duration: document.getElementById('dur-slider')?.value || '',
+      clueCount: document.getElementById('clue-slider')?.value || '',
+      persona: document.querySelector('.persona-card.selected')?.dataset.persona || '',
+      hidingSpot: document.getElementById('hiding-spot')?.value || '',
+      searchAddress: document.getElementById('map-search')?.value || '',
+      code: ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id)?.value || ''; }).join(''),
+      liveMode: document.querySelector('.golive-opt.selected')?.dataset.live || '',
+      lat: selectedLat, lng: selectedLng,
+    };
+    sessionStorage.setItem(FORM_KEY, JSON.stringify(state));
+  } catch(e){}
+}
+
+function restoreFormState() {
+  try {
+    var raw = sessionStorage.getItem(FORM_KEY);
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (s.prize) document.getElementById('prize-display').textContent = s.prize;
+    if (s.duration) { document.getElementById('dur-slider').value = s.duration; updDur(document.getElementById('dur-slider')); }
+    if (s.clueCount) { document.getElementById('clue-slider').value = s.clueCount; updClue(document.getElementById('clue-slider')); }
+    if (s.persona) {
+      document.querySelectorAll('.persona-card').forEach(function(el){ el.classList.remove('selected'); });
+      var pc = document.querySelector('.persona-card[data-persona="'+s.persona+'"]');
+      if (pc) pc.classList.add('selected');
+    }
+    if (s.hidingSpot) document.getElementById('hiding-spot').value = s.hidingSpot;
+    if (s.searchAddress) document.getElementById('map-search').value = s.searchAddress;
+    if (s.code && s.code.length === 6) {
+      for (var i = 0; i < 6; i++) {
+        var el = document.getElementById('c'+(i+1));
+        if (el) el.value = s.code[i];
+      }
+    }
+    if (s.liveMode) {
+      document.querySelectorAll('.golive-opt').forEach(function(el){ el.classList.remove('selected'); });
+      var lm = document.querySelector('.golive-opt[data-live="'+s.liveMode+'"]');
+      if (lm) lm.classList.add('selected');
+    }
+    if (s.lat && s.lng) {
+      selectedLat = s.lat; selectedLng = s.lng;
+    }
+  } catch(e){ console.error('Restore form error', e); }
+}
+
+function clearFormState() { try { sessionStorage.removeItem(FORM_KEY); } catch(e){} }
+
 document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.el').forEach(function(el){
     var d=parseInt(el.getAttribute('data-d'))||0;
     setTimeout(function(){el.classList.add('show');},d);
   });
   updPay(25);
-  // Auto-init map with default location or user's location
-  setTimeout(function(){ goToMyLocation(); }, 600);
+
+  // Restore form from previous session
+  restoreFormState();
+
+  // Save on any input change
+  ['prize-display','dur-slider','clue-slider','hiding-spot','map-search','c1','c2','c3','c4','c5','c6'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', saveFormState);
+  });
+  // Save when persona/live mode selected
+  document.querySelectorAll('.persona-card, .golive-opt').forEach(function(el){
+    el.addEventListener('click', function(){ setTimeout(saveFormState, 50); });
+  });
+
+  // Auto-init map with restored location or user's location
+  setTimeout(function(){
+    if (selectedLat && selectedLng) {
+      initMap(selectedLat, selectedLng, 15);
+    } else {
+      goToMyLocation();
+    }
+  }, 600);
 });
 
 // ── MAP ──────────────────────────────────────────────
@@ -866,11 +943,13 @@ function initMap(lat, lng) {
       const p = e.target.getLatLng();
       selectedLat = p.lat; selectedLng = p.lng;
       setCoords(p.lat, p.lng); reverseGeocode(p.lat, p.lng);
+      if (typeof saveFormState === 'function') saveFormState();
     });
     _map.on('click', e => {
       selectedLat = e.latlng.lat; selectedLng = e.latlng.lng;
       _marker.setLatLng([selectedLat, selectedLng]);
       setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
+      if (typeof saveFormState === 'function') saveFormState();
     });
     setTimeout(() => _map.invalidateSize(), 200);
   });
