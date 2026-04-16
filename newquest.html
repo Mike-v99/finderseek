@@ -134,10 +134,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:18px;color:#ffffff;}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:300;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;font-weight:300;cursor:pointer;background:transparent;color:var(--dim);transition:all .2s;}
-.btn-preview:hover{border-color:rgba(255,255,255,.25);color:var(--cream);}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
+.btn-preview:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08);}
 .submit-note{font-size:18px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
@@ -667,7 +667,7 @@ async function createQuest(previewMode){
     const clueData = await clueRes.json();
     if (!clueRes.ok || !clueData.clues) {
       console.error('Clue generation error:', clueData);
-      throw new Error(clueData?.error || 'Failed to generate clues');
+      throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
     }
 
     // ── 8. Insert clues into Supabase ───────────────────────
@@ -700,7 +700,7 @@ async function createQuest(previewMode){
     if (!cluesPostRes.ok) {
       const err = await cluesPostRes.text();
       console.error('Clue insert error:', err);
-      throw new Error('Failed to save clues');
+      throw new Error('Failed to save clues: ' + (err || 'Database rejected the insert'));
     }
 
     // ── 9. If preview mode, send to review screen ─────────
