@@ -434,7 +434,7 @@ body::after {
   </div>
 
   <!-- SEARCH -->
-  <div class="search-row el from-right" data-d="1350">
+  <div class="search-row el from-right" data-d="1350" id="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Search quests..."/>
@@ -508,7 +508,7 @@ body::after {
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <div class="nav-label">How</div>
   </div>
-  <div class="nav-center" onclick="setNav(this)">
+  <div class="nav-center" onclick="goToQuests(this)">
     <div class="nav-orb">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </div>
@@ -531,6 +531,25 @@ function setNav(el) {
     n.classList.remove('active');
   });
   el.classList.add('active');
+}
+
+// Quests button — scroll search row to top. Double-tap → all the way to top.
+function goToQuests(el) {
+  setNav(el);
+  var target = document.getElementById('search-row');
+  if (!target) return;
+  var navHeight = 86; // approximate bottom nav space
+  var currentScroll = window.scrollY || window.pageYOffset;
+  var targetTop = target.getBoundingClientRect().top + currentScroll;
+  // Offset so the search row lands near the top of the visible area (not flush against safe-area)
+  var desiredTop = targetTop - 12;
+
+  // If we're already at or near the desired position, scroll to very top instead
+  if (Math.abs(currentScroll - desiredTop) < 20) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  window.scrollTo({ top: desiredTop, behavior: 'smooth' });
 }
 
 // Gold burst animation
