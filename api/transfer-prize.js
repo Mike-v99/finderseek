@@ -107,6 +107,17 @@ export default async function handler(req, res) {
       })
       .eq('id', huntId);
 
+    // 7. Update winner's stats (finds_count + total_won)
+    try {
+      await supabase.rpc('record_quest_win', {
+        p_user_id: winnerId,
+        p_prize_value_cents: prizeAmountCents,
+      });
+    } catch (rpcErr) {
+      // Non-fatal — transfer already succeeded
+      console.error('[Transfer] Stats update failed (non-fatal):', rpcErr);
+    }
+
     console.log(`[Transfer] Prize $${hunt.prize_amount} sent to ${winner.username} (${transfer.id})`);
 
     return res.status(200).json({
