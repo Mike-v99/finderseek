@@ -517,7 +517,22 @@ const NOTIFY_SECRET = 'fs-notify-2026';
 let currentUser = null;
 let currentProfile = null;
 
-function getToken(){ return localStorage.getItem('fs_token') || ''; }
+function getToken(){
+  // Check our manual token first
+  var t = localStorage.getItem('fs_token');
+  if (t) return t;
+  // Fall back to Supabase JS client session storage
+  try {
+    var keys = Object.keys(localStorage);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+        var session = JSON.parse(localStorage.getItem(keys[i]));
+        if (session && session.access_token) return session.access_token;
+      }
+    }
+  } catch(e){}
+  return '';
+}
 
 async function loadCurrentUser(){
   const token = getToken();
