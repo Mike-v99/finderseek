@@ -1,5 +1,6 @@
 // api/create-escrow-intent.js
-// Creates a Stripe PaymentIntent for embedded escrow checkout on pirate.html
+// Creates a Stripe PaymentIntent for the embedded escrow payment modal
+// (used by newquest.html and review.html's "Fund Quest" flow).
 //
 // Env vars needed in Vercel:
 //   STRIPE_SECRET_KEY      — sk_live_... or sk_test_...

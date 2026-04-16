@@ -164,7 +164,7 @@ function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
       ${escrowNote}
       <hr class="divider"/>
       <p>Want to try again? You can hide another treasure anytime.</p>
-      <a href="https://finderseek.com/pirate.html" class="btn">Hide New Treasure →</a>
+      <a href="https://finderseek.com/newquest.html" class="btn">Create Another Quest →</a>
     `)
   };
 }
