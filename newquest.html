@@ -433,7 +433,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <script>
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
-function cP(e,el,prev){if(e.key==='Backspace'&&!el.value&&prev)document.getElementById(prev).focus();}
+function cP(e,el,prev){if(e.key==='Backspace'){if(!el.value&&prev){document.getElementById(prev).focus();}else if(el.value){el.value='';e.preventDefault();if(prev)document.getElementById(prev).focus();}}}
 
 function updDur(el){
   var v=parseInt(el.value);
@@ -561,7 +561,7 @@ async function createQuest(previewMode){
 
   // ── 3. Validation ─────────────────────────────────────────
   if (prize < 1 || prize > 100) return showToast('Prize must be between $1 and $100', 'error');
-  if (!hidingSpot || hidingSpot.length < 10) return showToast('Describe the hiding spot in more detail', 'error');
+  if (!hidingSpot || hidingSpot.length < 10) return showToast('Hiding Spot — Add More Details', 'error');
   if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
   if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
 
@@ -574,7 +574,7 @@ async function createQuest(previewMode){
     const now = new Date();
     const startsAt = liveMode === 'now' ? now : now; // TODO: schedule picker
     const endsAt = new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
-    const status = liveMode === 'now' ? 'pending_payment' : 'scheduled';
+    const status = 'draft';
 
     // Extract city from search address
     const parts = searchAddress.split(',').map(s => s.trim());
