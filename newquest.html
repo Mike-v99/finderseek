@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -267,14 +267,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div class="step-title">Photo of Hiding Spot</div>
       </div>
       <div class="step-body">
-        <div style="display:flex;gap:10px;">
-          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
+        <!-- Hidden file inputs: one prefers rear camera, one just opens gallery -->
+        <input type="file" id="photo-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoSelect(this)"/>
+        <input type="file" id="photo-gallery-input" accept="image/*" style="display:none;" onchange="handlePhotoSelect(this)"/>
+
+        <!-- Preview (hidden until a photo is picked) -->
+        <div id="photo-preview-wrap" style="display:none;margin-bottom:12px;position:relative;">
+          <img id="photo-preview-img" style="width:100%;border-radius:14px;display:block;"/>
+          <button type="button" onclick="clearPhoto()" aria-label="Remove photo"
+            style="position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(10,8,16,.85);border:1px solid rgba(255,255,255,.2);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);">✕</button>
+          <div id="photo-preview-name" style="position:absolute;bottom:10px;left:10px;right:52px;background:rgba(10,8,16,.85);border-radius:8px;padding:6px 10px;font-size:12px;color:#f5ead8;backdrop-filter:blur(8px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+        </div>
+
+        <div id="photo-picker-row" style="display:flex;gap:10px;">
+          <div onclick="document.getElementById('photo-camera-input').click()" style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#c9890c,#f5c842,#e8a820);cursor:pointer;">
             <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
               <div style="font-size:36px;margin-bottom:10px;">📷</div>
               <div style="font-size:18px;font-weight:400;color:#fbbf24;">Take Photo</div>
             </div>
           </div>
-          <div style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
+          <div onclick="document.getElementById('photo-gallery-input').click()" style="flex:1;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,#8b5cf6,#d946ef,#a78bfa);cursor:pointer;">
             <div style="background:rgba(13,11,24,.92);border-radius:13px;padding:28px 14px;text-align:center;">
               <div style="font-size:36px;margin-bottom:10px;">🖼️</div>
               <div style="font-size:18px;font-weight:400;color:#a78bfa;">Gallery</div>
@@ -567,6 +579,35 @@ async function createQuest(previewMode){
     const parts = searchAddress.split(',').map(s => s.trim());
     const city = parts.length >= 2 ? parts[parts.length - 2] : (parts[0] || 'Unknown');
 
+    // ── 5b. Upload photo (if provided) ─────────────────────
+    let photoUrl = null;
+    if (photoFile) {
+      btn.textContent = '⏳ Uploading photo...';
+      try {
+        const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase();
+        const path = `hunt-photos/${currentUser.id}-${Date.now()}.${ext}`;
+        const up = await fetch(SB+'/storage/v1/object/finderseeek-assets/'+path, {
+          method: 'POST',
+          headers: {
+            'apikey': KEY,
+            'Authorization': 'Bearer '+getToken(),
+            'Content-Type': photoFile.type
+          },
+          body: photoFile
+        });
+        if (up.ok) {
+          photoUrl = SB+'/storage/v1/object/public/finderseeek-assets/'+path;
+        } else {
+          const errTxt = await up.text();
+          console.error('Photo upload failed:', up.status, errTxt);
+          showToast('Photo upload failed — continuing without photo', 'error');
+        }
+      } catch(e) {
+        console.error('Photo upload error', e);
+        showToast('Photo upload failed — continuing without photo', 'error');
+      }
+    }
+
     // ── 6. Insert hunt into Supabase ────────────────────────
     btn.textContent = '⏳ Saving quest...';
     const huntRes = await fetch(SB+'/rest/v1/hunts', {
@@ -596,6 +637,7 @@ async function createQuest(previewMode){
         hiding_spot: hidingSpot,
         clue_persona: persona,
         clue_count: clueCount,
+        photo_url: photoUrl,
       })
     });
 
@@ -722,6 +764,43 @@ document.addEventListener('DOMContentLoaded',function(){
 let selectedLat = null, selectedLng = null;
 let _map = null, _marker = null, _mapReady = false;
 let searchTimeout = null;
+
+// ── PHOTO PICKER ─────────────────────────────────────
+let photoFile = null;
+
+function handlePhotoSelect(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  // Validate file type and size
+  if (!f.type.startsWith('image/')) {
+    showToast('Please pick an image file', 'error');
+    return;
+  }
+  const maxMB = 10;
+  if (f.size > maxMB * 1024 * 1024) {
+    showToast('Image too big — keep it under '+maxMB+'MB', 'error');
+    return;
+  }
+  photoFile = f;
+  // Show preview
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('photo-preview-img').src = e.target.result;
+    document.getElementById('photo-preview-wrap').style.display = 'block';
+    document.getElementById('photo-preview-name').textContent = f.name;
+    document.getElementById('photo-picker-row').style.display = 'none';
+  };
+  reader.readAsDataURL(f);
+}
+
+function clearPhoto() {
+  photoFile = null;
+  document.getElementById('photo-preview-wrap').style.display = 'none';
+  document.getElementById('photo-picker-row').style.display = 'flex';
+  // Reset both inputs so selecting the same file again still fires onchange
+  document.getElementById('photo-camera-input').value = '';
+  document.getElementById('photo-gallery-input').value = '';
+}
 
 function loadLeaflet(cb) {
   if (window.L) { cb(); return; }
