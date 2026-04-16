@@ -438,8 +438,9 @@ async function gateSignUp(){
 
 async function gateSocial(provider){
   try {
-    // OAuth redirect — returns here with token in URL hash
-    var redirectTo = window.location.origin + '/profile.html';
+    // OAuth redirect — Supabase returns to Site URL with token in hash.
+    // index.html catches the token and redirects to profile.html.
+    var redirectTo = window.location.origin + '/';
     var url = SB + '/auth/v1/authorize?provider=' + provider + '&redirect_to=' + encodeURIComponent(redirectTo);
     window.location.href = url;
   } catch(e) {
