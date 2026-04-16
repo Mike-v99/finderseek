@@ -358,7 +358,7 @@ body::after {
 .el {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity .6s ease-out, transform .6s ease-out;
+  transition: opacity .3s ease-out, transform .3s ease-out;
 }
 .el.from-left { transform: translateX(-40px) translateY(0); }
 .el.from-right { transform: translateX(40px) translateY(0); }
@@ -404,26 +404,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- HERO -->
   <div class="hero">
-    <div class="logo el from-scale" data-d="300">
+    <div class="logo el from-scale" data-d="150">
       <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
     </div>
-    <div class="tagline el" data-d="600">Hidden Treasure. Real Adventure.</div>
-    <div class="el" data-d="750" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
+    <div class="tagline el" data-d="300">Hidden Treasure. Real Adventure.</div>
+    <div class="el" data-d="375" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
 
     <!-- CTA BUTTONS -->
     <div class="cta-row">
-      <a class="btn-cta btn-find el from-left" data-d="950" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
+      <a class="btn-cta btn-find el from-left" data-d="475" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
         <span class="btn-cta-icon">🔍</span>
         <span class="btn-cta-label">FIND TREASURE</span>
       </a>
-      <a class="btn-cta btn-hide el from-right" data-d="950" href="newquest.html">
+      <a class="btn-cta btn-hide el from-right" data-d="475" href="newquest.html">
         <span class="btn-cta-icon" style="color:#d0e4f0;">+</span>
         <span class="btn-cta-label">START QUEST</span>
       </a>
     </div>
 
     <!-- STATS STRIP -->
-    <div class="stats-wrap el from-scale" data-d="1150">
+    <div class="stats-wrap el from-scale" data-d="575">
       <div class="stats-inner">
         <div class="stat">
           <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
@@ -446,7 +446,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- SEARCH -->
-  <div class="search-row el from-right" data-d="1350" id="search-row">
+  <div class="search-row el from-right" data-d="675" id="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Search quests..."/>
@@ -456,7 +456,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- QUEST SECTIONS -->
   <div class="sections" id="quest-sections">
-    <div class="section section-active el from-left" data-d="1500" id="sec-active" onclick="this.classList.toggle('open')">
+    <div class="section section-active el from-left" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -473,7 +473,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-    <div class="section section-scheduled el from-right" data-d="1650" id="sec-scheduled" onclick="this.classList.toggle('open')">
+    <div class="section section-scheduled el from-right" data-d="825" id="sec-scheduled" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -490,7 +490,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-    <div class="section section-completed el from-left" data-d="1800" id="sec-completed" onclick="this.classList.toggle('open')">
+    <div class="section section-completed el from-left" data-d="900" id="sec-completed" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
