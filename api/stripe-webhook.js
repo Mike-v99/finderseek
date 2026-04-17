@@ -133,23 +133,26 @@ export default async function handler(req, res) {
 
         console.log(`[webhook] escrow funded → hunt ${huntId} prize $${prizeAmount}`);
 
-        // Fire-and-forget notification to the creator (+ city seekers, followers).
-        // A notify failure must NEVER cause us to return non-200 to Stripe,
-        // or Stripe will retry the webhook and we'll double-flip the hunt.
+        // Notify the creator (+ city seekers, followers).
+        // We AWAIT this rather than fire-and-forget because Vercel
+        // serverless functions may terminate background promises
+        // after `return res.status(200)`. Stripe gives us 30 seconds
+        // to respond, so a few hundred ms for notify is safe.
+        // Wrapped in try/catch so a notify failure never causes us
+        // to return non-200 to Stripe (would trigger retry + double-flip).
         try {
           const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
           if (notifySecret) {
-            // Don't await — just kick it off. Vercel will keep the function warm
-            // long enough for this fetch to complete in practice, and if it
-            // doesn't, we've already returned 200 to Stripe which is the priority.
-            fetch(`https://www.finderseek.com/api/notify`, {
+            const notifyRes = await fetch(`https://www.finderseek.com/api/notify`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'x-finderseek-secret': notifySecret,
               },
               body: JSON.stringify({ event: 'hunt_approved', huntId }),
-            }).catch(err => console.error('[webhook] notify kickoff failed:', err.message));
+            });
+            const notifyBody = await notifyRes.text();
+            console.log(`[webhook] notify response ${notifyRes.status}: ${notifyBody.slice(0, 200)}`);
           } else {
             console.warn('[webhook] NOTIFY_SECRET not set — skipping creator email');
           }
