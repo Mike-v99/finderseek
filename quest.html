@@ -191,6 +191,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
 <!-- WIN CELEBRATION MODAL -->
+<!-- FUNDED CELEBRATION (shown to quest creator after payment) -->
+<div id="fund-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.92);backdrop-filter:blur(12px);z-index:9997;opacity:0;transition:opacity .4s;"></div>
+<div id="fund-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:24px;pointer-events:none;">
+  <div id="fund-inner" style="background:linear-gradient(135deg,rgba(201,137,12,.10),rgba(232,168,32,.06));border:1.5px solid rgba(232,168,32,.5);border-radius:22px;max-width:420px;width:100%;padding:36px 26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 80px rgba(232,168,32,.25);pointer-events:auto;transform:scale(0.8);opacity:0;transition:transform .45s cubic-bezier(0.18,1.4,0.4,1), opacity .3s;text-align:center;position:relative;">
+    <div style="font-size:80px;margin-bottom:12px;animation:fundBounce 1.4s ease-in-out infinite;">🏴‍☠️</div>
+    <div style="font-size:28px;color:#e8a820;font-weight:500;margin-bottom:6px;letter-spacing:-0.3px;">Your Quest is LIVE!</div>
+    <div style="font-size:15px;color:#8a7a5a;font-family:monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;">Treasure hidden · Seekers hunting</div>
+    <div id="fund-amount" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(52px,14vw,68px);color:#e8a820;line-height:1;margin:6px 0 14px;">$0</div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a7a5a;margin-bottom:20px;font-family:monospace;">held in escrow</div>
+    <div style="font-size:16px;color:#f5ead8;line-height:1.55;margin-bottom:24px;">
+      We've sent a confirmation to your email with your quest link.<br/>
+      You'll be notified the moment someone cracks the clues.
+    </div>
+    <button onclick="closeFundModal()" style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#e8a820);color:#0a0800;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(232,168,32,.35);">View My Quest →</button>
+  </div>
+</div>
+<style>
+@keyframes fundBounce { 0%,100% { transform:translateY(0) rotate(-3deg); } 50% { transform:translateY(-12px) rotate(3deg); } }
+</style>
+
 <div id="win-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.92);backdrop-filter:blur(12px);z-index:9997;opacity:0;transition:opacity .4s;"></div>
 <div id="win-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:24px;pointer-events:none;">
   <div id="win-inner" style="background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(201,137,12,.08));border:1.5px solid rgba(74,222,128,.4);border-radius:22px;max-width:400px;width:100%;padding:36px 26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 80px rgba(74,222,128,.25);pointer-events:auto;transform:scale(0.8);opacity:0;transition:transform .45s cubic-bezier(0.18,1.4,0.4,1), opacity .3s;text-align:center;position:relative;">
@@ -329,6 +349,16 @@ async function loadQuest() {
     renderHunt();
     renderClues();
     startTimer();
+
+    // If user just arrived from a successful payment, celebrate!
+    try {
+      if (new URLSearchParams(window.location.search).get('funded') === '1') {
+        showFundedCelebration(currentHunt.prize_value || 0);
+        // Strip the ?funded=1 so a page refresh doesn't re-show the modal
+        var cleanUrl = window.location.pathname + '?id=' + encodeURIComponent(currentHunt.id);
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    } catch(e){}
 
     // Restore pending claim if user just signed in
     try {
@@ -630,6 +660,35 @@ async function claimPrize() {
     btn.disabled = false;
     btn.textContent = 'CLAIM PRIZE';
   }
+}
+
+// ============================================================
+//  FUNDED CELEBRATION (confetti + modal) — shown after payment
+// ============================================================
+function showFundedCelebration(prizeValueCents){
+  var dollars = Math.max(1, Math.round((prizeValueCents || 0) / 100));
+  document.getElementById('fund-amount').textContent = '$' + dollars;
+  document.getElementById('fund-backdrop').style.display = 'block';
+  var modal = document.getElementById('fund-modal');
+  var inner = document.getElementById('fund-inner');
+  modal.style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('fund-backdrop').style.opacity = '1';
+    inner.style.transform = 'scale(1)';
+    inner.style.opacity = '1';
+  }, 10);
+  fireConfetti();
+}
+
+function closeFundModal(){
+  var inner = document.getElementById('fund-inner');
+  inner.style.transform = 'scale(0.9)';
+  inner.style.opacity = '0';
+  document.getElementById('fund-backdrop').style.opacity = '0';
+  setTimeout(function(){
+    document.getElementById('fund-modal').style.display = 'none';
+    document.getElementById('fund-backdrop').style.display = 'none';
+  }, 400);
 }
 
 // ============================================================
