@@ -450,7 +450,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
-<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;pointer-events:none;">
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
   <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
     <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
 
@@ -632,7 +632,6 @@ function showEmailGate(){
     document.getElementById('eg-backdrop').style.opacity = '1';
     inner.style.transform = 'scale(1)';
     inner.style.opacity = '1';
-    document.getElementById('eg-email').focus();
   }, 10);
 }
 
