@@ -575,10 +575,23 @@ async function submitEmailGate(){
     });
     if (signUpErr) {
       if ((signUpErr.message || '').toLowerCase().includes('already')) {
-        // Account exists - tell them to sign in
-        errEl.textContent = 'Account exists. Please sign in to continue.';
-        btn.textContent = 'Continue to Payment →';
-        btn.disabled = false;
+        // Account exists — send a magic sign-in link
+        try {
+          var { error: otpErr } = await supaClient.auth.signInWithOtp({
+            email: email,
+            options: { emailRedirectTo: window.location.origin + '/review.html?preview=1' }
+          });
+          if (otpErr) throw otpErr;
+          errEl.style.color = '#4ade80';
+          errEl.textContent = 'Welcome back! A magic sign-in link has been sent to your email.';
+          btn.textContent = 'Check your email';
+          btn.disabled = true;
+        } catch(otpE) {
+          errEl.style.color = '#f87171';
+          errEl.textContent = otpE.message || 'Could not send sign-in link';
+          btn.disabled = false;
+          btn.textContent = 'Continue to Payment →';
+        }
         return;
       }
       throw signUpErr;
