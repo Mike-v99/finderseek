@@ -282,7 +282,7 @@ body::after {
 
 /* Quest list (expanded inside section) */
 .quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
-.section.open .quest-list { max-height: 2000px; }
+.section.open .quest-list { max-height: 4000px; }
 .quest-row { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; transition: background .15s; }
 .quest-row:hover { background: rgba(255,255,255,.03); }
 .quest-row:active { background: rgba(255,255,255,.06); }
@@ -297,6 +297,10 @@ body::after {
 .quest-loading { padding: 16px; text-align: center; color: var(--muted); font-size: 18px; }
 .quest-loading::after { content: '⋯'; animation: dots 1.4s infinite; margin-left: 4px; }
 @keyframes dots { 0%, 20% { content: '⋯'; } 40% { content: '⋯⋯'; } 60% { content: '⋯⋯⋯'; } }
+.quest-row-pinned { background: rgba(201,137,12,.06); border-top: 1px solid rgba(201,137,12,.2); }
+.quest-row-pinned:hover { background: rgba(201,137,12,.1); }
+.pin-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; color:#e8a820; background:rgba(201,137,12,.15); border:1px solid rgba(201,137,12,.3); border-radius:6px; padding:2px 7px; margin-bottom:4px; letter-spacing:.3px; }
+.pin-divider { padding: 6px 16px 2px; font-size:11px; letter-spacing:1.5px; color:rgba(201,137,12,.5); text-transform:uppercase; font-weight:500; border-top: 1px solid rgba(255,255,255,.05); }
 
 /* BOTTOM NAV */
 .bottom-nav {
@@ -456,7 +460,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- QUEST SECTIONS -->
   <div class="sections" id="quest-sections">
-    <div class="section section-active el from-left" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
+    <div class="section section-active el from-left open" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -705,9 +709,12 @@ function renderQuestRow(q, status) {
   else if (status === 'scheduled') meta = 'Starts ' + timeUntil(q.starts_at);
   else if (status === 'completed') meta = q.found_at ? 'Found ' + timeAgo(q.found_at) : 'Expired ' + timeAgo(q.ends_at);
 
+  var pinBadge = q.is_pinned ? '<div class="pin-badge">📌 Pinned</div>' : '';
+
   return (
-    '<div class="quest-row" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">' +
+    '<div class="quest-row' + (q.is_pinned ? ' quest-row-pinned' : '') + '" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">' +
       '<div class="quest-row-left">' +
+        (q.is_pinned ? '<div class="pin-badge">📌 Pinned</div>' : '') +
         '<div class="quest-row-title">' + location + '</div>' +
         '<div class="quest-row-meta">' +
           '<span>' + escapeHtml(q.city || '') + '</span>' +
@@ -729,7 +736,7 @@ async function fetchQuests(status) {
   }
   // Only return funded escrow OR honor-payment hunts (don't show unpaid drafts)
   // Plus: select specific columns we need
-  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type';
+  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type,is_pinned';
   try {
     var r = await fetch(SB + '/rest/v1/hunts' + query + select, {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
@@ -768,7 +775,19 @@ function renderSection(status, quests) {
     listEl.innerHTML = '<div class="quest-empty">' + msg + '</div>';
     return;
   }
-  listEl.innerHTML = quests.map(function(q) { return renderQuestRow(q, status); }).join('');
+
+  // Sort: pinned first, then rest
+  var pinned = quests.filter(function(q) { return q.is_pinned; });
+  var unpinned = quests.filter(function(q) { return !q.is_pinned; });
+  var html = '';
+  if (pinned.length > 0) {
+    html += pinned.map(function(q) { return renderQuestRow(q, status); }).join('');
+    if (unpinned.length > 0) {
+      html += '<div class="pin-divider">Other quests</div>';
+    }
+  }
+  html += unpinned.map(function(q) { return renderQuestRow(q, status); }).join('');
+  listEl.innerHTML = html;
 }
 
 async function loadQuests() {
