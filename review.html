@@ -159,8 +159,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="pm-breakdown" id="pm-breakdown"></div>
 
   <div id="pm-stripe-element"></div>
+
+  <div id="pm-nocancel" onclick="toggleNoCancelCheck()" style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;margin:14px 0 4px;cursor:pointer;user-select:none;">
+    <div id="pm-nocancel-box" style="width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(201,137,12,.5);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;"></div>
+    <div style="font-size:14px;color:#c8b48a;line-height:1.5;">I understand this quest <strong style="color:#f5ead8;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
+  </div>
+
   <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" type="button">Pay now</button>
+  <button class="pm-pay-btn" id="pm-pay-btn" type="button" disabled style="opacity:.5;cursor:not-allowed;">Pay now</button>
   <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
 </div>
 
@@ -874,7 +880,13 @@ async function openPaymentModal(){
     stripePayEl.on('ready', function(){
       clearTimeout(mountTimeout);
       stripeReady = true;
-      payBtn.disabled = false;
+      // Only enable pay button if the no-cancel checkbox has been ticked
+      var checked = document.getElementById('pm-nocancel-box')?.dataset.checked === 'true';
+      if (checked) {
+        payBtn.disabled = false;
+        payBtn.style.opacity = '1';
+        payBtn.style.cursor = 'pointer';
+      }
       payBtn.textContent = 'Pay $' + total.toFixed(2);
       payBtn.onclick = submitPayment;
     });
@@ -916,9 +928,44 @@ async function openPaymentModal(){
   }
 }
 
+function toggleNoCancelCheck() {
+  const box = document.getElementById('pm-nocancel-box');
+  const btn = document.getElementById('pm-pay-btn');
+  const checked = box.dataset.checked !== 'true';
+  box.dataset.checked = checked;
+  if (checked) {
+    box.style.background = '#c9890c';
+    box.style.borderColor = '#c9890c';
+    box.innerHTML = '<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    // Only unlock pay button if Stripe Elements is also ready
+    if (stripeReady) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    }
+  } else {
+    box.style.background = '';
+    box.style.borderColor = 'rgba(201,137,12,.5)';
+    box.innerHTML = '';
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
 function closePaymentModal(){
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
+  // Reset checkbox so it must be re-acknowledged each time
+  const box = document.getElementById('pm-nocancel-box');
+  const btn = document.getElementById('pm-pay-btn');
+  box.dataset.checked = 'false';
+  box.style.background = '';
+  box.style.borderColor = 'rgba(201,137,12,.5)';
+  box.innerHTML = '';
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.style.cursor = 'not-allowed';
 }
 
 async function submitPayment(){
