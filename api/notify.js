@@ -65,8 +65,8 @@ function tplHuntApproved({ username, city, prize, huntUrl }) {
         <div class="highlight-label">Prize</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <p>Seekers are already hunting. You'll get another email as soon as someone claims your prize!</p>
-      <a href="${huntUrl}" class="btn">View Your Hunt →</a>
+      <p>Seekers are already searching. You'll get another email as soon as someone claims your prize!</p>
+      <a href="${huntUrl}" class="btn">View Your Quest →</a>
       <hr class="divider"/>
       <p style="font-size:13px;">When someone wins, chat with them through the quest page to arrange prize delivery.</p>
     `)
@@ -140,7 +140,7 @@ function tplNewHuntInCity({ username, city, prize, huntUrl }) {
         <div class="highlight-val">${prize}</div>
       </div>
       <p>Clues drop throughout the quest — the faster you solve them, the better your chances. Good luck!</p>
-      <a href="${huntUrl}" class="btn">Start Hunting →</a>
+      <a href="${huntUrl}" class="btn">Start Seeking →</a>
     `)
   };
 }
@@ -151,7 +151,7 @@ function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
         <div class="highlight-label" style="color:#4ade80;">💰 Escrow Refund</div>
         <div class="highlight-val" style="color:#4ade80;">Refund initiated</div>
       </div>
-      <p>Since you used FinderSeek Escrow, your prize amount has been refunded to your original payment method. The 10% service fee is non-refundable. You should see the refund on your statement within 5–10 business days depending on your bank.</p>`
+      <p>Since you used FinderSeek Escrow, your prize amount has been refunded to your original payment method. The 10% service fee is non-refundable. You should see the refund on your statement within 1–2 business days depending on your bank.</p>`
     : `<p>Since this was an Honor Code quest, no payment was collected.</p>`;
   return {
     subject: `⏰ Your quest in ${city} expired with no winner`,
@@ -181,7 +181,7 @@ function tplHuntExpiredSeeker({ username, city, prize, huntUrl }) {
         <div class="highlight-val">${prize}</div>
       </div>
       <p>Better luck next time! Keep an eye out for new hunts in your area.</p>
-      <a href="https://finderseek.com" class="btn">Browse Hunts →</a>
+      <a href="https://finderseek.com" class="btn">Browse Quests →</a>
     `)
   };
 }
