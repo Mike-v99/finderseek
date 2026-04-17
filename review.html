@@ -609,7 +609,13 @@ async function submitEmailGate(){
           'Content-Type':'application/json',
           'Prefer':'resolution=ignore-duplicates'
         },
-        body: JSON.stringify({ id: signUpData.user.id, email: email })
+        body: JSON.stringify({
+          id: signUpData.user.id,
+          email: email,
+          notify_hunt_live: true,
+          notify_hunt_won: true,
+          notify_chat: true
+        })
       });
       closeEmailGate();
       // Now persist the pending quest to Supabase and continue to payment
