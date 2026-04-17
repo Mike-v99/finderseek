@@ -802,6 +802,10 @@ async function createQuest(previewMode){
           lat: selectedLat,
           lng: selectedLng,
           persona: persona,
+          city: city,
+          neighborhood: searchAddress.split(',')[0] || '',
+          searchAddress: searchAddress,
+          finderPosition: finderIdx + 1,
         })
       });
       const anonClueData = await anonClueRes.json();
@@ -812,6 +816,8 @@ async function createQuest(previewMode){
         throw new Error('Clue generation failed (HTTP '+anonClueRes.status+'): ' + (anonClueData?.error || anonClueData?.message || JSON.stringify(anonClueData)));
       }
       // Build clue rows with tier + map metadata
+      // Pick a random "finder clue" — any middle clue (not first, not last)
+      const finderIdx = clueCount <= 2 ? 0 : Math.floor(Math.random() * (clueCount - 2)) + 1;
       const anonClues = anonClueData.clues.map(function(c, idx){
         const stagger = duration / clueCount;
         const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 3600000);
@@ -829,6 +835,7 @@ async function createQuest(previewMode){
           clue_text: c.text || '',
           is_photo: hasMap,
           photo_url: mapPhotoUrl,
+          is_finder: idx === finderIdx,
           day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
           date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
         };
@@ -1002,6 +1009,10 @@ async function createQuest(previewMode){
         lat: selectedLat,
         lng: selectedLng,
         persona: persona,
+        city: city,
+        neighborhood: searchAddress.split(',')[0] || '',
+        searchAddress: searchAddress,
+        finderPosition: finderIdx + 1,
       })
     });
     const clueData = await clueRes.json();
@@ -1013,6 +1024,8 @@ async function createQuest(previewMode){
 
     // ── 8. Insert clues into Supabase ───────────────────────
     btn.textContent = '⏳ Saving clues...';
+    // Pick a random "finder clue" — any middle clue (not first, not last)
+    const finderIdx = clueCount <= 2 ? 0 : Math.floor(Math.random() * (clueCount - 2)) + 1;
     const clueRows = clueData.clues.map((c, idx) => {
       const stagger = duration / clueCount;
       const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 60 * 60 * 1000);
@@ -1035,6 +1048,7 @@ async function createQuest(previewMode){
         clue_text: c.text || '',
         is_photo: hasMap,
         photo_url: mapPhotoUrl,
+        is_finder: idx === finderIdx,
         day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
         date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
       };
