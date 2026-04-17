@@ -120,20 +120,23 @@ export default async function handler(req, res) {
 
     console.log(`[Transfer] Prize $${hunt.prize_amount} sent to ${winner.username} (${transfer.id})`);
 
-    // Fire-and-forget notification to pirate + winner.
-    // Wrapped in try/catch so a notify failure never rolls back the transfer
-    // (money has already moved — we must still return success to the client).
+    // Notify pirate + winner. AWAIT so Vercel doesn't kill the background
+    // promise after the function returns. Wrapped in try/catch — money
+    // has already moved, we must still return success to the client even
+    // if email delivery fails.
     try {
       const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
       if (notifySecret) {
-        fetch(`https://www.finderseek.com/api/notify`, {
+        const notifyRes = await fetch(`https://www.finderseek.com/api/notify`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-finderseek-secret': notifySecret,
           },
           body: JSON.stringify({ event: 'prize_claimed', huntId }),
-        }).catch(err => console.error('[Transfer] notify kickoff failed:', err.message));
+        });
+        const notifyBody = await notifyRes.text();
+        console.log(`[Transfer] notify response ${notifyRes.status}: ${notifyBody.slice(0, 200)}`);
       } else {
         console.warn('[Transfer] NOTIFY_SECRET not set — skipping claim emails');
       }
