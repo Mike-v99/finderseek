@@ -104,6 +104,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="q-location" style="font-size:18px;font-weight:400;color:#ffffff;margin-top:8px;position:relative;">Loading…</div>
       <div id="q-pirate" style="font-size:18px;color:#d0e4f0;margin-top:4px;position:relative;">—</div>
       <div id="q-tier" style="display:inline-block;margin-top:10px;padding:4px 14px;border-radius:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);font-size:18px;font-weight:400;color:#e8a820;position:relative;">QUEST</div>
+      <div id="q-pin-btn"></div>
     </div>
   </div>
 
@@ -457,6 +458,49 @@ function renderHunt() {
   } else {
     document.getElementById('q-next-clue-time').textContent = 'All revealed';
     document.getElementById('q-next-clue-label').textContent = '';
+  }
+
+  // Pin button — only show to the pirate (quest creator)
+  var pinEl = document.getElementById('q-pin-btn');
+  try {
+    var token = getToken();
+    if (token && h.pirate_id) {
+      fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}})
+        .then(function(r){ return r.json(); })
+        .then(function(u){
+          if (u && u.id && u.id === h.pirate_id) {
+            var pinned = h.is_pinned;
+            pinEl.innerHTML = '<button onclick="togglePin()" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.2)':'rgba(255,255,255,.06)')+';border:1px solid '+(pinned?'rgba(201,137,12,.5)':'rgba(255,255,255,.12)')+';border-radius:10px;padding:7px 16px;font-size:14px;font-weight:500;color:'+(pinned?'#e8a820':'rgba(255,255,255,.5)')+';cursor:pointer;font-family:inherit;transition:all .2s;">'+(pinned?'📌 Pinned to top':'📌 Pin to top')+'</button>';
+          }
+        }).catch(function(){});
+    }
+  } catch(e){}
+}
+
+async function togglePin() {
+  var token = getToken();
+  if (!token || !currentHunt) return;
+  var newVal = !currentHunt.is_pinned;
+  try {
+    var r = await fetch(SB+'/rest/v1/hunts?id=eq.'+currentHunt.id, {
+      method: 'PATCH',
+      headers: {
+        'apikey': KEY,
+        'Authorization': 'Bearer '+token,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ is_pinned: newVal })
+    });
+    if (r.ok) {
+      currentHunt.is_pinned = newVal;
+      renderHunt();
+      showToast(newVal ? '📌 Quest pinned to top of list' : 'Quest unpinned', 'success');
+    } else {
+      showToast('Could not update pin — try again', 'error');
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
   }
 }
 
