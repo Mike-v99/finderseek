@@ -14,7 +14,112 @@
 //   NOTIFY_SECRET         — shared secret for notify API
 
 export default async function handler(req, res) {
-  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}`) {
+  const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+  const cronSecret   = process.env.CRON_SECRET;
+
+  // ── On-demand single-hunt expiry (called by quest.html on page load) ──────
+  // POST with x-finderseek-secret + body { huntId } to expire one specific hunt
+  // immediately rather than waiting for the 8am cron. Auth uses NOTIFY_SECRET
+  // so the client doesn't need the privileged CRON_SECRET.
+  if (req.method === 'POST') {
+    if (!notifySecret || req.headers['x-finderseek-secret'] !== notifySecret) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const { huntId } = req.body || {};
+    if (!huntId) return res.status(400).json({ error: 'Missing huntId' });
+
+    const SB  = process.env.SUPABASE_URL;
+    const KEY = process.env.SUPABASE_SERVICE_KEY;
+    const H   = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' };
+
+    try {
+      // Fetch the specific hunt
+      const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent,status,ends_at,winner_id`, { headers: H });
+      const rows = await r.json();
+      const hunt = rows?.[0];
+
+      if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
+
+      const now = new Date();
+      const endsAt = hunt.ends_at ? new Date(hunt.ends_at) : null;
+
+      // Only expire if: active, past ends_at, no winner
+      if (hunt.status !== 'active' || !endsAt || endsAt > now || hunt.winner_id) {
+        return res.status(200).json({ ok: true, skipped: true, reason: 'Not eligible for expiry', status: hunt.status });
+      }
+
+      // Mark as ended
+      await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}`, {
+        method: 'PATCH',
+        headers: { ...H, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ status: 'ended' })
+      });
+
+      const result = { huntId, ended: true, refunded: false, notified: false };
+
+      // Refund escrow if funded
+      if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') &&
+          hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
+        try {
+          const refundAmount = hunt.prize_value || 0;
+          console.log(`[expire] refunding hunt ${huntId}: ${refundAmount} cents`);
+          const refundParams = new URLSearchParams({
+            'payment_intent': hunt.stripe_payment_intent,
+            'reason': 'requested_by_customer',
+            'metadata[type]': 'escrow_expired',
+            'metadata[huntId]': huntId,
+          });
+          if (refundAmount > 0) refundParams.set('amount', refundAmount);
+          const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: refundParams
+          });
+          const refund = await refundRes.json();
+          if (refund.id) {
+            await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}`, {
+              method: 'PATCH',
+              headers: { ...H, 'Prefer': 'return=minimal' },
+              body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: refund.id })
+            });
+            console.log(`[expire] refund SUCCESS ${refund.id}`);
+            result.refunded = true;
+            result.refundId = refund.id;
+          } else {
+            console.error(`[expire] refund FAILED:`, JSON.stringify(refund.error));
+            result.refundError = refund.error?.message;
+          }
+        } catch (e) {
+          console.error(`[expire] refund error:`, e.message);
+          result.refundError = e.message;
+        }
+      }
+
+      // Send expiry notification + email
+      try {
+        if (notifySecret) {
+          const notifyRes = await fetch('https://www.finderseek.com/api/notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret },
+            body: JSON.stringify({ event: 'hunt_expired', huntId })
+          });
+          const body = await notifyRes.text();
+          console.log(`[expire] notify -> ${notifyRes.status}: ${body.slice(0, 200)}`);
+          result.notified = notifyRes.ok;
+        }
+      } catch (e) {
+        console.error(`[expire] notify error:`, e.message);
+      }
+
+      return res.status(200).json({ ok: true, ...result });
+    } catch (e) {
+      console.error('[expire]', e);
+      return res.status(500).json({ error: e.message });
+    }
+  }
+
+  // ── Standard cron path (GET from Vercel scheduler) ───────────────────────
+  if (req.headers['authorization'] !== `Bearer ${cronSecret}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
