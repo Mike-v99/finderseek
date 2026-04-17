@@ -24,19 +24,27 @@ export default async function handler(req, res) {
   const now = new Date().toISOString();
   const results = [];
 
-  // Helper to call notify API
+  // Helper to call notify API — always awaited so Vercel doesn't kill the promise
   async function fireNotify(event, huntId) {
-    const origin = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'https://finderseek.com';
-    return fetch(`${origin}/api/notify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-finderseek-secret': process.env.NOTIFY_SECRET
-      },
-      body: JSON.stringify({ event, huntId })
-    });
+    const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+    if (!notifySecret) {
+      console.warn('[cron] NOTIFY_SECRET not set — skipping notify for', event, huntId);
+      return;
+    }
+    try {
+      const notifyRes = await fetch('https://www.finderseek.com/api/notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-finderseek-secret': notifySecret
+        },
+        body: JSON.stringify({ event, huntId })
+      });
+      const body = await notifyRes.text();
+      console.log(`[cron] notify(${event}, ${huntId}) -> ${notifyRes.status}: ${body.slice(0, 200)}`);
+    } catch (e) {
+      console.error(`[cron] notify error (non-fatal) for ${event} ${huntId}:`, e.message);
+    }
   }
 
   try {
@@ -49,9 +57,9 @@ export default async function handler(req, res) {
     const activated = activateRes.ok ? await activateRes.json() : [];
     results.push(`activated:${activated.length}`);
 
-    // Fire notifications for newly activated quests
+    // Fire notifications for newly activated quests (awaited — Vercel kills fire-and-forget)
     for (const hunt of activated) {
-      fireNotify('hunt_approved', hunt.id).catch(() => {});
+      await fireNotify('hunt_approved', hunt.id);
     }
 
     // ── 2. Find & end expired active quests (no winner) ──────────
@@ -73,6 +81,7 @@ export default async function handler(req, res) {
       if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
         try {
           const refundAmount = hunt.prize_value || 0; // prize_value is in cents, excludes the 10% fee
+          console.log(`[cron] attempting refund for hunt ${hunt.id}: prize_value=${refundAmount} cents, pi=${hunt.stripe_payment_intent}`);
           const refundParams = new URLSearchParams({
               'payment_intent': hunt.stripe_payment_intent,
               'reason': 'requested_by_customer',
@@ -99,19 +108,22 @@ export default async function handler(req, res) {
                 stripe_refund_id: refund.id
               })
             });
+            console.log(`[cron] refund SUCCESS for hunt ${hunt.id}: refund_id=${refund.id} amount=${refundAmount}`);
             results.push(`refunded:${hunt.id}`);
           } else {
-            console.error(`[cron] refund failed for hunt ${hunt.id}:`, refund.error?.message);
+            console.error(`[cron] refund FAILED for hunt ${hunt.id}:`, JSON.stringify(refund.error));
             results.push(`refund_failed:${hunt.id}`);
           }
         } catch (e) {
           console.error(`[cron] refund error for hunt ${hunt.id}:`, e.message);
           results.push(`refund_error:${hunt.id}`);
         }
+      } else {
+        console.log(`[cron] hunt ${hunt.id} skipped refund: payment_type=${hunt.payment_type} escrow_status=${hunt.escrow_status} pi=${hunt.stripe_payment_intent || 'null'}`);
       }
 
-      // ── 4. Notify pirate that quest expired ─────────────────────
-      fireNotify('hunt_expired', hunt.id).catch(() => {});
+      // ── 4. Notify pirate that quest expired (awaited — Vercel kills fire-and-forget)
+      await fireNotify('hunt_expired', hunt.id);
     }
 
     results.push(`ended:${expiredHunts.length}`);
