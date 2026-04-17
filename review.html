@@ -345,7 +345,7 @@ function renderMeta(){
 }
 
 function renderClues(){
-  const isPro = !!currentProfile.is_pro;
+  const isPro = !!(currentProfile && currentProfile.is_pro);
   const list = document.getElementById('clues-list');
   list.innerHTML = clues.map((c, i) => renderClue(c, i, isPro)).join('');
   if (!isPro) {
