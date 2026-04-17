@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -161,6 +162,39 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
 </div>
 
+<!-- Email Gate Modal — for anonymous preview users before payment -->
+<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
+  <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
+    <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
+    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+      <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
+        <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+        <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+      </div>
+    </div>
+    <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
+    <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
+    <input id="eg-email" type="email" autocomplete="email" placeholder="your@email.com"
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;"/>
+    <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
+    <button id="eg-continue-btn" onclick="submitEmailGate()"
+      style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
+    <div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div><span>OR</span><div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
+    <div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
+      <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
+      <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
+    </div>
+    <div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
+  </div>
+</div>
+
 <script>
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
@@ -195,8 +229,35 @@ let currentUser = null;
 let currentProfile = null;
 let hunt = null;
 let clues = [];
+let isPreviewMode = false;
 
 async function init(){
+  // ════════════════════════════════════════════════════════
+  // PREVIEW MODE — anonymous user, data in sessionStorage only
+  // ════════════════════════════════════════════════════════
+  if (getParam('preview') === '1') {
+    isPreviewMode = true;
+    try {
+      const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+      if (!pending || !pending.hunt || !pending.clues) {
+        showToast('Preview data not found — start over', 'error');
+        setTimeout(()=>window.location.href='newquest.html', 1500);
+        return;
+      }
+      hunt = { id: 'preview', ...pending.hunt };
+      clues = pending.clues.map((c, i) => ({ id: 'preview-'+i, ...c }));
+      renderMeta();
+      renderClues();
+      document.getElementById('confirm-footer').style.display = 'block';
+      // Hide/adjust any "manage" actions that need a real hunt id
+      return;
+    } catch(e) {
+      console.error('Preview load error', e);
+      setTimeout(()=>window.location.href='newquest.html', 1500);
+      return;
+    }
+  }
+
   const huntId = getParam('id');
   if (!huntId) {
     showToast('No quest ID', 'error');
@@ -343,6 +404,24 @@ function startEdit(clueId){
 async function saveEdit(clueId){
   const newText = document.getElementById('clue-input-'+clueId).value.trim();
   if (!newText) { showToast('Clue cannot be empty', 'error'); return; }
+
+  // Preview mode — update in-memory + sessionStorage
+  if (isPreviewMode) {
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    try {
+      const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) {
+        const idx = clues.findIndex(x => x.id === clueId);
+        if (idx >= 0) pending.clues[idx].clue_text = newText;
+        sessionStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+      }
+    } catch(e){}
+    cancelEdit(clueId);
+    showToast('Saved', 'success');
+    return;
+  }
+
   try {
     const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
       method:'PATCH',
@@ -446,7 +525,164 @@ async function saveTime(clueId){
 let stripe = null, stripeElements = null, stripePayEl = null, clientSecret = null;
 let stripeReady = false;
 
+// Supabase JS client for email-gate signup
+const supaClient = (typeof window !== 'undefined' && window.supabase)
+  ? window.supabase.createClient(SB, KEY)
+  : null;
+
+// ── EMAIL GATE (for anonymous preview users) ────────────────
+function showEmailGate(){
+  document.getElementById('eg-backdrop').style.display = 'block';
+  var modal = document.getElementById('eg-modal');
+  var inner = document.getElementById('eg-inner');
+  modal.style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('eg-backdrop').style.opacity = '1';
+    inner.style.transform = 'scale(1)';
+    inner.style.opacity = '1';
+  }, 10);
+}
+function closeEmailGate(){
+  var inner = document.getElementById('eg-inner');
+  inner.style.transform = 'scale(0.92)';
+  inner.style.opacity = '0';
+  document.getElementById('eg-backdrop').style.opacity = '0';
+  setTimeout(function(){
+    document.getElementById('eg-modal').style.display = 'none';
+    document.getElementById('eg-backdrop').style.display = 'none';
+    document.getElementById('eg-error').textContent = '';
+  }, 300);
+}
+async function submitEmailGate(){
+  var emailEl = document.getElementById('eg-email');
+  var errEl = document.getElementById('eg-error');
+  var btn = document.getElementById('eg-continue-btn');
+  var email = (emailEl.value || '').trim().toLowerCase();
+  errEl.style.color = '#f87171';
+  errEl.textContent = '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+  try {
+    var tempPassword = 'fs_' + Math.random().toString(36).slice(2) + '_' + Math.random().toString(36).slice(2) + 'A1!';
+    var { data: signUpData, error: signUpErr } = await supaClient.auth.signUp({
+      email: email,
+      password: tempPassword,
+      options: { data: { signup_source: 'quest_creator_gate' } }
+    });
+    if (signUpErr) {
+      if ((signUpErr.message || '').toLowerCase().includes('already')) {
+        // Account exists - tell them to sign in
+        errEl.textContent = 'Account exists. Please sign in to continue.';
+        btn.textContent = 'Continue to Payment →';
+        btn.disabled = false;
+        return;
+      }
+      throw signUpErr;
+    }
+    if (signUpData.session) {
+      currentUser = signUpData.user;
+      // Create profile row
+      await fetch(SB+'/rest/v1/profiles', {
+        method:'POST',
+        headers:{
+          'apikey':KEY,
+          'Authorization':'Bearer '+signUpData.session.access_token,
+          'Content-Type':'application/json',
+          'Prefer':'resolution=ignore-duplicates'
+        },
+        body: JSON.stringify({ id: signUpData.user.id, email: email })
+      });
+      closeEmailGate();
+      // Now persist the pending quest to Supabase and continue to payment
+      await persistPendingQuest();
+    } else {
+      errEl.style.color = '#4ade80';
+      errEl.textContent = '✓ Check your email to confirm.';
+      btn.textContent = 'Check your email';
+    }
+  } catch(e) {
+    errEl.textContent = e.message || 'Could not create account';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Payment →';
+  }
+}
+async function signUpFromGate(){
+  try {
+    var { error } = await supaClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/review.html?preview=1' }
+    });
+    if (error) throw error;
+  } catch(e) {
+    document.getElementById('eg-error').textContent = e.message || 'Sign-in failed';
+  }
+}
+
+// After email gate, create the hunt in Supabase and continue to payment
+async function persistPendingQuest(){
+  try {
+    const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+    if (!pending || !currentUser) throw new Error('No pending quest or user');
+    const token = getToken();
+    // Insert hunt
+    const huntRes = await fetch(SB+'/rest/v1/hunts', {
+      method:'POST',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=representation'},
+      body: JSON.stringify({
+        week_label: pending.hunt.week_label,
+        prize_desc: pending.hunt.prize_desc,
+        prize_value: pending.hunt.prize_value,
+        starts_at: pending.hunt.starts_at,
+        ends_at: pending.hunt.ends_at,
+        status: 'draft',
+        city: pending.hunt.city,
+        finder_code: pending.hunt.finder_code,
+        payment_type: 'finderseek',
+        escrow_status: 'pending',
+        neighborhood: pending.hunt.neighborhood,
+        pirate_id: currentUser.id,
+        created_by: currentUser.id,
+        lat: pending.hunt.lat,
+        lng: pending.hunt.lng,
+        hiding_spot: pending.hunt.hiding_spot,
+        clue_persona: pending.hunt.clue_persona,
+        clue_count: pending.hunt.clue_count,
+      })
+    });
+    const huntData = await huntRes.json();
+    if (!huntRes.ok) throw new Error(huntData?.message || 'Hunt save failed');
+    const newHunt = Array.isArray(huntData) ? huntData[0] : huntData;
+    // Insert clues
+    const clueRows = pending.clues.map(c => ({ ...c, hunt_id: newHunt.id }));
+    const cr = await fetch(SB+'/rest/v1/clues', {
+      method:'POST',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify(clueRows)
+    });
+    if (!cr.ok) { const t = await cr.text(); throw new Error('Clue save failed: '+t); }
+    // Swap our in-memory hunt for the real one so payment modal uses real ID
+    hunt = newHunt;
+    isPreviewMode = false;
+    sessionStorage.removeItem('fs_pending_quest');
+    // Re-open payment modal (now backed by a real hunt)
+    await openPaymentModal();
+  } catch(e) {
+    console.error('persistPendingQuest error:', e);
+    showToast('Could not save quest: ' + e.message, 'error');
+  }
+}
+
 async function openPaymentModal(){
+  // For anonymous users in preview mode, show email gate first
+  if (isPreviewMode && !currentUser) {
+    showEmailGate();
+    return;
+  }
+
   // Render breakdown
   const prize = (hunt.prize_value || 0) / 100;
   const fee = Math.round(prize * 0.10 * 100) / 100;
