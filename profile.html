@@ -830,10 +830,24 @@ function handleUrlRedirects(){
   // Won a prize but needed to onboard — claim flow
   var claimId = params.get('claim');
   if (claimId) {
+    try { sessionStorage.setItem('fs_pending_claim_return', 'quest.html?id=' + claimId); } catch(e){}
     showToast('🏆 You won a prize! Set up payouts to receive it.', 'success');
     setTimeout(function(){
       document.getElementById('payout-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 1200);
+  }
+
+  // Returning from Stripe Connect onboarding with a pending claim
+  if (params.get('connect') === 'complete') {
+    try {
+      var returnUrl = sessionStorage.getItem('fs_pending_claim_return');
+      if (returnUrl) {
+        sessionStorage.removeItem('fs_pending_claim_return');
+        showToast('✅ Payouts set up! Returning to your prize...', 'success');
+        setTimeout(function(){ window.location.href = returnUrl; }, 1500);
+        return;
+      }
+    } catch(e){}
   }
 
   // Redirect after login

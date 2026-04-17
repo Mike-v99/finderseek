@@ -313,6 +313,26 @@ async function loadQuest() {
     renderHunt();
     renderClues();
     startTimer();
+
+    // Restore pending claim if user just signed in
+    try {
+      var pending = JSON.parse(sessionStorage.getItem('fs_pending_claim') || 'null');
+      if (pending && pending.huntId === currentHunt.id && pending.code && pending.code.length === 6) {
+        // Restore the 6-digit code
+        for (var i = 0; i < 6; i++) {
+          var el = document.getElementById('d' + (i+1));
+          if (el) el.value = pending.code[i];
+        }
+        // If signed in now, show a helpful message
+        if (getToken()) {
+          setTimeout(function(){
+            showToast('✓ Signed in! Tap CLAIM PRIZE to finish.', 'success');
+            var claimBtn = document.getElementById('btn-claim');
+            if (claimBtn) claimBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 500);
+        }
+      }
+    } catch(e){}
   } catch(e) {
     console.error('Load quest error:', e);
     showToast('Error loading quest: '+e.message, 'error');
@@ -482,7 +502,6 @@ function renderClues() {
     });
   }, 50);
 }
-}
 
 function startTimer() {
   if (!currentHunt || !currentHunt.ends_at) return;
@@ -522,18 +541,28 @@ async function claimPrize() {
   var btn = document.getElementById('btn-claim');
   if (!currentHunt) return;
 
-  // Check user logged in
-  var token = getToken();
-  if (!token) {
-    showToast('Please sign in to claim', 'error');
-    setTimeout(()=>{ window.location.href = 'profile.html?redirect=quest.html?id='+currentHunt.id; }, 1200);
-    return;
-  }
-
-  // Get the entered code
+  // Get the entered code first
   var code = ['d1','d2','d3','d4','d5','d6'].map(function(id){ return document.getElementById(id).value; }).join('');
   if (code.length !== 6) {
     showToast('Enter all 6 digits', 'error');
+    return;
+  }
+
+  // Save the code + hunt ID so we can restore it after sign-in
+  try {
+    sessionStorage.setItem('fs_pending_claim', JSON.stringify({
+      huntId: currentHunt.id,
+      code: code,
+      savedAt: Date.now()
+    }));
+  } catch(e){}
+
+  // Check user logged in
+  var token = getToken();
+  if (!token) {
+    showToast('Please sign in to claim your prize', 'error');
+    var redirectUrl = encodeURIComponent('quest.html?id=' + currentHunt.id);
+    setTimeout(()=>{ window.location.href = 'profile.html?redirect=' + redirectUrl; }, 1200);
     return;
   }
 
@@ -575,6 +604,7 @@ async function claimPrize() {
       showToast('🎉 Prize sent! $' + (trd.amount) + ' on its way to your account', 'success');
       btn.textContent = '✅ CLAIMED!';
       btn.style.background = 'linear-gradient(135deg,#15803d,var(--green))';
+      try { sessionStorage.removeItem('fs_pending_claim'); } catch(e){}
     } else {
       throw new Error(trd.error || trd.message || 'Transfer failed');
     }
