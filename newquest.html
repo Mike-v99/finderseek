@@ -683,7 +683,7 @@ async function submitEmailGate(){
           (signUpErr.message || '').toLowerCase().includes('user already')) {
         var { error: otpErr } = await supaClient.auth.signInWithOtp({
           email: email,
-          options: { emailRedirectTo: window.location.origin + '/newquest.html' }
+          options: { emailRedirectTo: window.location.origin + '/profile.html' }
         });
         if (otpErr) throw otpErr;
         errEl.style.color = '#4ade80';
@@ -834,7 +834,7 @@ async function createQuest(previewMode){
         };
       });
       // Save pending quest to sessionStorage for review.html to load
-      sessionStorage.setItem('fs_pending_quest', JSON.stringify({
+      localStorage.setItem('fs_pending_quest', JSON.stringify({
         hunt: {
           prize_value: Math.round(prize * 100),
           prize_desc: '$'+prize+' Cash',
@@ -1050,6 +1050,20 @@ async function createQuest(previewMode){
 
 // Load current user on page load
 loadCurrentUser();
+
+// If user has a pending quest (from anonymous preview + magic link sign-in),
+// send them back to review so they can finish paying.
+(async function(){
+  try {
+    if (localStorage.getItem('fs_pending_quest')) {
+      await loadCurrentUser();
+      if (currentUser) {
+        window.location.href = 'review.html?preview=1';
+        return;
+      }
+    }
+  } catch(e){}
+})();
 
 // ── FORM PERSISTENCE ──────────────────────────────────────────
 // Saves form state to sessionStorage so back-navigation restores it
