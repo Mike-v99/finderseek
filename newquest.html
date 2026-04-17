@@ -899,38 +899,86 @@ async function createQuest(previewMode){
       }
     }
 
-    // ── 6. Insert hunt into Supabase ────────────────────────
+    // ── 6. Insert or update hunt in Supabase ────────────────
+    // If the user has an existing draft (created but never paid for),
+    // UPDATE that row in place instead of inserting a duplicate. This
+    // prevents the "changed my mind about the prize" bug where each
+    // CREATE QUEST click creates a new row and orphans the old one.
     btn.textContent = '⏳ Saving quest...';
-    const huntRes = await fetch(SB+'/rest/v1/hunts', {
-      method:'POST',
-      headers:{
-        'apikey':KEY,
-        'Authorization':'Bearer '+getToken(),
-        'Content-Type':'application/json',
-        'Prefer':'return=representation'
-      },
-      body: JSON.stringify({
-        week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
-        prize_desc: '$'+prize+' Cash',
-        prize_value: Math.round(prize * 100),
-        starts_at: startsAt.toISOString(),
-        ends_at: endsAt.toISOString(),
-        status: status,
-        city: city,
-        finder_code: code,
-        payment_type: 'finderseek',
-        escrow_status: 'pending',
-        neighborhood: searchAddress.split(',')[0] || '',
-        pirate_id: currentUser.id,
-        created_by: currentUser.id,
-        lat: selectedLat,
-        lng: selectedLng,
-        hiding_spot: hidingSpot,
-        clue_persona: persona,
-        clue_count: clueCount,
-        photo_url: photoUrl,
-      })
-    });
+
+    // Look for an existing draft hunt for this user
+    var existingDraft = null;
+    try {
+      var draftRes = await fetch(
+        SB + '/rest/v1/hunts?pirate_id=eq.' + currentUser.id +
+        '&status=eq.draft&escrow_status=eq.pending' +
+        '&order=created_at.desc&limit=1&select=id',
+        { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() } }
+      );
+      var drafts = await draftRes.json();
+      if (Array.isArray(drafts) && drafts.length > 0) existingDraft = drafts[0];
+    } catch(e) { /* non-fatal — fall through to insert */ }
+
+    var huntPayload = {
+      week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      prize_desc: '$'+prize+' Cash',
+      prize_value: Math.round(prize * 100),
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+      status: status,
+      city: city,
+      finder_code: code,
+      payment_type: 'finderseek',
+      escrow_status: 'pending',
+      neighborhood: searchAddress.split(',')[0] || '',
+      pirate_id: currentUser.id,
+      created_by: currentUser.id,
+      lat: selectedLat,
+      lng: selectedLng,
+      hiding_spot: hidingSpot,
+      clue_persona: persona,
+      clue_count: clueCount,
+      photo_url: photoUrl,
+    };
+
+    var huntRes;
+    if (existingDraft) {
+      // Update in place. Also null out any old payment intent so review.html
+      // mints a fresh one with the new amount.
+      huntPayload.stripe_payment_intent = null;
+      huntRes = await fetch(SB+'/rest/v1/hunts?id=eq.'+existingDraft.id, {
+        method: 'PATCH',
+        headers: {
+          'apikey': KEY,
+          'Authorization': 'Bearer ' + getToken(),
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(huntPayload)
+      });
+      // Also wipe any old clues from the previous draft so we don't duplicate
+      try {
+        await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+existingDraft.id, {
+          method: 'DELETE',
+          headers: {
+            'apikey': KEY,
+            'Authorization': 'Bearer ' + getToken(),
+            'Prefer': 'return=minimal'
+          }
+        });
+      } catch(e){}
+    } else {
+      huntRes = await fetch(SB+'/rest/v1/hunts', {
+        method: 'POST',
+        headers: {
+          'apikey': KEY,
+          'Authorization': 'Bearer ' + getToken(),
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(huntPayload)
+      });
+    }
 
     const huntData = await huntRes.json();
     if (!huntRes.ok) {
