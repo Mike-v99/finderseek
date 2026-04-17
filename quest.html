@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -188,6 +189,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- TOAST -->
 <div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+
+<!-- WIN CELEBRATION MODAL -->
+<div id="win-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.92);backdrop-filter:blur(12px);z-index:9997;opacity:0;transition:opacity .4s;"></div>
+<div id="win-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:24px;pointer-events:none;">
+  <div id="win-inner" style="background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(201,137,12,.08));border:1.5px solid rgba(74,222,128,.4);border-radius:22px;max-width:400px;width:100%;padding:36px 26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 80px rgba(74,222,128,.25);pointer-events:auto;transform:scale(0.8);opacity:0;transition:transform .45s cubic-bezier(0.18,1.4,0.4,1), opacity .3s;text-align:center;position:relative;">
+    <div style="font-size:80px;margin-bottom:12px;animation:winBounce 1.2s ease-in-out infinite;">🏆</div>
+    <div style="font-size:28px;color:#4ade80;font-weight:500;margin-bottom:8px;letter-spacing:-0.3px;">You Won!</div>
+    <div id="win-amount" style="font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:clamp(52px,14vw,68px);color:#4ade80;line-height:1;margin:10px 0 14px;">$0</div>
+    <div id="win-message" style="font-size:18px;color:#fff;line-height:1.5;margin-bottom:24px;">Your prize is on its way to your account!</div>
+    <button onclick="closeWinModal()" style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(34,197,94,.35);">Awesome 🎉</button>
+  </div>
+</div>
+<style>
+@keyframes winBounce { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-10px) rotate(-5deg); } }
+</style>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -601,10 +617,10 @@ async function claimPrize() {
     }
 
     if (trd.success) {
-      showToast('🎉 Prize sent! $' + (trd.amount) + ' on its way to your account', 'success');
       btn.textContent = '✅ CLAIMED!';
       btn.style.background = 'linear-gradient(135deg,#15803d,var(--green))';
       try { sessionStorage.removeItem('fs_pending_claim'); } catch(e){}
+      showWinCelebration(trd.amount);
     } else {
       throw new Error(trd.error || trd.message || 'Transfer failed');
     }
@@ -614,6 +630,59 @@ async function claimPrize() {
     btn.disabled = false;
     btn.textContent = 'CLAIM PRIZE';
   }
+}
+
+// ============================================================
+//  WIN CELEBRATION (confetti + modal)
+// ============================================================
+function showWinCelebration(amount){
+  var amt = typeof amount === 'number' ? amount.toFixed(2) : amount;
+  document.getElementById('win-amount').textContent = '$' + amt;
+  document.getElementById('win-backdrop').style.display = 'block';
+  var modal = document.getElementById('win-modal');
+  var inner = document.getElementById('win-inner');
+  modal.style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('win-backdrop').style.opacity = '1';
+    inner.style.transform = 'scale(1)';
+    inner.style.opacity = '1';
+  }, 10);
+  fireConfetti();
+}
+
+function closeWinModal(){
+  var inner = document.getElementById('win-inner');
+  inner.style.transform = 'scale(0.9)';
+  inner.style.opacity = '0';
+  document.getElementById('win-backdrop').style.opacity = '0';
+  setTimeout(function(){
+    document.getElementById('win-modal').style.display = 'none';
+    document.getElementById('win-backdrop').style.display = 'none';
+  }, 400);
+}
+
+function fireConfetti(){
+  if (typeof confetti === 'undefined') return;
+  // Gold + green mix
+  var colors = ['#e8a820', '#f5c842', '#c9890c', '#4ade80', '#22c55e', '#ffffff'];
+  // Big burst from center
+  confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 }, colors: colors });
+  // Followup bursts from corners
+  setTimeout(function(){
+    confetti({ particleCount: 60, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, colors: colors });
+    confetti({ particleCount: 60, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, colors: colors });
+  }, 250);
+  // Slow falling shower
+  setTimeout(function(){
+    var duration = 2500;
+    var end = Date.now() + duration;
+    (function frame(){
+      confetti({ particleCount: 3, startVelocity: 15, spread: 360, ticks: 140,
+        origin: { x: Math.random(), y: -0.1 }, colors: colors, gravity: 0.8,
+        scalar: 0.9 });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }, 600);
 }
 </script>
 <script>
