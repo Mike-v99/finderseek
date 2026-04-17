@@ -238,7 +238,7 @@ async function init(){
   if (getParam('preview') === '1') {
     isPreviewMode = true;
     try {
-      const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
       if (!pending || !pending.hunt || !pending.clues) {
         showToast('Preview data not found — start over', 'error');
         setTimeout(()=>window.location.href='newquest.html', 1500);
@@ -410,11 +410,11 @@ async function saveEdit(clueId){
     const c = clues.find(x => x.id === clueId);
     if (c) c.clue_text = newText;
     try {
-      const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
       if (pending) {
         const idx = clues.findIndex(x => x.id === clueId);
         if (idx >= 0) pending.clues[idx].clue_text = newText;
-        sessionStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
       }
     } catch(e){}
     cancelEdit(clueId);
@@ -579,7 +579,7 @@ async function submitEmailGate(){
         try {
           var { error: otpErr } = await supaClient.auth.signInWithOtp({
             email: email,
-            options: { emailRedirectTo: window.location.origin + '/review.html?preview=1' }
+            options: { emailRedirectTo: window.location.origin + '/profile.html' }
           });
           if (otpErr) throw otpErr;
           errEl.style.color = '#4ade80';
@@ -638,7 +638,7 @@ async function signUpFromGate(){
 // After email gate, create the hunt in Supabase and continue to payment
 async function persistPendingQuest(){
   try {
-    const pending = JSON.parse(sessionStorage.getItem('fs_pending_quest') || 'null');
+    const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
     if (!pending || !currentUser) throw new Error('No pending quest or user');
     const token = getToken();
     // Insert hunt
@@ -680,7 +680,7 @@ async function persistPendingQuest(){
     // Swap our in-memory hunt for the real one so payment modal uses real ID
     hunt = newHunt;
     isPreviewMode = false;
-    sessionStorage.removeItem('fs_pending_quest');
+    localStorage.removeItem('fs_pending_quest');
     // Re-open payment modal (now backed by a real hunt)
     await openPaymentModal();
   } catch(e) {
