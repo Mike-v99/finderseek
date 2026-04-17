@@ -735,6 +735,15 @@ async function createQuest(previewMode){
       };
     });
 
+    // Delete any pre-existing clues for this hunt (in case of retry)
+    await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId, {
+      method:'DELETE',
+      headers:{
+        'apikey':KEY,
+        'Authorization':'Bearer '+getToken(),
+      }
+    });
+
     const cluesPostRes = await fetch(SB+'/rest/v1/clues', {
       method:'POST',
       headers:{
