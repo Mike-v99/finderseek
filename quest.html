@@ -594,7 +594,16 @@ async function claimPrize() {
     return;
   }
 
-  // Save the code + hunt ID so we can restore it after sign-in
+  // Verify the code BEFORE asking the user to sign in. No point sending
+  // someone through the sign-in dance with a wrong PIN.
+  if (code !== currentHunt.finder_code) {
+    showToast('❌ Wrong code — keep searching!', 'error');
+    btn.style.transform = 'scale(.97)';
+    setTimeout(()=>{ btn.style.transform = ''; }, 150);
+    return;
+  }
+
+  // Code is correct. Save it + hunt ID so we can restore it after sign-in.
   try {
     sessionStorage.setItem('fs_pending_claim', JSON.stringify({
       huntId: currentHunt.id,
@@ -606,17 +615,9 @@ async function claimPrize() {
   // Check user logged in
   var token = getToken();
   if (!token) {
-    showToast('Please sign in to claim your prize', 'error');
+    showToast('Prize unlocked! Sign in to receive it.', 'success');
     var redirectUrl = encodeURIComponent('quest.html?id=' + currentHunt.id);
     setTimeout(()=>{ window.location.href = 'profile.html?redirect=' + redirectUrl; }, 1200);
-    return;
-  }
-
-  // Verify the code
-  if (code !== currentHunt.finder_code) {
-    showToast('❌ Wrong code — keep searching!', 'error');
-    btn.style.transform = 'scale(.97)';
-    setTimeout(()=>{ btn.style.transform = ''; }, 150);
     return;
   }
 
