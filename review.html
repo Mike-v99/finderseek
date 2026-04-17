@@ -154,6 +154,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="pm-title" id="pm-title">Fund your quest</div>
   <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
 
+  <div id="pm-user" style="text-align:center;font-size:14px;color:#d0e4f0;margin-bottom:16px;opacity:.7;"></div>
+
   <div class="pm-breakdown" id="pm-breakdown"></div>
 
   <div id="pm-stripe-element"></div>
@@ -705,6 +707,14 @@ async function openPaymentModal(){
     <div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$${fee.toFixed(2)}</strong></div>
     <div class="pm-row total"><span>Total today</span><strong>$${total.toFixed(2)}</strong></div>`;
   document.getElementById('pm-error').textContent = '';
+
+  // Show signed-in user email
+  var userEl = document.getElementById('pm-user');
+  if (currentUser && currentUser.email) {
+    userEl.innerHTML = '✓ Signed in as <strong style="color:#fff;">' + currentUser.email + '</strong>';
+  } else {
+    userEl.innerHTML = '';
+  }
 
   // Show modal
   document.getElementById('pm-backdrop').classList.add('show');
