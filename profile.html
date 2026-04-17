@@ -222,8 +222,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <div id="payout-title" style="font-size:18px;color:#fff;margin-bottom:4px;">Loading…</div>
           <div id="payout-sub" style="font-size:18px;color:var(--dim);">—</div>
         </div>
+        <div id="payout-pill" style="display:none;align-items:center;gap:6px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:4px 10px;font-size:13px;color:#4ade80;font-weight:500;flex-shrink:0;">✓ Active</div>
       </div>
       <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
+      <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:14px;padding:14px;border:1px solid rgba(99,91,255,.35);border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(99,91,255,.15);color:#fff;align-items:center;justify-content:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Manage in Stripe
+      </button>
+    </div>
+    <div id="payout-disconnect-wrap" style="display:none;text-align:center;margin-top:14px;">
+      <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:14px;color:#d0e4f0;opacity:.6;text-decoration:underline;">Disconnect payout account</a>
     </div>
   </div>
 
@@ -397,7 +405,7 @@ function showToast(msg, type){
   clearTimeout(window._toastT);
   window._toastT = setTimeout(function(){
     t.style.transform = 'translateX(-50%) translateY(-120%)';
-  }, 4000);
+  }, type === 'success' || type === 'error' ? 10000 : 4000);
 }
 
 function escapeHtml(s) {
@@ -730,10 +738,12 @@ async function loadConnectStatus(){
   var title = document.getElementById('payout-title');
   var sub = document.getElementById('payout-sub');
   var btn = document.getElementById('payout-btn');
+  var manageBtn = document.getElementById('payout-manage-btn');
+  var pill = document.getElementById('payout-pill');
+  var disconnectWrap = document.getElementById('payout-disconnect-wrap');
 
-  // Only show payout section if user has won a quest, joined a quest,
-  // or already started setting up Connect. Quest creators who haven't won
-  // anything yet don't need to see payout setup.
+  // Only show payout section if user has won/joined, already has Connect,
+  // or claim flow is active.
   var hasWonOrJoined = (currentProfile && ((currentProfile.quests_won || 0) > 0 || (currentProfile.quests_joined || 0) > 0));
   var alreadyHasConnect = currentProfile && currentProfile.stripe_connect_id;
   var showClaim = new URLSearchParams(window.location.search).get('claim');
@@ -754,6 +764,12 @@ async function loadConnectStatus(){
     var d = await r.json();
     connectStatus = d;
 
+    // Reset UI states
+    btn.style.display = 'none';
+    manageBtn.style.display = 'none';
+    pill.style.display = 'none';
+    disconnectWrap.style.display = 'none';
+
     if (!d.connected) {
       title.textContent = 'No payout account';
       sub.textContent = 'Set up a payout account to receive prize money';
@@ -764,17 +780,69 @@ async function loadConnectStatus(){
       sub.textContent = 'Verify your account to receive payouts';
       btn.style.display = 'block';
       btn.textContent = 'Complete Setup →';
+      disconnectWrap.style.display = 'block';
     } else {
-      title.innerHTML = '<span style="color:#4ade80;">✓ Payouts enabled</span>';
-      sub.textContent = 'Prizes will be sent directly to your bank';
-      btn.style.display = 'none';
+      title.textContent = 'Payouts enabled';
+      if (d.bank_last4) {
+        sub.textContent = 'Bank •••• ' + d.bank_last4;
+      } else {
+        sub.textContent = 'Prizes go directly to your bank';
+      }
+      pill.style.display = 'inline-flex';
+      manageBtn.style.display = 'flex';
+      disconnectWrap.style.display = 'block';
     }
   } catch(e) {
     console.error('Connect status error', e);
     title.textContent = 'Payout account';
     sub.textContent = 'Unable to load status';
     btn.style.display = 'block';
-    btn.textContent = 'Set Up Payouts';
+    btn.textContent = 'Retry';
+  }
+}
+
+async function openStripeDashboard(){
+  var btn = document.getElementById('payout-manage-btn');
+  var orig = btn.innerHTML;
+  btn.innerHTML = 'Opening…';
+  btn.disabled = true;
+  try {
+    var r = await fetch('/api/connect-status?action=dashboard', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Could not open Stripe dashboard');
+    window.open(d.url, '_blank');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  } finally {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  }
+}
+
+function confirmDisconnect(){
+  if (!confirm('Disconnect your payout account? You won\'t be able to receive prizes until you reconnect.')) return;
+  disconnectPayout();
+}
+
+async function disconnectPayout(){
+  try {
+    var r = await fetch('/api/connect-status?action=disconnect', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Disconnect failed');
+    showToast('Payout account disconnected.', 'success');
+    // Refresh profile so the section updates
+    if (currentProfile) currentProfile.stripe_connect_id = null;
+    setTimeout(loadConnectStatus, 500);
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
   }
 }
 
