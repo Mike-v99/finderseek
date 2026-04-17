@@ -132,6 +132,31 @@ export default async function handler(req, res) {
         });
 
         console.log(`[webhook] escrow funded → hunt ${huntId} prize $${prizeAmount}`);
+
+        // Fire-and-forget notification to the creator (+ city seekers, followers).
+        // A notify failure must NEVER cause us to return non-200 to Stripe,
+        // or Stripe will retry the webhook and we'll double-flip the hunt.
+        try {
+          const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+          if (notifySecret) {
+            // Don't await — just kick it off. Vercel will keep the function warm
+            // long enough for this fetch to complete in practice, and if it
+            // doesn't, we've already returned 200 to Stripe which is the priority.
+            fetch(`https://www.finderseek.com/api/notify`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-finderseek-secret': notifySecret,
+              },
+              body: JSON.stringify({ event: 'hunt_approved', huntId }),
+            }).catch(err => console.error('[webhook] notify kickoff failed:', err.message));
+          } else {
+            console.warn('[webhook] NOTIFY_SECRET not set — skipping creator email');
+          }
+        } catch (notifyErr) {
+          console.error('[webhook] notify error (non-fatal):', notifyErr.message);
+        }
+
         break;
       }
     }

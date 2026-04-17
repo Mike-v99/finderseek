@@ -120,6 +120,27 @@ export default async function handler(req, res) {
 
     console.log(`[Transfer] Prize $${hunt.prize_amount} sent to ${winner.username} (${transfer.id})`);
 
+    // Fire-and-forget notification to pirate + winner.
+    // Wrapped in try/catch so a notify failure never rolls back the transfer
+    // (money has already moved — we must still return success to the client).
+    try {
+      const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+      if (notifySecret) {
+        fetch(`https://www.finderseek.com/api/notify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-finderseek-secret': notifySecret,
+          },
+          body: JSON.stringify({ event: 'prize_claimed', huntId }),
+        }).catch(err => console.error('[Transfer] notify kickoff failed:', err.message));
+      } else {
+        console.warn('[Transfer] NOTIFY_SECRET not set — skipping claim emails');
+      }
+    } catch (notifyErr) {
+      console.error('[Transfer] notify error (non-fatal):', notifyErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       transferId: transfer.id,

@@ -8,10 +8,11 @@
 //   SUPABASE_SERVICE_KEY — service role key (NOT anon key) from Supabase → Settings → API
 //
 // Called by:
-//   admin.html    → event: 'hunt_approved'
-//   hunt.html     → event: 'prize_claimed'
-//   hunt.html     → event: 'chat_message'
-//   cron          → event: 'hunt_expired'
+//   admin.html         → event: 'hunt_approved'
+//   stripe-webhook.js  → event: 'hunt_approved' (on escrow funded)
+//   transfer-prize.js  → event: 'prize_claimed' (on successful payout)
+//   quest.html         → event: 'chat_message'
+//   cron               → event: 'hunt_expired'
 
 import { verifyAdminToken } from '../lib/admin-auth.js';
 
@@ -239,7 +240,7 @@ export default async function handler(req, res) {
     const hunt  = hunts?.[0];
     if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
 
-    const huntUrl = `${SITE_URL}/hunt.html?id=${huntId}`;
+    const huntUrl = `${SITE_URL}/quest.html?id=${huntId}`;
     const results = [];
 
     // ── hunt_approved ─────────────────────────────────────────────
