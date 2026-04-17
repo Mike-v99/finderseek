@@ -347,12 +347,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="step-body">
         <div style="font-size:18px;color:#d0e4f0;margin-bottom:16px;text-align:center;">Write this code on a note and leave it at the hiding spot.</div>
         <div class="code-wrap">
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c1" oninput="cN(this,'c2')" onkeydown="cP(event,this,'')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c2" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c3" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c4" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c5" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
-          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c6" oninput="cN(this,'')" onkeydown="cP(event,this,'c5')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'c2')" onkeydown="cP(event,this,'')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
+          <input class="code-digit" maxlength="1" type="text" inputmode="numeric" id="c6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" oninput="cN(this,'')" onkeydown="cP(event,this,'c5')"/>
         </div>
         <button class="btn-gen-code" onclick="genCode()">🎲 Generate Random Code</button>
       </div>
@@ -1075,6 +1075,10 @@ async function createQuest(previewMode){
 
     // ── 10. Open the embedded payment modal ─────────────────
     btn.textContent = '⏳ Setting up payment...';
+    // Quest is now persisted to Supabase. We don't need the sessionStorage
+    // form draft anymore. Clearing here prevents the next quest creation
+    // from restoring stale fields (PIN, prize, location) from this one.
+    clearFormState();
     await openPaymentModal({
       userId: currentUser.id,
       email: currentUser.email,
@@ -1126,7 +1130,7 @@ function saveFormState() {
       persona: document.querySelector('.persona-card.selected')?.dataset.persona || '',
       hidingSpot: document.getElementById('hiding-spot')?.value || '',
       searchAddress: document.getElementById('map-search')?.value || '',
-      code: ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id)?.value || ''; }).join(''),
+      // PIN intentionally NOT saved — must be fresh per quest
       liveMode: document.querySelector('.golive-opt.selected')?.dataset.live || '',
       lat: selectedLat, lng: selectedLng,
     };
@@ -1149,12 +1153,10 @@ function restoreFormState() {
     }
     if (s.hidingSpot) document.getElementById('hiding-spot').value = s.hidingSpot;
     if (s.searchAddress) document.getElementById('map-search').value = s.searchAddress;
-    if (s.code && s.code.length === 6) {
-      for (var i = 0; i < 6; i++) {
-        var el = document.getElementById('c'+(i+1));
-        if (el) el.value = s.code[i];
-      }
-    }
+    // Intentionally do NOT restore the PIN. Each quest needs a unique
+    // finder code, and pre-filling it from a previous session makes it
+    // easy for the user to accidentally reuse an old PIN (or worse, the
+    // PIN from a quest that's still active for someone else to find).
     if (s.liveMode) {
       document.querySelectorAll('.golive-opt').forEach(function(el){ el.classList.remove('selected'); });
       var lm = document.querySelector('.golive-opt[data-live="'+s.liveMode+'"]');
@@ -1184,6 +1186,15 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Restore form from previous session
   restoreFormState();
+
+  // Force-clear PIN fields on every page load. The browser's autofill
+  // (especially Safari) will happily repopulate these with the previous
+  // quest's PIN, which is confusing at best and a security issue at worst.
+  // A 6-digit code must be fresh per quest.
+  ['c1','c2','c3','c4','c5','c6'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
 
   // Save on any input change
   ['prize-display','dur-slider','clue-slider','hiding-spot','map-search','c1','c2','c3','c4','c5','c6'].forEach(function(id){
