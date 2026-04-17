@@ -730,6 +730,19 @@ async function loadConnectStatus(){
   var title = document.getElementById('payout-title');
   var sub = document.getElementById('payout-sub');
   var btn = document.getElementById('payout-btn');
+
+  // Only show payout section if user has won a quest, joined a quest,
+  // or already started setting up Connect. Quest creators who haven't won
+  // anything yet don't need to see payout setup.
+  var hasWonOrJoined = (currentProfile && ((currentProfile.quests_won || 0) > 0 || (currentProfile.quests_joined || 0) > 0));
+  var alreadyHasConnect = currentProfile && currentProfile.stripe_connect_id;
+  var showClaim = new URLSearchParams(window.location.search).get('claim');
+
+  if (!hasWonOrJoined && !alreadyHasConnect && !showClaim) {
+    section.style.display = 'none';
+    return;
+  }
+
   section.style.display = 'block';
 
   try {
@@ -813,6 +826,19 @@ async function handlePayoutBtn(){
 function handleUrlRedirects(){
   var params = new URLSearchParams(window.location.search);
 
+  // Quest was successfully funded — payment complete!
+  if (params.get('quest') === 'funded') {
+    var fundedId = params.get('id');
+    // Clear any leftover pending quest (we inserted it already)
+    try { localStorage.removeItem('fs_pending_quest'); } catch(e){}
+    showToast('🎉 Quest funded! Your treasure hunt is live.', 'success');
+    window.history.replaceState({}, '', 'profile.html');
+    // Auto-redirect to the quest detail page after a moment
+    if (fundedId) {
+      setTimeout(function(){ window.location.href = 'quest.html?id=' + fundedId; }, 2500);
+    }
+  }
+
   // Returning from Stripe Connect onboarding
   if (params.get('connect') === 'complete') {
     showToast('🎉 Payout account connected! You\'re all set to receive prizes.', 'success');
@@ -861,9 +887,18 @@ function handleUrlRedirects(){
 //  INIT
 // ============================================================
 // Check if returning from Google/Apple OAuth
-// Init — check for OAuth callback first, then load profile
+// Init — check for OAuth callback first, then either redirect to pending quest or load profile
 (async function(){
   await handleOAuthCallback();
+  // If a pending quest is stashed in sessionStorage (from anonymous flow),
+  // redirect back to the review page so they can finish paying.
+  try {
+    var pending = localStorage.getItem('fs_pending_quest');
+    if (pending && getToken()) {
+      window.location.href = '/review.html?preview=1';
+      return;
+    }
+  } catch(e){}
   loadProfile();
 })();
 
