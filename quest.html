@@ -350,6 +350,29 @@ async function loadQuest() {
     renderClues();
     startTimer();
 
+    // ── Instant expiry: if this hunt is past ends_at and still active,
+    // trigger refund + email immediately instead of waiting for 8am cron.
+    // Any visitor triggers it (not just the pirate) so it fires as soon as
+    // anyone loads the page after expiry.
+    try {
+      var huntEndsAt = currentHunt.ends_at ? new Date(currentHunt.ends_at) : null;
+      var isExpiredActive = currentHunt.status === 'active' && huntEndsAt && huntEndsAt < new Date() && !currentHunt.winner_id;
+      if (isExpiredActive) {
+        fetch('/api/cron-activate-hunts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+          body: JSON.stringify({ huntId: currentHunt.id })
+        }).then(function(r){ return r.json(); }).then(function(d){
+          console.log('[quest] instant expiry result:', d);
+          // Refresh the hunt status display
+          if (d.ok && !d.skipped) {
+            currentHunt.status = 'ended';
+            document.getElementById('q-status-label').textContent = 'ENDED QUEST';
+          }
+        }).catch(function(e){ console.warn('[quest] instant expiry error:', e.message); });
+      }
+    } catch(e){}
+
     // If user just arrived from a successful payment, celebrate!
     try {
       if (new URLSearchParams(window.location.search).get('funded') === '1') {
