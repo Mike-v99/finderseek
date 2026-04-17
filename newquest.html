@@ -448,6 +448,49 @@ body{padding-top:env(safe-area-inset-top,0px);}
 @keyframes aiPulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
 </style>
 
+<!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
+<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;pointer-events:none;">
+  <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
+    <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
+
+    <!-- FinderSeek logo tile -->
+    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+      <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
+        <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+        <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+      </div>
+    </div>
+
+    <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
+    <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
+
+    <input id="eg-email" type="email" autocomplete="email" placeholder="your@email.com"
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;transition:border-color .2s;"/>
+    <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
+
+    <button id="eg-continue-btn" onclick="submitEmailGate()"
+      style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
+
+    <div style="text-align:center;color:rgba(255,255,255,.35);font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      <span>OR</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
+
+    <div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
+      <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:18px;color:#d0e4f0;line-height:1.5;margin-bottom:6px;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;margin-top:1px;">✓</span><span><strong style="color:#fff;font-weight:400;">Manage all your quests</strong> in one place</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:18px;color:#d0e4f0;line-height:1.5;margin-bottom:6px;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;margin-top:1px;">✓</span><span><strong style="color:#fff;font-weight:400;">Edit clues & reveal times</strong> before going live</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:18px;color:#d0e4f0;line-height:1.5;margin-bottom:6px;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;margin-top:1px;">✓</span><span><strong style="color:#fff;font-weight:400;">Find quests and win prizes</strong> from other creators</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:18px;color:#d0e4f0;line-height:1.5;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;margin-top:1px;">✓</span><span><strong style="color:#fff;font-weight:400;">Upgrade to Gold</strong> for AI regeneration & pro features</span></div>
+      <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
+    </div>
+
+    <div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
+  </div>
+</div>
+
 <script>
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
@@ -567,16 +610,150 @@ function showToast(msg, type){
 // ============================================================
 //  CREATE QUEST
 // ============================================================
+function validateQuestForm(){
+  const prizeText = document.getElementById('prize-display').textContent.replace(/[^\d.]/g,'');
+  const prize = parseFloat(prizeText) || 0;
+  const hidingSpot = document.getElementById('hiding-spot').value.trim();
+  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).value).join('');
+  if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
+  if (!hidingSpot || hidingSpot.length < 10) { showToast('Hiding Spot — Add More Details', 'error'); return false; }
+  if (!selectedLat || !selectedLng) { showToast('Please select a location on the map', 'error'); return false; }
+  if (code.length !== 6) { showToast('Please enter a 6-digit secret code', 'error'); return false; }
+  return true;
+}
+
+// ── EMAIL GATE (for anonymous users) ────────────────────────
+function showEmailGate(){
+  document.getElementById('eg-backdrop').style.display = 'block';
+  var modal = document.getElementById('eg-modal');
+  var inner = document.getElementById('eg-inner');
+  modal.style.display = 'flex';
+  setTimeout(function(){
+    document.getElementById('eg-backdrop').style.opacity = '1';
+    inner.style.transform = 'scale(1)';
+    inner.style.opacity = '1';
+    document.getElementById('eg-email').focus();
+  }, 10);
+}
+
+function closeEmailGate(){
+  var inner = document.getElementById('eg-inner');
+  inner.style.transform = 'scale(0.92)';
+  inner.style.opacity = '0';
+  document.getElementById('eg-backdrop').style.opacity = '0';
+  setTimeout(function(){
+    document.getElementById('eg-modal').style.display = 'none';
+    document.getElementById('eg-backdrop').style.display = 'none';
+    document.getElementById('eg-error').textContent = '';
+  }, 300);
+}
+
+async function submitEmailGate(){
+  var emailEl = document.getElementById('eg-email');
+  var errEl = document.getElementById('eg-error');
+  var btn = document.getElementById('eg-continue-btn');
+  var email = (emailEl.value || '').trim().toLowerCase();
+  errEl.textContent = '';
+
+  // Basic email validation
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    // Generate a strong random password for the auto-account
+    // (user can reset it later via "forgot password" when they want to sign in)
+    var tempPassword = 'fs_' + Math.random().toString(36).slice(2) + '_' + Math.random().toString(36).slice(2) + 'A1!';
+
+    // Try sign-up; if user already exists, try sign-in with the magic link instead
+    var { data: signUpData, error: signUpErr } = await supaClient.auth.signUp({
+      email: email,
+      password: tempPassword,
+      options: {
+        data: { signup_source: 'quest_creator_gate' }
+      }
+    });
+
+    if (signUpErr) {
+      // Might already exist — send a magic link instead
+      if ((signUpErr.message || '').toLowerCase().includes('already registered') ||
+          (signUpErr.message || '').toLowerCase().includes('user already')) {
+        var { error: otpErr } = await supaClient.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: window.location.origin + '/newquest.html' }
+        });
+        if (otpErr) throw otpErr;
+        errEl.style.color = '#4ade80';
+        errEl.textContent = '✓ Magic link sent! Check your email and tap the link to continue.';
+        btn.textContent = 'Check your email';
+        return;
+      }
+      throw signUpErr;
+    }
+
+    // Supabase may or may not auto-confirm depending on project settings
+    // If we got a session back, use it immediately
+    if (signUpData.session) {
+      currentUser = signUpData.user;
+      // Create profile row (the DB trigger should do this, but be defensive)
+      await fetch(SB+'/rest/v1/profiles', {
+        method:'POST',
+        headers:{
+          'apikey':KEY,
+          'Authorization':'Bearer '+signUpData.session.access_token,
+          'Content-Type':'application/json',
+          'Prefer':'resolution=ignore-duplicates'
+        },
+        body: JSON.stringify({ id: signUpData.user.id, email: email })
+      });
+      closeEmailGate();
+      // Continue with quest creation
+      var mode = window._pendingPreviewMode;
+      window._pendingPreviewMode = undefined;
+      createQuest(mode);
+    } else {
+      // Email confirmation is required — tell them to check their inbox
+      errEl.style.color = '#4ade80';
+      errEl.textContent = '✓ Check your email to confirm and finish creating your quest.';
+      btn.textContent = 'Check your email';
+    }
+  } catch(e) {
+    errEl.style.color = '#f87171';
+    errEl.textContent = e.message || 'Could not create account. Try signing up instead.';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Payment →';
+  }
+}
+
+async function signUpFromGate(){
+  try {
+    var { error } = await supaClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/newquest.html' }
+    });
+    if (error) throw error;
+  } catch(e) {
+    document.getElementById('eg-error').textContent = e.message || 'Sign-in failed';
+  }
+}
+
 async function createQuest(previewMode){
   const btn = document.getElementById('btn-create');
   const previewBtn = document.getElementById('btn-preview');
 
-  // ── 1. Auth check ─────────────────────────────────────────
+  // ── 1. Auth check — if not signed in, show email gate ──────
   if (!currentUser) {
     await loadCurrentUser();
     if (!currentUser) {
-      showToast('Please sign in to create a quest', 'error');
-      setTimeout(()=>{ window.location.href = 'profile.html?redirect=newquest.html'; }, 1200);
+      // Validate required fields BEFORE showing email gate
+      if (!validateQuestForm()) return;
+      // Remember which button was pressed for after email gate
+      window._pendingPreviewMode = previewMode;
+      showEmailGate();
       return;
     }
   }
