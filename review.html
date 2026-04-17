@@ -566,31 +566,76 @@ async function submitEmailGate(){
     errEl.textContent = 'Please enter a valid email address';
     return;
   }
+  // Bail early with a clear message if the Supabase SDK didn't load
+  // (ad-blocker, CSP, flaky CDN). Otherwise user gets "Cannot read
+  // properties of null" which reads as "Load failed" in some browsers.
+  if (!supaClient) {
+    errEl.textContent = 'Sign-in service unavailable. Disable ad-blockers and reload, or try a different browser.';
+    return;
+  }
   btn.disabled = true;
   btn.textContent = 'Creating account…';
+
+  // Helper: detect "account already exists" across Supabase error shapes.
+  // Supabase has used: "User already registered", code "user_already_exists",
+  // code "email_exists", HTTP 422 with various bodies — string-matching one
+  // of these alone is brittle.
+  function isExistingUserError(err) {
+    if (!err) return false;
+    var msg  = (err.message || '').toLowerCase();
+    var code = (err.code || err.error_code || '').toLowerCase();
+    var status = err.status || 0;
+    if (code === 'user_already_exists' || code === 'email_exists') return true;
+    if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('already')) return true;
+    // 422 on signUp with a known email is almost always "already exists"
+    if (status === 422) return true;
+    return false;
+  }
+
+  // Helper: turn any raw error into something a human can read.
+  // Safari specifically surfaces network failures as "Load failed" —
+  // that's almost never useful to the user.
+  function friendlyError(err) {
+    var raw = (err && err.message) ? err.message : String(err || '');
+    var low = raw.toLowerCase();
+    if (low.includes('load failed') || low.includes('failed to fetch') || low.includes('networkerror')) {
+      return 'Network error — check your connection and try again.';
+    }
+    return raw || 'Could not create account';
+  }
+
   try {
     var tempPassword = 'fs_' + Math.random().toString(36).slice(2) + '_' + Math.random().toString(36).slice(2) + 'A1!';
-    var { data: signUpData, error: signUpErr } = await supaClient.auth.signUp({
-      email: email,
-      password: tempPassword,
-      options: { data: { signup_source: 'quest_creator_gate' } }
-    });
+    var signUpResult;
+    try {
+      signUpResult = await supaClient.auth.signUp({
+        email: email,
+        password: tempPassword,
+        options: { data: { signup_source: 'quest_creator_gate' } }
+      });
+    } catch (netErr) {
+      // SDK threw before returning — almost always network/CORS
+      throw netErr;
+    }
+    var signUpData = signUpResult && signUpResult.data;
+    var signUpErr  = signUpResult && signUpResult.error;
+
     if (signUpErr) {
-      if ((signUpErr.message || '').toLowerCase().includes('already')) {
+      if (isExistingUserError(signUpErr)) {
         // Account exists — send a magic sign-in link
         try {
-          var { error: otpErr } = await supaClient.auth.signInWithOtp({
+          var otpResult = await supaClient.auth.signInWithOtp({
             email: email,
             options: { emailRedirectTo: window.location.origin + '/profile.html' }
           });
-          if (otpErr) throw otpErr;
+          if (otpResult && otpResult.error) throw otpResult.error;
           errEl.style.color = '#4ade80';
           errEl.textContent = 'Welcome back! A magic sign-in link has been sent to your email.';
           btn.textContent = 'Check your email';
           btn.disabled = true;
         } catch(otpE) {
           errEl.style.color = '#f87171';
-          errEl.textContent = otpE.message || 'Could not send sign-in link';
+          errEl.textContent = friendlyError(otpE);
           btn.disabled = false;
           btn.textContent = 'Continue to Payment →';
         }
@@ -598,7 +643,7 @@ async function submitEmailGate(){
       }
       throw signUpErr;
     }
-    if (signUpData.session) {
+    if (signUpData && signUpData.session) {
       currentUser = signUpData.user;
       // Create profile row
       await fetch(SB+'/rest/v1/profiles', {
@@ -621,12 +666,27 @@ async function submitEmailGate(){
       // Now persist the pending quest to Supabase and continue to payment
       await persistPendingQuest();
     } else {
-      errEl.style.color = '#4ade80';
-      errEl.textContent = '✓ Check your email to confirm.';
-      btn.textContent = 'Check your email';
+      // No session returned — either email confirmation is ON in Supabase,
+      // or the account already exists silently. Fall back to magic link so
+      // the user can actually get in either way.
+      try {
+        await supaClient.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: window.location.origin + '/profile.html' }
+        });
+        errEl.style.color = '#4ade80';
+        errEl.textContent = 'Check your email for a sign-in link.';
+        btn.textContent = 'Check your email';
+        btn.disabled = true;
+      } catch(otpE) {
+        errEl.style.color = '#f87171';
+        errEl.textContent = friendlyError(otpE);
+        btn.disabled = false;
+        btn.textContent = 'Continue to Payment →';
+      }
     }
   } catch(e) {
-    errEl.textContent = e.message || 'Could not create account';
+    errEl.textContent = friendlyError(e);
     btn.disabled = false;
     btn.textContent = 'Continue to Payment →';
   }
