@@ -1,5 +1,8 @@
 // sw.js — FinderSeek Service Worker
-const CACHE_NAME = 'finderseek-v3';
+// v4: scope caching to same-origin only; don't intercept Supabase/Stripe/etc.
+// v4: return real network errors on failure instead of `undefined`, which
+//     causes respondWith to reject with "Load failed" in Safari.
+const CACHE_NAME = 'finderseek-v4';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -19,11 +22,13 @@ const PRECACHE = [
 // Install — cache core pages
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(PRECACHE))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate — clean old caches
+// Activate — clean old caches (v1, v2, v3 get wiped)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
@@ -32,21 +37,46 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch — network first, fall back to cache
+// Fetch strategy:
+//   - Cross-origin (Supabase, Stripe, Google Maps, CDNs) -> DO NOT intercept.
+//     The browser handles them normally. Intercepting these is what caused
+//     "Load failed" errors in the PWA: a cached bad response, or a
+//     cache-miss returning undefined, would be served forever.
+//   - Same-origin GET -> network-first with cache fallback.
+//   - Everything else (POST, etc.) -> pass through untouched.
 self.addEventListener('fetch', event => {
-  // Skip non-GET and API requests
-  if (event.request.method !== 'GET' || event.request.url.includes('/api/')) return;
+  const req = event.request;
+
+  // Only handle same-origin GET requests
+  const sameOrigin = new URL(req.url).origin === self.location.origin;
+  if (!sameOrigin || req.method !== 'GET') return;
+
+  // Skip our own /api/ endpoints — they're dynamic, never cache
+  if (req.url.includes('/api/')) return;
 
   event.respondWith(
-    fetch(event.request)
+    fetch(req)
       .then(response => {
-        // Cache successful responses
-        if (response.ok) {
+        // Only cache successful responses
+        if (response && response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(req, clone))
+            .catch(() => {}); // ignore cache write errors
         }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(async () => {
+        // Network failed — try cache. If cache also misses, return a
+        // proper Response (not undefined) so the page gets a real error
+        // instead of Safari's mysterious "Load failed".
+        const cached = await caches.match(req);
+        if (cached) return cached;
+        return new Response('Offline', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: { 'Content-Type': 'text/plain' }
+        });
+      })
   );
 });
