@@ -744,17 +744,13 @@ async function createQuest(previewMode){
   const btn = document.getElementById('btn-create');
   const previewBtn = document.getElementById('btn-preview');
 
-  // ── 1. Auth check — if not signed in, show email gate ──────
+  // Validate form first
+  if (!validateQuestForm()) return;
+
+  // For preview mode (See Clues First), allow anonymous — clues saved to sessionStorage
+  // For instant "Create Quest" mode, also allow anonymous — email gate shows at payment time
   if (!currentUser) {
     await loadCurrentUser();
-    if (!currentUser) {
-      // Validate required fields BEFORE showing email gate
-      if (!validateQuestForm()) return;
-      // Remember which button was pressed for after email gate
-      window._pendingPreviewMode = previewMode;
-      showEmailGate();
-      return;
-    }
   }
 
   // ── 2. Gather form values ─────────────────────────────────
@@ -781,13 +777,96 @@ async function createQuest(previewMode){
   try {
     // ── 5. Compute timing ───────────────────────────────────
     const now = new Date();
-    const startsAt = liveMode === 'now' ? now : now; // TODO: schedule picker
+    const startsAt = liveMode === 'now' ? now : now;
     const endsAt = new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
     const status = 'draft';
 
     // Extract city from search address
     const parts = searchAddress.split(',').map(s => s.trim());
     const city = parts.length >= 2 ? parts[parts.length - 2] : (parts[0] || 'Unknown');
+
+    // ════════════════════════════════════════════════════════
+    // ANONYMOUS PREVIEW PATH — generate clues, save to sessionStorage,
+    // redirect to review page. Email gate + hunt insert happens on payment.
+    // ════════════════════════════════════════════════════════
+    if (!currentUser && previewMode) {
+      btn.textContent = '⏳ Generating clues...';
+      var aiOverlayAnon = document.getElementById('ai-loading');
+      aiOverlayAnon.style.display = 'flex';
+      const anonClueRes = await fetch('/api/generate-clues', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          description: hidingSpot,
+          clueCount: clueCount,
+          lat: selectedLat,
+          lng: selectedLng,
+          persona: persona,
+        })
+      });
+      const anonClueData = await anonClueRes.json();
+      aiOverlayAnon.style.display = 'none';
+      if (!anonClueRes.ok || !anonClueData.clues) {
+        throw new Error('Clue generation failed: ' + (anonClueData?.error || 'API returned no clues'));
+      }
+      // Build clue rows with tier + map metadata
+      const anonClues = anonClueData.clues.map(function(c, idx){
+        const stagger = duration / clueCount;
+        const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 3600000);
+        const proCount = clueCount >= 5 ? 2 : 1;
+        const tier = idx >= (clueCount - proCount) ? 'pro' : 'free';
+        const fromEnd = clueCount - 1 - idx;
+        let hasMap = false, mapPhotoUrl = null;
+        if (fromEnd === 2) { hasMap = true; mapPhotoUrl = 'map:1320'; }
+        else if (fromEnd === 1) { hasMap = true; mapPhotoUrl = 'map:500'; }
+        else if (fromEnd === 0) { hasMap = true; mapPhotoUrl = 'map:100'; }
+        return {
+          clue_number: c.number || (idx + 1),
+          tier: tier,
+          reveal_at: revealAt.toISOString(),
+          clue_text: c.text || '',
+          is_photo: hasMap,
+          photo_url: mapPhotoUrl,
+          day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
+          date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+        };
+      });
+      // Save pending quest to sessionStorage for review.html to load
+      sessionStorage.setItem('fs_pending_quest', JSON.stringify({
+        hunt: {
+          prize_value: Math.round(prize * 100),
+          prize_desc: '$'+prize+' Cash',
+          starts_at: startsAt.toISOString(),
+          ends_at: endsAt.toISOString(),
+          status: 'draft',
+          city: city,
+          finder_code: code,
+          neighborhood: searchAddress.split(',')[0] || '',
+          lat: selectedLat,
+          lng: selectedLng,
+          hiding_spot: hidingSpot,
+          clue_persona: persona,
+          clue_count: clueCount,
+          duration_hours: duration,
+          live_mode: liveMode,
+          week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+        },
+        clues: anonClues,
+      }));
+      showToast('✅ Clues generated! Review them next...', 'success');
+      setTimeout(function(){ window.location.href = 'review.html?preview=1'; }, 1000);
+      return;
+    }
+
+    // Signed-in user: show email gate for anon only on Create Quest (non-preview)
+    if (!currentUser && !previewMode) {
+      aiOverlay && (aiOverlay.style.display = 'none');
+      btn.disabled = false; previewBtn.disabled = false;
+      btn.textContent = '+   CREATE QUEST →';
+      window._pendingPreviewMode = previewMode;
+      showEmailGate();
+      return;
+    }
 
     // ── 5b. Upload photo (if provided) ─────────────────────
     let photoUrl = null;
