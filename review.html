@@ -16,7 +16,6 @@
 <link rel="apple-touch-icon" href="/icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
@@ -158,16 +157,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div class="pm-breakdown" id="pm-breakdown"></div>
 
-  <div id="pm-stripe-element"></div>
-
   <div id="pm-nocancel" onclick="toggleNoCancelCheck()" style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;margin:14px 0 4px;cursor:pointer;user-select:none;">
     <div id="pm-nocancel-box" style="width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(201,137,12,.5);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;"></div>
     <div style="font-size:14px;color:#c8b48a;line-height:1.5;">I understand this quest <strong style="color:#f5ead8;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
   </div>
 
   <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" type="button" disabled style="opacity:.5;cursor:not-allowed;">Pay now</button>
-  <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
+  <button class="pm-pay-btn" id="pm-pay-btn" type="button" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Continue to Stripe →</button>
+  <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
 </div>
 
 <!-- Email Gate Modal — for anonymous preview users before payment -->
@@ -469,6 +466,9 @@ async function regenerateClue(clueId){
         clueCount: clues.length,
         lat: hunt.lat, lng: hunt.lng,
         persona: hunt.clue_persona || 'pirate',
+        city: hunt.city || '',
+        neighborhood: hunt.neighborhood || '',
+        searchAddress: hunt.city || '',
         singleClue: { position: c.clue_number, totalCount: clues.length }
       })
     });
@@ -528,421 +528,59 @@ async function saveTime(clueId){
 }
 
 // ════════════════════════════════════════════════════
-//  PAYMENT MODAL (embedded Stripe)
+//  PAYMENT MODAL — Stripe Checkout redirect
 // ════════════════════════════════════════════════════
-let stripe = null, stripeElements = null, stripePayEl = null, clientSecret = null;
-let stripeReady = false;
-// Track which hunt+amount the current clientSecret was minted for.
-// If the hunt or amount changes (user edits prize, starts over, etc.),
-// we MUST discard the old clientSecret — otherwise Stripe Elements will
-// charge the old amount while the UI shows the new one.
-let clientSecretKey = null;
 
-// Supabase JS client for email-gate signup
-const supaClient = (typeof window !== 'undefined' && window.supabase)
-  ? window.supabase.createClient(SB, KEY)
-  : null;
+async function openPaymentModal() {
+  var prize = (hunt.prize_value || 0) / 100;
+  var fee   = Math.round(prize * 0.10 * 100) / 100;
+  var total = prize + fee;
+  var breakdown = document.getElementById('pm-breakdown');
 
-// ── EMAIL GATE (for anonymous preview users) ────────────────
-function showEmailGate(){
-  document.getElementById('eg-backdrop').style.display = 'block';
-  var modal = document.getElementById('eg-modal');
-  var inner = document.getElementById('eg-inner');
-  modal.style.display = 'flex';
-  setTimeout(function(){
-    document.getElementById('eg-backdrop').style.opacity = '1';
-    inner.style.transform = 'scale(1)';
-    inner.style.opacity = '1';
-  }, 10);
-}
-function closeEmailGate(){
-  var inner = document.getElementById('eg-inner');
-  inner.style.transform = 'scale(0.92)';
-  inner.style.opacity = '0';
-  document.getElementById('eg-backdrop').style.opacity = '0';
-  setTimeout(function(){
-    document.getElementById('eg-modal').style.display = 'none';
-    document.getElementById('eg-backdrop').style.display = 'none';
-    document.getElementById('eg-error').textContent = '';
-  }, 300);
-}
-async function submitEmailGate(){
-  var emailEl = document.getElementById('eg-email');
-  var errEl = document.getElementById('eg-error');
-  var btn = document.getElementById('eg-continue-btn');
-  var email = (emailEl.value || '').trim().toLowerCase();
-  errEl.style.color = '#f87171';
-  errEl.textContent = '';
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errEl.textContent = 'Please enter a valid email address';
-    return;
-  }
-  // Bail early with a clear message if the Supabase SDK didn't load
-  // (ad-blocker, CSP, flaky CDN). Otherwise user gets "Cannot read
-  // properties of null" which reads as "Load failed" in some browsers.
-  if (!supaClient) {
-    errEl.textContent = 'Sign-in service unavailable. Disable ad-blockers and reload, or try a different browser.';
-    return;
-  }
-  btn.disabled = true;
-  btn.textContent = 'Creating account…';
+  // Populate breakdown
+  breakdown.innerHTML =
+    '<div class="pm-row"><span>Prize amount</span><span>$' + prize.toFixed(2) + '</span></div>' +
+    '<div class="pm-row"><span>FinderSeek fee (10%)</span><span>$' + fee.toFixed(2) + '</span></div>' +
+    '<div class="pm-row pm-total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
 
-  // Helper: detect "account already exists" across Supabase error shapes.
-  // Supabase has used: "User already registered", code "user_already_exists",
-  // code "email_exists", HTTP 422 with various bodies — string-matching one
-  // of these alone is brittle.
-  function isExistingUserError(err) {
-    if (!err) return false;
-    var msg  = (err.message || '').toLowerCase();
-    var code = (err.code || err.error_code || '').toLowerCase();
-    var status = err.status || 0;
-    if (code === 'user_already_exists' || code === 'email_exists') return true;
-    if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('already')) return true;
-    // 422 on signUp with a known email is almost always "already exists"
-    if (status === 422) return true;
-    return false;
-  }
-
-  // Helper: turn any raw error into something a human can read.
-  // Safari specifically surfaces network failures as "Load failed" —
-  // that's almost never useful to the user.
-  function friendlyError(err) {
-    var raw = (err && err.message) ? err.message : String(err || '');
-    var low = raw.toLowerCase();
-    if (low.includes('load failed') || low.includes('failed to fetch') || low.includes('networkerror')) {
-      return 'Network error — check your connection and try again.';
-    }
-    return raw || 'Could not create account';
-  }
-
-  try {
-    var tempPassword = 'fs_' + Math.random().toString(36).slice(2) + '_' + Math.random().toString(36).slice(2) + 'A1!';
-    var signUpResult;
-    try {
-      signUpResult = await supaClient.auth.signUp({
-        email: email,
-        password: tempPassword,
-        options: { data: { signup_source: 'quest_creator_gate' } }
-      });
-    } catch (netErr) {
-      // SDK threw before returning — almost always network/CORS
-      throw netErr;
-    }
-    var signUpData = signUpResult && signUpResult.data;
-    var signUpErr  = signUpResult && signUpResult.error;
-
-    if (signUpErr) {
-      if (isExistingUserError(signUpErr)) {
-        // Account exists — send a magic sign-in link
-        try {
-          var otpResult = await supaClient.auth.signInWithOtp({
-            email: email,
-            options: { emailRedirectTo: window.location.origin + '/profile.html' }
-          });
-          if (otpResult && otpResult.error) throw otpResult.error;
-          errEl.style.color = '#4ade80';
-          errEl.textContent = 'Welcome back! A magic sign-in link has been sent to your email.';
-          btn.textContent = 'Check your email';
-          btn.disabled = true;
-        } catch(otpE) {
-          errEl.style.color = '#f87171';
-          errEl.textContent = friendlyError(otpE);
-          btn.disabled = false;
-          btn.textContent = 'Continue to Payment →';
-        }
-        return;
-      }
-      throw signUpErr;
-    }
-    if (signUpData && signUpData.session) {
-      currentUser = signUpData.user;
-      // Create profile row
-      await fetch(SB+'/rest/v1/profiles', {
-        method:'POST',
-        headers:{
-          'apikey':KEY,
-          'Authorization':'Bearer '+signUpData.session.access_token,
-          'Content-Type':'application/json',
-          'Prefer':'resolution=ignore-duplicates'
-        },
-        body: JSON.stringify({
-          id: signUpData.user.id,
-          email: email,
-          notify_hunt_live: true,
-          notify_hunt_won: true,
-          notify_chat: true
-        })
-      });
-      closeEmailGate();
-      // Now persist the pending quest to Supabase and continue to payment
-      await persistPendingQuest();
-    } else {
-      // No session returned — either email confirmation is ON in Supabase,
-      // or the account already exists silently. Fall back to magic link so
-      // the user can actually get in either way.
-      try {
-        await supaClient.auth.signInWithOtp({
-          email: email,
-          options: { emailRedirectTo: window.location.origin + '/profile.html' }
-        });
-        errEl.style.color = '#4ade80';
-        errEl.textContent = 'Check your email for a sign-in link.';
-        btn.textContent = 'Check your email';
-        btn.disabled = true;
-      } catch(otpE) {
-        errEl.style.color = '#f87171';
-        errEl.textContent = friendlyError(otpE);
-        btn.disabled = false;
-        btn.textContent = 'Continue to Payment →';
-      }
-    }
-  } catch(e) {
-    errEl.textContent = friendlyError(e);
-    btn.disabled = false;
-    btn.textContent = 'Continue to Payment →';
-  }
-}
-async function signUpFromGate(){
-  try {
-    var { error } = await supaClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/review.html?preview=1' }
-    });
-    if (error) throw error;
-  } catch(e) {
-    document.getElementById('eg-error').textContent = e.message || 'Sign-in failed';
-  }
-}
-
-// After email gate, create the hunt in Supabase and continue to payment
-async function persistPendingQuest(){
-  try {
-    const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
-    if (!pending || !currentUser) throw new Error('No pending quest or user');
-    const token = getToken();
-    // Insert hunt
-    const huntRes = await fetch(SB+'/rest/v1/hunts', {
-      method:'POST',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=representation'},
-      body: JSON.stringify({
-        week_label: pending.hunt.week_label,
-        prize_desc: pending.hunt.prize_desc,
-        prize_value: pending.hunt.prize_value,
-        starts_at: pending.hunt.starts_at,
-        ends_at: pending.hunt.ends_at,
-        status: 'draft',
-        city: pending.hunt.city,
-        finder_code: pending.hunt.finder_code,
-        payment_type: 'finderseek',
-        escrow_status: 'pending',
-        neighborhood: pending.hunt.neighborhood,
-        pirate_id: currentUser.id,
-        created_by: currentUser.id,
-        lat: pending.hunt.lat,
-        lng: pending.hunt.lng,
-        hiding_spot: pending.hunt.hiding_spot,
-        clue_persona: pending.hunt.clue_persona,
-        clue_count: pending.hunt.clue_count,
-      })
-    });
-    const huntData = await huntRes.json();
-    if (!huntRes.ok) throw new Error(huntData?.message || 'Hunt save failed');
-    const newHunt = Array.isArray(huntData) ? huntData[0] : huntData;
-    // Insert clues
-    const clueRows = pending.clues.map(c => ({ ...c, hunt_id: newHunt.id }));
-    const cr = await fetch(SB+'/rest/v1/clues', {
-      method:'POST',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify(clueRows)
-    });
-    if (!cr.ok) { const t = await cr.text(); throw new Error('Clue save failed: '+t); }
-    // Swap our in-memory hunt for the real one so payment modal uses real ID
-    hunt = newHunt;
-    isPreviewMode = false;
-    localStorage.removeItem('fs_pending_quest');
-    // Re-open payment modal (now backed by a real hunt)
-    await openPaymentModal();
-  } catch(e) {
-    console.error('persistPendingQuest error:', e);
-    showToast('Could not save quest: ' + e.message, 'error');
-  }
-}
-
-async function openPaymentModal(){
-  // For anonymous users in preview mode, show email gate first
-  if (isPreviewMode && !currentUser) {
-    showEmailGate();
-    return;
-  }
-
-  // Render breakdown
-  const prize = (hunt.prize_value || 0) / 100;
-  const fee = Math.round(prize * 0.10 * 100) / 100;
-  const total = prize + fee;
-  document.getElementById('pm-breakdown').innerHTML = `
-    <div class="pm-row"><span>Prize to winner</span><strong>$${prize.toFixed(2)}</strong></div>
-    <div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$${fee.toFixed(2)}</strong></div>
-    <div class="pm-row total"><span>Total today</span><strong>$${total.toFixed(2)}</strong></div>`;
-  document.getElementById('pm-error').textContent = '';
-
-  // Show signed-in user email
+  // Show user
   var userEl = document.getElementById('pm-user');
-  if (currentUser && currentUser.email) {
-    userEl.innerHTML = '✓ Signed in as <strong style="color:#fff;">' + currentUser.email + '</strong>';
+  if (currentUser) {
+    userEl.textContent = currentUser.email;
   } else {
     userEl.innerHTML = '';
   }
 
+  // Reset checkbox and button
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  box.dataset.checked = 'false';
+  box.style.background = '';
+  box.style.borderColor = 'rgba(201,137,12,.5)';
+  box.innerHTML = '';
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.style.cursor = 'not-allowed';
+  btn.textContent = 'Continue to Stripe →';
+  document.getElementById('pm-error').textContent = '';
+
   // Show modal
   document.getElementById('pm-backdrop').classList.add('show');
   document.getElementById('pm-sheet').classList.add('show');
-
-  // Disable pay button until Stripe Elements is ready
-  const payBtn = document.getElementById('pm-pay-btn');
-  payBtn.disabled = true;
-  payBtn.textContent = 'Loading payment form...';
-
-  // Init Stripe if needed
-  if (!stripe) stripe = Stripe(STRIPE_PUBLIC_KEY);
-
-  // If we have a cached clientSecret but it was minted for a different hunt
-  // or a different amount, DISCARD IT. Stripe Elements is already bound to
-  // the old PaymentIntent and would charge the old amount even though our
-  // UI shows the new breakdown. This has caused real-money misscharges.
-  var expectedKey = hunt.id + ':' + Math.round(total * 100);
-  if (clientSecret && clientSecretKey !== expectedKey) {
-    clientSecret = null;
-    clientSecretKey = null;
-    stripeReady = false;
-    // Unmount old Stripe Elements so the next call gets a fresh one
-    try { if (stripePayEl) stripePayEl.unmount(); } catch(e){}
-    stripePayEl = null;
-    stripeElements = null;
-    // Clear the DOM mount node
-    try { document.getElementById('pm-stripe-element').innerHTML = ''; } catch(e){}
-  }
-
-  // Request PaymentIntent if we don't have one
-  if (!clientSecret) {
-    try {
-      const r = await fetch('/api/create-escrow-intent', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
-        body: JSON.stringify({
-          userId: currentUser.id,
-          email: currentUser.email,
-          huntId: hunt.id,
-          prizeAmount: prize,
-          totalCents: Math.round(total * 100)
-        })
-      });
-      const d = await r.json();
-      if (!r.ok || !d.clientSecret) throw new Error(d.error || 'Could not start payment');
-      clientSecret = d.clientSecret;
-      clientSecretKey = expectedKey;
-    } catch(e) {
-      document.getElementById('pm-error').textContent = e.message;
-      payBtn.textContent = 'Try again';
-      payBtn.disabled = false;
-      payBtn.onclick = function(){ clientSecret = null; openPaymentModal(); };
-      return;
-    }
-
-    // Mount Stripe Elements
-    stripeElements = stripe.elements({
-      clientSecret,
-      appearance: {
-        theme: 'night',
-        variables: {
-          colorPrimary: '#e8a820',
-          colorBackground: '#14121f',
-          colorText: '#f5ead8',
-          colorDanger: '#f87171',
-          fontFamily: 'Noto Sans Display, system-ui, sans-serif',
-          borderRadius: '10px'
-        }
-      }
-    });
-    stripePayEl = stripeElements.create('payment');
-    // Wait for the element to actually mount in the iframe before enabling the button
-    var mountTimeout = setTimeout(function(){
-      if (!stripeReady) {
-        document.getElementById('pm-error').textContent = 'Payment form took too long to load. Please check your connection or try again.';
-        payBtn.textContent = 'Try again';
-        payBtn.disabled = false;
-        payBtn.onclick = function(){
-          clientSecret = null; stripeElements = null; stripePayEl = null; stripeReady = false;
-          document.getElementById('pm-stripe-element').innerHTML = '';
-          openPaymentModal();
-        };
-      }
-    }, 8000);
-    stripePayEl.on('ready', function(){
-      clearTimeout(mountTimeout);
-      stripeReady = true;
-      // Only enable pay button if the no-cancel checkbox has been ticked
-      var checked = document.getElementById('pm-nocancel-box')?.dataset.checked === 'true';
-      if (checked) {
-        payBtn.disabled = false;
-        payBtn.style.opacity = '1';
-        payBtn.style.cursor = 'pointer';
-      }
-      payBtn.textContent = 'Pay $' + total.toFixed(2);
-      payBtn.onclick = submitPayment;
-    });
-    stripePayEl.on('loaderror', function(ev){
-      clearTimeout(mountTimeout);
-      console.error('Stripe loaderror:', ev);
-      document.getElementById('pm-error').textContent = 'Payment form failed to load: ' + (ev.error?.message || 'Unknown error');
-      payBtn.textContent = 'Try again';
-      payBtn.disabled = false;
-      payBtn.onclick = function(){
-        clientSecret = null; stripeElements = null; stripePayEl = null; stripeReady = false;
-        document.getElementById('pm-stripe-element').innerHTML = '';
-        openPaymentModal();
-      };
-    });
-    try {
-      // Delay mount slightly so the modal is fully rendered/visible
-      setTimeout(function(){
-        try { stripePayEl.mount('#pm-stripe-element'); } catch(e) {
-          clearTimeout(mountTimeout);
-          console.error('Stripe mount error:', e);
-          document.getElementById('pm-error').textContent = 'Could not load payment form: ' + e.message;
-          payBtn.textContent = 'Try again';
-          payBtn.disabled = false;
-        }
-      }, 400);
-    } catch(e) {
-      clearTimeout(mountTimeout);
-      console.error('Stripe mount error:', e);
-      document.getElementById('pm-error').textContent = 'Could not load payment form: ' + e.message;
-      payBtn.textContent = 'Try again';
-      payBtn.disabled = false;
-    }
-  } else if (stripeReady) {
-    // Already mounted from a previous open — just re-enable
-    payBtn.disabled = false;
-    payBtn.textContent = 'Pay $' + total.toFixed(2);
-    payBtn.onclick = submitPayment;
-  }
 }
 
 function toggleNoCancelCheck() {
-  const box = document.getElementById('pm-nocancel-box');
-  const btn = document.getElementById('pm-pay-btn');
-  const checked = box.dataset.checked !== 'true';
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  var checked = box.dataset.checked !== 'true';
   box.dataset.checked = checked;
   if (checked) {
     box.style.background = '#c9890c';
     box.style.borderColor = '#c9890c';
     box.innerHTML = '<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    // Only unlock pay button if Stripe Elements is also ready
-    if (stripeReady) {
-      btn.disabled = false;
-      btn.style.opacity = '1';
-      btn.style.cursor = 'pointer';
-    }
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
   } else {
     box.style.background = '';
     box.style.borderColor = 'rgba(201,137,12,.5)';
@@ -953,41 +591,40 @@ function toggleNoCancelCheck() {
   }
 }
 
-function closePaymentModal(){
+function closePaymentModal() {
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
-  // Reset checkbox so it must be re-acknowledged each time
-  const box = document.getElementById('pm-nocancel-box');
-  const btn = document.getElementById('pm-pay-btn');
-  box.dataset.checked = 'false';
-  box.style.background = '';
-  box.style.borderColor = 'rgba(201,137,12,.5)';
-  box.innerHTML = '';
-  btn.disabled = true;
-  btn.style.opacity = '.5';
-  btn.style.cursor = 'not-allowed';
 }
 
-async function submitPayment(){
-  const btn = document.getElementById('pm-pay-btn');
-  const errEl = document.getElementById('pm-error');
+async function submitPayment() {
+  var btn = document.getElementById('pm-pay-btn');
+  var errEl = document.getElementById('pm-error');
   errEl.textContent = '';
   btn.disabled = true;
-  btn.textContent = 'Processing...';
+  btn.textContent = 'Opening Stripe...';
 
   try {
-    const { error } = await stripe.confirmPayment({
-      elements: stripeElements,
-      confirmParams: {
-        return_url: window.location.origin + '/quest.html?id=' + hunt.id + '&funded=1'
-      }
+    var total = hunt.prize + hunt.prize * 0.10;
+    var r = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({
+        type: 'escrow',
+        userId: currentUser.id,
+        email: currentUser.email,
+        huntId: hunt.id,
+        prizeAmount: hunt.prize,
+        totalCents: Math.round(total * 100)
+      })
     });
-    if (error) throw new Error(error.message);
-    // On success, Stripe redirects to return_url — no code after this runs
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
+    // Redirect to Stripe Checkout
+    window.location.href = d.url;
   } catch(e) {
-    errEl.textContent = e.message || 'Payment failed';
+    errEl.textContent = e.message || 'Payment failed — please try again';
     btn.disabled = false;
-    btn.textContent = 'Try again';
+    btn.textContent = 'Continue to Stripe →';
   }
 }
 
