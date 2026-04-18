@@ -109,8 +109,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
       <!-- Tier buttons -->
       <div style="display:flex;gap:8px;margin-top:16px;position:relative;">
-        <button id="q-free-tier-btn" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(148,163,184,.08);border:1.5px solid rgba(148,163,184,.45);color:rgba(148,163,184,.8);font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:silverTierPulse 7s ease-in-out infinite;line-height:1.2;text-align:center;">FREE TIER</button>
-        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(201,137,12,.06);border:1.5px solid rgba(232,168,32,.45);color:rgba(232,168,32,.8);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;text-align:center;">GOLD TIER <span style="display:inline-block;animation:arrowPulse 3s ease-in-out infinite;color:#e8a820;">↓</span></button>
+        <button id="q-free-tier-btn" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:silverTierPulse 7s ease-in-out infinite;line-height:1.2;text-align:center;">FREE TIER</button>
+        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(255,255,255,.02);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;text-align:center;">GOLD TIER <span style="display:inline-block;animation:arrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span></button>
       </div>
     </div>
 
@@ -348,36 +348,38 @@ function renderTierButtons(isGold) {
   if (!freeBtn || !goldBtn) return;
 
   if (isGold) {
-    // FREE dim, GOLD glows with "✓ You're Gold" subtitle
+    // FREE — very dim, clearly inactive
     freeBtn.style.animation = 'none';
-    freeBtn.style.background = 'rgba(148,163,184,.04)';
-    freeBtn.style.borderColor = 'rgba(148,163,184,.15)';
-    freeBtn.style.color = 'rgba(148,163,184,.3)';
+    freeBtn.style.background = 'rgba(255,255,255,.02)';
+    freeBtn.style.border = '1.5px solid rgba(255,255,255,.08)';
+    freeBtn.style.color = 'rgba(255,255,255,.2)';
     freeBtn.style.cursor = 'default';
     freeBtn.innerHTML = 'FREE TIER';
 
+    // GOLD — bright, filled, clearly active
     goldBtn.style.animation = 'goldTierPulse 7s ease-in-out infinite';
-    goldBtn.style.background = 'rgba(201,137,12,.12)';
-    goldBtn.style.borderColor = 'rgba(232,168,32,.6)';
-    goldBtn.style.color = 'rgba(232,168,32,.9)';
+    goldBtn.style.background = 'rgba(201,137,12,.2)';
+    goldBtn.style.border = '2px solid #e8a820';
+    goldBtn.style.color = '#f5c842';
     goldBtn.style.cursor = 'default';
     goldBtn.onclick = null;
     goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:12px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
   } else {
-    // FREE glows silver, GOLD dim and tappable
+    // FREE — bright, filled, clearly active
     freeBtn.style.animation = 'silverTierPulse 7s ease-in-out infinite';
-    freeBtn.style.background = 'rgba(148,163,184,.08)';
-    freeBtn.style.borderColor = 'rgba(148,163,184,.35)';
-    freeBtn.style.color = 'rgba(148,163,184,.7)';
+    freeBtn.style.background = 'rgba(148,163,184,.15)';
+    freeBtn.style.border = '2px solid #94a3b8';
+    freeBtn.style.color = '#e2e8f0';
     freeBtn.innerHTML = 'FREE TIER';
 
+    // GOLD — very dim, clearly inactive but tappable
     goldBtn.style.animation = 'none';
-    goldBtn.style.background = 'rgba(201,137,12,.06)';
-    goldBtn.style.borderColor = 'rgba(232,168,32,.2)';
+    goldBtn.style.background = 'rgba(255,255,255,.02)';
+    goldBtn.style.border = '1.5px solid rgba(232,168,32,.2)';
     goldBtn.style.color = 'rgba(232,168,32,.35)';
     goldBtn.style.cursor = 'pointer';
     goldBtn.onclick = toggleGoldModal;
-    goldBtn.innerHTML = 'GOLD TIER ↓';
+    goldBtn.innerHTML = 'GOLD TIER <span style="display:inline-block;animation:arrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span>';
   }
 }
 
@@ -739,28 +741,22 @@ function renderClues() {
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
         maxZoom: 19, subdomains: 'abcd', opacity: 1
       }).addTo(m);
-      // Green glow ring — no center dot
+      // Dashed green ring using L.circle with dashArray
       L.circle([lat, lng], {
         radius: radiusM,
         color: '#4ade80',
-        fillColor: 'rgba(74,222,128,0.08)',
+        fillColor: 'rgba(74,222,128,0.06)',
         fillOpacity: 1,
         weight: 3,
         opacity: 1,
+        dashArray: '10, 8',
       }).addTo(m);
-      // Outer soft glow rings
+      // Soft glow halo behind dash ring
       L.circle([lat, lng], {
         radius: radiusM,
-        color: 'rgba(74,222,128,0.35)',
+        color: 'rgba(74,222,128,0.2)',
         fillOpacity: 0,
-        weight: 10,
-        opacity: 1,
-      }).addTo(m);
-      L.circle([lat, lng], {
-        radius: radiusM,
-        color: 'rgba(74,222,128,0.12)',
-        fillOpacity: 0,
-        weight: 20,
+        weight: 12,
         opacity: 1,
       }).addTo(m);
     });
