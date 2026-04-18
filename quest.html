@@ -660,23 +660,33 @@ function renderClues() {
         touchZoom: false,
         attributionControl: false,
       }).setView([lat, lng], zoom);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-      // Circle overlay showing the search area
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19, subdomains: 'abcd'
+      }).addTo(m);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19, subdomains: 'abcd', opacity: 1
+      }).addTo(m);
+      // Green glow ring — no center dot
       var radiusM = radiusFt * 0.3048;
       L.circle([lat, lng], {
         radius: radiusM,
-        color: '#e8a820',
-        fillColor: '#e8a820',
-        fillOpacity: 0.15,
-        weight: 2,
-      }).addTo(m);
-      // Center marker
-      L.circleMarker([lat, lng], {
-        radius: 6,
-        color: '#fff',
-        fillColor: '#e8a820',
+        color: 'rgba(74,222,128,0.9)',
+        fillColor: 'rgba(74,222,128,0.07)',
         fillOpacity: 1,
         weight: 2,
+      }).addTo(m);
+      // Outer soft glow rings
+      L.circle([lat, lng], {
+        radius: radiusM,
+        color: 'rgba(74,222,128,0.25)',
+        fillOpacity: 0,
+        weight: 8,
+      }).addTo(m);
+      L.circle([lat, lng], {
+        radius: radiusM,
+        color: 'rgba(74,222,128,0.1)',
+        fillOpacity: 0,
+        weight: 16,
       }).addTo(m);
     });
   }, 50);
