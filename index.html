@@ -726,6 +726,11 @@ window.addEventListener('DOMContentLoaded', function() {
   playGoldBurst();
   triggerFlyIn();
   loadQuests();
+  // Reopen live map if returning from a quest opened via map
+  if (new URLSearchParams(window.location.search).get('openmap') === '1') {
+    window.history.replaceState({}, '', 'index.html');
+    setTimeout(openLiveMap, 600);
+  }
 });
 
 // ============================================================
@@ -1062,9 +1067,15 @@ async function initLiveMap() {
     attributionControl: false,
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     subdomains: 'abcd',
+  }).addTo(liveMap);
+  // Brighter label layer on top — same roads but labels at full opacity
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+    opacity: 2.0,
   }).addTo(liveMap);
 
   L.control.zoom({ position: 'topright' }).addTo(liveMap);
@@ -1163,7 +1174,7 @@ async function initLiveMap() {
         chip.onclick = function() {
           liveMap.flyTo([ch.lat, ch.lng], 11, { duration: 1 });
           highlightMapChip(chipId);
-          setTimeout(function() { window.location.href = 'quest.html?id=' + q.id; }, 900);
+          setTimeout(function() { window.location.href = 'quest.html?id=' + q.id + '&back=map'; }, 900);
         };
         chipList.appendChild(chip);
       });
