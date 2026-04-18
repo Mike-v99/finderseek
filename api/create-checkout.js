@@ -52,6 +52,7 @@ async function createGoldCheckout({ userId, email, username }, origin, res) {
       'customer_email': email,
       'line_items[0][price]': process.env.STRIPE_GOLD_PRICE_ID,
       'line_items[0][quantity]': '1',
+      'subscription_data[trial_period_days]': '30',
       'subscription_data[metadata][userId]': userId,
       'subscription_data[metadata][username]': username || '',
       'metadata[userId]': userId,
