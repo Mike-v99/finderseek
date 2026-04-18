@@ -857,7 +857,12 @@ function openLiveMap() {
   setTimeout(function() {
     document.getElementById('map-modal-backdrop').classList.add('show');
   }, 10);
+  // Save scroll position before locking — iOS Safari jumps to top otherwise
+  window._mapScrollY = window.scrollY || window.pageYOffset || 0;
   document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + window._mapScrollY + 'px';
+  document.body.style.width = '100%';
   initSheetDrag();
   if (!liveMapInitialized) {
     initLiveMap();
@@ -914,7 +919,12 @@ function closeLiveMap() {
     document.getElementById('map-modal').style.display = 'none';
     document.getElementById('map-modal-sheet').style.height = '180px';
   }, 260);
+  // Restore scroll position — undo the iOS Safari fixed-body trick
   document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, window._mapScrollY || 0);
 }
 
 async function initLiveMap() {
