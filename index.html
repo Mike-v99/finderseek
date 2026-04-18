@@ -1062,8 +1062,9 @@ async function initLiveMap() {
     attributionControl: false,
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
+    subdomains: 'abcd',
   }).addTo(liveMap);
 
   L.control.zoom({ position: 'topright' }).addTo(liveMap);
@@ -1138,7 +1139,7 @@ async function initLiveMap() {
       L.circle([ch.lat, ch.lng], {
         radius: 3000,
         color: color, fillColor: color,
-        fillOpacity: 0.07, weight: 1.5, opacity: 0.3,
+        fillOpacity: 0.12, weight: 2, opacity: 0.6,
       }).addTo(liveMap);
 
       var groupChipId = 'mchip-g-' + idx;
