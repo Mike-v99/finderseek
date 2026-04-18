@@ -38,7 +38,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
 #gold-badge-row{display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.22);border-radius:50px;padding:5px 16px;font-size:13px;color:#e8a820;margin-bottom:20px;}
 .cta-btn{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);color:#ffffff;cursor:pointer;animation:pulseCta 4s ease-in-out infinite;transition:transform .15s;}
 .cta-btn:active{transform:scale(.98);}
-#gold-cta-note{text-align:center;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;line-height:1.7;}
+#gold-cta-note{text-align:center;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;line-height:1.7;opacity:0;transition:opacity .3s;}
 
 /* section label */
 .section-label{font-size:11px;font-weight:400;letter-spacing:3px;color:rgba(255,255,255,.5);margin:28px 0 12px;display:flex;align-items:center;gap:10px;}
@@ -144,7 +144,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
     <div class="c-row"><div class="c-cell lbl">Gold badge</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
   </div>
 
-  <div class="fade4" style="margin-bottom:32px;">
+  <div class="fade4" id="second-cta-wrap" style="margin-bottom:32px;">
     <button class="cta-btn" onclick="startCheckout()">👑 Start Free Trial</button>
     <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;">Then $3.99/mo · Cancel anytime · 🔒 Stripe</div>
   </div>
@@ -178,17 +178,82 @@ function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function toggleFaq(el){el.parentElement.classList.toggle('open');}
 function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';},4000);}
-async function loadStatus(){var token=getToken();if(!token)return;try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!ur.ok)return;currentUser=await ur.json();if(!currentUser?.id)return;var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var pd=await pr.json();currentProfile=(pd&&pd[0])||null;var isPro=currentProfile?.is_pro&&(!currentProfile.pro_expires||new Date(currentProfile.pro_expires)>new Date());if(isPro)renderActiveState();}catch(e){console.error('Gold status error',e);}}
-function renderActiveState(){document.getElementById('gold-tagline').innerHTML='✦ YOU\'RE GOLD ✦';document.getElementById('gold-tagline').style.color='#4ade80';var expiresStr='Active';if(currentProfile.pro_expires){var d=new Date(currentProfile.pro_expires);expiresStr='Renews '+d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}document.getElementById('gold-price-row').innerHTML='<span style="font-size:24px;font-weight:400;color:#4ade80;">✓ Membership Active</span>';document.getElementById('gold-badge-row').outerHTML='<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:15px;color:#4ade80;margin-bottom:20px;">'+expiresStr+'</div>';var cta=document.getElementById('gold-cta');cta.innerHTML='⚙️ Manage Subscription';cta.style.animation='none';cta.style.background='rgba(255,255,255,.06)';cta.style.color='#fff';cta.style.border='1px solid rgba(255,255,255,.12)';cta.onclick=openBillingPortal;document.getElementById('gold-cta-note').innerHTML='Thanks for supporting FinderSeek 🙏<br/>🔒 Powered by Stripe';}
-async function startCheckout(){var btn=document.getElementById('gold-cta');if(!currentUser){showToast('Please sign in first','error');setTimeout(function(){window.location.href='profile.html?redirect=gold.html';},1200);return;}btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening checkout...';try{var r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Checkout failed');window.location.href=d.url;}catch(e){console.error('Checkout error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
+async function loadStatus(){
+  var token=getToken();
+  if(!token)return;
+  // Hide upgrade CTA immediately while we check — avoids flash
+  var cta=document.getElementById('gold-cta');
+  if(cta){ cta.style.opacity='0'; cta.style.pointerEvents='none'; }
+  try{
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if(!ur.ok){ showCta(); return; }
+    currentUser=await ur.json();
+    if(!currentUser?.id){ showCta(); return; }
+    var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var pd=await pr.json();
+    currentProfile=(pd&&pd[0])||null;
+    var isPro=currentProfile?.is_pro&&(!currentProfile.pro_expires||new Date(currentProfile.pro_expires)>new Date());
+    if(isPro){
+      renderActiveState();
+    } else {
+      showCta();
+    }
+  }catch(e){console.error('Gold status error',e);showCta();}
+}
+
+function showCta(){
+  var cta=document.getElementById('gold-cta');
+  var note=document.getElementById('gold-cta-note');
+  if(cta){ cta.style.opacity='1'; cta.style.pointerEvents='auto'; }
+  if(note){ note.style.opacity='1'; }
+}
+function renderActiveState(){
+  document.getElementById('gold-tagline').innerHTML='✦ YOU\'RE GOLD ✦';
+  document.getElementById('gold-tagline').style.color='#4ade80';
+  var expiresStr='Active';
+  if(currentProfile.pro_expires){var d=new Date(currentProfile.pro_expires);expiresStr='Renews '+d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
+  document.getElementById('gold-price-row').innerHTML='<span style="font-size:24px;font-weight:400;color:#4ade80;">✓ Membership Active</span>';
+  document.getElementById('gold-badge-row').outerHTML='<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:15px;color:#4ade80;margin-bottom:20px;">'+expiresStr+'</div>';
+  var cta=document.getElementById('gold-cta');
+  cta.innerHTML='⚙️ Manage Subscription';
+  cta.style.animation='none';
+  cta.style.background='rgba(255,255,255,.06)';
+  cta.style.color='#fff';
+  cta.style.border='1px solid rgba(255,255,255,.12)';
+  cta.style.opacity='1';
+  cta.style.pointerEvents='auto';
+  cta.onclick=openBillingPortal;
+  document.getElementById('gold-cta-note').innerHTML='Thanks for supporting FinderSeek 🙏<br/>🔒 Powered by Stripe';
+  document.getElementById('gold-cta-note').style.opacity='1';
+  // Hide the second CTA button at the bottom of the page
+  var secondCta = document.getElementById('second-cta-wrap');
+  if(secondCta){ secondCta.style.display='none'; }
+}
+async function startCheckout(){
+  var btn=document.getElementById('gold-cta');
+  if(!currentUser){showToast('Please sign in first','error');setTimeout(function(){window.location.href='profile.html?redirect=gold.html';},1200);return;}
+  btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening checkout...';
+  // Save where user came from so we can return them after upgrade
+  var returnDest = sessionStorage.getItem('fs_gold_return') || 'home';
+  sessionStorage.setItem('fs_gold_return_pending', returnDest);
+  try{
+    var r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});
+    var d=await r.json();
+    if(!r.ok||!d.url)throw new Error(d.error||'Checkout failed');
+    window.location.href=d.url;
+  }catch(e){console.error('Checkout error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}
+}
 async function openBillingPortal(){var btn=document.getElementById('gold-cta');btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening portal...';try{var r=await fetch('/api/billing-portal',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Failed');window.location.href=d.url;}catch(e){console.error('Portal error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
 function handleUrlParams(){
   var p=new URLSearchParams(window.location.search);
   if(p.get('upgraded')==='true'){
     window.history.replaceState({},'','gold.html');
-    // Show celebration overlay immediately — don't wait for webhook
-    showCelebration();
-    // Keep retrying loadStatus until is_pro is confirmed (webhook may take a few seconds)
+    // Figure out where to send them after celebrating
+    var returnDest = sessionStorage.getItem('fs_gold_return_pending') || 'home';
+    sessionStorage.removeItem('fs_gold_return_pending');
+    sessionStorage.removeItem('fs_gold_return');
+    showCelebration(returnDest);
+    // Keep retrying loadStatus until is_pro is confirmed
     var attempts = 0;
     function retryLoad() {
       attempts++;
@@ -203,8 +268,18 @@ function handleUrlParams(){
   }
 }
 
-function showCelebration() {
-  // Create overlay
+function showCelebration(returnDest) {
+  // Build the return URL
+  var returnUrl = 'index.html';
+  var returnLabel = 'Go to Home →';
+  if (returnDest && returnDest.startsWith('quest:')) {
+    var questId = returnDest.replace('quest:', '');
+    if (questId) {
+      returnUrl = 'quest.html?id=' + questId;
+      returnLabel = 'Back to Quest →';
+    }
+  }
+
   var overlay = document.createElement('div');
   overlay.id = 'celebrate-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(6,5,10,.92);backdrop-filter:blur(12px);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;opacity:0;transition:opacity .4s;';
@@ -214,17 +289,15 @@ function showCelebration() {
     '<div style="font-size:32px;font-weight:200;color:#fff;margin-bottom:8px;font-family:\'Noto Sans Display\',sans-serif;letter-spacing:-.5px;">You\'re Gold!</div>',
     '<div style="font-size:16px;color:rgba(232,168,32,.8);margin-bottom:6px;letter-spacing:1px;">FINDERSEEEK GOLD</div>',
     '<div style="font-size:15px;color:rgba(255,255,255,.5);text-align:center;line-height:1.7;margin-bottom:32px;max-width:280px;">Your Gold perks are now active.<br/>Find it before everyone else.</div>',
-    '<button onclick="document.getElementById(\'celebrate-overlay\').style.opacity=\'0\';setTimeout(function(){document.getElementById(\'celebrate-overlay\').remove();},400);" style="background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:14px;padding:16px 40px;font-size:18px;font-weight:400;color:#0a0500;cursor:pointer;font-family:\'Noto Sans Display\',sans-serif;">Let\'s go →</button>',
+    '<button onclick="window.location.href=\'' + returnUrl + '\'" style="background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:14px;padding:16px 40px;font-size:18px;font-weight:400;color:#0a0500;cursor:pointer;font-family:\'Noto Sans Display\',sans-serif;">' + returnLabel + '</button>',
   ].join('');
 
   document.body.appendChild(overlay);
 
-  // Add float animation
   var style = document.createElement('style');
   style.textContent = '@keyframes celebFloat{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-12px) rotate(5deg);}}';
   document.head.appendChild(style);
 
-  // Fade in
   setTimeout(function(){ overlay.style.opacity = '1'; }, 50);
 }
 loadStatus();handleUrlParams();
