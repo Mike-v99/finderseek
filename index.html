@@ -973,29 +973,6 @@ function initSheetDrag() {
   window._snapPoints = snapPoints;
 }
 
-
-  function onMove(e) {
-    if (e.cancelable) e.preventDefault();
-    var y = (e.touches ? e.touches[0].clientY : e.clientY);
-    var delta = startY - y; // drag up = positive
-    var newH = Math.min(Math.max(startH + delta, 56), window.innerHeight * 0.7);
-    sheet.style.height = newH + 'px';
-    if (liveMap) liveMap.invalidateSize();
-  }
-
-  function onEnd() {
-    sheet.style.transition = 'height .2s ease';
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onEnd);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend', onEnd);
-    if (liveMap) liveMap.invalidateSize();
-  }
-
-  handle.addEventListener('mousedown', onStart);
-  handle.addEventListener('touchstart', onStart, { passive: true });
-}
-
 function closeLiveMap() {
   document.getElementById('map-modal-backdrop').classList.remove('show');
   setTimeout(function() {
