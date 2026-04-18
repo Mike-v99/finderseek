@@ -3,420 +3,188 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>FinderSeek — Gold</title>
+<title>FinderSeek Gold</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --ink:#0a0810;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--yellow:#fbbf24;
-  --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
-}
+:root{--ink:#06050a;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--green:#4ade80;--dim:#d0e4f0;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
-
-/* Background glow */
-.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
-
-/* Page */
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
-
-/* Animations */
-@keyframes rotateBorder{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-@keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
-@keyframes pulseGold{0%,100%{box-shadow:0 0 20px rgba(201,137,12,.15);}50%{box-shadow:0 0 40px rgba(201,137,12,.4);}}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;background:radial-gradient(ellipse at 50% -5%,rgba(201,137,12,.14) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 120px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--dim);text-decoration:none;margin-bottom:20px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+@keyframes shimmer{0%{background-position:-300% center;}100%{background-position:300% center;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes pulseCta{0%,100%{box-shadow:0 4px 20px rgba(201,137,12,.25);}50%{box-shadow:0 4px 36px rgba(232,168,32,.5);}}
 @keyframes fadeUp{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
-@keyframes pulseGreen{0%,100%{box-shadow:0 0 12px rgba(74,222,128,.2);}50%{box-shadow:0 0 28px rgba(74,222,128,.4);}}
+.fade1{animation:fadeUp .5s .05s ease-out both;}
+.fade2{animation:fadeUp .5s .15s ease-out both;}
+.fade3{animation:fadeUp .5s .25s ease-out both;}
+.fade4{animation:fadeUp .5s .35s ease-out both;}
+.fade5{animation:fadeUp .5s .45s ease-out both;}
+.fade6{animation:fadeUp .5s .55s ease-out both;}
 
-/* Back button */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:300;}
+/* crown card */
+.crown-card{border-radius:24px;padding:2px;background:linear-gradient(135deg,rgba(232,168,32,.5),rgba(201,137,12,.15),rgba(232,168,32,.4));margin-bottom:20px;}
+.crown-inner{background:linear-gradient(160deg,#110e1c,#0a0810);border-radius:23px;padding:32px 24px 28px;text-align:center;}
+.crown-emoji{font-size:52px;line-height:1;margin-bottom:12px;display:block;animation:float 4s ease-in-out infinite;}
+.gold-title{font-size:38px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 5s linear infinite;letter-spacing:-.5px;}
+.gold-sub{font-size:15px;color:rgba(255,255,255,.7);margin-top:8px;letter-spacing:.3px;}
+#gold-tagline{font-size:12px;letter-spacing:3px;color:rgba(232,168,32,.7);margin-top:8px;}
+.price-area{margin:20px 0 6px;}
+.price-big{font-size:52px;font-weight:200;color:#ffffff;}
+.price-per{font-size:18px;color:rgba(255,255,255,.6);}
+.price-note{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:20px;}
+#gold-badge-row{display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.22);border-radius:50px;padding:5px 16px;font-size:13px;color:#e8a820;margin-bottom:20px;}
+.cta-btn{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);color:#ffffff;cursor:pointer;animation:pulseCta 4s ease-in-out infinite;transition:transform .15s;}
+.cta-btn:active{transform:scale(.98);}
+#gold-cta-note{text-align:center;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;line-height:1.7;}
 
-/* Header row */
-.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:36px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 4s linear infinite;}
+/* section label */
+.section-label{font-size:11px;font-weight:400;letter-spacing:3px;color:rgba(255,255,255,.5);margin:28px 0 12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
 
-/* Feature row */
-.feat-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;border:1px solid rgba(201,137,12,.15);background:rgba(201,137,12,.04);margin-bottom:8px;animation:fadeUp .6s ease-out both;}
-.feat-row:nth-child(1){animation-delay:.1s;}
-.feat-row:nth-child(2){animation-delay:.2s;}
-.feat-row:nth-child(3){animation-delay:.3s;}
-.feat-row:nth-child(4){animation-delay:.4s;}
-.feat-icon{width:42px;height:42px;border-radius:12px;background:rgba(201,137,12,.12);border:1px solid rgba(201,137,12,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.feat-title{font-size:18px;font-weight:400;color:#fff;}
-.feat-desc{font-size:18px;color:var(--dim);margin-top:2px;}
+/* benefit columns */
+.benefit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.benefit-col{border-radius:18px;padding:18px 16px;border:1px solid;}
+.seeker{background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.12);}
+.master{background:rgba(232,168,32,.04);border-color:rgba(232,168,32,.12);}
+.col-title{font-size:10px;font-weight:400;letter-spacing:2px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid;}
+.seeker .col-title{color:#4ade80;border-color:rgba(74,222,128,.12);}
+.master .col-title{color:#e8a820;border-color:rgba(232,168,32,.12);}
+.benefit-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.benefit-item:last-child{border-bottom:none;padding-bottom:0;}
+.chk{color:#4ade80;font-size:13px;flex-shrink:0;margin-top:2px;}
+.b-name{font-size:14px;font-weight:400;color:#ffffff;line-height:1.3;}
+.b-desc{font-size:11px;color:#ffffff;margin-top:2px;opacity:.85;line-height:1.4;}
 
-/* FAQ */
+/* compare table */
+.compare-wrap{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.07);margin-bottom:24px;}
+.c-row{display:grid;grid-template-columns:1fr auto auto;}
+.c-row.hdr{background:rgba(255,255,255,.04);}
+.c-cell{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);font-size:15px;font-weight:300;}
+.c-row:last-child .c-cell{border-bottom:none;}
+.c-cell.m,.c-cell.r{border-left:1px solid rgba(255,255,255,.05);text-align:center;}
+.c-cell.m{color:rgba(255,255,255,.5);}
+.c-cell.r{color:#e8a820;}
+.c-cell.lbl{color:#ffffff;font-weight:400;}
+.hdr .c-cell{font-size:11px;letter-spacing:1.5px;font-weight:400;}
+.hdr .c-cell.m{color:rgba(255,255,255,.6);}
+.hdr .c-cell.r{color:#e8a820;}
+
+/* faq */
 .faq-item{border-bottom:1px solid rgba(255,255,255,.06);overflow:hidden;}
-.faq-q{padding:14px 0;font-size:18px;color:var(--dim);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
-.faq-q:active{opacity:.7;}
-.faq-a{font-size:18px;color:var(--dim);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 0;}
-.faq-item.open .faq-a{max-height:200px;padding:0 0 14px;}
-.faq-item.open .faq-chevron{transform:rotate(180deg);}
-.faq-chevron{transition:transform .3s ease;font-size:18px;}
+.faq-q{padding:16px 0;font-size:16px;color:var(--dim);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-chev{font-size:13px;transition:transform .25s;color:rgba(232,168,32,.4);}
+.faq-item.open .faq-chev{transform:rotate(180deg);}
+.faq-a{font-size:14px;color:rgba(255,255,255,.75);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:16px;}
 
-/* Bottom Nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;justify-content:space-around;padding:8px 4px 12px;z-index:100;}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0;transition:all .2s;text-decoration:none;}
-.nav-item svg{stroke:var(--muted);stroke-width:1.8;fill:none;}
-.nav-label{font-size:18px;color:var(--muted);margin-top:5px;}
+/* nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,14,26,.98);border-top:1px solid rgba(255,255,255,.08);padding:10px 4px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(16px);}
+.nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;color:rgba(255,255,255,.4);stroke:rgba(255,255,255,.4);}
+.nav-item svg{stroke:rgba(255,255,255,.4);}
+.nav-item.active{color:#f0f0f0;}
 .nav-item.active svg{stroke:#f0f0f0;}
-.nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
-.nav-center{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;text-decoration:none;}
-.nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin-top:-28px;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
-.nav-center .nav-label{color:#e0e0e0;font-weight:400;}
-
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
-
-/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
-.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
-body{padding-top:env(safe-area-inset-top,0px);}
+.nav-label{font-size:11px;margin-top:4px;font-family:'Noto Sans Display',sans-serif;}
+.nav-center{text-align:center;flex:1;cursor:pointer;}
+.nav-orb{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;margin:0 auto;transform:translateY(-10px);}
 </style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-<link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#0a0810"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
 </head>
 <body>
-<div class="status-strip" aria-hidden="true"></div>
-<div class="bg-glow"></div>
-
 <div class="page">
+  <a class="back-btn" href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'">← Back</a>
 
-  <!-- Header -->
-  <div class="hdr-row">
-    <a class="back-btn" href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'">← Back</a>
-    <div class="page-title">Gold</div>
-    <div style="width:90px;"></div>
-  </div>
-
-  <!-- HERO: Spinning gold border card -->
-  <div id="gold-hero" style="border-radius:20px;padding:2px;position:relative;overflow:hidden;animation:pulseGold 4s ease-in-out infinite;margin-bottom:24px;">
-    <div style="position:absolute;inset:-50%;background:conic-gradient(from 0deg,#c9890c,transparent 15%,transparent 35%,#f5c842,transparent 50%,transparent 70%,#e8a820,transparent 85%,transparent,#c9890c);animation:rotateBorder 5s linear infinite;"></div>
-    <div style="position:relative;background:rgba(13,11,24,.95);border-radius:18px;padding:32px 20px;text-align:center;">
-      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(201,137,12,.06),transparent 55%);pointer-events:none;border-radius:18px;"></div>
-
-      <div style="font-size:56px;position:relative;animation:float 3s ease-in-out infinite;">👑</div>
-
-      <div id="gold-tagline" style="font-size:18px;color:var(--gold2);letter-spacing:3px;margin:12px 0 10px;position:relative;">✦ FINDERSEEK GOLD ✦</div>
-
-      <div id="gold-price-row" style="position:relative;margin-bottom:6px;">
-        <span style="font-size:56px;font-weight:200;color:#fff;">$3</span><span style="font-size:32px;font-weight:300;color:#fff;">.99</span><span style="font-size:18px;color:var(--dim);">/month</span>
+  <div class="crown-card fade1">
+    <div class="crown-inner">
+      <span class="crown-emoji">👑</span>
+      <div class="gold-title">FinderSeek Gold</div>
+      <div class="gold-sub">The edge for Seekers &amp; Quest Masters</div>
+      <div id="gold-tagline">MEMBERSHIP</div>
+      <div class="price-area">
+        <div id="gold-price-row"><span class="price-big">$3.99</span><span class="price-per">/mo</span></div>
       </div>
-
-      <div id="gold-badge-row" style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:18px;color:#4ade80;font-weight:400;position:relative;">
-        🎁 First month FREE
-      </div>
+      <div class="price-note">30-day free trial · Cancel anytime</div>
+      <div id="gold-badge-row">⭐ Gold Member</div>
+      <button id="gold-cta" class="cta-btn" onclick="startCheckout()">👑 Try Gold Free for 30 Days</button>
+      <div id="gold-cta-note">Then $3.99/mo · Cancel anytime<br/>🔒 Powered by Stripe</div>
     </div>
   </div>
 
-  <!-- Features -->
-  <div style="font-size:18px;color:#fff;font-weight:400;letter-spacing:2px;margin-bottom:14px;">WHAT YOU GET</div>
+  <div class="section-label fade2">GOLD BENEFITS</div>
 
-  <div class="feat-row">
-    <div class="feat-icon">⚡</div>
-    <div>
-      <div class="feat-title">Early Clue Access</div>
-      <div class="feat-desc">See clues 1 drop ahead of free users</div>
+  <div class="benefit-grid fade2">
+    <div class="benefit-col seeker">
+      <div class="col-title">🔍 SEEKER</div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#4ade80;line-height:1.3;">Finder alerts</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">⚡ clue push notification</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#4ade80;line-height:1.3;">50ft map radius</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">vs 100ft for free</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#4ade80;line-height:1.3;">City alerts</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">New quests near you</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#4ade80;line-height:1.3;">Early clues</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Before free seekers</div></div></div>
+    </div>
+    <div class="benefit-col master">
+      <div class="col-title">🏴 QUEST MASTER</div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#e8a820;line-height:1.3;">Quest analytics</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Live views &amp; seeker stats</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#e8a820;line-height:1.3;">3 pinned quests</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Keep best quests on top</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#e8a820;line-height:1.3;">Gold badge</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Verified on your profile</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:14px;font-weight:400;color:#e8a820;line-height:1.3;">Edit AI clues</div><div style="font-size:11px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Tweak clues before live</div></div></div>
     </div>
   </div>
 
-  <div class="feat-row">
-    <div class="feat-icon">📌</div>
-    <div>
-      <div class="feat-title">Promoted Quests</div>
-      <div class="feat-desc">Your quests pinned at top of all listings</div>
-    </div>
+  <div class="section-label fade3">FREE VS GOLD</div>
+  <div class="compare-wrap fade3">
+    <div class="c-row hdr"><div class="c-cell"></div><div class="c-cell m">FREE</div><div class="c-cell r">GOLD</div></div>
+    <div class="c-row"><div class="c-cell lbl">Play all quests</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Claim prizes</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Create quests</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Finder clue alerts</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">50ft precision map</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Early clue access</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Quest analytics</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Edit AI clues</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Gold badge</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
   </div>
 
-  <div class="feat-row">
-    <div class="feat-icon">🥇</div>
-    <div>
-      <div class="feat-title">Gold Badge</div>
-      <div class="feat-desc">Stand out on your profile & quest cards</div>
-    </div>
+  <div class="fade4" style="margin-bottom:32px;">
+    <button class="cta-btn" onclick="startCheckout()">👑 Start Free Trial</button>
+    <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;">Then $3.99/mo · Cancel anytime · 🔒 Stripe</div>
   </div>
 
-  <div class="feat-row">
-    <div class="feat-icon">🚫</div>
-    <div>
-      <div class="feat-title">Ad-Free + Priority Support</div>
-      <div class="feat-desc">Clean experience, fast help when needed</div>
-    </div>
+  <div class="section-label fade5">QUESTIONS</div>
+  <div class="fade5">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the finder clue alert? <span class="faq-chev">▾</span></div><div class="faq-a">Every quest has one special ⚡ finder clue hidden randomly in the sequence. It contains enough detail to go find the prize right now. Gold members get an instant push notification the moment it drops so they can move first.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does editing AI clues mean? <span class="faq-chev">▾</span></div><div class="faq-a">When you create a quest, AI writes your clues. Gold Quest Masters can edit any clue text after it's generated — tweak the wording, add local flavor, or adjust difficulty before the quest goes live.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the free trial work? <span class="faq-chev">▾</span></div><div class="faq-a">Full Gold access free for 30 days. After that it's $3.99/mo. Cancel anytime before the trial ends and you won't be charged.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-chev">▾</span></div><div class="faq-a">Yes — cancel from your profile at any time. You keep Gold perks until the end of your billing period, then revert to free with no data lost.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need Gold to play? <span class="faq-chev">▾</span></div><div class="faq-a">Nope. Free gives full access to seek treasure, create quests, and claim prizes. Gold gives you a competitive edge and helps support FinderSeek.</div></div>
   </div>
-
-  <!-- CTA -->
-  <div style="margin-top:20px;animation:fadeUp .6s ease-out both;animation-delay:.5s;">
-    <button id="gold-cta" onclick="startCheckout()" style="width:100%;padding:20px;border:none;border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;text-align:center;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;cursor:pointer;animation:pulseGold 3s ease-in-out infinite;transition:transform .15s;">
-      👑 Try Gold Free for 30 Days
-    </button>
-    <div id="gold-cta-note" style="text-align:center;font-size:18px;color:var(--dim);margin-top:10px;line-height:1.6;">
-      Then $3.99/mo · Cancel anytime<br/>
-      🔒 Powered by Stripe
-    </div>
-  </div>
-
-  <!-- Free vs Gold quick compare -->
-  <div style="margin-top:32px;animation:fadeUp .6s ease-out both;animation-delay:.6s;">
-    <div style="font-size:18px;color:#fff;font-weight:400;letter-spacing:2px;margin-bottom:14px;">FREE VS GOLD</div>
-    <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);">
-      <div style="display:grid;grid-template-columns:1fr auto auto;gap:0;font-size:18px;">
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:var(--dim);"></div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;color:var(--dim);border-left:1px solid rgba(255,255,255,.06);">Free</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;color:var(--gold2);font-weight:400;border-left:1px solid rgba(255,255,255,.06);">🥇 Gold</div>
-
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;">All quests</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">✅</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">✅</div>
-
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;">Claim prizes</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">✅</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">✅</div>
-
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;">Early clues</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);opacity:.4;">🔒</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">⚡</div>
-
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;">Promoted quests</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);opacity:.4;">🔒</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">📌</div>
-
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;">Gold badge</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);opacity:.4;">🔒</div>
-        <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center;border-left:1px solid rgba(255,255,255,.06);">🥇</div>
-
-        <div style="padding:12px 14px;color:#fff;">Ad-free</div>
-        <div style="padding:12px 14px;text-align:center;border-left:1px solid rgba(255,255,255,.06);opacity:.4;">🔒</div>
-        <div style="padding:12px 14px;text-align:center;border-left:1px solid rgba(255,255,255,.06);">🚫</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <div style="margin-top:32px;animation:fadeUp .6s ease-out both;animation-delay:.7s;">
-    <div style="font-size:18px;color:#fff;font-weight:400;letter-spacing:2px;margin-bottom:14px;">QUESTIONS</div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">How does early clue access work? <span class="faq-chevron">▾</span></div>
-      <div class="faq-a">Free users see clues as they drop on schedule. Gold Seekers see the next unrevealed clue one step ahead — giving you a real head start on finding the treasure.</div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">What does a promoted quest look like? <span class="faq-chevron">▾</span></div>
-      <div class="faq-a">When you're Gold and your quest is active, it appears pinned at the top of quest listings with a ✦ FEATURED banner. More eyes means faster finds.</div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">How does the free trial work? <span class="faq-chevron">▾</span></div>
-      <div class="faq-a">You get full Gold access for 30 days completely free. After that, it's $3.99/mo. You can cancel anytime before the trial ends and you won't be charged.</div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-chevron">▾</span></div>
-      <div class="faq-a">Yes — cancel anytime from your profile. You keep Gold perks until the end of your billing period, then revert to free.</div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Do I need Gold to play? <span class="faq-chevron">▾</span></div>
-      <div class="faq-a">Nope! Free gives you full access to hide treasure, find prizes, and claim wins. Gold just gives you a competitive edge and supports the platform.</div>
-    </div>
-  </div>
-
 </div>
 
-<!-- Toast -->
-<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:16px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;"></div>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
-  <div class="nav-item" onclick="window.location.href='how-it-works.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
-  <div class="nav-center" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
-  <div class="nav-item active" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="nav-label">Gold</div></div>
-  <div class="nav-item" onclick="window.location.href='profile.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
+  <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
+  <div class="nav-item" onclick="window.location.href='how-it-works.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
+  <div class="nav-center" onclick="window.location.href='index.html'"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label" style="font-size:11px;color:rgba(255,255,255,.35);">Quests</div></div>
+  <div class="nav-item active" onclick="setNav(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="nav-label">Gold</div></div>
+  <div class="nav-item" onclick="window.location.href='profile.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
 </nav>
 
 <script>
-const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const NOTIFY_SECRET = 'fs-notify-2026';
-
-let currentUser = null;
-let currentProfile = null;
-
-function getToken(){
-  var t = localStorage.getItem('fs_token');
-  if (t) return t;
-  try {
-    var keys = Object.keys(localStorage);
-    for (var i = 0; i < keys.length; i++) {
-      if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
-        var session = JSON.parse(localStorage.getItem(keys[i]));
-        if (session && session.access_token) return session.access_token;
-      }
-    }
-  } catch(e){}
-  return '';
-}
-
-function setNav(el){
-  document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});
-  el.classList.add('active');
-}
-
-function toggleFaq(el){ el.parentElement.classList.toggle('open'); }
-
-function showToast(msg, type){
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.transform = 'translateX(-50%) translateY(0)';
-  if (type === 'error') t.style.borderColor = 'rgba(239,68,68,.5)';
-  else if (type === 'success') t.style.borderColor = 'rgba(74,222,128,.5)';
-  else t.style.borderColor = 'rgba(201,137,12,.3)';
-  clearTimeout(window._toastT);
-  window._toastT = setTimeout(function(){
-    t.style.transform = 'translateX(-50%) translateY(-120%)';
-  }, 4000);
-}
-
-// ============================================================
-//  LOAD USER + GOLD STATUS
-// ============================================================
-async function loadStatus(){
-  var token = getToken();
-  if (!token) return; // Show default upgrade UI
-
-  try {
-    var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if (!ur.ok) return;
-    currentUser = await ur.json();
-    if (!currentUser?.id) return;
-
-    var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
-      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
-    });
-    var pd = await pr.json();
-    currentProfile = (pd && pd[0]) || null;
-
-    var isPro = currentProfile?.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date());
-    if (isPro) renderActiveState();
-  } catch(e) { console.error('Gold status error', e); }
-}
-
-function renderActiveState(){
-  document.getElementById('gold-tagline').innerHTML = '✦ YOU\'RE GOLD ✦';
-  document.getElementById('gold-tagline').style.color = '#4ade80';
-
-  // Show renewal/expiry instead of price
-  var expiresStr = 'Active';
-  if (currentProfile.pro_expires) {
-    var d = new Date(currentProfile.pro_expires);
-    expiresStr = 'Renews ' + d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  }
-  document.getElementById('gold-price-row').innerHTML =
-    '<span style="font-size:24px;font-weight:400;color:#4ade80;">✓ Membership Active</span>';
-
-  document.getElementById('gold-badge-row').outerHTML =
-    '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:18px;color:#4ade80;font-weight:400;position:relative;margin-top:8px;">' + expiresStr + '</div>';
-
-  // Swap CTA to manage subscription
-  var cta = document.getElementById('gold-cta');
-  cta.innerHTML = '⚙️ Manage Subscription';
-  cta.style.animation = 'none';
-  cta.style.background = 'rgba(255,255,255,.06)';
-  cta.style.color = '#fff';
-  cta.style.border = '1px solid rgba(255,255,255,.12)';
-  cta.onclick = openBillingPortal;
-
-  document.getElementById('gold-cta-note').innerHTML =
-    'Thanks for supporting FinderSeek 🙏<br/>🔒 Powered by Stripe';
-}
-
-// ============================================================
-//  CHECKOUT
-// ============================================================
-async function startCheckout(){
-  var btn = document.getElementById('gold-cta');
-
-  if (!currentUser) {
-    showToast('Please sign in first', 'error');
-    setTimeout(function(){ window.location.href = 'profile.html?redirect=gold.html'; }, 1200);
-    return;
-  }
-
-  btn.disabled = true;
-  var originalText = btn.innerHTML;
-  btn.innerHTML = '⏳ Opening checkout...';
-
-  try {
-    var r = await fetch('/api/create-checkout', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
-      body: JSON.stringify({
-        userId: currentUser.id,
-        email: currentUser.email,
-        username: currentProfile?.username || ''
-      })
-    });
-    var d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed');
-    window.location.href = d.url;
-  } catch(e) {
-    console.error('Checkout error', e);
-    showToast('Error: '+e.message, 'error');
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-  }
-}
-
-async function openBillingPortal(){
-  var btn = document.getElementById('gold-cta');
-  btn.disabled = true;
-  var originalText = btn.innerHTML;
-  btn.innerHTML = '⏳ Opening portal...';
-
-  try {
-    var r = await fetch('/api/billing-portal', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
-      body: JSON.stringify({ userId: currentUser.id })
-    });
-    var d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error || 'Failed to open portal');
-    window.location.href = d.url;
-  } catch(e) {
-    console.error('Portal error', e);
-    showToast('Error: '+e.message, 'error');
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-  }
-}
-
-// ============================================================
-//  URL HOOKS
-// ============================================================
-function handleUrlParams(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('upgraded') === 'true') {
-    showToast('🎉 Welcome to Gold! Perks unlocking now...', 'success');
-    window.history.replaceState({}, '', 'gold.html');
-    // Force a profile reload after a short delay (webhook may still be processing)
-    setTimeout(loadStatus, 2000);
-  }
-}
-
-// Init
-loadStatus();
-handleUrlParams();
+const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET='fs-notify-2026';
+let currentUser=null,currentProfile=null;
+function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var k=Object.keys(localStorage);for(var i=0;i<k.length;i++){if(k[i].indexOf('sb-')===0&&k[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(k[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}return '';}
+function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
+function toggleFaq(el){el.parentElement.classList.toggle('open');}
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';},4000);}
+async function loadStatus(){var token=getToken();if(!token)return;try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!ur.ok)return;currentUser=await ur.json();if(!currentUser?.id)return;var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var pd=await pr.json();currentProfile=(pd&&pd[0])||null;var isPro=currentProfile?.is_pro&&(!currentProfile.pro_expires||new Date(currentProfile.pro_expires)>new Date());if(isPro)renderActiveState();}catch(e){console.error('Gold status error',e);}}
+function renderActiveState(){document.getElementById('gold-tagline').innerHTML='✦ YOU\'RE GOLD ✦';document.getElementById('gold-tagline').style.color='#4ade80';var expiresStr='Active';if(currentProfile.pro_expires){var d=new Date(currentProfile.pro_expires);expiresStr='Renews '+d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}document.getElementById('gold-price-row').innerHTML='<span style="font-size:24px;font-weight:400;color:#4ade80;">✓ Membership Active</span>';document.getElementById('gold-badge-row').outerHTML='<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:6px 16px;font-size:15px;color:#4ade80;margin-bottom:20px;">'+expiresStr+'</div>';var cta=document.getElementById('gold-cta');cta.innerHTML='⚙️ Manage Subscription';cta.style.animation='none';cta.style.background='rgba(255,255,255,.06)';cta.style.color='#fff';cta.style.border='1px solid rgba(255,255,255,.12)';cta.onclick=openBillingPortal;document.getElementById('gold-cta-note').innerHTML='Thanks for supporting FinderSeek 🙏<br/>🔒 Powered by Stripe';}
+async function startCheckout(){var btn=document.getElementById('gold-cta');if(!currentUser){showToast('Please sign in first','error');setTimeout(function(){window.location.href='profile.html?redirect=gold.html';},1200);return;}btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening checkout...';try{var r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Checkout failed');window.location.href=d.url;}catch(e){console.error('Checkout error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
+async function openBillingPortal(){var btn=document.getElementById('gold-cta');btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening portal...';try{var r=await fetch('/api/billing-portal',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Failed');window.location.href=d.url;}catch(e){console.error('Portal error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
+function handleUrlParams(){var p=new URLSearchParams(window.location.search);if(p.get('upgraded')==='true'){showToast('🎉 Welcome to Gold! Perks unlocking now...','success');window.history.replaceState({},'','gold.html');setTimeout(loadStatus,2000);}}
+loadStatus();handleUrlParams();
 </script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  });
-}
-</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>
