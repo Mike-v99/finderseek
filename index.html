@@ -1115,7 +1115,7 @@ async function initLiveMap() {
 
     var positions = Object.values(groups).map(function(g) { return [g.center.lat, g.center.lng]; });
     if (positions.length > 0) {
-      liveMap.fitBounds(L.latLngBounds(positions), { padding: [50, 50] });
+      liveMap.fitBounds(L.latLngBounds(positions), { padding: [60, 60], maxZoom: 11 });
     }
 
     Object.values(groups).forEach(function(g, idx) {
