@@ -177,7 +177,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 <link rel="apple-touch-icon" href="/icon-192.png"/>
-<script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -1484,10 +1483,9 @@ if ('serviceWorker' in navigator) {
   <div class="pm-title" id="pm-title">Fund your quest</div>
   <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
   <div class="pm-breakdown" id="pm-breakdown"></div>
-  <div id="pm-stripe-element"></div>
   <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" onclick="submitPayment()">Pay now</button>
-  <div class="pm-secure">🔒 Secure payment by Stripe · Funds held in escrow</div>
+  <button class="pm-pay-btn" id="pm-pay-btn" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Continue to Stripe →</button>
+  <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
 </div>
 
 <style>
@@ -1513,52 +1511,37 @@ if ('serviceWorker' in navigator) {
 </style>
 
 <script>
-// ═══════ PAYMENT MODAL ═══════
-const STRIPE_PUBLIC_KEY_NQ = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
-let _stripe = null, _stripeElements = null, _stripeCs = null, _currentHuntId = null;
+// ═══════ PAYMENT MODAL — Stripe Checkout redirect ═══════
+let _currentHuntId = null, _currentPayload = null;
 
 async function openPaymentModal({ userId, email, huntId, prize }) {
   _currentHuntId = huntId;
-  const fee = Math.round(prize * 0.10 * 100) / 100;
+  _currentPayload = { userId, email, huntId, prize };
+
+  const fee   = Math.round(prize * 0.10 * 100) / 100;
   const total = prize + fee;
-  document.getElementById('pm-breakdown').innerHTML = `
-    <div class="pm-row"><span>Prize to winner</span><strong>$${prize.toFixed(2)}</strong></div>
-    <div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$${fee.toFixed(2)}</strong></div>
-    <div class="pm-row total"><span>Total today</span><strong>$${total.toFixed(2)}</strong></div>`;
+
+  document.getElementById('pm-breakdown').innerHTML =
+    '<div class="pm-row"><span>Prize to winner</span><strong>$' + prize.toFixed(2) + '</strong></div>' +
+    '<div class="pm-row"><span>FinderSeek fee (10%)</span><strong>$' + fee.toFixed(2) + '</strong></div>' +
+    '<div class="pm-row total"><span>Total today</span><strong>$' + total.toFixed(2) + '</strong></div>';
+
   document.getElementById('pm-error').textContent = '';
+
+  // Reset button
+  var btn = document.getElementById('pm-pay-btn');
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.style.cursor = 'not-allowed';
+  btn.textContent = 'Continue to Stripe →';
 
   document.getElementById('pm-backdrop').classList.add('show');
   document.getElementById('pm-sheet').classList.add('show');
 
-  if (!_stripe) _stripe = Stripe(STRIPE_PUBLIC_KEY_NQ);
-
-  if (!_stripeCs) {
-    try {
-      const r = await fetch('/api/create-escrow-intent', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
-        body: JSON.stringify({ userId, email, huntId, prizeAmount: prize, totalCents: Math.round(total * 100) })
-      });
-      const d = await r.json();
-      if (!r.ok || !d.clientSecret) throw new Error(d.error || 'Could not start payment');
-      _stripeCs = d.clientSecret;
-    } catch(e) {
-      document.getElementById('pm-error').textContent = e.message;
-      return;
-    }
-    _stripeElements = _stripe.elements({
-      clientSecret: _stripeCs,
-      appearance: {
-        theme: 'night',
-        variables: {
-          colorPrimary: '#e8a820', colorBackground: '#14121f', colorText: '#f5ead8',
-          colorDanger: '#f87171', fontFamily: 'Noto Sans Display, system-ui, sans-serif', borderRadius: '10px'
-        }
-      }
-    });
-    const el = _stripeElements.create('payment');
-    el.mount('#pm-stripe-element');
-  }
+  // Enable button immediately — no Stripe Elements to wait for
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
 }
 
 function closePaymentModal(){
@@ -1571,19 +1554,30 @@ async function submitPayment(){
   const errEl = document.getElementById('pm-error');
   errEl.textContent = '';
   btn.disabled = true;
-  btn.textContent = 'Processing...';
+  btn.textContent = 'Opening Stripe...';
+
   try {
-    const { error } = await _stripe.confirmPayment({
-      elements: _stripeElements,
-      confirmParams: {
-        return_url: window.location.origin + '/profile.html?quest=funded&id=' + (_currentHuntId || '')
-      }
+    const { userId, email, huntId, prize } = _currentPayload;
+    const total = prize + Math.round(prize * 0.10 * 100) / 100;
+    const r = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({
+        type: 'escrow',
+        userId,
+        email,
+        huntId,
+        prizeAmount: prize,
+        totalCents: Math.round(total * 100)
+      })
     });
-    if (error) throw new Error(error.message);
+    const d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
+    window.location.href = d.url;
   } catch(e) {
-    errEl.textContent = e.message || 'Payment failed';
+    errEl.textContent = e.message || 'Payment failed — please try again';
     btn.disabled = false;
-    btn.textContent = 'Try again';
+    btn.textContent = 'Continue to Stripe →';
   }
 }
 </script>
