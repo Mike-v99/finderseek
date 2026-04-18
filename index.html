@@ -432,8 +432,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="page">
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="logo el from-scale" data-d="150">
+  <div class="hero" style="position:relative;">
+    <div id="hero-halo" style="position:absolute;top:-90px;left:50%;transform:translateX(-50%) scale(0.2);width:460px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(232,168,32,.32) 0%,rgba(232,168,32,.11) 32%,rgba(232,168,32,.03) 58%,transparent 78%);border-radius:50%;opacity:0;pointer-events:none;z-index:0;will-change:transform,opacity;"></div>
+    <div class="logo el from-scale" style="position:relative;z-index:1;" data-d="150">
       <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
     </div>
     <div class="tagline el" data-d="300">Hidden Treasure. Real Adventure.</div>
@@ -684,10 +685,31 @@ function playGoldBurst() {
       ctx.restore();
     }
     if (e < 2) requestAnimationFrame(frame);
-    else { ctx.clearRect(0, 0, w, h); canvas.style.display = 'none'; }
+    else {
+      ctx.clearRect(0, 0, w, h);
+      canvas.style.display = 'none';
+      bloomHeroHalo();
+    }
   }
   canvas.style.display = 'block';
   requestAnimationFrame(frame);
+}
+
+// Bloom the radial halo after the gold burst fades
+function bloomHeroHalo() {
+  var halo = document.getElementById('hero-halo');
+  if (!halo) return;
+  void halo.offsetWidth;
+  halo.style.transition = 'opacity 1.6s cubic-bezier(0.22,1,0.36,1), transform 1.6s cubic-bezier(0.22,1,0.36,1)';
+  halo.style.opacity = '0.85';
+  halo.style.transform = 'translateX(-50%) scale(1)';
+  // Gentle breathe loop
+  setTimeout(function breathe(shrink) {
+    halo.style.transition = 'opacity 3.5s ease-in-out, transform 3.5s ease-in-out';
+    halo.style.opacity = shrink ? '0.55' : '0.85';
+    halo.style.transform = 'translateX(-50%) scale(' + (shrink ? '1.04' : '1') + ')';
+    setTimeout(function(){ breathe(!shrink); }, 3500);
+  }.bind(null, true), 1800);
 }
 
 // Trigger fly-in elements
