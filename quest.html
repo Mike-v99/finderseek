@@ -337,7 +337,7 @@ function toggleGoldModal() {
 var _goBackToMap = new URLSearchParams(window.location.search).get('back') === 'map';
 function goBack() {
   if (_goBackToMap) {
-    history.back();
+    window.location.href = 'index.html#openmap';
   } else {
     history.length > 1 ? history.back() : location.href = 'index.html';
   }

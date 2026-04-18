@@ -723,6 +723,15 @@ function triggerFlyIn() {
 
 // Run on load
 window.addEventListener('DOMContentLoaded', function() {
+  // If returning from a quest opened via map, reopen map immediately
+  if (window.location.hash === '#openmap') {
+    window.history.replaceState({}, '', 'index.html');
+    // Show all elements instantly (skip animations)
+    document.querySelectorAll('.el').forEach(function(el) { el.classList.add('show'); });
+    openLiveMap();
+    loadQuests();
+    return;
+  }
   playGoldBurst();
   triggerFlyIn();
   loadQuests();
