@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 :root {
   --ink: #0d0b18;
@@ -187,13 +188,13 @@ body::after {
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: rgba(255,255,255,.3); z-index: 2; pointer-events: none; }
 .btn-livemap {
   background: linear-gradient(135deg, #b91c1c, var(--red));
-  color: #fff;
+  color: #ffffff;
   border: none;
   border-radius: 14px;
   padding: 14px 20px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
-  font-family: 'Noto Sans Display', sans-serif; font-weight: 300;
+  font-family: 'Noto Sans Display', sans-serif;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -209,6 +210,27 @@ body::after {
 }
 @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(.85); } }
 
+/* Live Map Modal */
+#map-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(6,5,10,.85); backdrop-filter:blur(8px); z-index:9998; opacity:0; transition:opacity .25s; }
+#map-modal-backdrop.show { opacity:1; }
+#map-modal { display:none; position:fixed; inset:0; z-index:9999; flex-direction:column; }
+#map-modal.show { display:flex; }
+#map-modal-inner { background:#0d0b18; flex:1; display:flex; flex-direction:column; border-top:1px solid rgba(255,255,255,.08); margin-top:env(safe-area-inset-top,0px); }
+#map-modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,.06); flex-shrink:0; }
+#map-modal-title { font-size:18px; font-weight:400; color:#ffffff; display:flex; align-items:center; gap:8px; }
+#map-modal-close { background:rgba(255,255,255,.08); border:none; color:#ffffff; font-size:18px; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; }
+#map-modal-count { font-size:12px; color:#e8a820; background:rgba(232,168,32,.12); border:1px solid rgba(232,168,32,.25); border-radius:6px; padding:3px 10px; }
+#live-map { flex:1; min-height:0; }
+#map-modal-sheet { background:#13101e; border-top:1px solid rgba(255,255,255,.08); padding:12px 16px; max-height:200px; overflow-y:auto; flex-shrink:0; }
+#map-modal-sheet-title { font-size:11px; letter-spacing:1.5px; color:rgba(255,255,255,.35); text-transform:uppercase; margin-bottom:10px; }
+.map-quest-chip { display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:background .15s; }
+.map-quest-chip:active { background:rgba(255,255,255,.08); }
+.map-quest-chip.highlighted { background:rgba(232,168,32,.1); border-color:rgba(232,168,32,.4); }
+.map-chip-title { font-size:15px; color:#ffffff; margin-bottom:2px; }
+.map-chip-sub { font-size:13px; color:#c8c8c8; }
+.map-chip-prize { font-size:16px; color:#4ade80; flex-shrink:0; }
+@keyframes map-pr1 { 0% { transform:scale(1); opacity:.7; } 100% { transform:scale(3.5); opacity:0; } }
+@keyframes map-pr2 { 0% { transform:scale(1); opacity:.4; } 100% { transform:scale(2.4); opacity:0; } }
 /* SECTIONS */
 .sections { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
 .section {
@@ -288,8 +310,8 @@ body::after {
 .quest-row:active { background: rgba(255,255,255,.06); }
 .quest-row-left { flex: 1; min-width: 0; }
 .quest-row-title { font-size: 20px; color: #ffffff; font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.quest-row-meta { font-size: 18px; color: rgba(255,255,255,.5); display: flex; gap: 8px; align-items: center; }
-.quest-row-meta .dot { width: 3px; height: 3px; background: rgba(255,255,255,.5); border-radius: 50%; }
+.quest-row-meta { font-size: 18px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
+.quest-row-meta .dot { width: 3px; height: 3px; background: #c8c8c8; border-radius: 50%; }
 .quest-row-prize { font-size: 18px; font-weight: 400; color: var(--green); flex-shrink: 0; }
 .section-scheduled .quest-row-prize { color: var(--yellow); }
 .section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
@@ -455,10 +477,28 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Search quests..."/>
     </div>
-    <button class="btn-livemap"><span class="pulse-dot"></span>LIVE MAP</button>
+    <button class="btn-livemap" onclick="openLiveMap()"><span class="pulse-dot"></span>LIVE MAP</button>
   </div>
 
-  <!-- QUEST SECTIONS -->
+  <!-- LIVE MAP MODAL -->
+  <div id="map-modal-backdrop" onclick="closeLiveMap()"></div>
+  <div id="map-modal">
+    <div id="map-modal-inner">
+      <div id="map-modal-header">
+        <div id="map-modal-title">
+          <span class="pulse-dot" style="background:#e8a820;"></span>
+          Live Map
+          <span id="map-modal-count">0 active</span>
+        </div>
+        <button id="map-modal-close" onclick="closeLiveMap()">✕</button>
+      </div>
+      <div id="live-map"></div>
+      <div id="map-modal-sheet">
+        <div id="map-modal-sheet-title">Active quests</div>
+        <div id="map-chip-list"><div style="padding:10px 0;text-align:center;color:rgba(255,255,255,.3);font-size:14px;">Loading quests…</div></div>
+      </div>
+    </div>
+  </div>
   <div class="sections" id="quest-sections">
     <div class="section section-active el from-left open" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
@@ -799,6 +839,210 @@ async function loadQuests() {
   renderSection('active', active);
   renderSection('scheduled', scheduled);
   renderSection('completed', completed);
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+var liveMap = null;
+var liveMapInitialized = false;
+
+function openLiveMap() {
+  document.getElementById('map-modal-backdrop').style.display = 'block';
+  document.getElementById('map-modal').style.display = 'flex';
+  setTimeout(function() {
+    document.getElementById('map-modal-backdrop').classList.add('show');
+  }, 10);
+  document.body.style.overflow = 'hidden';
+  if (!liveMapInitialized) {
+    initLiveMap();
+    liveMapInitialized = true;
+  } else if (liveMap) {
+    setTimeout(function() { liveMap.invalidateSize(); }, 100);
+  }
+}
+
+function closeLiveMap() {
+  document.getElementById('map-modal-backdrop').classList.remove('show');
+  setTimeout(function() {
+    document.getElementById('map-modal-backdrop').style.display = 'none';
+    document.getElementById('map-modal').style.display = 'none';
+  }, 260);
+  document.body.style.overflow = '';
+}
+
+async function initLiveMap() {
+  // Cache for geocoded city centers — avoids repeat Nominatim calls for same city
+  var cityCache = {};
+
+  // Reverse geocode a lat/lng to get the city center via Nominatim.
+  // Returns { lat, lng, label } for the city/town, never the exact quest coords.
+  async function getCityCenter(lat, lng, cityHint) {
+    var cacheKey = cityHint ? cityHint.toLowerCase().trim() : (Math.round(lat*10)/10 + ',' + Math.round(lng*10)/10);
+    if (cityCache[cacheKey]) return cityCache[cacheKey];
+
+    try {
+      // Step 1: reverse geocode the hiding spot to get city name
+      var revUrl = 'https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json&zoom=10&addressdetails=1';
+      var revRes = await fetch(revUrl, { headers: { 'Accept-Language': 'en', 'User-Agent': 'FinderSeek/1.0' } });
+      var revData = await revRes.json();
+
+      var addr = revData.address || {};
+      var cityName = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || cityHint || 'Unknown';
+      var state = addr.state || '';
+      var searchName = cityName + (state ? ', ' + state : '');
+
+      // Step 2: forward geocode the city name to get its center point
+      var fwdUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(searchName) + '&format=json&limit=1&addressdetails=0';
+      var fwdRes = await fetch(fwdUrl, { headers: { 'Accept-Language': 'en', 'User-Agent': 'FinderSeek/1.0' } });
+      var fwdData = await fwdRes.json();
+
+      var result;
+      if (fwdData && fwdData[0]) {
+        result = { lat: parseFloat(fwdData[0].lat), lng: parseFloat(fwdData[0].lon), label: cityName };
+      } else {
+        // If forward geocode fails, offset the hiding spot by ~1km so it's not exact
+        result = { lat: lat + 0.009, lng: lng + 0.009, label: cityName };
+      }
+
+      cityCache[cacheKey] = result;
+      return result;
+    } catch(e) {
+      console.warn('Geocode failed for', cityHint, e.message);
+      // Safe fallback — offset from actual spot
+      var fallback = { lat: lat + 0.009, lng: lng + 0.009, label: cityHint || 'Unknown' };
+      cityCache[cacheKey] = fallback;
+      return fallback;
+    }
+  }
+
+  liveMap = L.map('live-map', {
+    center: [30.05, -95.5],
+    zoom: 9,
+    zoomControl: false,
+    attributionControl: false,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+  }).addTo(liveMap);
+
+  L.control.zoom({ position: 'topright' }).addTo(liveMap);
+
+  try {
+    var r = await fetch(SB + '/rest/v1/hunts?status=eq.active&select=id,city,neighborhood,prize_value,ends_at,lat,lng,payment_type,escrow_status&order=ends_at.asc&limit=50', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+    });
+    var quests = await r.json();
+
+    // Filter funded only, must have coords
+    quests = (quests || []).filter(function(q) {
+      if (!q.lat || !q.lng) return false;
+      if (q.payment_type === 'escrow' || q.payment_type === 'finderseek') {
+        return ['funded','paid','pending_payout'].includes(q.escrow_status);
+      }
+      return true;
+    });
+
+    document.getElementById('map-modal-count').textContent = quests.length + ' active';
+
+    var chipList = document.getElementById('map-chip-list');
+    chipList.innerHTML = '<div style="padding:10px 0;text-align:center;color:rgba(255,255,255,.3);font-size:14px;">Locating quests…</div>';
+
+    if (quests.length === 0) {
+      chipList.innerHTML = '<div style="padding:10px 0;text-align:center;color:rgba(255,255,255,.3);font-size:14px;">No active quests right now</div>';
+      return;
+    }
+
+    // Geocode all quests to their city centers (parallel, rate-limited to 1/sec for Nominatim)
+    var geocoded = [];
+    for (var i = 0; i < quests.length; i++) {
+      var q = quests[i];
+      var center = await getCityCenter(q.lat, q.lng, q.city);
+      geocoded.push({ q: q, center: center });
+      if (i < quests.length - 1) await new Promise(function(res){ setTimeout(res, 1100); });
+    }
+
+    chipList.innerHTML = '';
+
+    // Group by city label so same city stacks into one marker
+    var groups = {};
+    geocoded.forEach(function(item) {
+      var key = item.center.label;
+      if (!groups[key]) groups[key] = { center: item.center, quests: [] };
+      groups[key].quests.push(item.q);
+    });
+
+    var positions = Object.values(groups).map(function(g) { return [g.center.lat, g.center.lng]; });
+    if (positions.length > 0) {
+      liveMap.fitBounds(L.latLngBounds(positions), { padding: [50, 50] });
+    }
+
+    Object.values(groups).forEach(function(g, idx) {
+      var ch = g.center;
+      var totalPrize = g.quests.reduce(function(s,q){ return s + Math.round((q.prize_value||0)/100); }, 0);
+      var count = g.quests.length;
+      var color = totalPrize >= 50 ? '#e8a820' : '#4ade80';
+      var ringColor = totalPrize >= 50 ? 'rgba(232,168,32,' : 'rgba(74,222,128,';
+      var delay = (idx * 0.5) + 's';
+
+      var el = document.createElement('div');
+      el.style.cssText = 'position:relative;width:18px;height:18px;';
+      el.innerHTML =
+        '<div style="width:18px;height:18px;border-radius:50%;position:absolute;background:' + ringColor + '0.4);animation:map-pr1 2.2s ease-out infinite;animation-delay:' + delay + ';"></div>' +
+        '<div style="width:18px;height:18px;border-radius:50%;position:absolute;background:' + ringColor + '0.25);animation:map-pr2 2.2s ease-out infinite;animation-delay:' + delay + ';"></div>' +
+        '<div style="width:18px;height:18px;border-radius:50%;position:absolute;background:' + color + ';border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0a0800;font-weight:500;">' + (count > 1 ? count : '') + '</div>';
+
+      var icon = L.divIcon({ html: el, className: '', iconSize: [18,18], iconAnchor: [9,9] });
+      var marker = L.marker([ch.lat, ch.lng], { icon: icon }).addTo(liveMap);
+
+      L.circle([ch.lat, ch.lng], {
+        radius: 3000,
+        color: color, fillColor: color,
+        fillOpacity: 0.07, weight: 1.5, opacity: 0.3,
+      }).addTo(liveMap);
+
+      var groupChipId = 'mchip-g-' + idx;
+      marker.on('click', function() {
+        liveMap.flyTo([ch.lat, ch.lng], 11, { duration: 1 });
+        highlightMapChip(groupChipId);
+      });
+
+      g.quests.forEach(function(q) {
+        var prize = Math.round((q.prize_value || 0) / 100);
+        var endsStr = q.ends_at ? 'Ends ' + timeUntil(q.ends_at) : '';
+        var chipId = 'mchip-' + q.id;
+        var chip = document.createElement('div');
+        chip.className = 'map-quest-chip';
+        chip.id = chipId;
+        if (idx === 0 && g.quests.indexOf(q) === 0) chip.id = groupChipId;
+        chip.innerHTML =
+          '<div><div class="map-chip-title">' + escapeHtml(ch.label) + '</div>' +
+          '<div class="map-chip-sub">' + escapeHtml(q.city || '') + (endsStr ? ' · ' + endsStr : '') + '</div></div>' +
+          '<div class="map-chip-prize">$' + prize + '</div>';
+        chip.onclick = function() {
+          liveMap.flyTo([ch.lat, ch.lng], 11, { duration: 1 });
+          highlightMapChip(chipId);
+          setTimeout(function() { window.location.href = 'quest.html?id=' + q.id; }, 900);
+        };
+        chipList.appendChild(chip);
+      });
+    });
+
+    setTimeout(function() { liveMap.invalidateSize(); }, 200);
+  } catch(e) {
+    console.error('Live map error:', e);
+    document.getElementById('map-chip-list').innerHTML = '<div style="padding:10px 0;text-align:center;color:rgba(239,68,68,.6);font-size:14px;">Could not load quests</div>';
+  }
+}
+
+function highlightMapChip(chipId) {
+  document.querySelectorAll('.map-quest-chip').forEach(function(c) { c.classList.remove('highlighted'); });
+  var el = document.getElementById(chipId);
+  if (el) {
+    el.classList.add('highlighted');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 </script>
 
