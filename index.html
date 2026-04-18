@@ -726,11 +726,6 @@ window.addEventListener('DOMContentLoaded', function() {
   playGoldBurst();
   triggerFlyIn();
   loadQuests();
-  // Reopen live map if returning from a quest opened via map
-  if (new URLSearchParams(window.location.search).get('openmap') === '1') {
-    window.history.replaceState({}, '', 'index.html');
-    setTimeout(openLiveMap, 600);
-  }
 });
 
 // ============================================================
@@ -1062,7 +1057,7 @@ async function initLiveMap() {
 
   liveMap = L.map('live-map', {
     center: [30.05, -95.5],
-    zoom: 9,
+    zoom: 11,
     zoomControl: false,
     attributionControl: false,
   });
@@ -1071,11 +1066,16 @@ async function initLiveMap() {
     maxZoom: 19,
     subdomains: 'abcd',
   }).addTo(liveMap);
-  // Brighter label layer on top — same roads but labels at full opacity
+  // Brighter labels — stack two label layers for extra boldness
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     subdomains: 'abcd',
-    opacity: 2.0,
+    opacity: 1,
+  }).addTo(liveMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+    opacity: 0.8,
   }).addTo(liveMap);
 
   L.control.zoom({ position: 'topright' }).addTo(liveMap);
@@ -1126,7 +1126,7 @@ async function initLiveMap() {
 
     var positions = Object.values(groups).map(function(g) { return [g.center.lat, g.center.lng]; });
     if (positions.length > 0) {
-      liveMap.fitBounds(L.latLngBounds(positions), { padding: [60, 60], maxZoom: 11 });
+      liveMap.fitBounds(L.latLngBounds(positions), { padding: [60, 60], maxZoom: 12 });
     }
 
     Object.values(groups).forEach(function(g, idx) {
