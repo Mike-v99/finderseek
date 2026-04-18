@@ -34,8 +34,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 /* Spinning gold border */
 @keyframes rotateBorder{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @keyframes prizeGlow{0%,100%{text-shadow:0 0 20px rgba(74,222,128,.3);}50%{text-shadow:0 0 40px rgba(74,222,128,.6),0 0 60px rgba(74,222,128,.2);}}
-@keyframes goldTierPulse{0%,100%{border-color:rgba(232,168,32,.3);box-shadow:none;color:rgba(232,168,32,.6);}50%{border-color:rgba(232,168,32,.7);box-shadow:0 0 16px rgba(232,168,32,.2);color:rgba(232,168,32,.95);}}
-@keyframes silverTierPulse{0%,100%{border-color:rgba(148,163,184,.3);box-shadow:none;color:rgba(148,163,184,.6);}50%{border-color:rgba(148,163,184,.7);box-shadow:0 0 14px rgba(148,163,184,.2);color:rgba(148,163,184,.95);}}
+@keyframes goldTierPulse{0%,100%{border-color:rgba(232,168,32,.4);box-shadow:none;color:rgba(232,168,32,.7);}50%{border-color:rgba(232,168,32,.85);box-shadow:0 0 16px rgba(232,168,32,.25);color:rgba(232,168,32,.95);}}
+@keyframes silverTierPulse{0%,100%{border-color:rgba(148,163,184,.4);box-shadow:none;color:rgba(148,163,184,.7);}50%{border-color:rgba(148,163,184,.85);box-shadow:0 0 14px rgba(148,163,184,.25);color:rgba(148,163,184,.95);}}
+@keyframes arrowPulse{0%,100%{opacity:.5;transform:translateY(0);}50%{opacity:1;transform:translateY(2px);}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
 
 .spin-wrap{border-radius:18px;padding:2px;position:relative;overflow:hidden;}
@@ -108,8 +109,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
       <!-- Tier buttons -->
       <div style="display:flex;gap:8px;margin-top:16px;position:relative;">
-        <button id="q-free-tier-btn" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(148,163,184,.08);border:1.5px solid rgba(148,163,184,.35);color:rgba(148,163,184,.7);font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:silverTierPulse 7s ease-in-out infinite;line-height:1.2;text-align:center;">FREE TIER</button>
-        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(201,137,12,.06);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;text-align:center;">GOLD TIER ↓</button>
+        <button id="q-free-tier-btn" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(148,163,184,.08);border:1.5px solid rgba(148,163,184,.45);color:rgba(148,163,184,.8);font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:silverTierPulse 7s ease-in-out infinite;line-height:1.2;text-align:center;">FREE TIER</button>
+        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(201,137,12,.06);border:1.5px solid rgba(232,168,32,.45);color:rgba(232,168,32,.8);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;text-align:center;">GOLD TIER <span style="display:inline-block;animation:arrowPulse 3s ease-in-out infinite;color:#e8a820;">↓</span></button>
       </div>
     </div>
 
@@ -720,9 +721,10 @@ function renderClues() {
       var lat = parseFloat(el.dataset.lat);
       var lng = parseFloat(el.dataset.lng);
       var radiusFt = parseInt(el.dataset.radius);
-      // Radius in feet → meters → appropriate Leaflet zoom
-      // 1320ft (quarter mile) → zoom 16, 500ft → zoom 18, 100ft → zoom 19
-      var zoom = radiusFt >= 1000 ? 16 : radiusFt >= 400 ? 18 : 19;
+      // Zoom to always show full ring — calculate from radius
+      var radiusM = radiusFt * 0.3048;
+      // Pick zoom so the circle fits comfortably in the 220px map
+      var zoom = radiusFt >= 2000 ? 14 : radiusFt >= 1000 ? 15 : radiusFt >= 400 ? 16 : radiusFt >= 150 ? 17 : 18;
       var m = L.map(el, {
         zoomControl: false,
         scrollWheelZoom: false,
@@ -738,26 +740,28 @@ function renderClues() {
         maxZoom: 19, subdomains: 'abcd', opacity: 1
       }).addTo(m);
       // Green glow ring — no center dot
-      var radiusM = radiusFt * 0.3048;
       L.circle([lat, lng], {
         radius: radiusM,
-        color: 'rgba(74,222,128,0.9)',
-        fillColor: 'rgba(74,222,128,0.07)',
+        color: '#4ade80',
+        fillColor: 'rgba(74,222,128,0.08)',
         fillOpacity: 1,
-        weight: 2,
+        weight: 3,
+        opacity: 1,
       }).addTo(m);
       // Outer soft glow rings
       L.circle([lat, lng], {
         radius: radiusM,
-        color: 'rgba(74,222,128,0.25)',
+        color: 'rgba(74,222,128,0.35)',
         fillOpacity: 0,
-        weight: 8,
+        weight: 10,
+        opacity: 1,
       }).addTo(m);
       L.circle([lat, lng], {
         radius: radiusM,
-        color: 'rgba(74,222,128,0.1)',
+        color: 'rgba(74,222,128,0.12)',
         fillOpacity: 0,
-        weight: 16,
+        weight: 20,
+        opacity: 1,
       }).addTo(m);
     });
   }, 50);
