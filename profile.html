@@ -181,6 +181,20 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <div class="page">
 
+  <!-- Pending quest banner — shown if user has an unfinished quest draft -->
+  <div id="pending-quest-banner" style="display:none;border-radius:16px;padding:1.5px;background:linear-gradient(135deg,rgba(232,168,32,.4),rgba(255,255,255,.06));cursor:pointer;margin-bottom:16px;" onclick="resumePendingQuest()">
+    <div style="background:#0c0a18;border-radius:15px;">
+      <div style="padding:16px 16px 12px;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:24px;">⏳</div>
+        <div style="font-size:16px;font-weight:400;color:#fff;">You have an unfinished quest</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 16px;" onclick="event.stopPropagation()">
+        <button onclick="resumePendingQuest()" style="width:100%;padding:12px;background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:12px;font-size:14px;font-weight:500;color:#0a0500;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">🚀 Complete Quest — Fund &amp; Go Live</button>
+        <button onclick="discardPendingQuest()" style="width:100%;padding:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Discard this quest</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Profile header -->
   <div class="el" style="text-align:center;padding:10px 0 0;">
     <div class="avatar" id="p-avatar">??</div>
@@ -393,6 +407,26 @@ function getToken(){
     }
   } catch(e){}
   return '';
+}
+
+function resumePendingQuest() {
+  window.location.href = 'review.html?preview=1';
+}
+
+function discardPendingQuest() {
+  if (!confirm('Discard this quest? Your clues and settings will be lost.')) return;
+  try { localStorage.removeItem('fs_pending_quest'); } catch(e){}
+  var banner = document.getElementById('pending-quest-banner');
+  if (banner) {
+    banner.style.transition = 'opacity .3s, max-height .4s';
+    banner.style.opacity = '0';
+    banner.style.maxHeight = '0';
+    banner.style.overflow = 'hidden';
+    banner.style.marginBottom = '0';
+    banner.style.padding = '0';
+    setTimeout(function(){ banner.style.display = 'none'; }, 400);
+  }
+  showToast('Quest discarded', 'info');
 }
 
 function showToast(msg, type){
@@ -958,15 +992,23 @@ function handleUrlRedirects(){
 // Init — check for OAuth callback first, then either redirect to pending quest or load profile
 (async function(){
   await handleOAuthCallback();
-  // If a pending quest is stashed in sessionStorage (from anonymous flow),
-  // redirect back to the review page so they can finish paying.
+  // If a pending quest is stashed in localStorage (from anonymous flow),
+  // show the banner instead of redirecting away from profile.
   try {
     var pending = localStorage.getItem('fs_pending_quest');
     if (pending && getToken()) {
-      window.location.href = '/review.html?preview=1';
-      return;
+      var parsed = JSON.parse(pending);
+      var savedAt = parsed._savedAt || 0;
+      var age = Date.now() - savedAt;
+      if (age < 86400000) {
+        // Show banner — don't redirect
+        var banner = document.getElementById('pending-quest-banner');
+        if (banner) banner.style.display = 'block';
+      } else {
+        localStorage.removeItem('fs_pending_quest'); // stale — clear it
+      }
     }
-  } catch(e){}
+  } catch(e){ try { localStorage.removeItem('fs_pending_quest'); } catch(e2){} }
   loadProfile();
 })();
 
