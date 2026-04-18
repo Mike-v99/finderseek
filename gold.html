@@ -216,7 +216,12 @@ function renderActiveState(){
   var username = currentProfile.username ? ', ' + currentProfile.username : '';
 
   // Swap entire hero card to Gold member view
+  // Hide standalone back button — moved inside card for Gold members
+  var standaloneBack = document.querySelector('.back-btn');
+  if (standaloneBack) standaloneBack.style.display = 'none';
+
   document.querySelector('.crown-inner').innerHTML = [
+    '<div style="text-align:left;margin-bottom:8px;"><a href="javascript:void(0)" onclick="history.length>1?history.back():location.href=\'index.html\'" style="display:inline-flex;align-items:center;gap:6px;font-size:14px;color:rgba(255,255,255,.45);text-decoration:none;padding:5px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">← Back</a></div>',
     '<span class="crown-emoji">\u{1F451}</span>',
     '<div class="gold-title">You\u2019re Gold'+username+'!</div>',
     '<div class="gold-sub" style="color:rgba(74,222,128,.7);">All perks are active</div>',
