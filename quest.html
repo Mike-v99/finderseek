@@ -92,15 +92,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="status-strip" aria-hidden="true"></div>
 <div class="page">
 
-  <!-- BACK -->
-  <a class="back-btn el" data-d="50" href="javascript:void(0)" onclick="goBack()">← Back</a>
-
   <!-- HERO: Silver border -->
   <div class="silver-wrap el" data-d="150" style="margin-bottom:10px;">
-    <div class="inner hero-inner" style="overflow:hidden;">
+    <div class="inner hero-inner" style="overflow:hidden;position:relative;">
       <div class="hero-shine"></div>
       <div class="hero-glow"></div>
-      <div id="q-status-label" style="font-size:18px;letter-spacing:2px;color:#e8a820;margin-bottom:8px;position:relative;">ACTIVE QUEST</div>
+      <!-- Back button inside hero top left -->
+      <a href="javascript:void(0)" onclick="goBack()" style="position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:6px;font-size:15px;color:rgba(255,255,255,.55);text-decoration:none;font-family:'Noto Sans Display',sans-serif;font-weight:300;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);z-index:2;transition:color .15s,background .15s;">← Back</a>
+      <div id="q-status-label" style="font-size:18px;letter-spacing:2px;color:#e8a820;margin-bottom:8px;position:relative;padding-top:44px;">ACTIVE QUEST</div>
       <div id="q-prize" style="font-family:'Noto Sans Display',sans-serif;font-weight:300;font-size:clamp(64px,16vw,76px);color:#4ade80;line-height:1;position:relative;animation:prizeGlow 3s ease-in-out infinite;">$0</div>
       <div id="q-location" style="font-size:18px;font-weight:400;color:#ffffff;margin-top:8px;position:relative;">Loading…</div>
       <div id="q-pirate" style="font-size:18px;color:#d0e4f0;margin-top:4px;position:relative;">—</div>
