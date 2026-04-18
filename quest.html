@@ -168,12 +168,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- STATS: Silver borders -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" class="el" data-d="450">
-    <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
+    <div class="silver-wrap-sm" style="display:flex;"><div class="inner-sm" style="padding:16px;display:flex;flex-direction:column;justify-content:space-between;width:100%;">
       <div style="font-size:18px;color:#ffffff;margin-bottom:8px;">Next Clue</div>
       <div id="q-next-clue-time" style="font-size:28px;font-weight:400;color:var(--yellow);">—</div>
-      <div id="q-next-clue-label" style="font-size:18px;color:var(--yellow);margin-top:6px;font-weight:400;">—</div>
+      <div style="height:16px;"></div>
     </div></div>
-    <div class="silver-wrap-sm"><div class="inner-sm" style="padding:16px;">
+    <div class="silver-wrap-sm" style="display:flex;"><div class="inner-sm" style="padding:16px;display:flex;flex-direction:column;justify-content:space-between;width:100%;">
       <div style="font-size:18px;color:#ffffff;margin-bottom:8px;">Clues Unlocked</div>
       <div style="font-size:28px;font-weight:400;color:var(--green);"><span id="q-unlocked">0</span> <span style="font-size:18px;color:var(--muted);">/ <span id="q-total-clues">0</span></span></div>
       <div id="q-clue-bars" style="display:flex;gap:5px;margin-top:10px;"></div>
@@ -194,15 +194,15 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="silver-wrap-btn el" data-d="600" style="margin-bottom:10px;">
     <div class="inner-btn" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-radius:15px;">
       <div style="display:flex;align-items:center;gap:12px;">
-        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#b45309,#e8a820);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#0a0800;flex-shrink:0;">CJ</div>
-        <div><div style="font-size:18px;font-weight:400;color:#ffffff;">CaptainJack</div><div style="font-size:18px;color:var(--dim);margin-top:2px;">4 quests · 12 followers</div></div>
+        <div id="q-master-avatar" style="width:44px;height:44px;border-radius:50%;background:rgba(13,11,24,.94);border:2px solid #e8a820;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:#e8a820;flex-shrink:0;">??</div>
+        <div><div id="q-master-name" style="font-size:18px;font-weight:400;color:#ffffff;">—</div><div id="q-master-stats" style="font-size:16px;color:var(--dim);margin-top:2px;">—</div></div>
       </div>
       <div style="background:linear-gradient(135deg,#1a2090,#2d3adb);color:#e0e4ff;border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;cursor:pointer;">Follow</div>
     </div>
   </div>
 
   <!-- CLUES -->
-  <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div></div>
+  <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div><button onclick="document.getElementById('btn-claim').scrollIntoView({behavior:'smooth',block:'center'})" style="flex-shrink:0;padding:5px 12px;border-radius:20px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.4);color:#e8a820;font-size:12px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;display:flex;align-items:center;gap:5px;">CLAIM PRIZE <span style="font-size:14px;">↓</span></button></div>
 
   <div id="q-clues-container">
     <div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">Loading clues…</div>
@@ -402,7 +402,7 @@ async function loadQuest() {
     // Try to load pirate profile (optional)
     if (currentHunt.pirate_id) {
       try {
-        var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created', {
+        var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count', {
           headers: {'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}
         });
         var pd = await pr.json();
@@ -517,10 +517,27 @@ function renderHunt() {
   if (nextClue) {
     var diffMs = new Date(nextClue.reveal_at) - now;
     document.getElementById('q-next-clue-time').textContent = fmtTimeRemaining(diffMs);
-    document.getElementById('q-next-clue-label').textContent = 'Clue #' + nextClue.clue_number + ' incoming';
   } else {
     document.getElementById('q-next-clue-time').textContent = 'All revealed';
-    document.getElementById('q-next-clue-label').textContent = '';
+  }
+
+  // Quest Master avatar — gold ring if Gold member, silver if free
+  var avatarEl = document.getElementById('q-master-avatar');
+  var nameEl   = document.getElementById('q-master-name');
+  var statsEl  = document.getElementById('q-master-stats');
+  if (avatarEl && h._pirate) {
+    var uname    = h._pirate.username || 'Anonymous';
+    var initials = uname.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+    var isGold   = h._pirate.is_pro;
+    var ringColor = isGold ? '#e8a820' : '#94a3b8';
+    var textColor = isGold ? '#e8a820' : '#94a3b8';
+    avatarEl.style.border    = '2px solid ' + ringColor;
+    avatarEl.style.color     = textColor;
+    avatarEl.textContent     = initials;
+    nameEl.textContent       = uname;
+    var qCount   = h._pirate.quests_created || 0;
+    var fCount   = h._pirate.followers_count || 0;
+    statsEl.textContent = qCount + ' quest' + (qCount !== 1 ? 's' : '') + ' · ' + fCount + ' follower' + (fCount !== 1 ? 's' : '');
   }
 
   // Pin button — only show to the pirate (quest creator)
