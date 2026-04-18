@@ -35,6 +35,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 @keyframes rotateBorder{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @keyframes prizeGlow{0%,100%{text-shadow:0 0 20px rgba(74,222,128,.3);}50%{text-shadow:0 0 40px rgba(74,222,128,.6),0 0 60px rgba(74,222,128,.2);}}
 @keyframes goldTierPulse{0%,100%{border-color:rgba(232,168,32,.3);box-shadow:none;color:rgba(232,168,32,.6);}50%{border-color:rgba(232,168,32,.7);box-shadow:0 0 16px rgba(232,168,32,.2);color:rgba(232,168,32,.95);}}
+@keyframes silverTierPulse{0%,100%{border-color:rgba(148,163,184,.3);box-shadow:none;color:rgba(148,163,184,.6);}50%{border-color:rgba(148,163,184,.7);box-shadow:0 0 14px rgba(148,163,184,.2);color:rgba(148,163,184,.95);}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
 
 .spin-wrap{border-radius:18px;padding:2px;position:relative;overflow:hidden;}
@@ -103,13 +104,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="q-prize" style="font-family:'Noto Sans Display',sans-serif;font-weight:300;font-size:clamp(64px,16vw,76px);color:#4ade80;line-height:1;position:relative;animation:prizeGlow 3s ease-in-out infinite;">$0</div>
       <div id="q-location" style="font-size:18px;font-weight:400;color:#ffffff;margin-top:8px;position:relative;">Loading…</div>
       <div id="q-pirate" style="font-size:18px;color:#d0e4f0;margin-top:4px;position:relative;">—</div>
-      <div id="q-tier" style="display:inline-block;margin-top:10px;padding:4px 14px;border-radius:8px;background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.35);font-size:18px;font-weight:400;color:#e8a820;position:relative;">QUEST</div>
       <div id="q-pin-btn"></div>
 
       <!-- Tier buttons -->
       <div style="display:flex;gap:8px;margin-top:16px;position:relative;">
-        <button id="q-free-tier-btn" style="flex:1;padding:11px;border-radius:14px;background:rgba(148,163,184,.08);border:1.5px solid rgba(148,163,184,.35);color:rgba(148,163,184,.7);font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;">FREE TIER</button>
-        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:11px;border-radius:14px;background:rgba(201,137,12,.08);border:1.5px solid rgba(232,168,32,.4);color:rgba(232,168,32,.75);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:goldTierPulse 7s ease-in-out infinite;">GOLD TIER ↓</button>
+        <button id="q-free-tier-btn" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(148,163,184,.08);border:1.5px solid rgba(148,163,184,.35);color:rgba(148,163,184,.7);font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:silverTierPulse 7s ease-in-out infinite;line-height:1.2;text-align:center;">FREE TIER</button>
+        <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px 11px;border-radius:14px;background:rgba(201,137,12,.06);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;text-align:center;">GOLD TIER ↓</button>
       </div>
     </div>
 
@@ -288,7 +288,26 @@ document.addEventListener('DOMContentLoaded',function(){
     setTimeout(function(){el.classList.add('show');},d);
   });
   loadQuest();
+  checkUserGoldStatus();
 });
+
+async function checkUserGoldStatus() {
+  var token = getToken();
+  if (!token) return; // stays free tier glowing
+  try {
+    var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (!ur.ok) return;
+    var user = await ur.json();
+    if (!user?.id) return;
+    var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=is_pro,pro_expires', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var pd = await pr.json();
+    var profile = pd && pd[0];
+    var isGold = profile?.is_pro && (!profile.pro_expires || new Date(profile.pro_expires) > new Date());
+    renderTierButtons(isGold);
+  } catch(e) { console.error('Gold status check error', e); }
+}
 
 // ============================================================
 //  SUPABASE QUEST LOADER
@@ -322,6 +341,45 @@ function getToken(){
 }
 
 var _goldModalOpen = false;
+function renderTierButtons(isGold) {
+  var freeBtn = document.getElementById('q-free-tier-btn');
+  var goldBtn = document.getElementById('q-gold-tier-btn');
+  if (!freeBtn || !goldBtn) return;
+
+  if (isGold) {
+    // FREE dim, GOLD glows with "✓ You're Gold" subtitle
+    freeBtn.style.animation = 'none';
+    freeBtn.style.background = 'rgba(148,163,184,.04)';
+    freeBtn.style.borderColor = 'rgba(148,163,184,.15)';
+    freeBtn.style.color = 'rgba(148,163,184,.3)';
+    freeBtn.style.cursor = 'default';
+    freeBtn.innerHTML = 'FREE TIER';
+
+    goldBtn.style.animation = 'goldTierPulse 7s ease-in-out infinite';
+    goldBtn.style.background = 'rgba(201,137,12,.12)';
+    goldBtn.style.borderColor = 'rgba(232,168,32,.6)';
+    goldBtn.style.color = 'rgba(232,168,32,.9)';
+    goldBtn.style.cursor = 'default';
+    goldBtn.onclick = null;
+    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:12px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
+  } else {
+    // FREE glows silver, GOLD dim and tappable
+    freeBtn.style.animation = 'silverTierPulse 7s ease-in-out infinite';
+    freeBtn.style.background = 'rgba(148,163,184,.08)';
+    freeBtn.style.borderColor = 'rgba(148,163,184,.35)';
+    freeBtn.style.color = 'rgba(148,163,184,.7)';
+    freeBtn.innerHTML = 'FREE TIER';
+
+    goldBtn.style.animation = 'none';
+    goldBtn.style.background = 'rgba(201,137,12,.06)';
+    goldBtn.style.borderColor = 'rgba(232,168,32,.2)';
+    goldBtn.style.color = 'rgba(232,168,32,.35)';
+    goldBtn.style.cursor = 'pointer';
+    goldBtn.onclick = toggleGoldModal;
+    goldBtn.innerHTML = 'GOLD TIER ↓';
+  }
+}
+
 function toggleGoldModal() {
   _goldModalOpen = !_goldModalOpen;
   var modal = document.getElementById('q-gold-modal');
@@ -482,10 +540,6 @@ function renderHunt() {
 
   var statusLabel = (h.status || 'active').toUpperCase() + ' QUEST';
   document.getElementById('q-status-label').textContent = statusLabel;
-
-  // Tier label
-  var tier = prizeDollars >= 50 ? 'GOLD TIER' : prizeDollars >= 20 ? 'SILVER TIER' : 'BRONZE TIER';
-  document.getElementById('q-tier').textContent = tier;
 
   // End label
   if (h.ends_at) {
