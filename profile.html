@@ -352,7 +352,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <span style="font-size:18px;color:#fff;flex:1;">Terms & Privacy</span>
       <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
     </a>
-    <div class="menu-item" onclick="window.location.href='mailto:support@finderseek.com'">
+    <div class="menu-item" onclick="window.location.href='mailto:finderseek1@gmail.com'">
       <span style="font-size:22px;width:32px;text-align:center;">💬</span>
       <span style="font-size:18px;color:#fff;flex:1;">Contact Support</span>
       <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
@@ -372,10 +372,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- NOTIFICATIONS MODAL -->
-<div id="notifications-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:flex-end;justify-content:center;">
+<div id="notifications-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:20px;">
   <div onclick="closeModal('notifications-modal')" style="position:absolute;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);"></div>
-  <div style="position:relative;background:#0d0b18;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 20px calc(20px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
-    <div style="width:44px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px;"></div>
+  <div style="position:relative;background:#0d0b18;border-radius:22px;width:100%;max-width:420px;padding:24px 20px;border:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
     <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:20px;">🔔 Notifications</div>
     <div id="notif-rows"></div>
     <button onclick="saveNotifications()" style="width:100%;margin-top:16px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#15803d,#4ade80);border:none;color:#0a1a0a;font-size:16px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Preferences</button>
@@ -383,10 +382,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- SETTINGS MODAL -->
-<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:flex-end;justify-content:center;">
+<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:20px;">
   <div onclick="closeModal('settings-modal')" style="position:absolute;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);"></div>
-  <div style="position:relative;background:#0d0b18;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 20px calc(20px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
-    <div style="width:44px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px;"></div>
+  <div style="position:relative;background:#0d0b18;border-radius:22px;width:100%;max-width:420px;padding:24px 20px;border:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
     <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:20px;">⚙️ Settings</div>
     <div style="margin-bottom:14px;">
       <div style="font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">USERNAME</div>
@@ -552,7 +550,10 @@ async function saveSettings() {
 async function openBillingPortal() {
   if (!currentUser) { showToast('Please sign in first', 'error'); return; }
   var isPro = currentProfile?.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date());
-  if (!isPro) { window.location.href = 'gold.html'; return; }
+  if (!isPro || !currentProfile?.stripe_customer_id) {
+    window.location.href = 'gold.html';
+    return;
+  }
   showToast('Opening billing portal…', 'info');
   try {
     var r = await fetch('/api/billing-portal', {
