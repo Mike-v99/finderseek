@@ -1,4 +1,4 @@
-\// api/generate-clues.js
+// api/generate-clues.js
 // Generates treasure hunt clues using Claude based on hiding spot description and persona
 //
 // Env vars needed:
