@@ -100,9 +100,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .pm-sheet.show{transform:translateY(0);}
 .pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
 .pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
-.pm-sub{font-size:18px;color:var(--dim);text-align:center;margin-bottom:22px;}
+.pm-sub{font-size:18px;color:#fff;text-align:center;margin-bottom:22px;font-weight:300;}
 .pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
-.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:var(--dim);}
+.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:#fff;font-weight:300;}
 .pm-row strong{color:var(--cream);font-weight:400;}
 .pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;font-size:18px;}
 .pm-row.total strong{color:var(--gold2);font-size:20px;font-weight:400;}
@@ -111,7 +111,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
 .pm-pay-btn:active{transform:scale(.98);}
 .pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
-.pm-secure{text-align:center;font-size:18px;color:var(--muted);margin-top:12px;letter-spacing:0.5px;}
+.pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:300;opacity:.7;}
 
 /* Safe close button */
 .pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
@@ -220,7 +220,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div id="pm-nocancel" onclick="toggleNoCancelCheck()" style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;margin:14px 0 4px;cursor:pointer;user-select:none;">
     <div id="pm-nocancel-box" style="width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(201,137,12,.5);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;"></div>
-    <div style="font-size:14px;color:#c8b48a;line-height:1.5;">I understand this quest <strong style="color:#f5ead8;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
+    <div style="font-size:14px;color:#fff;line-height:1.5;font-weight:300;">I understand this quest <strong style="color:#fff;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
   </div>
 
   <div id="pm-error"></div>
@@ -264,6 +264,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <script>
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const supaClient = window.supabase ? window.supabase.createClient(SB, KEY) : null;
 const NOTIFY_SECRET = 'fs-notify-2026';
 const STRIPE_PUBLIC_KEY = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
 
@@ -464,6 +465,42 @@ function renderRvTierButtons(isGold) {
 }
 
 var _rvGoldModalOpen = false;
+function closeEmailGate() {
+  var bd = document.getElementById('eg-backdrop');
+  var md = document.getElementById('eg-modal');
+  var inner = document.getElementById('eg-inner');
+  if (bd) bd.style.opacity = '0';
+  if (inner) { inner.style.opacity = '0'; inner.style.transform = 'scale(0.92)'; }
+  setTimeout(function(){
+    if (bd) bd.style.display = 'none';
+    if (md) md.style.display = 'none';
+  }, 250);
+}
+
+async function submitEmailGate() {
+  var email = document.getElementById('eg-email').value.trim();
+  var errEl = document.getElementById('eg-error');
+  var btn = document.getElementById('eg-continue-btn');
+  if (!email || !email.includes('@')) { errEl.textContent = 'Enter a valid email'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    var { error } = await supaClient.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: window.location.origin + '/profile.html?magic=1' }
+    });
+    if (error) throw error;
+    errEl.style.color = '#4ade80';
+    errEl.textContent = '✓ Check your email — tap the link to sign in and come back here';
+    btn.textContent = 'Email sent!';
+  } catch(e) {
+    errEl.style.color = '#f87171';
+    errEl.textContent = e.message || 'Something went wrong';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Payment →';
+  }
+}
+
 function toggleRvGoldModal() {
   _rvGoldModalOpen = !_rvGoldModalOpen;
   var modal = document.getElementById('rv-gold-modal');
@@ -678,6 +715,21 @@ async function saveTime(clueId){
 // ════════════════════════════════════════════════════
 
 async function openPaymentModal() {
+  // If not logged in, show email gate first
+  if (!currentUser) {
+    try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
+    var bd = document.getElementById('eg-backdrop');
+    var md = document.getElementById('eg-modal');
+    var inner = document.getElementById('eg-inner');
+    bd.style.display = 'block';
+    md.style.display = 'flex';
+    setTimeout(function(){
+      bd.style.opacity = '1';
+      if (inner) { inner.style.opacity = '1'; inner.style.transform = 'scale(1)'; }
+    }, 10);
+    return;
+  }
+
   var prize = (hunt.prize_value || 0) / 100;
   var fee   = Math.round(prize * 0.10 * 100) / 100;
   var total = prize + fee;
