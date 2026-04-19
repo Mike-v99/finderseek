@@ -630,6 +630,8 @@ function validateQuestForm(){
 
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
+  // Save current page so magic link redirects back here after login
+  try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
   document.getElementById('eg-backdrop').style.display = 'block';
   var modal = document.getElementById('eg-modal');
   var inner = document.getElementById('eg-inner');
