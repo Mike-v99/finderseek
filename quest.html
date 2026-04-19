@@ -145,7 +145,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
           </div>
         </div>
 
-        <button onclick="window.location.href='gold.html'" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:18px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.3px;">Upgrade to Gold →</button>
+        <button onclick="sessionStorage.setItem('fs_gold_return', 'quest:' + (currentHunt ? currentHunt.id : '')); window.location.href='gold.html';" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:18px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.3px;">Upgrade to Gold →</button>
         <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.2);margin-top:8px;">Cancel anytime · No hidden fees</div>
       </div>
     </div>
@@ -527,6 +527,28 @@ async function loadQuest() {
         }
       }
     } catch(e){}
+
+    // Increment quests_joined for signed-in users who didn't create this quest
+    // Fire-and-forget, non-fatal — use a session flag to only count once per session
+    try {
+      var token = getToken();
+      var sessionKey = 'fs_joined_' + currentHunt.id;
+      if (token && !sessionStorage.getItem(sessionKey)) {
+        fetch(SB + '/auth/v1/user', { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token } })
+          .then(function(r){ return r.json(); })
+          .then(function(u){
+            if (u && u.id && u.id !== currentHunt.pirate_id) {
+              sessionStorage.setItem(sessionKey, '1');
+              fetch(SB + '/rest/v1/rpc/increment_quests_joined', {
+                method: 'POST',
+                headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: u.id })
+              }).catch(function(){});
+            }
+          }).catch(function(){});
+      }
+    } catch(e){}
+
   } catch(e) {
     console.error('Load quest error:', e);
     showToast('Error loading quest: '+e.message, 'error');
