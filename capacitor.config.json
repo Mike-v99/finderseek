@@ -1,0 +1,40 @@
+{
+  "appId": "com.finderseek.app",
+  "appName": "FinderSeek",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": {
+    "hostname": "finderseek.com",
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0a0810",
+    "preferredContentMode": "mobile",
+    "scheme": "FinderSeek"
+  },
+  "android": {
+    "backgroundColor": "#0a0810",
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0a0810",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
+}

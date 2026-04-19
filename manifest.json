@@ -7,7 +7,73 @@
   "background_color": "#0a0810",
   "theme_color": "#0a0810",
   "orientation": "portrait",
+  "lang": "en",
+  "categories": [
+    "games",
+    "entertainment",
+    "lifestyle"
+  ],
   "icons": [
+    {
+      "src": "/icon-20.png",
+      "sizes": "20x20",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-29.png",
+      "sizes": "29x29",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-40.png",
+      "sizes": "40x40",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-58.png",
+      "sizes": "58x58",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-60.png",
+      "sizes": "60x60",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-76.png",
+      "sizes": "76x76",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-80.png",
+      "sizes": "80x80",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-87.png",
+      "sizes": "87x87",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-167.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
@@ -19,6 +85,43 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-home.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Discover treasure quests near you"
+    },
+    {
+      "src": "/screenshot-quest.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Follow AI clues to find the prize"
+    },
+    {
+      "src": "/screenshot-gold.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Go Gold for early clues and alerts"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
