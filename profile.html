@@ -113,13 +113,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
         <input id="gate-email" type="text" inputmode="email" autocomplete="username" placeholder="Email" name="email"
           style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
-        <input id="gate-password" type="password" autocomplete="current-password" placeholder="Password" name="password"
-          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
 
-        <div id="gate-forgot" style="text-align:right;font-size:18px;color:#e8a820;cursor:pointer;margin-top:-2px;" onclick="gateForgotPassword()">Forgot password?</div>
+
 
         <button id="gate-submit" onclick="gateSubmit()"
-          style="padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(201,137,12,.25);transition:transform .15s;">Continue</button>
+          style="padding:14px 20px;border-radius:30px;border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-size:18px;font-weight:400;font-family:inherit;cursor:pointer;letter-spacing:.5px;transition:transform .15s,background .2s;">✨ Send Magic Link</button>
       </div>
 
       <!-- OR divider -->
@@ -653,9 +651,7 @@ function switchAuthTab(mode){
   document.getElementById('tab-signin').classList.toggle('auth-tab-active', mode === 'signin');
   document.getElementById('tab-signup').classList.toggle('auth-tab-active', mode === 'signup');
   document.getElementById('gate-username-wrap').style.display = mode === 'signup' ? 'block' : 'none';
-  document.getElementById('gate-forgot').style.display = mode === 'signin' ? 'block' : 'none';
-  document.getElementById('gate-submit').textContent = mode === 'signin' ? 'Sign in' : 'Create account';
-  document.getElementById('gate-password').setAttribute('autocomplete', mode === 'signin' ? 'current-password' : 'new-password');
+  document.getElementById('gate-submit').innerHTML = mode === 'signup' ? '✨ Send Magic Link' : '✨ Send Magic Link';
   document.getElementById('gate-err').textContent = '';
   document.getElementById('gate-err').style.color = '#f87171';
 }
@@ -667,76 +663,71 @@ async function gateSubmit(){
 
 async function gateSignIn(){
   var email = document.getElementById('gate-email').value.trim();
-  var pw = document.getElementById('gate-password').value;
   var err = document.getElementById('gate-err');
   var btn = document.getElementById('gate-submit');
   err.textContent = '';
-  if (!email || !pw) { err.textContent = 'Enter your email and password'; return; }
-  btn.disabled = true; btn.textContent = 'Signing in...';
+  if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
+  btn.disabled = true; btn.innerHTML = 'Sending...';
   try {
-    var r = await fetch(SB+'/auth/v1/token?grant_type=password', {
-      method:'POST',
-      headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body: JSON.stringify({ email: email, password: pw })
+    var returnTo = sessionStorage.getItem('fs_magic_return') || window.location.href;
+    sessionStorage.setItem('fs_magic_return', returnTo);
+    var { error } = await supaClient.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: window.location.origin + '/profile.html?magic=1' }
     });
-    var d = await r.json();
-    if (!r.ok) throw new Error(d.error_description || d.msg || 'Incorrect email or password');
-    localStorage.setItem('fs_token', d.access_token);
-    if (d.refresh_token) localStorage.setItem('fs_refresh', d.refresh_token);
-    document.getElementById('login-gate').style.display = 'none';
-    loadProfile();
+    if (error) throw error;
+    err.style.color = '#4ade80';
+    err.textContent = '✓ Magic link sent! Check your email and tap the link to sign in.';
+    btn.innerHTML = '✨ Send Magic Link';
+    btn.disabled = false;
   } catch(e) {
-    err.textContent = e.message;
-    btn.disabled = false; btn.textContent = 'Sign in';
+    err.textContent = e.message || 'Failed to send link — try again';
+    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
   }
 }
 
 async function gateSignUp(){
   var email = document.getElementById('gate-email').value.trim();
-  var pw = document.getElementById('gate-password').value;
   var username = document.getElementById('gate-username').value.trim();
   var err = document.getElementById('gate-err');
   var btn = document.getElementById('gate-submit');
   err.textContent = '';
   if (!username) { err.textContent = 'Pick a username'; return; }
   if (username.length < 3) { err.textContent = 'Username must be 3+ characters'; return; }
-  if (!email || !pw) { err.textContent = 'Enter email and password'; return; }
-  if (pw.length < 6) { err.textContent = 'Password must be 6+ characters'; return; }
-  btn.disabled = true; btn.textContent = 'Creating account...';
+  if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
+  btn.disabled = true; btn.innerHTML = 'Sending...';
   try {
-    var r = await fetch(SB+'/auth/v1/signup', {
-      method:'POST',
-      headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email: email,
-        password: pw,
+    // Save username so we can set it after magic link login
+    sessionStorage.setItem('fs_pending_username', username);
+    sessionStorage.setItem('fs_magic_return', window.location.href);
+    var { error } = await supaClient.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: window.location.origin + '/profile.html?magic=1',
         data: { username: username }
-      })
+      }
     });
-    var d = await r.json();
-    if (!r.ok) throw new Error(d.error_description || d.msg || 'Sign-up failed');
-    if (d.access_token) {
-      localStorage.setItem('fs_token', d.access_token);
-      if (d.refresh_token) localStorage.setItem('fs_refresh', d.refresh_token);
-      document.getElementById('login-gate').style.display = 'none';
-      loadProfile();
-    } else {
-      err.style.color = '#4ade80';
-      err.textContent = '✓ Check your email to confirm your account';
-      btn.disabled = false; btn.textContent = 'Create account';
-    }
+    if (error) throw error;
+    err.style.color = '#4ade80';
+    err.textContent = '✓ Magic link sent! Check your email to complete sign-up.';
+    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
   } catch(e) {
-    err.textContent = e.message;
-    btn.disabled = false; btn.textContent = 'Create account';
+    err.textContent = e.message || 'Failed to send link — try again';
+    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
   }
 }
 
 async function gateSocial(provider){
   try {
+    // Save where user was so we redirect back after OAuth login
+    var returnTo = sessionStorage.getItem('fs_magic_return') || document.referrer || '';
+    if (returnTo && returnTo !== window.location.href) {
+      sessionStorage.setItem('fs_magic_return', returnTo);
+    }
     var { data, error } = await supaClient.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: window.location.origin + '/profile.html'
+        redirectTo: window.location.origin + '/profile.html?magic=1'
       }
     });
     if (error) throw error;
@@ -750,19 +741,24 @@ async function gateForgotPassword(){
   var email = document.getElementById('gate-email').value.trim();
   var err = document.getElementById('gate-err');
   err.style.color = '#f87171';
-  if (!email) { err.textContent = 'Enter your email first, then tap forgot password'; return; }
+  if (!email) { err.textContent = 'Enter your email first, then tap the link above'; return; }
+
+  // Save where user was trying to go so we redirect back after login
   try {
-    var r = await fetch(SB+'/auth/v1/recover', {
-      method:'POST',
-      headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body: JSON.stringify({ email: email })
+    var returnTo = sessionStorage.getItem('fs_login_return') || document.referrer || '';
+    if (returnTo) sessionStorage.setItem('fs_magic_return', returnTo);
+  } catch(e){}
+
+  try {
+    var { error } = await supaClient.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: window.location.origin + '/profile.html?magic=1'
+      }
     });
-    if (!r.ok) {
-      var d = await r.json();
-      throw new Error(d.error_description || d.msg || 'Failed to send reset email');
-    }
+    if (error) throw error;
     err.style.color = '#4ade80';
-    err.textContent = '✓ Check your email for a reset link';
+    err.textContent = '✓ Check your email — tap the link to sign in';
   } catch(e) { err.textContent = e.message; }
 }
 
@@ -780,6 +776,25 @@ async function handleOAuthCallback(){
       if (window.location.hash || window.location.search.includes('code=')) {
         window.history.replaceState({}, '', window.location.pathname);
       }
+      // Redirect back to where user came from after magic link login
+      try {
+        // Save pending username if this was a signup flow
+        var pendingUsername = sessionStorage.getItem('fs_pending_username');
+        if (pendingUsername && data.session.user) {
+          sessionStorage.removeItem('fs_pending_username');
+          fetch(SB+'/rest/v1/profiles?id=eq.'+data.session.user.id, {
+            method: 'PATCH',
+            headers: {'apikey':KEY,'Authorization':'Bearer '+data.session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body: JSON.stringify({ username: pendingUsername })
+          }).catch(function(){});
+        }
+        var magicReturn = sessionStorage.getItem('fs_magic_return');
+        if (magicReturn) {
+          sessionStorage.removeItem('fs_magic_return');
+          setTimeout(function(){ window.location.href = magicReturn; }, 400);
+          return true;
+        }
+      } catch(e2){}
       return true;
     }
   } catch(e) {
