@@ -715,7 +715,15 @@ async function saveTime(clueId){
 // ════════════════════════════════════════════════════
 
 async function openPaymentModal() {
-  // If not logged in, show email gate first
+  // If no currentUser but token exists, try loading user first
+  if (!currentUser && getToken()) {
+    try {
+      var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});
+      if (ur.ok) { currentUser = await ur.json(); }
+    } catch(e){}
+  }
+
+  // If still not logged in, show email gate first
   if (!currentUser) {
     try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
     var bd = document.getElementById('eg-backdrop');
@@ -798,6 +806,15 @@ async function submitPayment() {
   var btn = document.getElementById('pm-pay-btn');
   var errEl = document.getElementById('pm-error');
   errEl.textContent = '';
+
+  // Guard — user must be signed in
+  if (!currentUser) {
+    errEl.textContent = 'Please sign in first to fund your quest.';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Stripe →';
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Opening Stripe...';
 
