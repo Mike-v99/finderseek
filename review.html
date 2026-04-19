@@ -13,7 +13,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png"/>
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"/>
+    <link rel="apple-touch-startup-image" href="/splash-2796x1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -234,7 +241,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
     <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
-    <input id="eg-email" type="email" autocomplete="email" placeholder="your@email.com"
+    <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
       style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;"/>
     <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
     <button id="eg-continue-btn" onclick="submitEmailGate()"
