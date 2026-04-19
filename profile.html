@@ -291,10 +291,20 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div class="divider"></div>
 
-  <!-- Joined Quests -->
+  <!-- Quest History -->
   <div class="el">
-    <div class="section-label">Joined Quests</div>
+    <div class="section-label">Quest History</div>
+
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:6px;margin-bottom:10px;">
+      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:9px;border-radius:12px;background:rgba(74,222,128,.12);border:1.5px solid #4ade80;color:#4ade80;font-size:13px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Joined</button>
+      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:9px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:13px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Created</button>
+    </div>
+
     <div id="joined-quests" class="card">
+      <div style="padding:4px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
+    </div>
+    <div id="created-quests" class="card" style="display:none;">
       <div style="padding:4px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
     </div>
   </div>
@@ -893,22 +903,53 @@ async function loadJoinedQuests(){
     container.innerHTML = rows.map(function(h, idx){
       var prizeDollars = Math.round((h.prize_value || 0) / 100);
       var dotColor = h.status === 'active' ? '#4ade80' : (h.status === 'ended' ? '#94a3b8' : '#fbbf24');
-      var subText = h.status === 'active' ? 'Active now' : (h.winner_id === currentUser.id ? '🏆 You won!' : h.status);
+      var subText = h.winner_id === currentUser.id ? '🏆 You won!' : (h.status === 'active' ? 'Active now' : h.status);
       var borderTop = idx > 0 ? 'border-top:1px solid rgba(255,255,255,.04);' : '';
       return (
-        '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.02);cursor:pointer;'+borderTop+'">' +
+        '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;'+borderTop+'">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+dotColor+';flex-shrink:0;box-shadow:0 0 8px '+dotColor+'66;"></div>' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:18px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
-            '<div style="font-size:18px;color:var(--dim);">'+subText+'</div>' +
+            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:13px;color:var(--dim);margin-top:2px;">'+subText+'</div>' +
           '</div>' +
-          '<div style="font-size:18px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
+          '<div style="font-size:16px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
         '</div>'
       );
     }).join('');
   } catch(e) {
     console.error('Joined quests error', e);
     container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Unable to load quests</div>';
+  }
+}
+
+function switchQuestTab(tab) {
+  var joinedTab = document.getElementById('qh-tab-joined');
+  var createdTab = document.getElementById('qh-tab-created');
+  var joinedList = document.getElementById('joined-quests');
+  var createdList = document.getElementById('created-quests');
+
+  if (tab === 'joined') {
+    joinedTab.style.background = 'rgba(74,222,128,.12)';
+    joinedTab.style.borderColor = '#4ade80';
+    joinedTab.style.color = '#4ade80';
+    createdTab.style.background = 'rgba(255,255,255,.03)';
+    createdTab.style.borderColor = 'rgba(255,255,255,.1)';
+    createdTab.style.color = 'rgba(255,255,255,.45)';
+    joinedList.style.display = 'block';
+    createdList.style.display = 'none';
+  } else {
+    createdTab.style.background = 'rgba(232,168,32,.12)';
+    createdTab.style.borderColor = '#e8a820';
+    createdTab.style.color = '#e8a820';
+    joinedTab.style.background = 'rgba(255,255,255,.03)';
+    joinedTab.style.borderColor = 'rgba(255,255,255,.1)';
+    joinedTab.style.color = 'rgba(255,255,255,.45)';
+    createdList.style.display = 'block';
+    joinedList.style.display = 'none';
+    if (!createdList.dataset.loaded) {
+      loadCreatedQuests();
+      createdList.dataset.loaded = '1';
+    }
   }
 }
 
@@ -923,8 +964,57 @@ async function loadCreatedCount(){
     if (count > 0) {
       document.getElementById('s-created').textContent = count;
       document.getElementById('m-created-count').textContent = count;
+      // Also update quests_created in profile if it's stale
+      if (!currentProfile || (currentProfile.quests_created || 0) !== count) {
+        fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id, {
+          method:'PATCH',
+          headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body: JSON.stringify({ quests_created: count })
+        }).catch(function(){});
+      }
     }
   } catch(e) { console.error('Created count error', e); }
+}
+
+async function loadCreatedQuests(){
+  var token = getToken();
+  var container = document.getElementById('created-quests');
+  try {
+    var r = await fetch(SB+'/rest/v1/hunts?created_by=eq.'+currentUser.id+'&select=id,city,neighborhood,prize_value,status,ends_at,winner_id,escrow_status&order=created_at.desc&limit=10', {
+      headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var rows = await r.json();
+
+    if (!rows || rows.length === 0) {
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;font-style:italic;">No quests created yet — <a href="newquest.html" style="color:var(--gold2);">create one</a></div>';
+      return;
+    }
+
+    container.innerHTML = rows.map(function(h, idx){
+      var prizeDollars = Math.round((h.prize_value || 0) / 100);
+      var statusColor, statusText;
+      if (h.status === 'active') { statusColor = '#4ade80'; statusText = 'Active'; }
+      else if (h.status === 'ended' && h.winner_id) { statusColor = '#e8a820'; statusText = '🏆 Won'; }
+      else if (h.status === 'ended') { statusColor = '#94a3b8'; statusText = 'Ended'; }
+      else if (h.status === 'draft' || h.escrow_status === 'pending') { statusColor = '#fbbf24'; statusText = 'Draft'; }
+      else if (h.status === 'scheduled') { statusColor = '#60a5fa'; statusText = 'Scheduled'; }
+      else { statusColor = '#94a3b8'; statusText = h.status || 'Unknown'; }
+
+      var borderTop = idx > 0 ? 'border-top:1px solid rgba(255,255,255,.04);' : '';
+      return (
+        '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;'+borderTop+'">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:'+statusColor+';flex-shrink:0;box-shadow:0 0 8px '+statusColor+'66;"></div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:13px;color:var(--dim);margin-top:2px;">'+statusText+'</div>' +
+          '</div>' +
+          '<div style="font-size:16px;font-weight:400;color:'+statusColor+';">$'+prizeDollars+'</div>' +
+        '</div>'
+      );
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Unable to load quests</div>';
+  }
 }
 
 // ============================================================
