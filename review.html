@@ -80,7 +80,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .toast.error{border-color:rgba(239,68,68,.5);}
 .toast.success{border-color:rgba(34,197,94,.5);}
 
-/* Loading skeleton */
+@keyframes rvSilverPulse{0%,100%{border-color:rgba(148,163,184,.5);box-shadow:none;color:rgba(226,232,240,.8);}50%{border-color:#94a3b8;box-shadow:0 0 14px rgba(148,163,184,.2);color:#e2e8f0;}}
+@keyframes rvGoldPulse{0%,100%{border-color:rgba(232,168,32,.5);box-shadow:none;color:rgba(232,168,32,.8);}50%{border-color:#e8a820;box-shadow:0 0 16px rgba(232,168,32,.25);color:#f5c842;}}
+@keyframes rvArrowPulse{0%,100%{opacity:.5;transform:translateY(0);}50%{opacity:1;transform:translateY(2px);}}
 .skel{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.08),rgba(255,255,255,.03));background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;border-radius:8px;}
 @keyframes skel{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 
@@ -122,9 +124,61 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="width:40px;"></div>
   </div>
 
-  <div class="hdr">
-    <h1>Your AI-generated clues</h1>
-    <p>Tap any clue to edit it, then confirm to fund your quest.</p>
+  <!-- Info bar: Prize | Clues+Time | Persona+Avatar -->
+  <div id="review-info-bar" style="display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:0;">
+    <div style="padding:18px 18px;border-right:1px solid rgba(255,255,255,.05);">
+      <div style="font-size:10px;letter-spacing:1.5px;color:rgba(74,222,128,.5);margin-bottom:4px;">PRIZE</div>
+      <div id="rv-prize" style="font-size:34px;font-weight:200;color:#4ade80;line-height:1;">—</div>
+    </div>
+    <div style="flex:1;padding:16px 14px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
+      <div id="rv-clues" style="font-size:18px;font-weight:300;color:#fff;">—</div>
+      <div id="rv-duration" style="font-size:12px;color:rgba(255,255,255,.35);margin-top:4px;">—</div>
+    </div>
+    <div style="padding:14px 16px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <div id="rv-avatar" style="width:40px;height:40px;border-radius:50%;background:rgba(13,11,24,.9);border:2px solid rgba(232,168,32,.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#e8a820;flex-shrink:0;position:relative;">??</div>
+      <div id="rv-persona" style="font-size:10px;color:rgba(255,255,255,.35);">—</div>
+    </div>
+  </div>
+
+  <!-- Tier buttons -->
+  <div style="display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+    <button id="rv-free-btn" style="flex:1;padding:11px;border-radius:14px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:14px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:rvSilverPulse 7s ease-in-out infinite;line-height:1.2;">FREE TIER</button>
+    <button id="rv-gold-btn" onclick="toggleRvGoldModal()" style="flex:1;padding:11px;border-radius:14px;background:rgba(255,255,255,.02);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:14px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;">GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span></button>
+  </div>
+
+  <!-- Gold modal — slides down -->
+  <div id="rv-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border-bottom:1px solid rgba(232,168,32,.1);">
+    <div id="rv-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">👑</div>
+          <div>
+            <div style="font-size:16px;font-weight:400;color:#fff;">Quest Master Gold</div>
+            <div style="font-size:11px;color:rgba(232,168,32,.5);margin-top:1px;">$3.99/mo · 30-day free trial</div>
+          </div>
+        </div>
+        <button onclick="toggleRvGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;font-family:'Noto Sans Display',sans-serif;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
+          <div style="font-size:9px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">ANALYTICS</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Live seeker views &amp; stats</div>
+        </div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
+          <div style="font-size:9px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">EDIT CLUES</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Tweak AI clues before live</div>
+        </div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
+          <div style="font-size:9px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">3 PINS</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Keep top quests visible</div>
+        </div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
+          <div style="font-size:9px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">GOLD BADGE</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Verified on your profile</div>
+        </div>
+      </div>
+      <button onclick="goGoldFromReview()" style="width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#92400e,#f59e0b);color:#0a0500;font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Try Gold Free for 30 Days →</button>
+    </div>
   </div>
 
   <div id="quest-meta-wrap"></div>
@@ -337,17 +391,102 @@ function renderMeta(){
   const start = new Date(hunt.starts_at);
   const end = new Date(hunt.ends_at);
   const durHours = Math.round((end - start) / (1000*60*60));
+  const persona = hunt.clue_persona || 'pirate';
+  const personaEmoji = {pirate:'🏴‍☠️',poetic:'🌸',insults:'🤬',sarcastic:'😏',hillbilly:'🤠',kid:'🧸',grandma:'👵',surfer:'🏄',investigator:'🔍'}[persona] || '🏴‍☠️';
+  const personaLabel = persona.charAt(0).toUpperCase() + persona.slice(1);
 
-  document.getElementById('quest-meta-wrap').innerHTML = `
-    <div class="quest-meta">
-      <div class="prize">$${prize.toFixed(2)}</div>
-      <div class="sep"></div>
-      <div class="detail">
-        <strong>${clues.length} clues over ${durHours}h</strong>
-        ${hunt.neighborhood || hunt.city || ''}
-      </div>
-    </div>`;
+  // Populate info bar
+  document.getElementById('rv-prize').textContent = '$' + prize.toFixed(0);
+  document.getElementById('rv-clues').textContent = clues.length + ' clues';
+  document.getElementById('rv-duration').textContent = 'over ' + durHours + ' hours';
+  document.getElementById('rv-persona').textContent = personaEmoji + ' ' + personaLabel;
+
+  // Avatar initials from username or email
+  var uname = currentProfile?.username || currentUser?.email?.split('@')[0] || '??';
+  var initials = uname.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('rv-avatar').textContent = initials;
+
+  // Render tier buttons based on Gold status
+  renderRvTierButtons(!!(currentProfile && currentProfile.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date())));
 }
+
+function renderRvTierButtons(isGold) {
+  var freeBtn = document.getElementById('rv-free-btn');
+  var goldBtn = document.getElementById('rv-gold-btn');
+  if (!freeBtn || !goldBtn) return;
+
+  if (isGold) {
+    freeBtn.style.animation = 'none';
+    freeBtn.style.background = 'rgba(255,255,255,.02)';
+    freeBtn.style.border = '1.5px solid rgba(255,255,255,.08)';
+    freeBtn.style.color = 'rgba(255,255,255,.2)';
+    freeBtn.style.cursor = 'default';
+
+    goldBtn.style.animation = 'rvGoldPulse 7s ease-in-out infinite';
+    goldBtn.style.background = 'rgba(201,137,12,.2)';
+    goldBtn.style.border = '2px solid #e8a820';
+    goldBtn.style.color = '#f5c842';
+    goldBtn.style.cursor = 'default';
+    goldBtn.onclick = null;
+    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:11px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
+
+    // Add Gold badge to avatar
+    var av = document.getElementById('rv-avatar');
+    if (av) {
+      av.style.border = '2px solid #e8a820';
+      var badge = document.createElement('div');
+      badge.style.cssText = 'position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#0a0810;border:1px solid #e8a820;display:flex;align-items:center;justify-content:center;font-size:8px;';
+      badge.textContent = '👑';
+      av.style.position = 'relative';
+      av.appendChild(badge);
+    }
+  } else {
+    freeBtn.style.animation = 'rvSilverPulse 7s ease-in-out infinite';
+    freeBtn.style.background = 'rgba(148,163,184,.15)';
+    freeBtn.style.border = '2px solid #94a3b8';
+    freeBtn.style.color = '#e2e8f0';
+
+    goldBtn.style.animation = 'none';
+    goldBtn.style.background = 'rgba(255,255,255,.02)';
+    goldBtn.style.border = '1.5px solid rgba(232,168,32,.2)';
+    goldBtn.style.color = 'rgba(232,168,32,.35)';
+    goldBtn.style.cursor = 'pointer';
+    goldBtn.onclick = toggleRvGoldModal;
+    goldBtn.innerHTML = 'GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span>';
+  }
+}
+
+var _rvGoldModalOpen = false;
+function toggleRvGoldModal() {
+  _rvGoldModalOpen = !_rvGoldModalOpen;
+  var modal = document.getElementById('rv-gold-modal');
+  var inner = document.getElementById('rv-gold-modal-inner');
+  var freeBtn = document.getElementById('rv-free-btn');
+  var goldBtn = document.getElementById('rv-gold-btn');
+  var arrow  = document.getElementById('rv-gold-arrow');
+
+  if (_rvGoldModalOpen) {
+    modal.style.maxHeight = '500px';
+    setTimeout(function(){ inner.style.opacity='1'; inner.style.transform='translateY(0)'; }, 50);
+    if (freeBtn) { freeBtn.style.animation='none'; freeBtn.style.border='1.5px solid rgba(255,255,255,.08)'; freeBtn.style.color='rgba(255,255,255,.2)'; freeBtn.style.background='rgba(255,255,255,.02)'; }
+    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.5)'; goldBtn.style.color='rgba(232,168,32,.7)'; }
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  } else {
+    modal.style.maxHeight = '0';
+    inner.style.opacity = '0';
+    inner.style.transform = 'translateY(-12px)';
+    if (freeBtn) { freeBtn.style.animation='rvSilverPulse 7s ease-in-out infinite'; freeBtn.style.border='2px solid #94a3b8'; freeBtn.style.color='#e2e8f0'; freeBtn.style.background='rgba(148,163,184,.15)'; }
+    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.2)'; goldBtn.style.color='rgba(232,168,32,.35)'; }
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+  }
+}
+
+function goGoldFromReview() {
+  sessionStorage.setItem('fs_gold_return', 'review');
+  window.location.href = 'gold.html';
+}
+
+/* Loading skeleton */
 
 function renderClues(){
   const isPro = !!(currentProfile && currentProfile.is_pro);
