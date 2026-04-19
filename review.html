@@ -62,8 +62,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .clue-btn.pro:hover{background:rgba(167,139,250,.18);}
 .clue-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
-.pro-unlock{background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(217,70,239,.08));border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:18px;color:var(--muted);display:flex;align-items:center;gap:10px;}
-.pro-unlock a{color:var(--purple);text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;}
+.pro-unlock{background:rgba(201,137,12,.05);border:1px solid rgba(232,168,32,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px;}
+.pro-unlock a{color:#e8a820;text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;}
 
 .time-editor{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:18px;color:var(--muted);}
 .time-editor input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;font-size:18px;color:var(--cream);font-family:'DM Mono',monospace;outline:none;}
@@ -494,10 +494,10 @@ function renderClues(){
   list.innerHTML = clues.map((c, i) => renderClue(c, i, isPro)).join('');
   if (!isPro) {
     list.innerHTML += `
-      <div class="pro-unlock" style="margin-top:14px;">
-        <span>✨</span>
-        <span>Upgrade to Pro to regenerate clues and tweak reveal times</span>
-        <a href="gold.html">Go Gold →</a>
+      <div class="pro-unlock" style="margin-top:14px;" onclick="toggleRvGoldModal()" role="button">
+        <span>👑</span>
+        <span>Gold members can regenerate clues and change reveal times</span>
+        <a onclick="event.stopPropagation();toggleRvGoldModal()" style="color:#e8a820;text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;cursor:pointer;">See benefits ↓</a>
       </div>`;
   }
 }
@@ -589,7 +589,7 @@ function cancelEdit(clueId){
 }
 
 async function regenerateClue(clueId){
-  if (!currentProfile.is_pro) { showToast('Upgrade to Pro to regenerate', 'error'); return; }
+  if (!currentProfile.is_pro) { showToast('Gold members can regenerate clues', 'error'); return; }
   const c = clues.find(x => x.id === clueId);
   if (!c) return;
   const card = document.getElementById('clue-'+clueId);
@@ -631,7 +631,7 @@ async function regenerateClue(clueId){
 }
 
 function editTime(clueId){
-  if (!currentProfile.is_pro) { showToast('Upgrade to Pro to change times', 'error'); return; }
+  if (!currentProfile.is_pro) { showToast('Gold members can change reveal times', 'error'); return; }
   const c = clues.find(x => x.id === clueId);
   if (!c) return;
   const current = c.reveal_at ? new Date(c.reveal_at).toISOString().slice(0,16) : '';
