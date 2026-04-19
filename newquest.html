@@ -176,7 +176,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png"/>
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"/>
+    <link rel="apple-touch-startup-image" href="/splash-2796x1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -829,7 +836,6 @@ async function createQuest(previewMode){
           city: city,
           neighborhood: searchAddress.split(',')[0] || '',
           searchAddress: searchAddress,
-          finderPosition: finderIdx + 1,
         })
       });
       const anonClueData = await anonClueRes.json();
@@ -1037,7 +1043,6 @@ async function createQuest(previewMode){
         city: city,
         neighborhood: searchAddress.split(',')[0] || '',
         searchAddress: searchAddress,
-        finderPosition: finderIdx + 1,
       })
     });
     const clueData = await clueRes.json();
