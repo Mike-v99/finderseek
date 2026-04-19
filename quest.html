@@ -88,7 +88,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png"/>
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"/>
+    <link rel="apple-touch-startup-image" href="/splash-2796x1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -298,7 +305,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="nav-item" onclick="window.location.href='how-it-works.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
   <div class="nav-center active" onclick="setNav(this)"><div class="nav-orb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">Quests</div></div>
   <div class="nav-item" onclick="window.location.href='gold.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="nav-label">Gold</div></div>
-  <div class="nav-item" onclick="window.location.href='profile.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
+  <div class="nav-item" id="nav-profile-item" onclick="window.location.href='profile.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
 </nav>
 
 <script>
@@ -1050,6 +1057,42 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   });
 }
+</script>
+<script>
+// Color profile nav item based on tier
+(function() {
+  var token = (function() {
+    var t = localStorage.getItem('fs_token');
+    if (t) return t;
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+          var s = JSON.parse(localStorage.getItem(keys[i]));
+          if (s && s.access_token) return s.access_token;
+        }
+      }
+    } catch(e) {}
+    return null;
+  })();
+  if (!token) return;
+  var SB_ = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+  var KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+  fetch(SB_ + '/rest/v1/profiles?select=is_pro,pro_expires', {
+    headers: { 'apikey': KEY_, 'Authorization': 'Bearer ' + token }
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    var p = d && d[0];
+    if (!p) return;
+    var isGold = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
+    var color = isGold ? '#e8a820' : '#94a3b8';
+    var el = document.getElementById('nav-profile-item');
+    if (!el) return;
+    var svg = el.querySelector('svg');
+    var lbl = el.querySelector('.nav-label');
+    if (svg) svg.setAttribute('stroke', color);
+    if (lbl) { lbl.style.color = color; }
+  }).catch(function(){});
+})();
 </script>
 </body>
 </html>

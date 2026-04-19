@@ -71,9 +71,10 @@ body::after {
 .hero { text-align: center; padding: 16px 20px 16px; }
 .logo {
   font-family: 'Noto Sans Display', sans-serif; font-weight: 300;
-  font-size: clamp(48px, 12vw, 58px);
+  font-size: clamp(36px, 10vw, 48px);
   line-height: 1.1;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  text-align: left;
 }
 .logo-finder {
   background: linear-gradient(90deg, var(--gold2), var(--gold3), var(--gold));
@@ -422,7 +423,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
-<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png"/>
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"/>
+    <link rel="apple-touch-startup-image" href="/splash-2796x1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+  <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -434,9 +442,18 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <!-- HERO -->
   <div class="hero" style="position:relative;">
     <div id="hero-halo" style="position:absolute;top:-90px;left:50%;transform:translateX(-50%) scale(0.2);width:460px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(232,168,32,.32) 0%,rgba(232,168,32,.11) 32%,rgba(232,168,32,.03) 58%,transparent 78%);border-radius:50%;opacity:0;pointer-events:none;z-index:0;will-change:transform,opacity;"></div>
-    <div class="logo el from-scale" style="position:relative;z-index:1;" data-d="150">
-      <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
+
+    <!-- Top bar: logo left, auth right -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:1;">
+      <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
+        <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
+      </div>
+      <div id="hero-auth" onclick="window.location.href='profile.html'" style="display:flex;align-items:center;gap:6px;cursor:pointer;opacity:0;transition:opacity .3s ease .4s;">
+        <span id="hero-auth-name" style="font-size:14px;font-weight:400;color:rgba(255,255,255,.3);">Sign in</span>
+        <svg id="hero-auth-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
     </div>
+
     <div class="tagline el" data-d="300">Hidden Treasure. Real Adventure.</div>
     <div class="el" data-d="375" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
 
@@ -589,7 +606,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
     <div class="nav-label">Gold</div>
   </div>
-  <div class="nav-item" onclick="window.location.href='profile.html'">
+  <div class="nav-item" id="nav-profile-item" onclick="window.location.href='profile.html'">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <div class="nav-label">Profile</div>
   </div>
@@ -730,12 +747,59 @@ window.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.el').forEach(function(el) { el.classList.add('show'); });
     openLiveMap();
     loadQuests();
+    loadHeroAuth();
     return;
   }
   playGoldBurst();
   triggerFlyIn();
   loadQuests();
+  loadHeroAuth();
 });
+
+async function loadHeroAuth() {
+  var nameEl = document.getElementById('hero-auth-name');
+  var iconEl = document.getElementById('hero-auth-icon');
+  var wrapEl = document.getElementById('hero-auth');
+  if (!nameEl || !iconEl || !wrapEl) return;
+
+  var token = (function() {
+    var t = localStorage.getItem('fs_token');
+    if (t) return t;
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+          var s = JSON.parse(localStorage.getItem(keys[i]));
+          if (s && s.access_token) return s.access_token;
+        }
+      }
+    } catch(e) {}
+    return null;
+  })();
+
+  // Show the element regardless
+  wrapEl.style.opacity = '1';
+
+  if (!token) return; // stays as "Sign in"
+
+  try {
+    var pr = await fetch(SB + '/rest/v1/profiles?select=username,is_pro,pro_expires', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token }
+    });
+    if (!pr.ok) return;
+    var profiles = await pr.json();
+    var profile = profiles && profiles[0];
+    if (!profile) return;
+
+    var isGold = profile.is_pro && (!profile.pro_expires || new Date(profile.pro_expires) > new Date());
+    var color = isGold ? '#e8a820' : '#94a3b8';
+    var name = profile.username || 'Profile';
+
+    nameEl.textContent = name;
+    nameEl.style.color = color;
+    iconEl.setAttribute('stroke', color);
+  } catch(e) {}
+}
 
 // ============================================================
 //  SUPABASE QUEST LOADING
@@ -1232,6 +1296,42 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   });
 }
+</script>
+<script>
+// Color profile nav item based on tier
+(function() {
+  var token = (function() {
+    var t = localStorage.getItem('fs_token');
+    if (t) return t;
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+          var s = JSON.parse(localStorage.getItem(keys[i]));
+          if (s && s.access_token) return s.access_token;
+        }
+      }
+    } catch(e) {}
+    return null;
+  })();
+  if (!token) return;
+  var SB_ = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+  var KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+  fetch(SB_ + '/rest/v1/profiles?select=is_pro,pro_expires', {
+    headers: { 'apikey': KEY_, 'Authorization': 'Bearer ' + token }
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    var p = d && d[0];
+    if (!p) return;
+    var isGold = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
+    var color = isGold ? '#e8a820' : '#94a3b8';
+    var el = document.getElementById('nav-profile-item');
+    if (!el) return;
+    var svg = el.querySelector('svg');
+    var lbl = el.querySelector('.nav-label');
+    if (svg) svg.setAttribute('stroke', color);
+    if (lbl) lbl.style.color = color;
+  }).catch(function(){});
+})();
 </script>
 </body>
 </html>
