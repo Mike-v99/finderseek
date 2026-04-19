@@ -479,7 +479,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="search-row el from-right" data-d="675" id="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
-      <input class="search-input" type="text" placeholder="Search quests..."/>
+      <input class="search-input" type="text" placeholder="Search quests..." oninput="filterQuests(this.value)" id="quest-search-input"/>
     </div>
     <button class="btn-livemap" onclick="openLiveMap()"><span class="pulse-dot"></span>LIVE MAP</button>
   </div>
@@ -561,7 +561,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- FOOTER -->
 <div style="text-align:center;padding:20px 16px 24px;font-size:18px;color:rgba(168,200,224,.5);max-width:480px;margin:0 auto;">
-  <a href="terms.html" style="color:rgba(168,200,224,.6);text-decoration:none;">Privacy Policy</a>
+  <a href="privacy.html" style="color:rgba(168,200,224,.6);text-decoration:none;">Privacy Policy</a>
   &nbsp;·&nbsp;
   <a href="terms.html" style="color:rgba(168,200,224,.6);text-decoration:none;">Terms of Service</a>
   &nbsp;·&nbsp;
@@ -585,7 +585,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <div class="nav-label">Quests</div>
   </div>
-  <div class="nav-item" onclick="window.location.href='gold.html'">
+  <div class="nav-item" onclick="sessionStorage.setItem('fs_gold_return','home'); window.location.href='gold.html'">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
     <div class="nav-label">Gold</div>
   </div>
@@ -865,15 +865,35 @@ function renderSection(status, quests) {
   listEl.innerHTML = html;
 }
 
+var _cachedQuests = { active: [], scheduled: [], completed: [] };
+
 async function loadQuests() {
   var [active, scheduled, completed] = await Promise.all([
     fetchQuests('active'),
     fetchQuests('scheduled'),
     fetchQuests('completed'),
   ]);
+  _cachedQuests.active = active;
+  _cachedQuests.scheduled = scheduled;
+  _cachedQuests.completed = completed;
   renderSection('active', active);
   renderSection('scheduled', scheduled);
   renderSection('completed', completed);
+}
+
+function filterQuests(query) {
+  var q = (query || '').toLowerCase().trim();
+  ['active', 'scheduled', 'completed'].forEach(function(status) {
+    var all = _cachedQuests[status] || [];
+    var filtered = q
+      ? all.filter(function(quest) {
+          var loc = ((quest.neighborhood || '') + ' ' + (quest.city || '')).toLowerCase();
+          var prize = String(Math.round((quest.prize_value || 0) / 100));
+          return loc.includes(q) || prize.includes(q);
+        })
+      : all;
+    renderSection(status, filtered);
+  });
 }
 </script>
 

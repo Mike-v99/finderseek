@@ -202,6 +202,29 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
 
+  <!-- GOLD ANALYTICS BAR — only shown to Gold Quest Masters viewing their own quest -->
+  <div id="q-analytics-bar" style="display:none;margin-bottom:10px;" class="el" data-d="650">
+    <div style="border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(232,168,32,.3),rgba(201,137,12,.1));">
+      <div style="background:rgba(10,8,20,.97);border-radius:13px;padding:14px 16px;">
+        <div style="font-size:10px;letter-spacing:2px;color:rgba(232,168,32,.5);margin-bottom:12px;">👑 QUEST MASTER ANALYTICS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <div style="text-align:center;">
+            <div id="qa-seekers" style="font-size:26px;font-weight:200;color:#e8a820;">—</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;">Seekers</div>
+          </div>
+          <div style="text-align:center;">
+            <div id="qa-clues-unlocked" style="font-size:26px;font-weight:200;color:#4ade80;">—</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;">Clues out</div>
+          </div>
+          <div style="text-align:center;">
+            <div id="qa-time-left" style="font-size:26px;font-weight:200;color:#60a5fa;">—</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;">Time left</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CLUES -->
   <div style="font-size:18px;font-weight:400;letter-spacing:2px;color:#ffffff;margin:16px 0 12px;display:flex;align-items:center;gap:10px;" class="el" data-d="700">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,137,12,.3),transparent);"></div><button onclick="document.getElementById('btn-claim').scrollIntoView({behavior:'smooth',block:'center'})" style="flex-shrink:0;padding:5px 12px;border-radius:20px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.4);color:#e8a820;font-size:12px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;display:flex;align-items:center;gap:5px;">CLAIM PRIZE <span style="font-size:14px;">↓</span></button></div>
 
@@ -307,7 +330,45 @@ async function checkUserGoldStatus() {
     var profile = pd && pd[0];
     var isGold = profile?.is_pro && (!profile.pro_expires || new Date(profile.pro_expires) > new Date());
     renderTierButtons(isGold);
+
+    // Show analytics bar if this user is a Gold Quest Master viewing their own quest
+    if (isGold && currentHunt && currentHunt.pirate_id === user.id) {
+      loadQuestAnalytics(token);
+    }
   } catch(e) { console.error('Gold status check error', e); }
+}
+
+async function loadQuestAnalytics(token) {
+  try {
+    // Count unique seekers from find_reports
+    var r = await fetch(SB+'/rest/v1/find_reports?hunt_id=eq.'+currentHunt.id+'&select=user_id', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}
+    });
+    var reports = await r.json();
+    var seekerCount = new Set((reports||[]).map(function(x){ return x.user_id; })).size;
+
+    // Count clues unlocked so far
+    var now = new Date();
+    var unlockedCount = (currentClues||[]).filter(function(c){ return new Date(c.reveal_at) <= now; }).length;
+
+    // Time left
+    var timeLeft = '—';
+    if (currentHunt.ends_at) {
+      var diff = new Date(currentHunt.ends_at) - now;
+      if (diff > 0) {
+        var h = Math.floor(diff / 3600000);
+        var d = Math.floor(h / 24);
+        timeLeft = d > 0 ? d+'d' : h > 0 ? h+'h' : Math.floor(diff/60000)+'m';
+      } else {
+        timeLeft = 'Ended';
+      }
+    }
+
+    document.getElementById('qa-seekers').textContent = seekerCount || '0';
+    document.getElementById('qa-clues-unlocked').textContent = unlockedCount + '/' + (currentClues||[]).length;
+    document.getElementById('qa-time-left').textContent = timeLeft;
+    document.getElementById('q-analytics-bar').style.display = 'block';
+  } catch(e) { console.error('Analytics load error', e); }
 }
 
 // ============================================================
@@ -474,6 +535,8 @@ async function loadQuest() {
     renderHunt();
     renderClues();
     startTimer();
+    // Re-check Gold status after quest/clues are loaded so analytics bar has data
+    checkUserGoldStatus();
 
     // ── Instant expiry: if this hunt is past ends_at and still active,
     // trigger refund + email immediately instead of waiting for 8am cron.
