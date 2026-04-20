@@ -783,7 +783,15 @@ async function loadHeroAuth() {
   if (!token) return; // stays as "Sign in"
 
   try {
-    var pr = await fetch(SB + '/rest/v1/profiles?select=username,is_pro,pro_expires', {
+    // First get the current user's ID from the token
+    var ur = await fetch(SB + '/auth/v1/user', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token }
+    });
+    if (!ur.ok) return;
+    var user = await ur.json();
+    if (!user || !user.id) return;
+
+    var pr = await fetch(SB + '/rest/v1/profiles?id=eq.' + user.id + '&select=username,is_pro,pro_expires', {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token }
     });
     if (!pr.ok) return;
