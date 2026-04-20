@@ -673,7 +673,7 @@ async function gateSignIn(){
     sessionStorage.setItem('fs_magic_return', returnTo);
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
-      options: { emailRedirectTo: window.location.origin + '/profile.html?magic=1' }
+      options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
     });
     if (error) throw error;
     err.style.color = '#4ade80';
@@ -703,7 +703,7 @@ async function gateSignUp(){
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: {
-        emailRedirectTo: window.location.origin + '/profile.html?magic=1',
+        emailRedirectTo: window.location.origin + '/auth-callback.html',
         data: { username: username }
       }
     });
@@ -727,7 +727,7 @@ async function gateSocial(provider){
     var { data, error } = await supaClient.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: window.location.origin + '/profile.html?magic=1'
+        redirectTo: window.location.origin + '/auth-callback.html'
       }
     });
     if (error) throw error;
@@ -753,7 +753,7 @@ async function gateForgotPassword(){
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: {
-        emailRedirectTo: window.location.origin + '/profile.html?magic=1'
+        emailRedirectTo: window.location.origin + '/auth-callback.html'
       }
     });
     if (error) throw error;

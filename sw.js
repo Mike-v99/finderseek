@@ -2,7 +2,7 @@
 // v4: scope caching to same-origin only; don't intercept Supabase/Stripe/etc.
 // v4: return real network errors on failure instead of `undefined`, which
 //     causes respondWith to reject with "Load failed" in Safari.
-const CACHE_NAME = 'finderseek-v5';
+const CACHE_NAME = 'finderseek-v6';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -13,6 +13,7 @@ const PRECACHE = [
   '/gold.html',
   '/newquest.html',
   '/privacy.html',
+  '/auth-callback.html',
   '/manifest.json',
   '/favicon.ico',
   '/og-image.jpg',
