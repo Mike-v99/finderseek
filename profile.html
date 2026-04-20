@@ -846,6 +846,19 @@ async function loadProfile(){
     var pd = await pr.json();
     currentProfile = (pd && pd[0]) || null;
 
+    // If no profile exists yet (new Apple/Google user), create one
+    if (!currentProfile) {
+      var email = currentUser.email || '';
+      var defaultUsername = email ? email.split('@')[0].replace(/[^a-zA-Z0-9_]/g,'').substring(0,20) : 'user' + Math.floor(Math.random()*9999);
+      var insertR = await fetch(SB+'/rest/v1/profiles', {
+        method: 'POST',
+        headers: {'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=representation'},
+        body: JSON.stringify({ id: currentUser.id, username: defaultUsername, email: email })
+      });
+      var insertD = await insertR.json();
+      currentProfile = (insertD && insertD[0]) || { id: currentUser.id, username: defaultUsername, email: email };
+    }
+
     // Render header
     renderHeader();
     renderStats();
