@@ -897,6 +897,7 @@ async function createQuest(previewMode){
         _savedAt: Date.now(),
       }));
       showToast('✅ Clues generated! Review them next...', 'success');
+      saveFormState();
       setTimeout(function(){ window.location.href = 'review.html?preview=1'; }, 1000);
       return;
     }
