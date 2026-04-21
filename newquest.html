@@ -806,6 +806,7 @@ async function createQuest(previewMode){
   // ── 4. Disable buttons + show progress ────────────────────
   btn.disabled = true; previewBtn.disabled = true;
   btn.textContent = '⏳ Creating quest...';
+  previewBtn.textContent = '⏳ Generating clues...';
 
   try {
     // ── 5. Compute timing ───────────────────────────────────
@@ -1142,7 +1143,8 @@ async function createQuest(previewMode){
     document.getElementById('ai-loading').style.display = 'none';
     showToast('Error: '+err.message, 'error');
     btn.disabled = false; previewBtn.disabled = false;
-    btn.textContent = '+ \u00a0 CREATE QUEST →';
+    btn.textContent = '+  CREATE QUEST →';
+    previewBtn.textContent = '🗺️  SEE CLUES FIRST';
   }
 }
 

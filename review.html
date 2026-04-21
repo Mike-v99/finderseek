@@ -1,7 +1,5 @@
 <!-- © 2026 FinderSeek. All rights reserved. -->
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -37,45 +35,45 @@ body{padding-top:env(safe-area-inset-top,0px);}
 @supports(padding-bottom:env(safe-area-inset-bottom)){.page{padding-bottom:calc(120px + env(safe-area-inset-bottom));}}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;}
-.back-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(–cream);flex-shrink:0;}
-.page-title{font-size:20px;font-weight:400;color:var(–cream);}
+.back-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cream);flex-shrink:0;}
+.page-title{font-size:20px;font-weight:400;color:var(--cream);}
 
 .hdr{text-align:center;padding:8px 0 24px;}
 .hdr h1{font-size:32px;font-weight:200;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;}
-.hdr p{font-size:18px;color:var(–dim);line-height:1.5;}
+.hdr p{font-size:18px;color:var(--dim);line-height:1.5;}
 
-.quest-meta{background:var(–card-bg);border:1px solid var(–border);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-.quest-meta .prize{font-size:22px;font-weight:400;color:var(–gold2);}
-.quest-meta .sep{width:1px;align-self:stretch;background:var(–border);}
-.quest-meta .detail{flex:1;font-size:18px;color:var(–muted);line-height:1.5;}
-.quest-meta .detail strong{color:var(–cream);font-weight:400;display:block;font-size:18px;}
+.quest-meta{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.quest-meta .prize{font-size:22px;font-weight:400;color:var(--gold2);}
+.quest-meta .sep{width:1px;align-self:stretch;background:var(--border);}
+.quest-meta .detail{flex:1;font-size:18px;color:var(--muted);line-height:1.5;}
+.quest-meta .detail strong{color:var(--cream);font-weight:400;display:block;font-size:18px;}
 
-.tier-badge{display:inline-flex;align-items:center;gap:6px;background:var(–purple-bg);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:4px 10px;font-size:18px;color:var(–purple);margin-left:auto;letter-spacing:0.5px;}
-.tier-badge.free{background:rgba(168,200,224,.08);border-color:rgba(168,200,224,.2);color:var(–dim);}
+.tier-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-bg);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:4px 10px;font-size:18px;color:var(--purple);margin-left:auto;letter-spacing:0.5px;}
+.tier-badge.free{background:rgba(168,200,224,.08);border-color:rgba(168,200,224,.2);color:var(--dim);}
 
-.clue-card{background:var(–card-bg);border:1px solid var(–border);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s;}
+.clue-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s;}
 .clue-card.editing{border-color:rgba(232,168,32,.4);}
 .clue-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.clue-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(–gold),var(–gold2));color:#0a0800;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:18px;flex-shrink:0;}
-.clue-label{font-size:18px;color:var(–muted);flex:1;}
-.clue-label strong{color:var(–cream);font-weight:400;}
+.clue-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:18px;flex-shrink:0;}
+.clue-label{font-size:18px;color:var(--muted);flex:1;}
+.clue-label strong{color:var(--cream);font-weight:400;}
 .clue-text{font-size:20px;color:#fff;line-height:1.55;font-weight:300;padding:4px 0 2px;}
 .clue-edit-textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:20px;color:#fff;font-family:inherit;font-weight:300;line-height:1.55;outline:none;resize:vertical;}
 .clue-edit-textarea:focus{border-color:rgba(232,168,32,.5);}
 
 .clue-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:18px;color:var(–cream);cursor:pointer;font-family:inherit;font-weight:300;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
+.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:18px;color:var(--cream);cursor:pointer;font-family:inherit;font-weight:300;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
 .clue-btn:hover{background:rgba(255,255,255,.08);}
-.clue-btn.primary{background:linear-gradient(135deg,var(–gold),var(–gold2));color:#0a0800;border:none;font-weight:400;}
-.clue-btn.pro{background:var(–purple-bg);border-color:rgba(167,139,250,.3);color:var(–purple);}
+.clue-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;border:none;font-weight:400;}
+.clue-btn.pro{background:var(--purple-bg);border-color:rgba(167,139,250,.3);color:var(--purple);}
 .clue-btn.pro:hover{background:rgba(167,139,250,.18);}
 .clue-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
-.pro-unlock{background:rgba(201,137,12,.05);border:1px solid rgba(232,168,32,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;color:var(–muted);display:flex;align-items:center;gap:10px;}
+.pro-unlock{background:rgba(201,137,12,.05);border:1px solid rgba(232,168,32,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px;}
 .pro-unlock a{color:#e8a820;text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;}
 
-.time-editor{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:18px;color:var(–muted);}
-.time-editor input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;font-size:18px;color:var(–cream);font-family:‘DM Mono’,monospace;outline:none;}
+.time-editor{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:18px;color:var(--muted);}
+.time-editor input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;font-size:18px;color:var(--cream);font-family:'DM Mono',monospace;outline:none;}
 
 .confirm-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(10,8,16,.98) 40%);padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));z-index:50;}
 .confirm-footer-inner{max-width:520px;margin:0 auto;}
@@ -103,22 +101,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
 .pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
 .pm-sub{font-size:18px;color:#fff;text-align:center;margin-bottom:22px;font-weight:300;}
-.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(–border);border-radius:14px;padding:16px;margin-bottom:20px;}
+.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
 .pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:#fff;font-weight:300;}
-.pm-row strong{color:var(–cream);font-weight:400;}
-.pm-row.total{border-top:1px solid var(–border);padding-top:12px;margin-top:6px;font-size:18px;}
-.pm-row.total strong{color:var(–gold2);font-size:20px;font-weight:400;}
-#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(–border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:240px;}
+.pm-row strong{color:var(--cream);font-weight:400;}
+.pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;font-size:18px;}
+.pm-row.total strong{color:var(--gold2);font-size:20px;font-weight:400;}
+#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:240px;}
 #pm-error{color:#f87171;font-size:18px;margin-bottom:12px;min-height:18px;text-align:center;}
-.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(–gold),var(–gold2));color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
+.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
 .pm-pay-btn:active{transform:scale(.98);}
 .pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
 .pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:300;opacity:.7;}
 
 /* Safe close button */
-.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(–cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
+.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
 </style>
-
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -127,7 +124,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <div class="page">
   <div class="topbar">
-    <div class="back-btn" onclick="history.back()" aria-label="Back">
+    <div class="back-btn" onclick="window.location.href='newquest.html'" aria-label="Back">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </div>
     <div class="page-title">Review your quest</div>
@@ -135,7 +132,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- Info bar: Prize | Clues+Time | Persona+Avatar -->
-
   <div id="review-info-bar" style="display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:0;">
     <div style="padding:18px 18px;border-right:1px solid rgba(255,255,255,.05);">
       <div style="font-size:10px;letter-spacing:1.5px;color:rgba(74,222,128,.5);margin-bottom:4px;">PRIZE</div>
@@ -152,14 +148,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- Tier buttons -->
-
   <div style="display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
     <button id="rv-free-btn" style="flex:1;padding:11px;border-radius:14px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:14px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:rvSilverPulse 7s ease-in-out infinite;line-height:1.2;">FREE TIER</button>
     <button id="rv-gold-btn" onclick="toggleRvGoldModal()" style="flex:1;padding:11px;border-radius:14px;background:rgba(255,255,255,.02);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:14px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;">GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span></button>
   </div>
 
   <!-- Gold modal — slides down -->
-
   <div id="rv-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border-bottom:1px solid rgba(232,168,32,.1);">
     <div id="rv-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -213,7 +207,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- ====== PAYMENT MODAL ====== -->
-
 <div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
 <div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
   <div class="pm-handle"></div>
@@ -236,7 +229,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- Email Gate Modal — for anonymous preview users before payment -->
-
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
 <div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
   <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
@@ -591,128 +583,131 @@ function startEdit(clueId){
   card.classList.add('editing');
   document.getElementById('clue-text-'+clueId).innerHTML =
     `<textarea class="clue-edit-textarea" id="clue-input-${clueId}">${escapeHtml(c.clue_text)}</textarea>`;
-
-document.getElementById(‘clue-actions-’+clueId).innerHTML = ` <button class="clue-btn primary" onclick="saveEdit('${clueId}')">Save</button> <button class="clue-btn" onclick="cancelEdit('${clueId}')">Cancel</button>`;
-document.getElementById(‘clue-input-’+clueId).focus();
+  document.getElementById('clue-actions-'+clueId).innerHTML = `
+    <button class="clue-btn primary" onclick="saveEdit('${clueId}')">Save</button>
+    <button class="clue-btn" onclick="cancelEdit('${clueId}')">Cancel</button>`;
+  document.getElementById('clue-input-'+clueId).focus();
 }
 
 async function saveEdit(clueId){
-const newText = document.getElementById(‘clue-input-’+clueId).value.trim();
-if (!newText) { showToast(‘Clue cannot be empty’, ‘error’); return; }
+  const newText = document.getElementById('clue-input-'+clueId).value.trim();
+  if (!newText) { showToast('Clue cannot be empty', 'error'); return; }
 
-// Preview mode — update in-memory + sessionStorage
-if (isPreviewMode) {
-const c = clues.find(x => x.id === clueId);
-if (c) c.clue_text = newText;
-try {
-const pending = JSON.parse(localStorage.getItem(‘fs_pending_quest’) || ‘null’);
-if (pending) {
-const idx = clues.findIndex(x => x.id === clueId);
-if (idx >= 0) pending.clues[idx].clue_text = newText;
-localStorage.setItem(‘fs_pending_quest’, JSON.stringify(pending));
-}
-} catch(e){}
-cancelEdit(clueId);
-showToast(‘Saved’, ‘success’);
-return;
-}
+  // Preview mode — update in-memory + sessionStorage
+  if (isPreviewMode) {
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) {
+        const idx = clues.findIndex(x => x.id === clueId);
+        if (idx >= 0) pending.clues[idx].clue_text = newText;
+        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+      }
+    } catch(e){}
+    cancelEdit(clueId);
+    showToast('Saved', 'success');
+    return;
+  }
 
-try {
-const r = await fetch(SB+’/rest/v1/clues?id=eq.’+clueId, {
-method:‘PATCH’,
-headers:{‘apikey’:KEY,‘Authorization’:’Bearer ’+getToken(),‘Content-Type’:‘application/json’,‘Prefer’:‘return=minimal’},
-body: JSON.stringify({ clue_text: newText })
-});
-if (!r.ok) throw new Error(‘save failed’);
-const c = clues.find(x => x.id === clueId);
-if (c) c.clue_text = newText;
-cancelEdit(clueId);
-showToast(‘Saved’, ‘success’);
-} catch(e) {
-showToast(‘Save failed — try again’, ‘error’);
-}
+  try {
+    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_text: newText })
+    });
+    if (!r.ok) throw new Error('save failed');
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    cancelEdit(clueId);
+    showToast('Saved', 'success');
+  } catch(e) {
+    showToast('Save failed — try again', 'error');
+  }
 }
 
 function cancelEdit(clueId){
-const card = document.getElementById(‘clue-’+clueId);
-card.classList.remove(‘editing’);
-renderClues();
+  const card = document.getElementById('clue-'+clueId);
+  card.classList.remove('editing');
+  renderClues();
 }
 
 async function regenerateClue(clueId){
-if (!currentProfile.is_pro) { showToast(‘Gold members can regenerate clues’, ‘error’); return; }
-const c = clues.find(x => x.id === clueId);
-if (!c) return;
-const card = document.getElementById(‘clue-’+clueId);
-const actionsEl = document.getElementById(‘clue-actions-’+clueId);
-actionsEl.innerHTML = ‘<div style="font-size:18px;color:var(--muted);padding:4px 0;">✨ Generating new clue…</div>’;
+  if (!currentProfile.is_pro) { showToast('Gold members can regenerate clues', 'error'); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const card = document.getElementById('clue-'+clueId);
+  const actionsEl = document.getElementById('clue-actions-'+clueId);
+  actionsEl.innerHTML = '<div style="font-size:18px;color:var(--muted);padding:4px 0;">✨ Generating new clue...</div>';
 
-try {
-const r = await fetch(’/api/generate-clues’, {
-method:‘POST’,
-headers:{‘Content-Type’:‘application/json’},
-body: JSON.stringify({
-description: hunt.hiding_spot || hunt.neighborhood || ‘’,
-clueCount: clues.length,
-lat: hunt.lat, lng: hunt.lng,
-persona: hunt.clue_persona || ‘pirate’,
-city: hunt.city || ‘’,
-neighborhood: hunt.neighborhood || ‘’,
-searchAddress: hunt.city || ‘’,
-singleClue: { position: c.clue_number, totalCount: clues.length }
-})
-});
-const d = await r.json();
-if (!r.ok || !d.clue) throw new Error(d.error || ‘Generation failed’);
+  try {
+    const r = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hunt.hiding_spot || hunt.neighborhood || '',
+        clueCount: clues.length,
+        lat: hunt.lat, lng: hunt.lng,
+        persona: hunt.clue_persona || 'pirate',
+        city: hunt.city || '',
+        neighborhood: hunt.neighborhood || '',
+        searchAddress: hunt.city || '',
+        singleClue: { position: c.clue_number, totalCount: clues.length }
+      })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.clue) throw new Error(d.error || 'Generation failed');
 
-```
-// Save new clue text to Supabase
-const pr = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
-  method:'PATCH',
-  headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
-  body: JSON.stringify({ clue_text: d.clue.text })
-});
-if (!pr.ok) throw new Error('save failed');
-c.clue_text = d.clue.text;
-renderClues();
-showToast('✨ New clue generated', 'success');
-```
-
-} catch(e) {
-showToast(‘Regenerate failed — try again’, ‘error’);
-renderClues();
-}
+    // Save new clue text to Supabase
+    const pr = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_text: d.clue.text })
+    });
+    if (!pr.ok) throw new Error('save failed');
+    c.clue_text = d.clue.text;
+    renderClues();
+    showToast('✨ New clue generated', 'success');
+  } catch(e) {
+    showToast('Regenerate failed — try again', 'error');
+    renderClues();
+  }
 }
 
 function editTime(clueId){
-if (!currentProfile.is_pro) { showToast(‘Gold members can change reveal times’, ‘error’); return; }
-const c = clues.find(x => x.id === clueId);
-if (!c) return;
-const current = c.reveal_at ? new Date(c.reveal_at).toISOString().slice(0,16) : ‘’;
-const start = new Date(hunt.starts_at).toISOString().slice(0,16);
-const end = new Date(hunt.ends_at).toISOString().slice(0,16);
-const card = document.getElementById(‘clue-’+clueId);
-document.getElementById(‘clue-actions-’+clueId).innerHTML = ` <div class="time-editor"> <input type="datetime-local" id="time-input-${clueId}" value="${current}" min="${start}" max="${end}"/> <button class="clue-btn primary" onclick="saveTime('${clueId}')">Save</button> <button class="clue-btn" onclick="renderClues()">Cancel</button> </div>`;
+  if (!currentProfile.is_pro) { showToast('Gold members can change reveal times', 'error'); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const current = c.reveal_at ? new Date(c.reveal_at).toISOString().slice(0,16) : '';
+  const start = new Date(hunt.starts_at).toISOString().slice(0,16);
+  const end = new Date(hunt.ends_at).toISOString().slice(0,16);
+  const card = document.getElementById('clue-'+clueId);
+  document.getElementById('clue-actions-'+clueId).innerHTML = `
+    <div class="time-editor">
+      <input type="datetime-local" id="time-input-${clueId}" value="${current}" min="${start}" max="${end}"/>
+      <button class="clue-btn primary" onclick="saveTime('${clueId}')">Save</button>
+      <button class="clue-btn" onclick="renderClues()">Cancel</button>
+    </div>`;
 }
 
 async function saveTime(clueId){
-const val = document.getElementById(‘time-input-’+clueId).value;
-if (!val) { showToast(‘Pick a time’, ‘error’); return; }
-const iso = new Date(val).toISOString();
-try {
-const r = await fetch(SB+’/rest/v1/clues?id=eq.’+clueId, {
-method:‘PATCH’,
-headers:{‘apikey’:KEY,‘Authorization’:’Bearer ’+getToken(),‘Content-Type’:‘application/json’,‘Prefer’:‘return=minimal’},
-body: JSON.stringify({ reveal_at: iso })
-});
-if (!r.ok) throw new Error(‘save failed’);
-const c = clues.find(x => x.id === clueId);
-if (c) c.reveal_at = iso;
-renderClues();
-showToast(‘Time updated’, ‘success’);
-} catch(e) {
-showToast(‘Save failed’, ‘error’);
-}
+  const val = document.getElementById('time-input-'+clueId).value;
+  if (!val) { showToast('Pick a time', 'error'); return; }
+  const iso = new Date(val).toISOString();
+  try {
+    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ reveal_at: iso })
+    });
+    if (!r.ok) throw new Error('save failed');
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.reveal_at = iso;
+    renderClues();
+    showToast('Time updated', 'success');
+  } catch(e) {
+    showToast('Save failed', 'error');
+  }
 }
 
 // ════════════════════════════════════════════════════
@@ -720,147 +715,146 @@ showToast(‘Save failed’, ‘error’);
 // ════════════════════════════════════════════════════
 
 async function openPaymentModal() {
-// If no currentUser but token exists, try loading user first
-if (!currentUser && getToken()) {
-try {
-var ur = await fetch(SB+’/auth/v1/user’, { headers:{‘apikey’:KEY,‘Authorization’:’Bearer ’+getToken()}});
-if (ur.ok) { currentUser = await ur.json(); }
-} catch(e){}
-}
+  // If no currentUser but token exists, try loading user first
+  if (!currentUser && getToken()) {
+    try {
+      var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});
+      if (ur.ok) { currentUser = await ur.json(); }
+    } catch(e){}
+  }
 
-// If still not logged in, show email gate first
-if (!currentUser) {
-try { sessionStorage.setItem(‘fs_magic_return’, window.location.href); } catch(e){}
-var bd = document.getElementById(‘eg-backdrop’);
-var md = document.getElementById(‘eg-modal’);
-var inner = document.getElementById(‘eg-inner’);
-bd.style.display = ‘block’;
-md.style.display = ‘flex’;
-setTimeout(function(){
-bd.style.opacity = ‘1’;
-if (inner) { inner.style.opacity = ‘1’; inner.style.transform = ‘scale(1)’; }
-}, 10);
-return;
-}
+  // If still not logged in, show email gate first
+  if (!currentUser) {
+    try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
+    var bd = document.getElementById('eg-backdrop');
+    var md = document.getElementById('eg-modal');
+    var inner = document.getElementById('eg-inner');
+    bd.style.display = 'block';
+    md.style.display = 'flex';
+    setTimeout(function(){
+      bd.style.opacity = '1';
+      if (inner) { inner.style.opacity = '1'; inner.style.transform = 'scale(1)'; }
+    }, 10);
+    return;
+  }
 
-var prize = (hunt.prize_value || 0) / 100;
-var fee   = Math.round(prize * 0.10 * 100) / 100;
-var total = prize + fee;
-var breakdown = document.getElementById(‘pm-breakdown’);
+  var prize = (hunt.prize_value || 0) / 100;
+  var fee   = Math.round(prize * 0.10 * 100) / 100;
+  var total = prize + fee;
+  var breakdown = document.getElementById('pm-breakdown');
 
-// Populate breakdown
-breakdown.innerHTML =
-‘<div class="pm-row"><span>Prize amount</span><span>$’ + prize.toFixed(2) + ‘</span></div>’ +
-‘<div class="pm-row"><span>FinderSeek fee (10%)</span><span>$’ + fee.toFixed(2) + ‘</span></div>’ +
-‘<div class="pm-row pm-total"><span>Total</span><span>$’ + total.toFixed(2) + ‘</span></div>’;
+  // Populate breakdown
+  breakdown.innerHTML =
+    '<div class="pm-row"><span>Prize amount</span><span>$' + prize.toFixed(2) + '</span></div>' +
+    '<div class="pm-row"><span>FinderSeek fee (10%)</span><span>$' + fee.toFixed(2) + '</span></div>' +
+    '<div class="pm-row pm-total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
 
-// Show user
-var userEl = document.getElementById(‘pm-user’);
-if (currentUser) {
-userEl.textContent = currentUser.email;
-} else {
-userEl.innerHTML = ‘’;
-}
+  // Show user
+  var userEl = document.getElementById('pm-user');
+  if (currentUser) {
+    userEl.textContent = currentUser.email;
+  } else {
+    userEl.innerHTML = '';
+  }
 
-// Reset checkbox and button
-var box = document.getElementById(‘pm-nocancel-box’);
-var btn = document.getElementById(‘pm-pay-btn’);
-box.dataset.checked = ‘false’;
-box.style.background = ‘’;
-box.style.borderColor = ‘rgba(201,137,12,.5)’;
-box.innerHTML = ‘’;
-btn.disabled = true;
-btn.style.opacity = ‘.5’;
-btn.style.cursor = ‘not-allowed’;
-btn.textContent = ‘Continue to Stripe →’;
-document.getElementById(‘pm-error’).textContent = ‘’;
+  // Reset checkbox and button
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  box.dataset.checked = 'false';
+  box.style.background = '';
+  box.style.borderColor = 'rgba(201,137,12,.5)';
+  box.innerHTML = '';
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.style.cursor = 'not-allowed';
+  btn.textContent = 'Continue to Stripe →';
+  document.getElementById('pm-error').textContent = '';
 
-// Show modal
-document.getElementById(‘pm-backdrop’).classList.add(‘show’);
-document.getElementById(‘pm-sheet’).classList.add(‘show’);
+  // Show modal
+  document.getElementById('pm-backdrop').classList.add('show');
+  document.getElementById('pm-sheet').classList.add('show');
 }
 
 function toggleNoCancelCheck() {
-var box = document.getElementById(‘pm-nocancel-box’);
-var btn = document.getElementById(‘pm-pay-btn’);
-var checked = box.dataset.checked !== ‘true’;
-box.dataset.checked = checked;
-if (checked) {
-box.style.background = ‘#c9890c’;
-box.style.borderColor = ‘#c9890c’;
-box.innerHTML = ‘<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>’;
-btn.disabled = false;
-btn.style.opacity = ‘1’;
-btn.style.cursor = ‘pointer’;
-} else {
-box.style.background = ‘’;
-box.style.borderColor = ‘rgba(201,137,12,.5)’;
-box.innerHTML = ‘’;
-btn.disabled = true;
-btn.style.opacity = ‘.5’;
-btn.style.cursor = ‘not-allowed’;
-}
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  var checked = box.dataset.checked !== 'true';
+  box.dataset.checked = checked;
+  if (checked) {
+    box.style.background = '#c9890c';
+    box.style.borderColor = '#c9890c';
+    box.innerHTML = '<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    box.style.background = '';
+    box.style.borderColor = 'rgba(201,137,12,.5)';
+    box.innerHTML = '';
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  }
 }
 
 function closePaymentModal() {
-document.getElementById(‘pm-backdrop’).classList.remove(‘show’);
-document.getElementById(‘pm-sheet’).classList.remove(‘show’);
+  document.getElementById('pm-backdrop').classList.remove('show');
+  document.getElementById('pm-sheet').classList.remove('show');
 }
 
 async function submitPayment() {
-var btn = document.getElementById(‘pm-pay-btn’);
-var errEl = document.getElementById(‘pm-error’);
-errEl.textContent = ‘’;
+  var btn = document.getElementById('pm-pay-btn');
+  var errEl = document.getElementById('pm-error');
+  errEl.textContent = '';
 
-// Guard — user must be signed in
-if (!currentUser) {
-errEl.textContent = ‘Please sign in first to fund your quest.’;
-btn.disabled = false;
-btn.textContent = ‘Continue to Stripe →’;
-return;
-}
+  // Guard — user must be signed in
+  if (!currentUser) {
+    errEl.textContent = 'Please sign in first to fund your quest.';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Stripe →';
+    return;
+  }
 
-btn.disabled = true;
-btn.textContent = ‘Opening Stripe…’;
+  btn.disabled = true;
+  btn.textContent = 'Opening Stripe...';
 
-try {
-var prize = (hunt.prize_value || 0) / 100;
-var total = prize + prize * 0.10;
-var r = await fetch(’/api/create-checkout’, {
-method: ‘POST’,
-headers: { ‘Content-Type’: ‘application/json’, ‘x-finderseek-secret’: NOTIFY_SECRET },
-body: JSON.stringify({
-type: ‘escrow’,
-userId: currentUser.id,
-email: currentUser.email,
-huntId: hunt.id,
-prizeAmount: prize,
-totalCents: Math.round(total * 100)
-})
-});
-var d = await r.json();
-if (!r.ok || !d.url) throw new Error(d.error || ‘Could not start checkout’);
-// Redirect to Stripe Checkout
-window.location.href = d.url;
-} catch(e) {
-errEl.textContent = e.message || ‘Payment failed — please try again’;
-btn.disabled = false;
-btn.textContent = ‘Continue to Stripe →’;
-}
+  try {
+    var prize = (hunt.prize_value || 0) / 100;
+    var total = prize + prize * 0.10;
+    var r = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({
+        type: 'escrow',
+        userId: currentUser.id,
+        email: currentUser.email,
+        huntId: hunt.id,
+        prizeAmount: prize,
+        totalCents: Math.round(total * 100)
+      })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
+    // Redirect to Stripe Checkout
+    window.location.href = d.url;
+  } catch(e) {
+    errEl.textContent = e.message || 'Payment failed — please try again';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Stripe →';
+  }
 }
 
 // ════════════════════════════════════════════════════
 // Service worker
 // ════════════════════════════════════════════════════
-if (‘serviceWorker’ in navigator) {
-window.addEventListener(‘load’, function() {
-navigator.serviceWorker.register(’/sw.js’).catch(function(){});
-});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
 }
 
 // Init
 init();
 </script>
-
 </body>
 </html>
