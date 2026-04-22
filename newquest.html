@@ -1011,7 +1011,12 @@ function getToken(){
 async function loadCurrentUser(){
   try {
     // Use Supabase client — auto-refreshes tokens
-    const { data: { session } } = await supaClient.auth.getSession();
+    let { data: { session } } = await supaClient.auth.getSession();
+    // If session expired, try refreshing
+    if (!session) {
+      const refreshed = await supaClient.auth.refreshSession();
+      session = refreshed.data?.session || null;
+    }
     if (!session || !session.user) return null;
     currentUser = session.user;
     // Load profile
@@ -1226,7 +1231,7 @@ async function createQuest(previewMode){
   // ── 4. Disable buttons + show progress ────────────────────
   btn.disabled = true; previewBtn.disabled = true;
   btn.textContent = '⏳ Creating quest...';
-  previewBtn.textContent = '⏳ Generating clues...';
+  previewBtn.textContent = '⏳ Starting quest...';
 
   try {
     // ── 5. Compute timing ───────────────────────────────────
@@ -1567,7 +1572,7 @@ async function createQuest(previewMode){
     showToast('Error: '+err.message, 'error');
     btn.disabled = false; previewBtn.disabled = false;
     btn.textContent = '+  CREATE QUEST →';
-    previewBtn.textContent = '🗺️  SEE CLUES FIRST';
+    previewBtn.textContent = '🏁  Start the Quest →';
   }
 }
 
