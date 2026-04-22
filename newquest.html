@@ -267,24 +267,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
 
     <!-- Clues -->
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">CLUES</div>
+    <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
     <div style="display:flex;gap:10px;">
       <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
         <div style="font-size:28px;font-weight:200;color:#fff;">4</div>
-        <div style="font-size:13px;color:#fff;opacity:.5;margin-top:4px;">Quick</div>
+        <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Quick</div>
       </div>
       <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:18px 4px;text-align:center;cursor:pointer;">
         <div style="font-size:28px;font-weight:200;color:#60a5fa;">5</div>
-        <div style="font-size:13px;color:#60a5fa;margin-top:4px;">Standard</div>
+        <div style="font-size:20px;color:#60a5fa;margin-top:4px;">Standard</div>
       </div>
       <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
         <div style="font-size:28px;font-weight:200;color:#fff;">6</div>
-        <div style="font-size:13px;color:#fff;opacity:.5;margin-top:4px;">Adventure</div>
+        <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Adventure</div>
       </div>
     </div>
   </div>
   <!-- Fixed bottom button -->
-  <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
+  <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button onclick="goStep(2)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
@@ -342,13 +342,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
       <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
         <div id="preview-label" style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
-        <div id="preview-text" style="font-size:14px;color:#fff;line-height:1.85;font-weight:300;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
+        <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:300;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
       </div>
     </div>
     <!-- Keep preview-emoji for JS compat, hidden -->
     <div id="preview-emoji" style="display:none;">🏴‍☠️</div>
   </div>
-  <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
+  <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button onclick="goStep(3)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
@@ -384,7 +384,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="map-container" class="map-box"></div>
     <div id="map-coords" class="map-coords" style="display:none;font-size:13px;color:#cbd5e1;"></div>
 
-    <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:15px;color:#cbd5e1;"></textarea>
+    <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
 
     <div style="height:1px;background:rgba(255,255,255,.07);margin:14px 0;"></div>
 
@@ -406,7 +406,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <div style="height:20px;"></div>
   </div>
-  <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
+  <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button onclick="goStep(4)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
@@ -482,7 +482,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <input type="hidden" id="quest-end-date" value=""/>
     <div style="height:8px;"></div>
   </div>
-  <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
+  <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">🏁 &nbsp;Start the Quest →</button>
     <button id="btn-create" onclick="createQuest(false)" style="display:none;"></button>
   </div>
@@ -623,6 +623,8 @@ function selClue(n, el) {
   el.style.background='rgba(96,165,250,.08)';
   el.querySelector('div').style.color='#60a5fa';
   el.querySelectorAll('div')[1].style.color='#60a5fa';
+  var cc = document.getElementById('clues-count');
+  if (cc) cc.textContent = n;
   saveFormState();
 }
 
@@ -969,7 +971,10 @@ function startTheQuest() {
       return;
     }
   }
-  // Wire start/end into createQuest via the hidden fields
+  // Validate hiding spot and code before leaving
+  if (!validateQuestForm()) return;
+  // Save full form state then go to create+review
+  saveFormState();
   createQuest(true);
 }
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
@@ -1162,11 +1167,11 @@ async function createQuest(previewMode){
   const btn = document.getElementById('btn-create');
   const previewBtn = document.getElementById('btn-preview');
 
-  // Validate form first
-  if (!validateQuestForm()) return;
+  // Validate only if called directly (not from startTheQuest which already validated)
+  if (!previewMode || btn === document.activeElement) {
+    if (!validateQuestForm()) return;
+  }
 
-  // For preview mode (See Clues First), allow anonymous — clues saved to sessionStorage
-  // For instant "Create Quest" mode, also allow anonymous — email gate shows at payment time
   if (!currentUser) {
     await loadCurrentUser();
   }
