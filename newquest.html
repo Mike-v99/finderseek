@@ -368,9 +368,28 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
+    <div style="font-size:15px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
+    <div class="code-wrap" style="margin-bottom:10px;">
+      <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
+      <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
+      <input id="c3" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
+      <input id="c4" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
+      <input id="c5" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
+      <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
+    </div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:15px;font-family:inherit;cursor:pointer;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Generate New Code
+      </button>
+    </div>
+
+    <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
+
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT</div>
 
-    <!-- Search bar — single clean row, no emoji icon, just text placeholder -->
+    <!-- Search bar -->
     <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
       <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#cbd5e1;"/>
@@ -385,25 +404,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#cbd5e1;"></div>
 
     <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
-
-    <div style="height:1px;background:rgba(255,255,255,.07);margin:14px 0;"></div>
-
-    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
-    <div style="font-size:15px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
-    <div class="code-wrap" style="margin-bottom:10px;">
-      <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
-      <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
-      <input id="c3" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
-      <input id="c4" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
-      <input id="c5" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
-      <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
-    </div>
-    <div style="text-align:center;">
-      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:15px;font-family:inherit;cursor:pointer;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        Generate New Code
-      </button>
-    </div>
     <div style="height:20px;"></div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
@@ -447,8 +447,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Info bar — updates based on selection -->
     <div id="preset-infobar" style="border-radius:12px;padding:12px 16px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-      <div id="preset-info-main" style="font-size:15px;color:#fff;margin-bottom:3px;">Select a window above</div>
-      <div id="preset-info-sub" style="font-size:15px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
+      <div id="preset-info-main" style="font-size:18px;color:#fff;margin-bottom:3px;">Select a window above</div>
+      <div id="preset-info-sub" style="font-size:18px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
     </div>
 
     <!-- Custom date picker — hidden until custom selected -->
@@ -1187,6 +1187,23 @@ async function createQuest(previewMode){
     await loadCurrentUser();
   }
 
+  // ── 1b. Get fresh token ─────────────────────────────────────
+  let freshToken = getToken();
+  try {
+    const { data: { session: freshSession } } = await supaClient.auth.getSession();
+    if (freshSession?.access_token) {
+      freshToken = freshSession.access_token;
+      // Store it for subsequent calls
+      localStorage.setItem('fs_token', freshToken);
+    } else {
+      const { data: refreshed } = await supaClient.auth.refreshSession();
+      if (refreshed?.session?.access_token) {
+        freshToken = refreshed.session.access_token;
+        localStorage.setItem('fs_token', freshToken);
+      }
+    }
+  } catch(e) { console.warn('Token refresh failed, using cached token'); }
+
   // ── 2. Gather form values ─────────────────────────────────
   const prize = selectedPrizeVal || parseFloat((document.getElementById('prize-display').textContent || '').replace(/[^\d.]/g,'')) || 0;
   const duration = weekendSelected ? 36 : ((selectedDur || 2) * 24);
@@ -1206,7 +1223,7 @@ async function createQuest(previewMode){
   // ── 3b. Time restriction — fetch allowed hours from settings ──
   try {
     var settingsRes = await fetch(SB + '/rest/v1/settings?key=in.(listing_start_hour,listing_end_hour)&select=key,value', {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (freshToken || KEY) }
     });
     if (settingsRes.ok) {
       var settingsRows = await settingsRes.json();
@@ -1350,7 +1367,7 @@ async function createQuest(previewMode){
           method: 'POST',
           headers: {
             'apikey': KEY,
-            'Authorization': 'Bearer '+getToken(),
+            'Authorization': 'Bearer '+freshToken,
             'Content-Type': photoFile.type
           },
           body: photoFile
@@ -1382,7 +1399,7 @@ async function createQuest(previewMode){
         SB + '/rest/v1/hunts?pirate_id=eq.' + currentUser.id +
         '&status=eq.draft&escrow_status=eq.pending' +
         '&order=created_at.desc&limit=1&select=id',
-        { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + getToken() } }
+        { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + freshToken } }
       );
       var drafts = await draftRes.json();
       if (Array.isArray(drafts) && drafts.length > 0) existingDraft = drafts[0];
@@ -1419,7 +1436,7 @@ async function createQuest(previewMode){
         method: 'PATCH',
         headers: {
           'apikey': KEY,
-          'Authorization': 'Bearer ' + getToken(),
+          'Authorization': 'Bearer ' + freshToken,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
@@ -1431,7 +1448,7 @@ async function createQuest(previewMode){
           method: 'DELETE',
           headers: {
             'apikey': KEY,
-            'Authorization': 'Bearer ' + getToken(),
+            'Authorization': 'Bearer ' + freshToken,
             'Prefer': 'return=minimal'
           }
         });
@@ -1441,7 +1458,7 @@ async function createQuest(previewMode){
         method: 'POST',
         headers: {
           'apikey': KEY,
-          'Authorization': 'Bearer ' + getToken(),
+          'Authorization': 'Bearer ' + freshToken,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
