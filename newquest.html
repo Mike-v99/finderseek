@@ -101,7 +101,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .search-result-icon{font-size:18px;flex-shrink:0;}
 .search-result-main{font-size:18px;color:var(--cream);font-weight:400;}
 .search-result-sub{font-size:18px;color:var(--muted);margin-top:2px;}
-.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
+.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
 .my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
 /* Code entry */
@@ -245,13 +245,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Prize hero -->
     <div style="text-align:center;padding:16px 0 28px;position:relative;">
-      <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">PRIZE AMOUNT</div>
+      <div style="font-size:15px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">PRIZE AMOUNT</div>
       <!-- Glow ring behind number -->
       <div style="position:relative;display:inline-block;">
         <div style="position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.18),transparent 70%);pointer-events:none;"></div>
         <div id="prize-display" style="font-size:96px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;line-height:1;position:relative;">$25</div>
       </div>
-      <div style="font-size:12px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP TO CHANGE</div>
+      <div style="font-size:15px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP TO CHANGE</div>
     </div>
 
     <!-- Prize chips 2x3 -->
@@ -267,7 +267,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
 
     <!-- Clues -->
-    <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
     <div style="display:flex;gap:10px;">
       <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
         <div style="font-size:28px;font-weight:200;color:#fff;">4</div>
@@ -285,7 +285,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <!-- Fixed bottom button -->
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
-    <button onclick="goStep(2)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
+    <button onclick="goStep(2)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
 
@@ -304,36 +304,36 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">CLUE STYLE</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;">CLUE STYLE</div>
 
     <!-- Segmented block grid -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
       <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);">
-        <div class="persona-name" style="font-size:17px;font-weight:500;color:#e8a820;">Pirate</div>
+        <div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div>
       </div>
       <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Poetic</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Poetic</div>
       </div>
       <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Insults</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Insults</div>
       </div>
       <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Sarcastic</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Sarcastic</div>
       </div>
       <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Hillbilly</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Hillbilly</div>
       </div>
       <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">5 Yr Old</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">5 Yr Old</div>
       </div>
       <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Grandma</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Grandma</div>
       </div>
       <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Surfer</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Surfer</div>
       </div>
       <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Detective</div>
+        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Detective</div>
       </div>
     </div>
 
@@ -341,7 +341,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="persona-preview" style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07);">
       <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
       <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
-        <div id="preview-label" style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
+        <div id="preview-label" style="font-size:15px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
         <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:300;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
       </div>
     </div>
@@ -349,7 +349,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="preview-emoji" style="display:none;">🏴‍☠️</div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
-    <button onclick="goStep(3)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
+    <button onclick="goStep(3)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
 
@@ -368,13 +368,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:10px;">HIDING SPOT</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT</div>
 
     <!-- Search bar — single clean row, no emoji icon, just text placeholder -->
     <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
       <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#cbd5e1;"/>
-      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:13px;gap:4px;">
+      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:15px;gap:4px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
         <span id="my-loc-txt">Me</span>
       </button>
@@ -382,14 +382,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
 
     <div id="map-container" class="map-box"></div>
-    <div id="map-coords" class="map-coords" style="display:none;font-size:13px;color:#cbd5e1;"></div>
+    <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#cbd5e1;"></div>
 
     <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
 
     <div style="height:1px;background:rgba(255,255,255,.07);margin:14px 0;"></div>
 
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:6px;">SECRET CODE</div>
-    <div style="font-size:13px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
+    <div style="font-size:15px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
     <div class="code-wrap" style="margin-bottom:10px;">
       <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
       <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
@@ -399,7 +399,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
     </div>
     <div style="text-align:center;">
-      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:14px;font-family:inherit;cursor:pointer;">
+      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:15px;font-family:inherit;cursor:pointer;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Generate New Code
       </button>
@@ -407,7 +407,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="height:20px;"></div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
-    <button onclick="goStep(4)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
+    <button onclick="goStep(4)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
 
@@ -427,51 +427,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:18px;height:6px;border-radius:3px;background:#e8a820;"></div>
     </div>
 
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:10px;">PRESETS</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">SCHEDULE QUEST</div>
 
     <!-- 2x2 preset grid -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="preset-btn" data-preset="montue" onclick="selPreset('montue',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-        <div style="font-size:16px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
+        <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
       </div>
       <div class="preset-btn" data-preset="wedfri" onclick="selPreset('wedfri',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-        <div style="font-size:16px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
+        <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
       </div>
       <div class="preset-btn" data-preset="weekend" onclick="selPreset('weekend',this)" style="border-radius:14px;border:1.5px solid rgba(45,212,191,.3);background:rgba(45,212,191,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-        <div style="font-size:16px;font-weight:400;color:#2dd4bf;">Weekend</div>
+        <div style="font-size:25px;font-weight:400;color:#2dd4bf;">Weekend</div>
       </div>
       <div class="preset-btn" data-preset="custom" onclick="selPreset('custom',this)" style="border-radius:14px;border:1.5px solid rgba(167,139,250,.3);background:rgba(167,139,250,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-        <div style="font-size:16px;font-weight:400;color:#a78bfa;">Custom</div>
+        <div style="font-size:25px;font-weight:400;color:#a78bfa;">Custom</div>
       </div>
     </div>
 
     <!-- Info bar — updates based on selection -->
     <div id="preset-infobar" style="border-radius:12px;padding:12px 16px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-      <div id="preset-info-main" style="font-size:14px;color:#fff;margin-bottom:3px;">Select a window above</div>
-      <div id="preset-info-sub" style="font-size:12px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
+      <div id="preset-info-main" style="font-size:15px;color:#fff;margin-bottom:3px;">Select a window above</div>
+      <div id="preset-info-sub" style="font-size:15px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
     </div>
 
     <!-- Custom date picker — hidden until custom selected -->
     <div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:12px 14px;margin-bottom:6px;">
-      <div style="font-size:10px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:8px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
+      <div style="font-size:15px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:8px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
         <div style="flex:1;">
-          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">START DATE</div>
-          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:4px;">START DATE</div>
+          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:15px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
         </div>
         <div style="color:rgba(255,255,255,.3);font-size:16px;margin-top:14px;">→</div>
         <div style="flex:1;">
-          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">END DATE</div>
-          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:4px;">END DATE</div>
+          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:15px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
         </div>
       </div>
-      <div id="custom-date-msg" style="font-size:12px;color:rgba(167,139,250,.7);"></div>
+      <div id="custom-date-msg" style="font-size:15px;color:rgba(167,139,250,.7);"></div>
     </div>
 
     <div style="height:1px;background:rgba(255,255,255,.07);margin:10px 0;"></div>
 
     <!-- Stripe note -->
-    <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px 13px;font-size:13px;color:rgba(74,222,128,.7);text-align:center;line-height:1.5;">
+    <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px 13px;font-size:15px;color:rgba(74,222,128,.7);text-align:center;line-height:1.5;">
       🔒 Prize held by Stripe · Refunded if quest expires unclaimed
     </div>
 
@@ -483,7 +483,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="height:8px;"></div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
-    <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">🏁 &nbsp;Start the Quest →</button>
+    <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">🏁 &nbsp;Start the Quest →</button>
     <button id="btn-create" onclick="createQuest(false)" style="display:none;"></button>
   </div>
 </div>
@@ -603,8 +603,12 @@ function goStep(n) {
   saveFormState();
   // Init map when entering step 3
   if (n === 3) {
-    // Auto-generate a fresh code every time step 3 is entered
-    genCode();
+    // Only auto-generate code if all fields are empty (first visit)
+    var hasCode = ['c1','c2','c3','c4','c5','c6'].some(function(id){
+      var el = document.getElementById(id);
+      return el && el.value !== '';
+    });
+    if (!hasCode) genCode();
     setTimeout(function(){
       if (_mapReady && _map) { _map.invalidateSize(); return; }
       if (selectedLat && selectedLng) { initMap(selectedLat, selectedLng, 15); }
@@ -1598,6 +1602,7 @@ function saveFormState() {
       persona: document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate',
       hidingSpot: document.getElementById('hiding-spot')?.value || '',
       searchAddress: document.getElementById('map-search')?.value || '',
+      pin: ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.value:''; }).join(''),
       liveMode: document.querySelector('.golive-opt.selected')?.dataset.live || 'now',
       lat: selectedLat, lng: selectedLng,
       step: currentStep,
@@ -1618,6 +1623,11 @@ function restoreFormState() {
     if (s.persona) { var pp = document.querySelector('.persona-card[data-persona="'+s.persona+'"]'); if (pp) selPersona(pp); }
     if (s.hidingSpot) { var hs = document.getElementById('hiding-spot'); if (hs) hs.value = s.hidingSpot; }
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
+    if (s.pin && s.pin.length === 6) {
+      ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
+        var el = document.getElementById(id); if (el) el.value = s.pin[i] || '';
+      });
+    }
     if (s.liveMode) {
       document.querySelectorAll('.golive-opt').forEach(function(el){ el.classList.remove('selected'); });
       var lm = document.querySelector('.golive-opt[data-live="'+s.liveMode+'"]');
@@ -1755,7 +1765,7 @@ function setCoords(lat, lng) {
   selectedLat = lat; selectedLng = lng;
   var el = document.getElementById('map-coords');
   el.style.display = 'block';
-  el.innerHTML = '<span style="color:#cbd5e1;opacity:.7;font-size:13px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
+  el.innerHTML = '<span style="color:#cbd5e1;opacity:.7;font-size:15px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
 }
 
 async function reverseGeocode(lat, lng) {
