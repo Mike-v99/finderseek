@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -27,24 +26,24 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(–dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:‘Noto Sans Display’,sans-serif;font-weight:300;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:300;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
 /* Page header */
 .page-header{text-align:center;margin-bottom:24px;position:relative;}
-.page-title{font-family:‘Noto Sans Display’,sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
-.page-sub{font-size:18px;color:var(–dim);margin-top:12px;line-height:1.8;}
+.page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-sub{font-size:18px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
 .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;flex-shrink:0;}
-.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(–blue-light);}
+.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
 .step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#cbd5e1;}
-.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(–gold2);}
+.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
 .step-num-red{background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.4);color:#e8a820;}
-.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(–purple);}
-.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(–green);}
+.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
+.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
 .step-icon{font-size:22px;}
 .step-title{font-size:18px;font-weight:400;color:#ffffff;}
 .step-body{padding:18px;}
@@ -53,94 +52,94 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:18px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(–cream);font-family:‘Noto Sans Display’,sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
 .finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:‘Noto Sans Display’,sans-serif;font-weight:300;font-size:28px;color:var(–blue-light);}
-input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(–blue-light) var(–pct,50%),rgba(147,197,253,.15) var(–pct,50%));}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(–blue-light),#93c5fd);border:3px solid var(–ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
-.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(–muted);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:300;font-size:28px;color:var(--blue-light);}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(--muted);}
 
 /* Persona grid */
 .persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.persona-card.selected{border-color:var(–gold2);background:rgba(201,137,12,.08);}
+.persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
 .persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
 .persona-name{font-size:18px;font-weight:400;color:#ffffff;}
-.persona-desc{font-size:18px;color:var(–muted);margin-top:4px;line-height:1.4;}
-.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(–gold2);display:none;}
-.persona-card.selected .persona-check{display:block;}
+.persona-desc{font-size:18px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(--gold2);display:none;}
+/* persona-check removed - new design uses background tint */
 
 /* Photo drop */
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:‘Noto Sans Display’,sans-serif;font-weight:300;transition:all .2s;color:var(–cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:18px;font-weight:400;}
-.photo-or{font-size:18px;color:var(–muted);}
+.photo-or{font-size:18px;color:var(--muted);}
 
 /* Map */
-.map-box{width:100%;height:280px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(201,137,12,.2);overflow:hidden;margin-bottom:10px;position:relative;z-index:2;}
+.map-box{width:100%;height:260px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(203,213,225,.1);overflow:hidden;margin-bottom:6px;position:relative;z-index:2;}
 .map-search-wrap{position:relative;margin-bottom:10px;}
-.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px 14px 42px;font-size:18px;color:var(–cream);font-family:‘Noto Sans Display’,sans-serif;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none;}
-.map-search-input:focus{border-color:rgba(220,220,230,.6);}
-.map-search-input::placeholder{color:#b8d4e8;}
+.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.map-search-input:focus{border-color:rgba(203,213,225,.4);}
+.map-search-input::placeholder{color:rgba(203,213,225,.35);}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
-.map-coords{font-size:18px;color:var(–muted);text-align:center;padding:8px;background:rgba(255,255,255,.03);border-radius:10px;letter-spacing:.5px;margin-top:8px;}
-.map-coords span{color:var(–gold);}
+.map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.map-coords span{color:var(--gold);}
 .search-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.25);border-radius:12px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:100;display:none;backdrop-filter:blur(16px);}
 .search-dropdown.show{display:block;}
 .search-result{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
 .search-result:hover,.search-result.active{background:rgba(201,137,12,.1);}
 .search-result:last-child{border-bottom:none;}
 .search-result-icon{font-size:18px;flex-shrink:0;}
-.search-result-main{font-size:18px;color:var(–cream);font-weight:400;}
-.search-result-sub{font-size:18px;color:var(–muted);margin-top:2px;}
-.my-loc-btn{background:rgba(201,137,12,.15);border:1px solid rgba(201,137,12,.3);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:18px;color:var(–gold2);font-family:‘Noto Sans Display’,sans-serif;font-weight:300;transition:all .2s;display:inline-flex;align-items:center;gap:6px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
-.my-loc-btn:hover{background:rgba(201,137,12,.25);}
+.search-result-main{font-size:18px;color:var(--cream);font-weight:400;}
+.search-result-sub{font-size:18px;color:var(--muted);margin-top:2px;}
+.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
+.my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(232,168,32,.3);text-align:center;font-size:24px;font-weight:400;color:#e8a820;font-family:‘Noto Sans Display’,sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(232,168,32,.3);text-align:center;font-size:24px;font-weight:400;color:#e8a820;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:#e8a820;box-shadow:0 0 12px rgba(232,168,32,.35);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(–dim);font-family:‘Noto Sans Display’,sans-serif;font-weight:300;cursor:pointer;transition:all .2s;}
-.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(–cream);}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:300;cursor:pointer;transition:all .2s;}
+.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
 .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.pay-opt.selected{border-color:var(–purple);background:rgba(139,92,246,.08);}
+.pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
 .pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
 .pay-opt-name{font-size:18px;font-weight:400;color:#ffffff;}
-.pay-opt-tag{font-size:18px;color:var(–muted);margin-top:4px;}
+.pay-opt-tag{font-size:18px;color:var(--muted);margin-top:4px;}
 
 /* Go live options */
 .golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
-.golive-opt.selected{border-color:var(–green);background:rgba(34,197,94,.08);}
+.golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
 .golive-icon{font-size:28px;margin-bottom:6px;}
 .golive-name{font-size:18px;font-weight:400;color:#ffffff;}
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
-.warning-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–red),#f97316);border-radius:18px 18px 0 0;}
+.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
 .warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .warning-item{display:flex;align-items:center;gap:8px;font-size:18px;color:#ffffff;}
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:18px;color:#ffffff;}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08);}
-.submit-note{font-size:18px;color:var(–muted);text-align:center;margin-top:10px;line-height:1.5;}
+.submit-note{font-size:18px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,8,16,.92);border-top:1px solid rgba(255,255,255,.06);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease, opacity .2s ease;}
@@ -161,22 +160,24 @@ body.kb-up .bottom-nav{transform:translateX(-50%) translateY(120%);opacity:0;poi
 @supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
 
 /* Toast & loader */
-.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(–cream);font-size:18px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(--cream);font-size:18px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
 .toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
 .btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
 
 /* Step pages */
-.step-page{position:relative;z-index:1;background:var(–ink);}
+.step-page{position:relative;z-index:1;background:var(--ink);max-width:480px;margin:0 auto;width:100%;}
+/* Hide bottom nav on step pages — each step has its own Next button */
+.bottom-nav{display:none !important;}
 @keyframes wq-glow-anim{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0);}50%{box-shadow:0 0 18px 3px rgba(232,168,32,.18);}}
 #wq-btn{animation:wq-glow-anim 3s ease-in-out infinite;}
+@keyframes questBtnPulse{0%,100%{box-shadow:0 4px 20px rgba(34,197,94,.3);}50%{box-shadow:0 4px 40px rgba(34,197,94,.55),0 0 60px rgba(34,197,94,.15);}}
 
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 </style>
-
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
@@ -191,103 +192,96 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
+
+<style id="preview-shell-css">
+@media (min-width: 520px) {
+  body {
+    background: #060510 !important;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px 0 !important;
+    min-height: 100vh;
+  }
+  body::before { display: none; }
+  body::after  { display: none; }
+  .step-page {
+    width: 390px !important;
+    min-height: 844px !important;
+    max-width: 390px !important;
+    border-radius: 44px !important;
+    overflow: hidden !important;
+    box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 10px #1a1726, 0 0 0 11px #2a2540 !important;
+    border: none !important;
+  }
+  /* Dark background behind phone */
+  body::before {
+    display: block !important;
+    background: radial-gradient(ellipse at 50% 30%, rgba(30,20,60,.8), #060510) !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
 
 <!-- STEP PAGES -->
-
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <!-- Topbar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="font-size:16px;color:rgba(255,255,255,.5);text-decoration:none;padding:6px 0;">← Back</a>
     <div style="font-size:18px;font-weight:400;color:#fff;">New Quest</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.4);">1 of 4</div>
+    <div style="font-size:15px;color:rgba(255,255,255,.4);text-align:right;">1 of 4</div>
   </div>
   <!-- Scrollable content -->
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 0;">
+  <div style="flex:1;overflow-y:auto;padding:16px 14px 8px;">
     <!-- Progress dots -->
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:16px;">
+    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:20px;">
       <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
       <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
       <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
       <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<!-- Prize -->
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;">PRIZE AMOUNT</div>
-<div id="prize-display" style="display:none;">$25</div>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;" id="prize-grid">
-  <div class="prize-chip" onclick="selPrize(5,this)" data-val="5" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$5</div>
-  <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
-  <div class="prize-chip active" onclick="selPrize(25,this)" data-val="25" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$25</div>
-  <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
-  <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
-  <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:12px 6px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
-</div>
-
-<div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:16px;"></div>
-
-<!-- Clues -->
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;">CLUES</div>
-<div style="display:flex;gap:8px;margin-bottom:16px;">
-  <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:12px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:22px;font-weight:200;color:#fff;">4</div>
-    <div style="font-size:11px;color:#fff;opacity:.65;margin-top:2px;">Quick</div>
-  </div>
-  <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;border-radius:12px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:12px 4px;text-align:center;cursor:pointer;">
-    <div style="font-size:22px;font-weight:200;color:#60a5fa;">5</div>
-    <div style="font-size:11px;color:#60a5fa;margin-top:2px;">Standard</div>
-  </div>
-  <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:12px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:22px;font-weight:200;color:#fff;">6</div>
-    <div style="font-size:11px;color:#fff;opacity:.65;margin-top:2px;">Adventure</div>
-  </div>
-</div>
-
-<!-- Duration -->
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;" id="dur-label">DURATION</div>
-<div style="display:flex;gap:8px;margin-bottom:8px;" id="dur-btns">
-  <div class="dur-btn" onclick="selDur(1,this)" data-dur="1" style="flex:1;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:10px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:16px;font-weight:400;color:#fff;">1</div>
-    <div style="font-size:10px;color:#fff;opacity:.55;margin-top:2px;">day</div>
-  </div>
-  <div class="dur-btn active" onclick="selDur(2,this)" data-dur="2" style="flex:1;border-radius:12px;border:1.5px solid #a78bfa;background:rgba(167,139,250,.08);padding:10px 4px;text-align:center;cursor:pointer;">
-    <div style="font-size:16px;font-weight:400;color:#a78bfa;">2</div>
-    <div style="font-size:10px;color:#a78bfa;margin-top:2px;">days</div>
-  </div>
-  <div class="dur-btn" onclick="selDur(3,this)" data-dur="3" style="flex:1;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:10px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:16px;font-weight:400;color:#fff;">3</div>
-    <div style="font-size:10px;color:#fff;opacity:.55;margin-top:2px;">days</div>
-  </div>
-</div>
-<div id="dur-expires" style="font-size:11px;color:#fff;text-align:center;margin-bottom:16px;opacity:.7;"></div>
-
-<!-- OR pill -->
-<div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-  <div style="position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.09);"></div>
-  <div style="position:relative;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:3px 16px;font-size:11px;color:#e8a820;letter-spacing:2px;">OR</div>
-</div>
-
-<!-- Weekend Quest -->
-<div id="wq-btn" onclick="toggleWeekend()" style="position:relative;border-radius:14px;overflow:hidden;cursor:pointer;margin-bottom:8px;">
-  <div id="wq-glow" style="position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,rgba(232,168,32,.13),transparent 55%);"></div>
-  <div id="wq-border" style="position:absolute;inset:0;border-radius:14px;border:1.5px solid transparent;background:linear-gradient(#0d0b18,#0d0b18) padding-box,linear-gradient(135deg,#92400e,#e8a820,#f5c842,#e8a820,#92400e) border-box;"></div>
-  <div id="wq-inner" style="position:relative;padding:13px 15px;display:flex;align-items:center;gap:13px;">
-    <div style="font-size:28px;flex-shrink:0;">🏖️</div>
-    <div style="flex:1;">
-      <div style="font-size:15px;font-weight:400;background:linear-gradient(90deg,#f5c842,#e8a820,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">Weekend Quest</div>
-      <div style="font-size:11px;" id="wq-dates">
-        <span style="color:#e8a820;" id="wq-sat">Sat Apr 26</span><span style="color:rgba(255,255,255,.4);"> 9:00 AM → </span><span style="color:#e8a820;" id="wq-sun">Sun Apr 27</span><span style="color:rgba(255,255,255,.4);"> 9:00 PM</span>
+    <!-- Prize hero -->
+    <div style="text-align:center;padding:16px 0 28px;position:relative;">
+      <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">PRIZE AMOUNT</div>
+      <!-- Glow ring behind number -->
+      <div style="position:relative;display:inline-block;">
+        <div style="position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.18),transparent 70%);pointer-events:none;"></div>
+        <div id="prize-display" style="font-size:96px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;line-height:1;position:relative;">$25</div>
       </div>
-      <div id="wq-sub" style="font-size:10px;color:#fff;opacity:.5;margin-top:3px;">36 hrs · Auto-expires Sunday night</div>
+      <div style="font-size:12px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP TO CHANGE</div>
     </div>
-    <div id="wq-check" style="width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(232,168,32,.5);flex-shrink:0;"></div>
-  </div>
-</div>
-```
 
+    <!-- Prize chips 2x3 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;" id="prize-grid">
+      <div class="prize-chip" onclick="selPrize(5,this)" data-val="5" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$5</div>
+      <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
+      <div class="prize-chip active" onclick="selPrize(25,this)" data-val="25" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$25</div>
+      <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
+      <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
+      <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
+    </div>
+
+    <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
+
+    <!-- Clues -->
+    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">CLUES</div>
+    <div style="display:flex;gap:10px;">
+      <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
+        <div style="font-size:28px;font-weight:200;color:#fff;">4</div>
+        <div style="font-size:13px;color:#fff;opacity:.5;margin-top:4px;">Quick</div>
+      </div>
+      <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:18px 4px;text-align:center;cursor:pointer;">
+        <div style="font-size:28px;font-weight:200;color:#60a5fa;">5</div>
+        <div style="font-size:13px;color:#60a5fa;margin-top:4px;">Standard</div>
+      </div>
+      <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
+        <div style="font-size:28px;font-weight:200;color:#fff;">6</div>
+        <div style="font-size:13px;color:#fff;opacity:.5;margin-top:4px;">Adventure</div>
+      </div>
+    </div>
   </div>
   <!-- Fixed bottom button -->
   <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
@@ -296,92 +290,63 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- STEP 2: Clue Style -->
-
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(1)" style="font-size:16px;color:rgba(255,255,255,.5);text-decoration:none;padding:6px 0;">← Back</a>
     <div style="font-size:18px;font-weight:400;color:#fff;">New Quest</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.4);">2 of 4</div>
+    <div style="font-size:15px;color:rgba(255,255,255,.4);text-align:right;">2 of 4</div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 0;">
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:16px;">
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+  <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
+    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:18px;height:6px;border-radius:3px;background:#e8a820;"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:8px;">CLUE STYLE</div>
-<div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">Choose the personality your AI clues will be written in.</div>
+    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:12px;">CLUE STYLE</div>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
-  <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="border-radius:12px;border:1.5px solid #e8a820;background:rgba(232,168,32,.08);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🏴‍☠️</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Pirate</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Salty riddles</div>
-  </div>
-  <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🌸</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Poetic</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Dreamlike</div>
-  </div>
-  <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🤬</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Insults</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Roast & taunt</div>
-  </div>
-  <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">😏</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Sarcastic</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Dry wit</div>
-  </div>
-  <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🤠</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Hillbilly</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Country charm</div>
-  </div>
-  <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🧸</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">5 Year Old</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Super silly</div>
-  </div>
-  <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">👵</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Grandma</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Sweet & warm</div>
-  </div>
-  <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🏄</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Surfer Bro</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">Totally gnarly</div>
-  </div>
-  <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:11px 4px;text-align:center;cursor:pointer;position:relative;">
-    <div class="persona-check" style="position:absolute;top:5px;right:6px;font-size:9px;color:#e8a820;display:none;">✓</div>
-    <div style="font-size:22px;margin-bottom:3px;">🔍</div>
-    <div class="persona-name" style="font-size:12px;font-weight:400;color:#fff;">Detective</div>
-    <div class="persona-desc" style="font-size:10px;color:#fff;opacity:.55;margin-top:1px;">True crime style</div>
-  </div>
-</div>
+    <!-- Segmented block grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+      <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);">
+        <div class="persona-name" style="font-size:17px;font-weight:500;color:#e8a820;">Pirate</div>
+      </div>
+      <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Poetic</div>
+      </div>
+      <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Insults</div>
+      </div>
+      <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Sarcastic</div>
+      </div>
+      <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Hillbilly</div>
+      </div>
+      <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">5 Yr Old</div>
+      </div>
+      <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Grandma</div>
+      </div>
+      <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Surfer</div>
+      </div>
+      <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:17px;font-weight:300;color:#cbd5e1;">Detective</div>
+      </div>
+    </div>
 
-<!-- Persona sample preview -->
-<div id="persona-preview" style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:13px 14px;margin-bottom:8px;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-    <div id="preview-emoji" style="font-size:16px;">🏴‍☠️</div>
-    <div style="font-size:10px;letter-spacing:1px;color:#e8a820;" id="preview-label">PIRATE STYLE · SAMPLE CLUE</div>
-  </div>
-  <div id="preview-text" style="font-size:13px;color:#fff;line-height:1.7;font-weight:300;font-style:italic;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
-</div>
-```
-
+    <!-- Preview card with top accent bar -->
+    <div id="persona-preview" style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07);">
+      <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
+        <div id="preview-label" style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
+        <div id="preview-text" style="font-size:14px;color:#fff;line-height:1.85;font-weight:300;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
+      </div>
+    </div>
+    <!-- Keep preview-emoji for JS compat, hidden -->
+    <div id="preview-emoji" style="display:none;">🏴‍☠️</div>
   </div>
   <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button onclick="goStep(3)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
@@ -389,124 +354,144 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- STEP 3: Hiding Spot + Code -->
-
 <div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(2)" style="font-size:16px;color:rgba(255,255,255,.5);text-decoration:none;padding:6px 0;">← Back</a>
     <div style="font-size:18px;font-weight:400;color:#fff;">New Quest</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.4);">3 of 4</div>
+    <div style="font-size:15px;color:rgba(255,255,255,.4);text-align:right;">3 of 4</div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 0;">
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:16px;">
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+  <div style="flex:1;overflow-y:auto;padding:12px 14px 8px;">
+    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:18px;height:6px;border-radius:3px;background:#e8a820;"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;">HIDING SPOT</div>
-<div class="map-search-wrap" style="position:relative;margin-bottom:10px;">
-  <span class="map-search-icon">🔍</span>
-  <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off"/>
-  <button class="my-loc-btn" onclick="goToMyLocation()">📍 Me</button>
-  <div id="search-dropdown" class="search-dropdown"></div>
-</div>
-<div id="map" class="map-box"></div>
-<div id="map-coords" class="map-coords" style="display:none;">📍 <span id="coord-lat">--</span>, <span id="coord-lng">--</span></div>
-<textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:10px;margin-bottom:0;resize:none;font-size:16px;"></textarea>
+    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:10px;">HIDING SPOT</div>
 
-<div style="height:1px;background:rgba(255,255,255,.07);margin:16px 0;"></div>
+    <!-- Search bar — single clean row, no emoji icon, just text placeholder -->
+    <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
+      <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#cbd5e1;"/>
+      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:13px;gap:4px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        <span id="my-loc-txt">Me</span>
+      </button>
+      <div id="search-dropdown" class="search-dropdown"></div>
+    </div>
 
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:6px;">SECRET CODE</div>
-<div style="font-size:12px;color:#fff;opacity:.6;margin-bottom:12px;">Winner enters this 6-digit code to claim the prize</div>
-<div class="code-wrap" style="margin-bottom:14px;">
-  <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
-  <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
-  <input id="c3" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
-  <input id="c4" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
-  <input id="c5" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
-  <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
-</div>
-<div style="text-align:center;">
-  <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);font-size:13px;font-family:inherit;cursor:pointer;">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-    Generate New Code
-  </button>
-</div>
-<div style="height:20px;"></div>
-```
+    <div id="map-container" class="map-box"></div>
+    <div id="map-coords" class="map-coords" style="display:none;font-size:13px;color:#cbd5e1;"></div>
 
+    <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:15px;color:#cbd5e1;"></textarea>
+
+    <div style="height:1px;background:rgba(255,255,255,.07);margin:14px 0;"></div>
+
+    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:6px;">SECRET CODE</div>
+    <div style="font-size:13px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
+    <div class="code-wrap" style="margin-bottom:10px;">
+      <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
+      <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
+      <input id="c3" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
+      <input id="c4" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
+      <input id="c5" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
+      <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
+    </div>
+    <div style="text-align:center;">
+      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:14px;font-family:inherit;cursor:pointer;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Generate New Code
+      </button>
+    </div>
+    <div style="height:20px;"></div>
   </div>
   <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
     <button onclick="goStep(4)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Next →</button>
   </div>
 </div>
 
-<!-- STEP 4: Go Live + Summary -->
-
+<!-- STEP 4: When to Quest -->
 <div id="step4" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(3)" style="font-size:16px;color:rgba(255,255,255,.5);text-decoration:none;padding:6px 0;">← Back</a>
     <div style="font-size:18px;font-weight:400;color:#fff;">New Quest</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.4);">4 of 4</div>
+    <div style="font-size:15px;color:rgba(255,255,255,.4);text-align:right;">4 of 4</div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 0;">
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:16px;">
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
-      <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
+  <div style="flex:1;overflow-y:auto;padding:12px 14px 8px;">
+    <!-- Dots -->
+    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(74,222,128,.5);"></div>
+      <div style="width:18px;height:6px;border-radius:3px;background:#e8a820;"></div>
     </div>
 
-```
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;">WHEN TO GO LIVE</div>
-<div style="display:flex;gap:8px;margin-bottom:16px;">
-  <div class="golive-opt selected" data-live="now" onclick="selLive(this)" style="flex:1;border-radius:13px;border:1.5px solid #a78bfa;background:rgba(167,139,250,.08);padding:14px;text-align:center;cursor:pointer;">
-    <div style="font-size:22px;margin-bottom:5px;">⚡</div>
-    <div style="font-size:14px;color:#a78bfa;font-weight:400;">Right Now</div>
-    <div style="font-size:10px;color:rgba(167,139,250,.55);margin-top:2px;">Goes live instantly</div>
-  </div>
-  <div class="golive-opt" data-live="schedule" onclick="selLive(this)" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);padding:14px;text-align:center;cursor:pointer;">
-    <div style="font-size:22px;margin-bottom:5px;">📅</div>
-    <div style="font-size:14px;color:#fff;opacity:.5;">Schedule</div>
-    <div style="font-size:10px;color:#fff;opacity:.3;margin-top:2px;">Pick date & time</div>
-  </div>
-</div>
+    <div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:10px;">PRESETS</div>
 
-<div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
+    <!-- 2x2 preset grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div class="preset-btn" data-preset="montue" onclick="selPreset('montue',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:16px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
+      </div>
+      <div class="preset-btn" data-preset="wedfri" onclick="selPreset('wedfri',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:16px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
+      </div>
+      <div class="preset-btn" data-preset="weekend" onclick="selPreset('weekend',this)" style="border-radius:14px;border:1.5px solid rgba(45,212,191,.3);background:rgba(45,212,191,.05);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:16px;font-weight:400;color:#2dd4bf;">Weekend</div>
+      </div>
+      <div class="preset-btn" data-preset="custom" onclick="selPreset('custom',this)" style="border-radius:14px;border:1.5px solid rgba(167,139,250,.3);background:rgba(167,139,250,.05);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:16px;font-weight:400;color:#a78bfa;">Custom</div>
+      </div>
+    </div>
 
-<div style="font-size:10px;letter-spacing:1.5px;color:#fff;margin-bottom:10px;">QUEST SUMMARY</div>
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:13px;overflow:hidden;margin-bottom:12px;">
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><div style="font-size:13px;color:#fff;opacity:.5;">Prize</div><div id="sum-prize" style="font-size:13px;color:#4ade80;font-weight:400;">$25</div></div>
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><div style="font-size:13px;color:#fff;opacity:.5;">Clues</div><div id="sum-clues" style="font-size:13px;color:#fff;">5 · Standard</div></div>
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><div style="font-size:13px;color:#fff;opacity:.5;">Duration</div><div id="sum-dur" style="font-size:13px;color:#fff;">2 days</div></div>
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><div style="font-size:13px;color:#fff;opacity:.5;">Style</div><div id="sum-persona" style="font-size:13px;color:#fff;">🏴‍☠️ Pirate</div></div>
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><div style="font-size:13px;color:#fff;opacity:.5;">Location</div><div id="sum-location" style="font-size:13px;color:#fff;">—</div></div>
-  <div style="display:flex;justify-content:space-between;padding:10px 14px;"><div style="font-size:13px;color:#fff;opacity:.5;">Expires</div><div id="sum-expires" style="font-size:13px;color:#fff;">—</div></div>
-</div>
-<div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:11px 13px;font-size:12px;color:rgba(74,222,128,.8);text-align:center;line-height:1.5;margin-bottom:8px;">
-  🔒 Prize held by Stripe · Refunded if quest expires unclaimed
-</div>
-<!-- Hidden fields for compat with existing createQuest JS -->
-<input type="hidden" id="dur-slider" value="48"/>
-<input type="hidden" id="clue-slider" value="5"/>
-<div style="height:8px;"></div>
-```
+    <!-- Info bar — updates based on selection -->
+    <div id="preset-infobar" style="border-radius:12px;padding:12px 16px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="preset-info-main" style="font-size:14px;color:#fff;margin-bottom:3px;">Select a window above</div>
+      <div id="preset-info-sub" style="font-size:12px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
+    </div>
 
+    <!-- Custom date picker — hidden until custom selected -->
+    <div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:12px 14px;margin-bottom:6px;">
+      <div style="font-size:10px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:8px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+        <div style="flex:1;">
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">START DATE</div>
+          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+        </div>
+        <div style="color:rgba(255,255,255,.3);font-size:16px;margin-top:14px;">→</div>
+        <div style="flex:1;">
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">END DATE</div>
+          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+        </div>
+      </div>
+      <div id="custom-date-msg" style="font-size:12px;color:rgba(167,139,250,.7);"></div>
+    </div>
+
+    <div style="height:1px;background:rgba(255,255,255,.07);margin:10px 0;"></div>
+
+    <!-- Stripe note -->
+    <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px 13px;font-size:13px;color:rgba(74,222,128,.7);text-align:center;line-height:1.5;">
+      🔒 Prize held by Stripe · Refunded if quest expires unclaimed
+    </div>
+
+    <!-- Hidden compat fields -->
+    <input type="hidden" id="dur-slider" value="48"/>
+    <input type="hidden" id="clue-slider" value="5"/>
+    <input type="hidden" id="quest-start-date" value=""/>
+    <input type="hidden" id="quest-end-date" value=""/>
+    <div style="height:8px;"></div>
   </div>
   <div style="padding:10px 16px 20px;border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
-    <button id="btn-preview" onclick="createQuest(true)" style="width:100%;padding:14px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;">Review My Quest →</button>
+    <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">🏁 &nbsp;Start the Quest →</button>
     <button id="btn-create" onclick="createQuest(false)" style="display:none;"></button>
   </div>
 </div>
 
 <!-- TOAST -->
-
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
   <div class="nav-item" onclick="window.location.href='index.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nav-label">Home</div></div>
   <div class="nav-item" onclick="window.location.href='how-it-works.html'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="nav-label">How</div></div>
@@ -516,7 +501,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </nav>
 
 <!-- AI Clue Generation Loading Overlay -->
-
 <div id="ai-loading" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;">
   <div id="ai-spinner" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(232,168,32,.15);border-top-color:#e8a820;animation:aiSpin 1s linear infinite;margin-bottom:24px;"></div>
   <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:8px;">AI Clues Generating</div>
@@ -533,49 +517,45 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 
 <!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
-
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
 <div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
   <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
     <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
 
-```
-<!-- FinderSeek logo tile -->
-<div style="display:flex;justify-content:center;margin-bottom:16px;">
-  <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
-    <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
-    <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
-  </div>
-</div>
+    <!-- FinderSeek logo tile -->
+    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+      <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
+        <div style="font-size:16px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+        <div style="font-size:16px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+      </div>
+    </div>
 
-<div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
-<div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
+    <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
+    <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
 
-<input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
-  style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;transition:border-color .2s;"/>
-<div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
+    <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;transition:border-color .2s;"/>
+    <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
 
-<button id="eg-continue-btn" onclick="submitEmailGate()"
-  style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
+    <button id="eg-continue-btn" onclick="submitEmailGate()"
+      style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
 
-<div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-  <span>OR</span>
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-</div>
+    <div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      <span>OR</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
 
-<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
-  <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
-  <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
-</div>
+    <div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
+      <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
+      <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
+    </div>
 
-<div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
-```
-
+    <div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
   </div>
 </div>
 
@@ -607,10 +587,11 @@ function goStep(n) {
   // Validate before leaving step 3
   if (currentStep === 3 && n === 4) {
     var hidingSpot = document.getElementById('hiding-spot').value.trim();
-    var code = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).value; }).join('');
+    var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).value; });
+    var code = codeDigits.join('');
     if (!selectedLat || !selectedLng) { showToast('Please drop a pin on the map', 'error'); return; }
     if (!hidingSpot || hidingSpot.length < 10) { showToast('Describe the hiding spot in more detail', 'error'); return; }
-    if (code.length < 6 || code.split('').some(function(c){ return c === ''; })) { showToast('Please enter a 6-digit secret code', 'error'); return; }
+    if (codeDigits.some(function(d){ return !d || d === ''; })) { showToast('Please enter all 6 digits of the secret code', 'error'); return; }
     updateSummary();
   }
   document.getElementById('step' + currentStep).style.display = 'none';
@@ -623,10 +604,9 @@ function goStep(n) {
   // Init map when entering step 3
   if (n === 3) {
     setTimeout(function(){
-      if (!_mapReady) {
-        if (selectedLat && selectedLng) { initMap(selectedLat, selectedLng, 15); }
-        else { goToMyLocation(); }
-      }
+      if (_mapReady && _map) { _map.invalidateSize(); return; }
+      if (selectedLat && selectedLng) { initMap(selectedLat, selectedLng, 15); }
+      else { goToMyLocation(); }
     }, 200);
   }
 }
@@ -677,38 +657,25 @@ function updateExpiry() {
 function toggleWeekend() {
   weekendSelected = !weekendSelected;
   var btn = document.getElementById('wq-btn');
-  var check = document.getElementById('wq-check');
   var sub = document.getElementById('wq-sub');
   var durBtns = document.getElementById('dur-btns');
   var durLabel = document.getElementById('dur-label');
   var durExpires = document.getElementById('dur-expires');
+
   if (weekendSelected) {
-    // Selected state
-    btn.style.boxShadow = '0 0 26px rgba(232,168,32,.22)';
+    btn.style.boxShadow = '0 0 24px rgba(232,168,32,.25)';
     document.getElementById('wq-border').style.background = 'linear-gradient(#0d0b18,#0d0b18) padding-box, linear-gradient(135deg,#e8a820,#e8a820) border-box';
     document.getElementById('wq-inner').style.background = 'rgba(16,10,1,.97)';
-    check.style.background = '#e8a820';
-    check.style.border = 'none';
-    check.innerHTML = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#0a0800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    sub.textContent = '✓ 36 hours · Auto-expires Sunday night';
-    sub.style.color = 'rgba(74,222,128,.85)';
-    sub.style.opacity = '1';
+    if (sub) { sub.style.display = 'block'; }
     if (durBtns) durBtns.style.opacity = '0.25';
     if (durLabel) durLabel.style.opacity = '0.3';
     if (durExpires) durExpires.textContent = 'Overridden by Weekend Quest';
-    // Set next weekend dates
     setWeekendDates();
   } else {
-    // Unselected state
     btn.style.boxShadow = '';
     document.getElementById('wq-border').style.background = 'linear-gradient(#0d0b18,#0d0b18) padding-box, linear-gradient(135deg,#92400e,#e8a820,#f5c842,#e8a820,#92400e) border-box';
     document.getElementById('wq-inner').style.background = '';
-    check.style.background = '';
-    check.style.border = '1.5px solid rgba(232,168,32,.5)';
-    check.innerHTML = '';
-    sub.textContent = '36 hrs · Auto-expires Sunday night';
-    sub.style.color = '#fff';
-    sub.style.opacity = '0.5';
+    if (sub) { sub.style.display = 'none'; }
     if (durBtns) durBtns.style.opacity = '1';
     if (durLabel) durLabel.style.opacity = '1';
     updateExpiry();
@@ -727,30 +694,29 @@ function setWeekendDates() {
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var satStr = 'Sat ' + months[sat.getMonth()] + ' ' + sat.getDate();
   var sunStr = 'Sun ' + months[sun.getMonth()] + ' ' + sun.getDate();
-  document.getElementById('wq-sat').textContent = satStr;
-  document.getElementById('wq-sun').textContent = sunStr;
+  var ws=document.getElementById('wq-sat'); if(ws) ws.textContent = satStr;
+  var wu=document.getElementById('wq-sun'); if(wu) wu.textContent = sunStr;
 }
 
 function selPersona(el) {
   document.querySelectorAll('.persona-card').forEach(function(c){
-    c.style.borderColor = 'rgba(255,255,255,.09)';
-    c.style.borderWidth = '1px';
-    c.style.background = 'rgba(255,255,255,.03)';
-    var chk = c.querySelector('.persona-check');
-    if (chk) chk.style.display = 'none';
+    c.style.background = '#0d0b18';
+    var n = c.querySelector('.persona-name');
+    if (n) { n.style.color = '#cbd5e1'; n.style.fontWeight = '300'; n.style.fontSize = '17px'; }
+    c.classList.remove('selected');
   });
-  el.style.borderColor = '#e8a820';
-  el.style.borderWidth = '1.5px';
-  el.style.background = 'rgba(232,168,32,.08)';
-  var chk = el.querySelector('.persona-check');
-  if (chk) chk.style.display = 'block';
-  // Update preview
+  el.style.background = 'rgba(232,168,32,.12)';
+  var n = el.querySelector('.persona-name');
+  if (n) { n.style.color = '#e8a820'; n.style.fontWeight = '500'; n.style.fontSize = '17px'; }
+  el.classList.add('selected');
   var persona = el.dataset.persona;
   var sample = PERSONA_SAMPLES[persona];
   if (sample) {
-    document.getElementById('preview-emoji').textContent = sample.emoji;
-    document.getElementById('preview-label').textContent = sample.label;
-    document.getElementById('preview-text').textContent = sample.text;
+    var nameEl = el.querySelector('.persona-name');
+    var label = nameEl ? nameEl.textContent.toUpperCase() : persona.toUpperCase();
+    var pl=document.getElementById('preview-label'); if(pl) pl.textContent = label + ' · SAMPLE CLUE';
+    var pt=document.getElementById('preview-text'); if(pt) pt.textContent = sample.text;
+    var pe=document.getElementById('preview-emoji'); if(pe) pe.textContent = sample.emoji;
   }
   saveFormState();
 }
@@ -761,18 +727,20 @@ function updateSummary() {
   var clue = selectedClue || 5;
   var clueLabels = {4:'4 · Quick', 5:'5 · Standard', 6:'6 · Adventure'};
   var persona = document.querySelector('.persona-card.selected');
-  var personaName = persona ? (persona.querySelector('.persona-name').textContent) : 'Pirate';
-  var personaEmoji = persona ? (persona.querySelector('[style*="font-size:22px"]').textContent) : '🏴‍☠️';
+  var personaKey = persona ? persona.dataset.persona : 'pirate';
+  var personaNameEl = persona ? persona.querySelector('.persona-name') : null;
+  var personaName = personaNameEl ? personaNameEl.textContent : 'Pirate';
+  var personaEmoji = (PERSONA_SAMPLES[personaKey] || {emoji:'🏴‍☠️'}).emoji;
   var location = document.getElementById('map-search').value.split(',')[0] || '—';
   var dur = weekendSelected ? '36 hrs (Weekend)' : (selectedDur + (selectedDur === 1 ? ' day' : ' days'));
   var expiresEl = document.getElementById('dur-expires');
   var expires = weekendSelected ? 'Sun 9:00 PM' : (expiresEl ? expiresEl.textContent.replace('Expires ','') : '—');
-  document.getElementById('sum-prize').textContent = '$' + prize;
-  document.getElementById('sum-clues').textContent = clueLabels[clue] || clue + ' clues';
-  document.getElementById('sum-dur').textContent = dur;
-  document.getElementById('sum-persona').textContent = personaEmoji + ' ' + personaName;
-  document.getElementById('sum-location').textContent = location || '—';
-  document.getElementById('sum-expires').textContent = expires;
+  var sp = document.getElementById('sum-prize'); if(sp) sp.textContent = '$' + prize;
+  var sc = document.getElementById('sum-clues'); if(sc) sc.textContent = clueLabels[clue] || clue + ' clues';
+  var sd = document.getElementById('sum-dur'); if(sd) sd.textContent = dur;
+  var spe = document.getElementById('sum-persona'); if(spe) spe.textContent = personaEmoji + ' ' + personaName;
+  var sl = document.getElementById('sum-location'); if(sl) sl.textContent = location || '—';
+  var se = document.getElementById('sum-expires'); if(se) se.textContent = expires;
   // Update hidden compat fields
   document.getElementById('dur-slider').value = weekendSelected ? 36 : (selectedDur * 24);
   document.getElementById('clue-slider').value = clue;
@@ -788,7 +756,9 @@ function selPrize(val, el) {
   el.style.borderColor='#4ade80'; el.style.borderWidth='1.5px';
   el.style.color='#4ade80'; el.style.background='rgba(74,222,128,.1)';
   el.classList.add('active');
-  document.getElementById('prize-display').textContent = '$' + val;
+  // Update hero display
+  var disp = document.getElementById('prize-display');
+  if (disp) disp.textContent = '$' + val;
   updPay(val);
   saveFormState();
 }
@@ -814,8 +784,17 @@ function updPay(val){
   var pt=document.getElementById('pay-total'); if(pt) pt.textContent='$'+total.toFixed(2);
 }
 function selLive(el){
-  document.querySelectorAll('.golive-opt').forEach(function(c){c.classList.remove('selected');});
+  document.querySelectorAll('.golive-opt').forEach(function(c){
+    c.classList.remove('selected');
+    c.style.borderColor = 'rgba(255,255,255,.1)';
+    c.style.borderWidth = '1px';
+    c.style.background = 'rgba(255,255,255,.02)';
+  });
   el.classList.add('selected');
+  el.style.borderColor = '#a78bfa';
+  el.style.borderWidth = '1.5px';
+  el.style.background = 'rgba(167,139,250,.08)';
+  saveFormState();
 }
 function genCode(){
   for(var i=1;i<=6;i++){
@@ -823,9 +802,176 @@ function genCode(){
   }
 }
 
-// ============================================================
-//  SUPABASE + AUTH
-// ============================================================
+// ── STEP 4: PRESET QUEST WINDOWS ────────────────────────────
+var selectedPreset = null;
+var PRESET_COLORS = {
+  montue:  { border:'#60a5fa', bg:'rgba(96,165,250,.1)',  text:'#60a5fa', infoBg:'rgba(96,165,250,.07)',  infoBorder:'rgba(96,165,250,.2)',  infoText:'rgba(96,165,250,.65)'  },
+  wedfri:  { border:'#60a5fa', bg:'rgba(96,165,250,.1)',  text:'#60a5fa', infoBg:'rgba(96,165,250,.07)',  infoBorder:'rgba(96,165,250,.2)',  infoText:'rgba(96,165,250,.65)'  },
+  weekend: { border:'#2dd4bf', bg:'rgba(45,212,191,.1)',  text:'#2dd4bf', infoBg:'rgba(45,212,191,.06)',  infoBorder:'rgba(45,212,191,.25)', infoText:'rgba(45,212,191,.65)'  },
+  custom:  { border:'#a78bfa', bg:'rgba(167,139,250,.12)', text:'#a78bfa', infoBg:'rgba(167,139,250,.06)', infoBorder:'rgba(167,139,250,.2)', infoText:'rgba(167,139,250,.7)'  }
+};
+
+function getNextWeekday(targetDay) {
+  // targetDay: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  var d = new Date();
+  d.setHours(9, 0, 0, 0);
+  var daysUntil = (targetDay - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + daysUntil);
+  return d;
+}
+
+function fmtDate(d) {
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate();
+}
+
+function getPresetDates(preset) {
+  var start, end;
+  switch(preset) {
+    case 'montue':
+      start = getNextWeekday(1); // Monday
+      end = new Date(start); end.setDate(end.getDate() + 1); end.setHours(21,0,0,0);
+      return { start, end, label: fmtDate(start) + ' · 9:00 AM → ' + fmtDate(end) + ' · 9:00 PM', sub: '2 days · Start of week' };
+    case 'wedfri':
+      start = getNextWeekday(3); // Wednesday
+      end = new Date(start); end.setDate(end.getDate() + 2); end.setHours(21,0,0,0);
+      return { start, end, label: fmtDate(start) + ' · 9:00 AM → ' + fmtDate(end) + ' · 9:00 PM', sub: '3 days · Mid to end of week' };
+    case 'weekend':
+      start = getNextWeekday(6); // Saturday
+      end = new Date(start); end.setDate(end.getDate() + 1); end.setHours(21,0,0,0);
+      return { start, end, label: fmtDate(start) + ' · 9:00 AM → ' + fmtDate(end) + ' · 9:00 PM', sub: '36 hours · Auto-expires Sunday night' };
+    default:
+      return null;
+  }
+}
+
+function selPreset(preset, el) {
+  selectedPreset = preset;
+  // Reset all buttons
+  document.querySelectorAll('.preset-btn').forEach(function(b) {
+    var p = b.dataset.preset;
+    if (p === 'weekend') {
+      b.style.border = '1.5px solid rgba(45,212,191,.3)';
+      b.style.background = 'rgba(45,212,191,.05)';
+      b.querySelector('div').style.color = '#2dd4bf';
+    } else if (p === 'custom') {
+      b.style.border = '1.5px solid rgba(167,139,250,.3)';
+      b.style.background = 'rgba(167,139,250,.05)';
+      b.querySelector('div').style.color = '#a78bfa';
+    } else {
+      b.style.border = '1px solid rgba(255,255,255,.09)';
+      b.style.background = 'rgba(255,255,255,.03)';
+      b.querySelector('div').style.color = 'rgba(255,255,255,.6)';
+    }
+    b.style.boxShadow = '';
+  });
+
+  // Highlight selected
+  var c = PRESET_COLORS[preset];
+  el.style.border = '2px solid ' + c.border;
+  el.style.background = c.bg;
+  el.querySelector('div').style.color = c.text;
+  el.style.boxShadow = '0 0 14px ' + c.bg;
+
+  // Update info bar
+  var infobar = document.getElementById('preset-infobar');
+  var mainEl = document.getElementById('preset-info-main');
+  var subEl = document.getElementById('preset-info-sub');
+  var customPicker = document.getElementById('custom-picker');
+
+  infobar.style.background = c.infoBg;
+  infobar.style.border = '1px solid ' + c.infoBorder;
+
+  if (preset === 'custom') {
+    customPicker.style.display = 'block';
+    mainEl.style.color = c.text;
+    subEl.style.color = c.infoText;
+    mainEl.textContent = 'Pick your start and end dates below';
+    subEl.textContent = 'Max 7 days · Max 30 days ahead';
+    // Set default dates — today to +2 days
+    var today = new Date();
+    var defEnd = new Date(today); defEnd.setDate(today.getDate() + 2);
+    document.getElementById('custom-start').value = today.toISOString().split('T')[0];
+    document.getElementById('custom-start').min = today.toISOString().split('T')[0];
+    var maxDate = new Date(today); maxDate.setDate(today.getDate() + 30);
+    document.getElementById('custom-start').max = maxDate.toISOString().split('T')[0];
+    document.getElementById('custom-end').value = defEnd.toISOString().split('T')[0];
+    document.getElementById('custom-end').min = today.toISOString().split('T')[0];
+    document.getElementById('custom-end').max = maxDate.toISOString().split('T')[0];
+    updateCustomDates();
+  } else {
+    customPicker.style.display = 'none';
+    var dates = getPresetDates(preset);
+    mainEl.style.color = '#fff';
+    subEl.style.color = c.infoText;
+    mainEl.textContent = dates.label;
+    subEl.textContent = dates.sub;
+    // Store dates
+    document.getElementById('quest-start-date').value = dates.start.toISOString();
+    document.getElementById('quest-end-date').value = dates.end.toISOString();
+    document.getElementById('dur-slider').value = Math.round((dates.end - dates.start) / (1000*60*60));
+  }
+  saveFormState();
+}
+
+function updateCustomDates() {
+  var startVal = document.getElementById('custom-start').value;
+  var endVal = document.getElementById('custom-end').value;
+  var msgEl = document.getElementById('custom-date-msg');
+  if (!startVal || !endVal) return;
+  var start = new Date(startVal + 'T09:00:00');
+  var end = new Date(endVal + 'T21:00:00');
+  var today = new Date(); today.setHours(0,0,0,0);
+  var maxFwd = new Date(today); maxFwd.setDate(today.getDate() + 30);
+
+  if (start < today) {
+    msgEl.style.color = '#f87171';
+    msgEl.textContent = '✗ Start date cannot be in the past';
+    return;
+  }
+  if (start > maxFwd) {
+    msgEl.style.color = '#f87171';
+    msgEl.textContent = '✗ Cannot schedule more than 30 days ahead';
+    return;
+  }
+  if (end <= start) {
+    msgEl.style.color = '#f87171';
+    msgEl.textContent = '✗ End date must be after start date';
+    return;
+  }
+  var days = Math.round((end - start) / (1000*60*60*24));
+  if (days > 7) {
+    msgEl.style.color = '#f87171';
+    msgEl.textContent = '✗ Maximum 7 days — please shorten your window';
+    return;
+  }
+  msgEl.style.color = 'rgba(167,139,250,.8)';
+  msgEl.textContent = '✓ ' + days + ' day' + (days !== 1 ? 's' : '') + ' · ' + fmtDate(start) + ' 9am → ' + fmtDate(end) + ' 9pm';
+  document.getElementById('quest-start-date').value = start.toISOString();
+  document.getElementById('quest-end-date').value = end.toISOString();
+  document.getElementById('dur-slider').value = days * 24;
+
+  // Update info bar
+  var pim=document.getElementById('preset-info-main'); if(pim) pim.textContent = fmtDate(start) + ' · 9:00 AM → ' + fmtDate(end) + ' · 9:00 PM';
+  var pis=document.getElementById('preset-info-sub'); if(pis) pis.textContent = days + ' day' + (days !== 1 ? 's' : '') + ' · Custom window';
+}
+
+function startTheQuest() {
+  if (!selectedPreset) {
+    showToast('Please select a quest window first', 'error');
+    return;
+  }
+  if (selectedPreset === 'custom') {
+    var msg = document.getElementById('custom-date-msg').textContent;
+    if (!msg || msg.startsWith('✗')) {
+      showToast('Please fix your custom dates first', 'error');
+      return;
+    }
+  }
+  // Wire start/end into createQuest via the hidden fields
+  createQuest(true);
+}
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET = 'fs-notify-2026';
@@ -1074,8 +1220,10 @@ async function createQuest(previewMode){
   try {
     // ── 5. Compute timing ───────────────────────────────────
     const now = new Date();
-    const startsAt = liveMode === 'now' ? now : now;
-    const endsAt = new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
+    const startDateVal = document.getElementById('quest-start-date').value;
+    const endDateVal = document.getElementById('quest-end-date').value;
+    const startsAt = startDateVal ? new Date(startDateVal) : now;
+    const endsAt = endDateVal ? new Date(endDateVal) : new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
     const status = 'draft';
 
     // Extract city from search address
@@ -1585,7 +1733,8 @@ function initMap(lat, lng) {
       setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
       if (typeof saveFormState === 'function') saveFormState();
     });
-    setTimeout(() => _map.invalidateSize(), 200);
+    setTimeout(() => { if (_map) _map.invalidateSize(); }, 100);
+    setTimeout(() => { if (_map) _map.invalidateSize(); }, 500);
   });
 }
 
@@ -1597,8 +1746,9 @@ function flyTo(lat, lng) {
 
 function setCoords(lat, lng) {
   selectedLat = lat; selectedLng = lng;
-  document.getElementById('map-coords').innerHTML =
-    '📌 <span>' + lat.toFixed(5) + ', ' + lng.toFixed(5) + '</span> — drag pin or tap map to reposition';
+  var el = document.getElementById('map-coords');
+  el.style.display = 'block';
+  el.innerHTML = '<span style="color:#cbd5e1;opacity:.7;font-size:13px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
 }
 
 async function reverseGeocode(lat, lng) {
@@ -1635,11 +1785,11 @@ function scrollToMap() {
 function goToMyLocation() {
   const btn = document.getElementById('my-loc-btn');
   const coords = document.getElementById('map-coords');
-  document.getElementById('my-loc-txt').textContent = '⏳';
+  var mlt=document.getElementById('my-loc-txt'); if(mlt) mlt.textContent = '⏳';
   btn.style.pointerEvents = 'none';
   if (!navigator.geolocation) {
     coords.innerHTML = '⚠️ Location not supported — search manually above';
-    document.getElementById('my-loc-txt').textContent = '📍';
+    var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍';
     btn.style.pointerEvents = 'auto';
     initMap(29.7604, -95.3698); // default to Houston
     return;
@@ -1651,11 +1801,11 @@ function goToMyLocation() {
         _map.setView([lat, lng], 17); _marker.setLatLng([lat, lng]);
         selectedLat = lat; selectedLng = lng; setCoords(lat, lng); reverseGeocode(lat, lng);
       } else { initMap(lat, lng); reverseGeocode(lat, lng); }
-      document.getElementById('my-loc-txt').textContent = '✅';
-      setTimeout(() => { document.getElementById('my-loc-txt').textContent = '📍'; btn.style.pointerEvents = 'auto'; }, 2000);
+      var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '✅';
+      setTimeout(() => { var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍'; btn.style.pointerEvents = 'auto'; }, 2000);
     },
     err => {
-      document.getElementById('my-loc-txt').textContent = '📍';
+      var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍';
       btn.style.pointerEvents = 'auto';
       // Init map at default location on geolocation failure
       if (!_mapReady) initMap(29.7604, -95.3698);
@@ -1742,7 +1892,6 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
-
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -1750,9 +1899,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-
 <!-- ====== PAYMENT MODAL ====== -->
-
 <div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
 <div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
   <div class="pm-handle"></div>
@@ -1895,6 +2042,5 @@ async function submitPayment(){
   }).catch(function(){});
 })();
 </script>
-
 </body>
 </html>
