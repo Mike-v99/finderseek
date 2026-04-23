@@ -16,7 +16,7 @@
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
@@ -44,7 +44,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .spin-inner{position:relative;background:rgba(13,11,24,.94);border-radius:16px;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:300;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 .back-btn:active{background:rgba(255,255,255,.08);}
 
 /* Hero */
@@ -89,7 +89,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-drawer.open{transform:translateX(0);}
 .hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
 .hb-nav-item:last-child{border-bottom:none;}
-.hb-nav-label{font-size:15px;color:#fff;font-weight:300;font-family:inherit;}
+.hb-nav-label{font-size:20px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
 </style>
@@ -119,7 +119,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <a href="javascript:void(0)" onclick="goBack()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
-    <div id="q-status-label" style="font-size:16px;font-weight:400;color:#fff;text-align:center;">ACTIVE QUEST</div>
+    <div id="q-status-label" style="font-size:17px;font-weight:400;color:#fff;text-align:center;">ACTIVE QUEST</div>
     <!-- Star save button -->
     <div id="q-save-btn" style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="toggleSaveQuest()">
       <svg id="q-save-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -130,39 +130,39 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="padding:14px 18px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin-bottom:10px;" class="el" data-d="50">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
       <div>
-        <div style="font-size:11px;letter-spacing:2px;color:rgba(74,222,128,.5);margin-bottom:3px;">PRIZE</div>
+        <div style="font-size:17px;letter-spacing:2px;color:rgba(74,222,128,.5);margin-bottom:3px;">PRIZE</div>
         <div id="q-prize" style="font-size:44px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">$0</div>
       </div>
       <div style="text-align:right;">
-        <div id="q-location" style="font-size:14px;color:rgba(255,255,255,.5);">Loading…</div>
-        <div id="q-pirate-style" style="font-size:13px;color:rgba(255,255,255,.3);margin-top:2px;">—</div>
+        <div id="q-location" style="font-size:17px;color:rgba(255,255,255,.5);">Loading…</div>
+        <div id="q-pirate-style" style="font-size:17px;color:rgba(255,255,255,.3);margin-top:2px;">—</div>
         <div style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;">
           <div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div>
-          <div style="font-size:11px;color:#4ade80;">LIVE</div>
+          <div style="font-size:17px;color:#4ade80;">LIVE</div>
         </div>
       </div>
     </div>
 
     <!-- Timer — segmented pill -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <div id="q-end-label" style="font-size:12px;color:rgba(255,255,255,.3);">—</div>
+      <div id="q-end-label" style="font-size:17px;color:rgba(255,255,255,.3);">—</div>
       <div style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;">
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-h" style="font-size:13px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:1px;">HRS</div></div>
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-h" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:rgba(255,255,255,.3);letter-spacing:1px;">HRS</div></div>
         <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-m" style="font-size:13px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:1px;">MIN</div></div>
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-m" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:rgba(255,255,255,.3);letter-spacing:1px;">MIN</div></div>
         <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-s" style="font-size:13px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:1px;">SEC</div></div>
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-s" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:rgba(255,255,255,.3);letter-spacing:1px;">SEC</div></div>
       </div>
     </div>
 
     <!-- Quest master + follow -->
     <div style="display:flex;align-items:center;gap:8px;">
-      <div id="q-master-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:12px;color:#0a0800;font-weight:500;flex-shrink:0;">?</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.5);">by <span id="q-master-name" style="color:#fff;">—</span></div>
+      <div id="q-master-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:17px;color:#0a0800;font-weight:500;flex-shrink:0;">?</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.5);">by <span id="q-master-name" style="color:#fff;">—</span></div>
       <div id="q-follow-btn" style="width:22px;height:22px;border-radius:50%;background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" onclick="followQuestMaster()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </div>
-      <div id="q-master-stats" style="font-size:11px;color:rgba(255,255,255,.25);">—</div>
+      <div id="q-master-stats" style="font-size:17px;color:rgba(255,255,255,.25);">—</div>
     </div>
   </div>
 
@@ -173,8 +173,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;background:#0a0f1a;" onclick="openMapModal()">
       <div id="q-map-leaflet" style="position:absolute;inset:0;"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(10,8,26,.95),transparent);z-index:10;">
-        <div style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
-        <div id="q-map-zoom-label" style="font-size:10px;color:rgba(255,255,255,.3);">City view</div>
+        <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
+        <div id="q-map-zoom-label" style="font-size:17px;color:rgba(255,255,255,.3);">City view</div>
       </div>
     </div>
 
@@ -184,7 +184,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <img id="q-photo-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"/>
       <div id="q-photo-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(13,11,24,.9),transparent);z-index:10;">
-        <div style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.45);">PHOTO</div>
+        <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.45);">PHOTO</div>
         <div id="q-photo-dots" style="display:flex;gap:3px;margin-top:3px;"></div>
       </div>
     </div>
@@ -194,8 +194,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="margin-bottom:6px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.65)" stroke-width="1.5" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       </div>
-      <div style="font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:3px;">CLUES</div>
-      <div style="font-size:13px;color:rgba(232,168,32,.7);"><span id="q-unlocked">0</span> of <span id="q-total-clues">0</span> solved</div>
+      <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:3px;">CLUES</div>
+      <div style="font-size:17px;color:rgba(232,168,32,.7);"><span id="q-unlocked">0</span> of <span id="q-total-clues">0</span> solved</div>
       <div id="q-clue-bars" style="display:flex;gap:3px;margin-top:6px;"></div>
     </div>
 
@@ -204,8 +204,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="margin-bottom:6px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.65)" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       </div>
-      <div style="font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,.4);">SHARE</div>
-      <div style="font-size:13px;color:rgba(96,165,250,.55);margin-top:3px;">Invite friends</div>
+      <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.4);">SHARE</div>
+      <div style="font-size:17px;color:rgba(96,165,250,.55);margin-top:3px;">Invite friends</div>
     </div>
   </div>
 
@@ -213,26 +213,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
     <div style="font-size:22px;">🏆</div>
     <div style="flex:1;">
-      <div style="font-size:15px;color:#4ade80;font-weight:400;">Found it? Claim your prize</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:2px;">Enter the 6-digit code to win</div>
+      <div style="font-size:17px;color:#4ade80;font-weight:400;">Found it? Claim your prize</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.3);margin-top:2px;">Enter the 6-digit code to win</div>
     </div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
 
   <!-- GOLD ANALYTICS BAR -->
   <div id="q-analytics-bar" style="display:none;background:rgba(232,168,32,.04);border:1px solid rgba(232,168,32,.12);border-radius:13px;padding:12px 16px;margin-bottom:10px;" class="el" data-d="250">
-    <div style="font-size:10px;letter-spacing:2px;color:rgba(232,168,32,.5);margin-bottom:10px;">👑 QUEST MASTER ANALYTICS</div>
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(232,168,32,.5);margin-bottom:10px;">👑 QUEST MASTER ANALYTICS</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
-      <div><div id="qa-seekers" style="font-size:22px;font-weight:200;color:#e8a820;">—</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Seekers</div></div>
-      <div><div id="qa-clues-unlocked" style="font-size:22px;font-weight:200;color:#4ade80;">—</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Clues out</div></div>
-      <div><div id="qa-time-left" style="font-size:22px;font-weight:200;color:#60a5fa;">—</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Time left</div></div>
+      <div><div id="qa-seekers" style="font-size:22px;font-weight:200;color:#e8a820;">—</div><div style="font-size:17px;color:rgba(255,255,255,.3);margin-top:2px;">Seekers</div></div>
+      <div><div id="qa-clues-unlocked" style="font-size:22px;font-weight:200;color:#4ade80;">—</div><div style="font-size:17px;color:rgba(255,255,255,.3);margin-top:2px;">Clues out</div></div>
+      <div><div id="qa-time-left" style="font-size:22px;font-weight:200;color:#60a5fa;">—</div><div style="font-size:17px;color:rgba(255,255,255,.3);margin-top:2px;">Time left</div></div>
     </div>
   </div>
 
   <!-- TIER BUTTONS -->
   <div style="display:flex;gap:8px;margin-bottom:10px;" class="el" data-d="300">
-    <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:13px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
-    <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.4);font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;">GOLD TIER ↓</button>
+    <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:17px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
+    <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.4);font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">GOLD TIER ↓</button>
   </div>
 
   <!-- GOLD MODAL -->
@@ -240,51 +240,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="q-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👑</div>
-          <div><div style="font-size:15px;font-weight:400;color:#fff;">FinderSeek Gold</div><div style="font-size:13px;color:rgba(232,168,32,.55);">$3.99/mo · 30-day free trial</div></div>
+          <div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">👑</div>
+          <div><div style="font-size:17px;font-weight:400;color:#fff;">FinderSeek Gold</div><div style="font-size:17px;color:rgba(232,168,32,.55);">$3.99/mo · 30-day free trial</div></div>
         </div>
-        <button onclick="toggleGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;">✕</button>
+        <button onclick="toggleGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:17px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;">✕</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
         <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px;">
-          <div style="font-size:10px;letter-spacing:1.5px;color:#4ade80;margin-bottom:6px;">SEEKER</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Finder clue alerts</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>50ft precision map</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>City quest alerts</div>
+          <div style="font-size:17px;letter-spacing:1.5px;color:#4ade80;margin-bottom:6px;">SEEKER</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Finder clue alerts</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>50ft precision map</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>City quest alerts</div>
         </div>
         <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;">
-          <div style="font-size:10px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">QUEST MASTER</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Quest analytics</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>3 pinned quests</div>
-          <div style="font-size:13px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Edit AI clues</div>
+          <div style="font-size:17px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">QUEST MASTER</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Quest analytics</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>3 pinned quests</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Edit AI clues</div>
         </div>
       </div>
-      <button onclick="sessionStorage.setItem('fs_gold_return','quest:'+(currentHunt?currentHunt.id:'')); window.location.href='gold.html';" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:15px;font-weight:400;cursor:pointer;font-family:inherit;">Upgrade to Gold →</button>
+      <button onclick="sessionStorage.setItem('fs_gold_return','quest:'+(currentHunt?currentHunt.id:'')); window.location.href='gold.html';" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">Upgrade to Gold →</button>
     </div>
   </div>
 
   <!-- CLUES SECTION -->
   <div id="q-clues-section" style="margin-bottom:10px;" class="el" data-d="350">
-    <div style="font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
     <div id="q-clues-container">
-      <div style="padding:30px;text-align:center;color:rgba(255,255,255,.4);font-size:15px;">Loading clues…</div>
+      <div style="padding:30px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading clues…</div>
     </div>
   </div>
 
   <!-- CLAIM SECTION -->
   <div id="q-claim-section" class="el" data-d="400">
-    <div style="font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLAIM PRIZE <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLAIM PRIZE <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(74,222,128,.15);border-radius:16px;padding:22px 18px;text-align:center;">
       <div style="font-size:36px;margin-bottom:10px;">🔐</div>
       <div style="font-size:22px;font-weight:200;color:#fff;margin-bottom:6px;">Found It?</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:18px;">Enter the 6-digit code from the hiding spot</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:18px;">Enter the 6-digit code from the hiding spot</div>
       <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;">
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d1" oninput="cN(this,'d2')" onkeydown="cP(event,this,'')"/>
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d2" oninput="cN(this,'d3')" onkeydown="cP(event,this,'d1')"/>
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d3" oninput="cN(this,'d4')" onkeydown="cP(event,this,'d2')"/>
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d4" oninput="cN(this,'d5')" onkeydown="cP(event,this,'d3')"/>
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="cN(this,'d6')" onkeydown="cP(event,this,'d4')"/>
-        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d1" oninput="cN(this,'d2')" onkeydown="cP(event,this,'')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d2" oninput="cN(this,'d3')" onkeydown="cP(event,this,'d1')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d3" oninput="cN(this,'d4')" onkeydown="cP(event,this,'d2')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d4" oninput="cN(this,'d5')" onkeydown="cP(event,this,'d3')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="cN(this,'d6')" onkeydown="cP(event,this,'d4')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
       </div>
       <button id="btn-claim" style="width:100%;padding:15px;border:none;border-radius:13px;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;box-shadow:0 4px 20px rgba(34,197,94,.3);" onclick="claimPrize()">Claim Prize →</button>
     </div>
@@ -421,7 +421,7 @@ function renderTierButtons(isGold) {
     goldBtn.style.color = '#f5c842';
     goldBtn.style.cursor = 'default';
     goldBtn.onclick = null;
-    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:15px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
+    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:17px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
   } else {
     // FREE — bright, filled, clearly active
     freeBtn.style.animation = 'silverTierPulse 7s ease-in-out infinite';
@@ -797,7 +797,7 @@ function renderHunt() {
         .then(function(u){
           if (u && u.id && u.id === h.pirate_id) {
             var pinned = h.is_pinned;
-            pinEl.innerHTML = '<button onclick="togglePin()" style="display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.15)':'rgba(255,255,255,.04)')+';border:1px solid '+(pinned?'rgba(201,137,12,.4)':'rgba(255,255,255,.1)')+';border-radius:20px;padding:7px 16px;font-size:13px;color:'+(pinned?'#e8a820':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;">'+(pinned?'📌 Pinned':'📌 Pin quest')+'</button>';
+            pinEl.innerHTML = '<button onclick="togglePin()" style="display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.15)':'rgba(255,255,255,.04)')+';border:1px solid '+(pinned?'rgba(201,137,12,.4)':'rgba(255,255,255,.1)')+';border-radius:20px;padding:7px 16px;font-size:17px;color:'+(pinned?'#e8a820':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;">'+(pinned?'📌 Pinned':'📌 Pin quest')+'</button>';
           }
         }).catch(function(){});
     }
@@ -889,8 +889,8 @@ function renderClues() {
         '<div style="flex:1;min-width:0;">' +
           '<div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
           '<div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">' + escapeHtml(c.clue_text) + '</div>' +
-          (isFinder ? '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:15px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>' : '') +
-          (c.tier === 'pro' ? '<div style="font-size:15px;color:#e8a820;margin-top:8px;font-weight:500;">🥇 GOLD CLUE</div>' : '') +
+          (isFinder ? '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>' : '') +
+          (c.tier === 'pro' ? '<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">🥇 GOLD CLUE</div>' : '') +
           mapLabel + mapBlock + photoBlock +
         '</div></div></div></div>'
       );
@@ -903,10 +903,10 @@ function renderClues() {
         '<div class="clue-num-off">' + c.clue_number + '</div>' +
         '<div style="flex:1;">' +
           '<div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #' + c.clue_number + titleSuffix + '</div>' +
-          '<div style="font-size:15px;color:rgba(255,255,255,.25);line-height:1.65;">This clue hasn\'t been revealed yet.</div>' +
-          '<div style="font-size:15px;color:var(--yellow);margin-top:6px;font-weight:500;">Drops in ' + dropsIn + '</div>' +
-          (isFinder ? '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:15px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>' : '') +
-          (c.tier === 'pro' ? '<div style="font-size:15px;color:#e8a820;margin-top:6px;font-weight:500;">🥇 GOLD CLUE</div>' : '') +
+          '<div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">This clue hasn\'t been revealed yet.</div>' +
+          '<div style="font-size:17px;color:var(--yellow);margin-top:6px;font-weight:500;">Drops in ' + dropsIn + '</div>' +
+          (isFinder ? '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>' : '') +
+          (c.tier === 'pro' ? '<div style="font-size:17px;color:#e8a820;margin-top:6px;font-weight:500;">🥇 GOLD CLUE</div>' : '') +
         '</div></div></div></div>'
       );
     }
@@ -1204,11 +1204,17 @@ if ('serviceWorker' in navigator) {
     </div>
 
     <!-- Not signed in: sign in section -->
-    <div id="hb-signin-section" style="display:none;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);">
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
-      <div style="background:linear-gradient(135deg,#c9890c,#e8a820);border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
+      
+        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
       </div>
+      <div style="flex:1;">
+        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
     </div>
 
     <!-- Nav links -->
@@ -1234,7 +1240,7 @@ if ('serviceWorker' in navigator) {
     </a>
 
     <div style="flex:1;"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
+    <div style="font-size:17px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
   </div>
 </div>
 
@@ -1247,21 +1253,33 @@ if ('serviceWorker' in navigator) {
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
 <div class="hb-drawer" id="hb-drawer">
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-signin-section">
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:12px;" id="hb-signin-section" onclick="closeHamburger();window.location.href='profile.html';">
+      <div style="position:relative;width:42px;height:42px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;border:1px dashed rgba(255,255,255,.15);"></div>
+        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  
       <div style="background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:200% auto;border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;animation:hbRingShim 6s linear infinite;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
+        <div style="font-size:20px;color:#0a0800;font-weight:500;">Sign In →</div>
       </div>
     </div>
   <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="position:relative;width:40px;height:40px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-          <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:15px;color:#e8a820;font-weight:500;" id="hb-drawer-avatar">?</div>
+          <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8a820;font-weight:500;" id="hb-drawer-avatar">?</div>
         </div>
         <div>
-          <div style="font-size:14px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;" id="hb-drawer-sub">—</div>
+          <div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
+          <div style="font-size:25px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
         </div>
       </div>
     </div>
@@ -1291,7 +1309,7 @@ if ('serviceWorker' in navigator) {
         <span class="hb-nav-label">Terms of Service</span>
       </a>
   </div>
-  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
+  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:25px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
 </div>
 <script>
 (function(){
@@ -1312,6 +1330,14 @@ if ('serviceWorker' in navigator) {
     var dr=document.getElementById('hb-drawer');
     if(bd)bd.classList.toggle('open',_open);
     if(dr)dr.classList.toggle('open',_open);
+    // Lock body scroll when drawer is open
+    if(_open){
+      document.body.style.overflow='hidden';
+      document.body.style.touchAction='none';
+    } else {
+      document.body.style.overflow='';
+      document.body.style.touchAction='';
+    }
   }
   window.closeHamburger=function(){toggle(false);};
   function loadProfile(){
@@ -1329,14 +1355,14 @@ if ('serviceWorker' in navigator) {
     var si=document.getElementById('hb-signin-section');
     var sp=document.getElementById('hb-profile-section');
     if(!token){
-      if(si)si.style.display='block';
+      if(si)si.style.display='flex';
       if(sp)sp.style.display='none';
       return;
     }
     fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{
       headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
     }).then(function(r){return r.ok?r.json():null;}).then(function(u){
-      if(!u||!u.id){if(si)si.style.display='block';if(sp)sp.style.display='none';return;}
+      if(!u||!u.id){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}
       fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{
         headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
       }).then(function(r){return r.json();}).then(function(pd){
@@ -1358,8 +1384,8 @@ if ('serviceWorker' in navigator) {
         if(ds)ds.textContent=isGold?'👑 Gold Member':'Quest Seeker';
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
-      }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
-    }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
+      }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
+    }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();

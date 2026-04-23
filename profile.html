@@ -13,7 +13,7 @@
   --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
 .bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
 
@@ -70,7 +70,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-drawer.open{transform:translateX(0);}
 .hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
 .hb-nav-item:last-child{border-bottom:none;}
-.hb-nav-label{font-size:15px;color:#fff;font-weight:300;font-family:inherit;}
+.hb-nav-label{font-size:20px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
 </style>
@@ -105,7 +105,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
       <!-- Brand -->
       <div class="lg-anim lg-drop" style="text-align:center;margin-bottom:28px;">
-        <div style="font-family:'Noto Sans Display',sans-serif;font-weight:300;font-size:clamp(42px,11vw,52px);line-height:1.1;margin-bottom:10px;">
+        <div style="font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:clamp(42px,11vw,52px);line-height:1.1;margin-bottom:10px;">
           <span style="background:linear-gradient(90deg,#e8a820,#f5c842,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Finder</span><span style="color:#f5ead8;">Seek</span>
         </div>
         <div style="font-size:18px;color:#d0e4f0;">Hidden Treasure. Real Adventure.</div>
@@ -203,11 +203,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="background:#0c0a18;border-radius:15px;">
       <div style="padding:16px 16px 12px;display:flex;align-items:center;gap:10px;">
         <div style="font-size:24px;">⏳</div>
-        <div style="font-size:16px;font-weight:400;color:#fff;">You have an unfinished quest</div>
+        <div style="font-size:17px;font-weight:400;color:#fff;">You have an unfinished quest</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 16px;" onclick="event.stopPropagation()">
-        <button onclick="resumePendingQuest()" style="width:100%;padding:12px;background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:12px;font-size:15px;font-weight:500;color:#0a0500;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">🚀 Complete Quest — Fund &amp; Go Live</button>
-        <button onclick="discardPendingQuest()" style="width:100%;padding:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;font-size:15px;color:rgba(255,255,255,.4);cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Discard this quest</button>
+        <button onclick="resumePendingQuest()" style="width:100%;padding:12px;background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:12px;font-size:17px;font-weight:500;color:#0a0500;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">🚀 Complete Quest — Fund &amp; Go Live</button>
+        <button onclick="discardPendingQuest()" style="width:100%;padding:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;font-size:17px;color:rgba(255,255,255,.4);cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Discard this quest</button>
       </div>
     </div>
   </div>
@@ -218,8 +218,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="p-name" style="font-size:24px;font-weight:400;color:#fff;">Loading…</div>
     <div id="p-since" style="font-size:18px;color:var(--dim);margin-top:4px;">—</div>
     <div id="p-gold-badge" style="display:none;align-items:center;gap:6px;margin-top:10px;padding:6px 18px;border-radius:20px;background:linear-gradient(135deg,rgba(201,137,12,.2),rgba(232,168,32,.1));border:1.5px solid rgba(232,168,32,.5);box-shadow:0 0 16px rgba(232,168,32,.15);">
-      <span style="font-size:16px;">👑</span>
-      <span style="font-size:16px;color:#e8a820;font-weight:400;letter-spacing:.5px;">Gold Member</span>
+      <span style="font-size:17px;">👑</span>
+      <span style="font-size:17px;color:#e8a820;font-weight:400;letter-spacing:.5px;">Gold Member</span>
     </div>
   </div>
 
@@ -253,7 +253,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <div id="payout-title" style="font-size:18px;color:#fff;margin-bottom:4px;">Loading…</div>
           <div id="payout-sub" style="font-size:18px;color:var(--dim);">—</div>
         </div>
-        <div id="payout-pill" style="display:none;align-items:center;gap:6px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:4px 10px;font-size:15px;color:#4ade80;font-weight:500;flex-shrink:0;">✓ Active</div>
+        <div id="payout-pill" style="display:none;align-items:center;gap:6px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:4px 10px;font-size:17px;color:#4ade80;font-weight:500;flex-shrink:0;">✓ Active</div>
       </div>
       <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
       <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:14px;padding:14px;border:1px solid rgba(99,91,255,.35);border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(99,91,255,.15);color:#fff;align-items:center;justify-content:center;gap:8px;">
@@ -262,7 +262,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </button>
     </div>
     <div id="payout-disconnect-wrap" style="display:none;text-align:center;margin-top:14px;">
-      <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:15px;color:#d0e4f0;opacity:.6;text-decoration:underline;">Disconnect payout account</a>
+      <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:17px;color:#d0e4f0;opacity:.6;text-decoration:underline;">Disconnect payout account</a>
     </div>
   </div>
 
@@ -314,8 +314,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Tab switcher -->
     <div style="display:flex;gap:6px;margin-bottom:10px;">
-      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:9px;border-radius:12px;background:rgba(74,222,128,.12);border:1.5px solid #4ade80;color:#4ade80;font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Joined</button>
-      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:9px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Created</button>
+      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:9px;border-radius:12px;background:rgba(74,222,128,.12);border:1.5px solid #4ade80;color:#4ade80;font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Joined</button>
+      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:9px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Created</button>
     </div>
 
     <div id="joined-quests" class="card">
@@ -409,7 +409,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="position:relative;background:#0d0b18;border-radius:22px;width:100%;max-width:420px;padding:24px 20px;border:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
     <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:20px;">🔔 Notifications</div>
     <div id="notif-rows"></div>
-    <button onclick="saveNotifications()" style="width:100%;margin-top:16px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#15803d,#4ade80);border:none;color:#0a1a0a;font-size:16px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Preferences</button>
+    <button onclick="saveNotifications()" style="width:100%;margin-top:16px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#15803d,#4ade80);border:none;color:#0a1a0a;font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Preferences</button>
   </div>
 </div>
 
@@ -419,21 +419,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="position:relative;background:#0d0b18;border-radius:22px;width:100%;max-width:420px;padding:24px 20px;border:1px solid rgba(255,255,255,.08);max-height:85vh;overflow-y:auto;">
     <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:20px;">⚙️ Settings</div>
     <div style="margin-bottom:14px;">
-      <div style="font-size:15px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">USERNAME</div>
-      <input id="settings-username" type="text" placeholder="Your display name" style="width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:16px;font-family:'Noto Sans Display',sans-serif;outline:none;"/>
+      <div style="font-size:17px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">USERNAME</div>
+      <input id="settings-username" type="text" placeholder="Your display name" style="width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:17px;font-family:'Noto Sans Display',sans-serif;outline:none;"/>
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-size:15px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">CITY</div>
-      <input id="settings-city" type="text" placeholder="Your city" style="width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:16px;font-family:'Noto Sans Display',sans-serif;outline:none;"/>
+      <div style="font-size:17px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">CITY</div>
+      <input id="settings-city" type="text" placeholder="Your city" style="width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:17px;font-family:'Noto Sans Display',sans-serif;outline:none;"/>
     </div>
     <div style="margin-bottom:20px;">
-      <div style="font-size:15px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">EMAIL</div>
-      <div id="settings-email" style="padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.4);font-size:16px;">—</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:6px;">EMAIL</div>
+      <div id="settings-email" style="padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.4);font-size:17px;">—</div>
     </div>
-    <button onclick="saveSettings()" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a2090,#2d3adb);border:none;color:#e0e4ff;font-size:16px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Changes</button>
+    <button onclick="saveSettings()" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a2090,#2d3adb);border:none;color:#e0e4ff;font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Changes</button>
     <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">
-      <div style="font-size:15px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:1px;">ACCOUNT</div>
-      <div onclick="closeModal('settings-modal');signOut();" style="padding:12px 0;font-size:16px;color:#f87171;cursor:pointer;display:flex;align-items:center;gap:10px;"><span>🚪</span> Sign Out</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:1px;">ACCOUNT</div>
+      <div onclick="closeModal('settings-modal');signOut();" style="padding:12px 0;font-size:17px;color:#f87171;cursor:pointer;display:flex;align-items:center;gap:10px;"><span>🚪</span> Sign Out</div>
     </div>
   </div>
 </div>
@@ -498,8 +498,8 @@ function renderNotifRows() {
     var on = p[pref.key] !== false;
     return '<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);">' +
       '<div style="flex:1;">' +
-        '<div style="font-size:16px;color:#fff;font-weight:400;">' + pref.label + '</div>' +
-        '<div style="font-size:15px;color:rgba(255,255,255,.4);margin-top:2px;">' + pref.desc + '</div>' +
+        '<div style="font-size:17px;color:#fff;font-weight:400;">' + pref.label + '</div>' +
+        '<div style="font-size:17px;color:rgba(255,255,255,.4);margin-top:2px;">' + pref.desc + '</div>' +
       '</div>' +
       '<div onclick="toggleNotif(this,\'' + pref.key + '\')" data-key="' + pref.key + '" data-on="' + (on?'1':'0') + '" style="width:50px;height:28px;border-radius:14px;background:' + (on?'#4ade80':'rgba(255,255,255,.12)') + ';position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;">' +
         '<div style="position:absolute;top:3px;' + (on?'right:3px':'left:3px') + ';width:22px;height:22px;border-radius:50%;background:#fff;transition:all .2s;"></div>' +
@@ -950,10 +950,10 @@ async function loadJoinedQuests(){
         '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;'+borderTop+'">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+dotColor+';flex-shrink:0;box-shadow:0 0 8px '+dotColor+'66;"></div>' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
-            '<div style="font-size:15px;color:var(--dim);margin-top:2px;">'+subText+'</div>' +
+            '<div style="font-size:17px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:17px;color:var(--dim);margin-top:2px;">'+subText+'</div>' +
           '</div>' +
-          '<div style="font-size:16px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
+          '<div style="font-size:17px;font-weight:400;color:'+dotColor+';">$'+prizeDollars+'</div>' +
         '</div>'
       );
     }).join('');
@@ -1046,10 +1046,10 @@ async function loadCreatedQuests(){
         '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;'+borderTop+'">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+statusColor+';flex-shrink:0;box-shadow:0 0 8px '+statusColor+'66;"></div>' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:16px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
-            '<div style="font-size:15px;color:var(--dim);margin-top:2px;">'+statusText+'</div>' +
+            '<div style="font-size:17px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(h.neighborhood||h.city||'Quest')+'</div>' +
+            '<div style="font-size:17px;color:var(--dim);margin-top:2px;">'+statusText+'</div>' +
           '</div>' +
-          '<div style="font-size:16px;font-weight:400;color:'+statusColor+';">$'+prizeDollars+'</div>' +
+          '<div style="font-size:17px;font-weight:400;color:'+statusColor+';">$'+prizeDollars+'</div>' +
         '</div>'
       );
     }).join('');
@@ -1325,11 +1325,17 @@ if ('serviceWorker' in navigator) {
     </div>
 
     <!-- Not signed in: sign in section -->
-    <div id="hb-signin-section" style="display:none;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);">
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
-      <div style="background:linear-gradient(135deg,#c9890c,#e8a820);border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
+      
+        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
       </div>
+      <div style="flex:1;">
+        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
     </div>
 
     <!-- Nav links -->
@@ -1355,7 +1361,7 @@ if ('serviceWorker' in navigator) {
     </a>
 
     <div style="flex:1;"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
+    <div style="font-size:17px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
   </div>
 </div>
 
@@ -1368,21 +1374,33 @@ if ('serviceWorker' in navigator) {
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
 <div class="hb-drawer" id="hb-drawer">
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-signin-section">
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:12px;" id="hb-signin-section" onclick="closeHamburger();window.location.href='profile.html';">
+      <div style="position:relative;width:42px;height:42px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;border:1px dashed rgba(255,255,255,.15);"></div>
+        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  
       <div style="background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:200% auto;border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;animation:hbRingShim 6s linear infinite;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
+        <div style="font-size:20px;color:#0a0800;font-weight:500;">Sign In →</div>
       </div>
     </div>
   <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="position:relative;width:40px;height:40px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-          <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:15px;color:#e8a820;font-weight:500;" id="hb-drawer-avatar">?</div>
+          <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8a820;font-weight:500;" id="hb-drawer-avatar">?</div>
         </div>
         <div>
-          <div style="font-size:14px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;" id="hb-drawer-sub">—</div>
+          <div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
+          <div style="font-size:25px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
         </div>
       </div>
     </div>
@@ -1412,7 +1430,7 @@ if ('serviceWorker' in navigator) {
         <span class="hb-nav-label">Terms of Service</span>
       </a>
   </div>
-  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
+  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:25px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
 </div>
 <script>
 (function(){
@@ -1433,6 +1451,14 @@ if ('serviceWorker' in navigator) {
     var dr=document.getElementById('hb-drawer');
     if(bd)bd.classList.toggle('open',_open);
     if(dr)dr.classList.toggle('open',_open);
+    // Lock body scroll when drawer is open
+    if(_open){
+      document.body.style.overflow='hidden';
+      document.body.style.touchAction='none';
+    } else {
+      document.body.style.overflow='';
+      document.body.style.touchAction='';
+    }
   }
   window.closeHamburger=function(){toggle(false);};
   function loadProfile(){
@@ -1450,14 +1476,14 @@ if ('serviceWorker' in navigator) {
     var si=document.getElementById('hb-signin-section');
     var sp=document.getElementById('hb-profile-section');
     if(!token){
-      if(si)si.style.display='block';
+      if(si)si.style.display='flex';
       if(sp)sp.style.display='none';
       return;
     }
     fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{
       headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
     }).then(function(r){return r.ok?r.json():null;}).then(function(u){
-      if(!u||!u.id){if(si)si.style.display='block';if(sp)sp.style.display='none';return;}
+      if(!u||!u.id){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}
       fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{
         headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
       }).then(function(r){return r.json();}).then(function(pd){
@@ -1479,8 +1505,8 @@ if ('serviceWorker' in navigator) {
         if(ds)ds.textContent=isGold?'👑 Gold Member':'Quest Seeker';
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
-      }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
-    }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
+      }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
+    }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
