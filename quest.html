@@ -1268,17 +1268,22 @@ if ('serviceWorker' in navigator) {
         <div style="font-size:20px;color:#0a0800;font-weight:500;">Sign In →</div>
       </div>
     </div>
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="position:relative;width:40px;height:40px;flex-shrink:0;">
-          <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-          <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;" id="hb-drawer-avatar"><svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-        </div>
-        <div>
-          <div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
-          <div style="font-size:25px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
-        </div>
+    <div style="display:none;padding:14px 18px 14px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:10px;" id="hb-profile-section" onclick="closeHamburger();window.location.href='profile.html';">
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:22px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hb-drawer-name">—</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1px;flex-shrink:0;">
+      <div style="position:relative;width:36px;height:36px;">
+        <div id="hb-drawer-ring" style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div id="hb-drawer-avatar" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
       </div>
+      <div style="display:flex;flex-direction:column;gap:4px;padding:6px 4px;">
+        <div style="width:14px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div style="width:10px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820);opacity:.7;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;"></div>
+      </div>
+    </div>
+  </div>
     </div>
   <div style="flex:1;overflow-y:auto;">
       <a class="hb-nav-item " href="index.html" onclick="closeHamburger();">
@@ -1365,10 +1370,10 @@ if ('serviceWorker' in navigator) {
         var init=uname.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';
         var isGold=p&&p.is_pro;
         // Update topbar ring avatar
-        var av=document.getElementById('hb-avatar-inner');
-        if(av){av.textContent=init;av.style.color='#e8a820';}
+        // Topbar — keep avatar SVG, just brighten ring when signed in
         var avSvg=document.getElementById('hb-avatar-svg');
-        if(avSvg)avSvg.style.display='none';
+        if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
+        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
         // Update drawer
         var da=document.getElementById('hb-drawer-avatar');
         if(da)da.textContent=init;
