@@ -17,7 +17,7 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
 .bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
 
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 120px;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
 
 .el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
 .el.visible{opacity:1;transform:translateY(0);}
@@ -54,7 +54,6 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 
 
 
-}
 
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
@@ -196,6 +195,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Toast -->
 <div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
+<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;"><a href="index.html" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">Profile</div><div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');"><div style="position:relative;width:34px;height:34px;flex-shrink:0;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;"><svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(180,190,210,.5)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div><div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;"><div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div></div></div></div>
 <div class="page">
 
   <!-- Pending quest banner — shown if user has an unfinished quest draft -->
@@ -214,7 +214,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- Profile header -->
   <div class="el" style="text-align:center;padding:10px 0 0;">
-    <div class="avatar" id="p-avatar">??</div>
+    <div class="avatar" id="p-avatar">?</div>
     <div id="p-name" style="font-size:24px;font-weight:400;color:#fff;">Loading…</div>
     <div id="p-since" style="font-size:18px;color:var(--dim);margin-top:4px;">—</div>
     <div id="p-gold-badge" style="display:none;align-items:center;gap:6px;margin-top:10px;padding:6px 18px;border-radius:20px;background:linear-gradient(135deg,rgba(201,137,12,.2),rgba(232,168,32,.1));border:1.5px solid rgba(232,168,32,.5);box-shadow:0 0 16px rgba(232,168,32,.15);">
