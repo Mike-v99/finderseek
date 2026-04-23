@@ -19,7 +19,7 @@ html{height:100%;overflow-x:hidden;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 100px;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
 
 /* Borders */
 .silver-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(180,180,195,.5),rgba(220,220,230,.25),rgba(160,160,175,.4),rgba(220,220,230,.3));}
@@ -62,25 +62,43 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .clue-num-off{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:rgba(255,255,255,.2);flex-shrink:0;}
 
 /* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,8,16,.92);border-top:1px solid rgba(255,255,255,.06);padding:10px 4px 12px;display:flex;align-items:flex-end;justify-content:space-around;z-index:1000;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
-.nav-item{text-align:center;flex:1;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.nav-item svg{stroke:#d0e4f0;stroke-width:1.8;}
-.nav-label{font-size:18px;color:#d0e4f0;margin-top:5px;}
-.nav-item.active svg{stroke:#f0f0f0;stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(240,240,240,.5)) drop-shadow(0 0 12px rgba(240,240,240,.25));}
-.nav-item.active .nav-label{color:#f0f0f0;font-weight:400;text-shadow:0 0 12px rgba(240,240,240,.6),0 0 24px rgba(240,240,240,.3);}
-.nav-center{text-align:center;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.nav-orb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#d4d4d4,#fff);display:flex;align-items:center;justify-content:center;margin:-26px auto 0;box-shadow:0 4px 20px rgba(255,255,255,.3),0 0 0 3px rgba(16,14,26,.98);}
-.nav-center .nav-label{color:#e0e0e0;font-weight:400;}
+/* bottom-nav removed */
 
-/* Fly-in */
-.el{opacity:0;transform:translateY(20px);transition:opacity .5s ease-out,transform .5s ease-out;}
+
+
+
+
+
+
+
 .el.show{opacity:1;transform:translateY(0);}
 
-@supports(padding-bottom:env(safe-area-inset-bottom)){.bottom-nav{padding-bottom:calc(12px + env(safe-area-inset-bottom));}.page{padding-bottom:calc(100px + env(safe-area-inset-bottom));}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){/* bottom-nav removed */.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
 
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
+
+/* ── HAMBURGER NAV ───────────────────────────────────────────── */
+.hb-btn{display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hb-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0;transition:border-color .2s;}
+.hb-avatar.signed-in{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:2px solid rgba(232,168,32,.4);}
+.hb-avatar.signed-out{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);}
+.hb-lines{display:flex;flex-direction:column;gap:3.5px;padding:8px 6px;}
+.hb-lines span{display:block;width:14px;height:1.5px;background:rgba(255,255,255,.6);border-radius:1px;transition:background .2s;}
+/* Drawer */
+.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
+.hb-backdrop.open{opacity:1;pointer-events:auto;}
+.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.08);z-index:9001;padding:0;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
+.hb-drawer.open{transform:translateX(0);}
+.hb-drawer-inner{flex:1;display:flex;flex-direction:column;padding:16px 18px 20px;overflow-y:auto;}
+.hb-profile-row{display:flex;align-items:center;gap:10px;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);}
+.hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.hb-nav-item:last-child{border-bottom:none;}
+.hb-nav-item svg{flex-shrink:0;}
+.hb-nav-label{font-size:15px;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:300;}
+.hb-nav-item.active .hb-nav-label{color:#e8a820;font-weight:400;}
+.hb-nav-item.active svg{stroke:#e8a820 !important;}
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -1184,11 +1202,186 @@ if ('serviceWorker' in navigator) {
     var el = document.getElementById('nav-profile-item');
     if (!el) return;
     var svg = el.querySelector('svg');
-    var lbl = el.querySelector('.nav-label');
-    if (svg) svg.setAttribute('stroke', color);
-    if (lbl) { lbl.style.color = color; }
+    var lbl = el.querySelector('.nav-label')
   }).catch(function(){});
 })();
+</script>
+
+<!-- HAMBURGER BUTTON -->
+<div class="hb-btn" id="hb-btn">
+  <div class="hb-avatar signed-out" id="hb-avatar"></div>
+  <div class="hb-lines">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- BACKDROP -->
+<div class="hb-backdrop" id="hb-backdrop"></div>
+
+<!-- DRAWER -->
+<div class="hb-drawer" id="hb-drawer">
+  <div class="hb-drawer-inner">
+
+    <!-- Signed in: profile row -->
+    <div class="hb-profile-row" id="hb-profile-section" style="display:none;">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:16px;color:#0a0800;font-weight:500;flex-shrink:0;border:2px solid rgba(232,168,32,.3);" id="hb-drawer-avatar">?</div>
+      <div>
+        <div style="font-size:15px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;" id="hb-drawer-sub">—</div>
+      </div>
+    </div>
+
+    <!-- Not signed in: sign in section -->
+    <div id="hb-signin-section" style="display:none;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);">
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
+      <div style="background:linear-gradient(135deg,#c9890c,#e8a820);border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
+        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
+      </div>
+    </div>
+
+    <!-- Nav links -->
+    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="hb-nav-label">Home</span>
+    </a>
+    <a class="hb-nav-item active" href="index.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="hb-nav-label">Browse Quests</span>
+    </a>
+    <a class="hb-nav-item" href="profile.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="hb-nav-label">Profile</span>
+    </a>
+    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
+    </a>
+    <a class="hb-nav-item" href="how-it-works.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span class="hb-nav-label">How It Works</span>
+    </a>
+
+    <div style="flex:1;"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
+  </div>
+</div>
+
+<script>
+
+// ── HAMBURGER DRAWER ─────────────────────────────────────────
+(function(){
+  var _open = false;
+
+  function initHamburger() {
+    var btn = document.getElementById('hb-btn');
+    var backdrop = document.getElementById('hb-backdrop');
+    var drawer = document.getElementById('hb-drawer');
+    if (!btn || !backdrop || !drawer) return;
+
+    btn.addEventListener('click', function(){ toggleDrawer(true); });
+    backdrop.addEventListener('click', function(){ toggleDrawer(false); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') toggleDrawer(false); });
+
+    // Set avatar from stored profile
+    updateHamburgerAvatar();
+  }
+
+  function toggleDrawer(open) {
+    _open = (open === undefined) ? !_open : open;
+    var backdrop = document.getElementById('hb-backdrop');
+    var drawer = document.getElementById('hb-drawer');
+    if (backdrop) backdrop.classList.toggle('open', _open);
+    if (drawer) drawer.classList.toggle('open', _open);
+  }
+
+  window.toggleHamburger = function(){ toggleDrawer(); };
+  window.closeHamburger = function(){ toggleDrawer(false); };
+
+  function updateHamburgerAvatar() {
+    var avatarEl = document.getElementById('hb-avatar');
+    var nameEl = document.getElementById('hb-drawer-name');
+    var subEl = document.getElementById('hb-drawer-sub');
+    var signInEl = document.getElementById('hb-signin-section');
+    var profileEl = document.getElementById('hb-profile-section');
+
+    // Try to get token + profile
+    var token = '';
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i=0;i<keys.length;i++) {
+        if (keys[i].indexOf('sb-')===0 && keys[i].indexOf('-auth-token')>0) {
+          var s = JSON.parse(localStorage.getItem(keys[i]));
+          if (s && s.access_token) { token = s.access_token; break; }
+        }
+      }
+      if (!token) token = localStorage.getItem('fs_token') || '';
+    } catch(e){}
+
+    if (token) {
+      // Signed in — fetch user
+      fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user', {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+          'Authorization': 'Bearer ' + token
+        }
+      }).then(function(r){ return r.ok ? r.json() : null; }).then(function(u){
+        if (!u || !u.id) { setSignedOut(); return; }
+        // Fetch profile
+        fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro', {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk',
+            'Authorization': 'Bearer ' + token
+          }
+        }).then(function(r){ return r.json(); }).then(function(pd){
+          var profile = pd && pd[0];
+          var uname = (profile && profile.username) || (u.email ? u.email.split('@')[0] : 'User');
+          var initials = uname.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2) || '?';
+          var isGold = profile && profile.is_pro;
+          setSignedIn(initials, uname, isGold);
+        }).catch(function(){ setSignedIn('?', u.email || 'User', false); });
+      }).catch(function(){ setSignedOut(); });
+    } else {
+      setSignedOut();
+    }
+  }
+
+  function setSignedIn(initials, name, isGold) {
+    var avatarEl = document.getElementById('hb-avatar');
+    var nameEl = document.getElementById('hb-drawer-name');
+    var subEl = document.getElementById('hb-drawer-sub');
+    var signInEl = document.getElementById('hb-signin-section');
+    var profileEl = document.getElementById('hb-profile-section');
+    if (avatarEl) {
+      avatarEl.classList.remove('signed-out');
+      avatarEl.classList.add('signed-in');
+      avatarEl.textContent = initials;
+    }
+    if (nameEl) nameEl.textContent = name;
+    if (subEl) subEl.textContent = isGold ? '👑 Gold Member' : 'Quest Seeker';
+    if (signInEl) signInEl.style.display = 'none';
+    if (profileEl) profileEl.style.display = 'flex';
+  }
+
+  function setSignedOut() {
+    var avatarEl = document.getElementById('hb-avatar');
+    var signInEl = document.getElementById('hb-signin-section');
+    var profileEl = document.getElementById('hb-profile-section');
+    if (avatarEl) {
+      avatarEl.classList.remove('signed-in');
+      avatarEl.classList.add('signed-out');
+      avatarEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    }
+    if (signInEl) signInEl.style.display = 'block';
+    if (profileEl) profileEl.style.display = 'none';
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHamburger);
+  } else {
+    initHamburger();
+  }
+})();
+
 </script>
 </body>
 </html>
