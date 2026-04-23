@@ -21,7 +21,7 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
 .el.visible{opacity:1;transform:translateY(0);}
 
-.avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(232,168,32,.2),rgba(232,168,32,.08));border:2.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:400;color:#e8a820;margin:0 auto 14px;}
+.avatar{width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:400;color:#e8a820;margin:0 auto 14px;}
 
 .section-label{font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;display:flex;align-items:center;gap:8px;}
 .section-label::before{content:'';width:3px;height:16px;border-radius:2px;background:linear-gradient(180deg,var(--gold2),var(--gold));}
@@ -1270,52 +1270,6 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-
-    </div>
-
-    <!-- Not signed in: sign in section -->
-      
-        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(180,190,210,.45)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-        </div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
-        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    </div>
-
-    <!-- Nav links -->
-    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="hb-nav-label">Home</span>
-    </a>
-    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span class="hb-nav-label">Browse Quests</span>
-    </a>
-    
-    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
-    </a>
-    <a class="hb-nav-item" href="how-it-works.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      <span class="hb-nav-label">How It Works</span>
-    </a>
-
-    <div style="flex:1;"></div>
-    <div style="font-size:17px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
-  </div>
-</div>
-
-<script>
-
-
-
-</script>
 
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
