@@ -15,9 +15,8 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.12),transparent 65%);pointer-events:none;z-index:0;}
 
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px;overflow-x:hidden;}
 
 .el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
 .el.visible{opacity:1;transform:translateY(0);}
@@ -90,7 +89,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
-<div class="bg-glow"></div>
 
 <!-- Login gate (shown if not authenticated) -->
 <div id="login-gate" style="display:none;position:fixed;inset:0;background:rgba(10,8,16,.98);z-index:9998;overflow-y:auto;backdrop-filter:blur(12px);">
@@ -198,185 +196,142 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;"><a href="index.html" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">Profile</div><div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');"><div style="position:relative;width:34px;height:34px;flex-shrink:0;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;"><svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(180,190,210,.5)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div><div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;"><div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div></div></div></div>
 <div class="page">
 
-  <!-- Pending quest banner — shown if user has an unfinished quest draft -->
-  <div id="pending-quest-banner" style="display:none;border-radius:16px;padding:1.5px;background:linear-gradient(135deg,rgba(232,168,32,.4),rgba(255,255,255,.06));cursor:pointer;margin-bottom:16px;" onclick="resumePendingQuest()">
-    <div style="background:#0c0a18;border-radius:15px;">
-      <div style="padding:16px 16px 12px;display:flex;align-items:center;gap:10px;">
-        <div style="font-size:24px;">⏳</div>
-        <div style="font-size:17px;font-weight:400;color:#fff;">You have an unfinished quest</div>
+  <!-- Pending quest banner -->
+  <div id="pending-quest-banner" style="display:none;margin:12px 12px 0;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(232,168,32,.4),rgba(255,255,255,.06));cursor:pointer;" onclick="resumePendingQuest()">
+    <div style="background:#0c0a18;border-radius:13px;padding:14px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="font-size:22px;">⏳</div>
+        <div style="font-size:17px;color:#fff;">You have an unfinished quest</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 16px;" onclick="event.stopPropagation()">
-        <button onclick="resumePendingQuest()" style="width:100%;padding:12px;background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:12px;font-size:17px;font-weight:500;color:#0a0500;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">🚀 Complete Quest — Fund &amp; Go Live</button>
-        <button onclick="discardPendingQuest()" style="width:100%;padding:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;font-size:17px;color:rgba(255,255,255,.4);cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Discard this quest</button>
+      <div style="display:flex;flex-direction:column;gap:8px;" onclick="event.stopPropagation()">
+        <button onclick="resumePendingQuest()" style="width:100%;padding:11px;background:linear-gradient(135deg,#92400e,#f59e0b);border:none;border-radius:10px;font-size:17px;font-weight:500;color:#0a0500;cursor:pointer;font-family:inherit;">🚀 Complete &amp; Go Live</button>
+        <button onclick="discardPendingQuest()" style="width:100%;padding:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:17px;color:rgba(255,255,255,.4);cursor:pointer;font-family:inherit;">Discard</button>
       </div>
     </div>
   </div>
 
-  <!-- Profile header -->
-  <div class="el" style="text-align:center;padding:10px 0 0;">
-    <div class="avatar" id="p-avatar">?</div>
-    <div id="p-name" style="font-size:24px;font-weight:400;color:#fff;">Loading…</div>
-    <div id="p-since" style="font-size:18px;color:var(--dim);margin-top:4px;">—</div>
-    <div id="p-gold-badge" style="display:none;align-items:center;gap:6px;margin-top:10px;padding:6px 18px;border-radius:20px;background:linear-gradient(135deg,rgba(201,137,12,.2),rgba(232,168,32,.1));border:1.5px solid rgba(232,168,32,.5);box-shadow:0 0 16px rgba(232,168,32,.15);">
-      <span style="font-size:17px;">👑</span>
-      <span style="font-size:17px;color:#e8a820;font-weight:400;letter-spacing:.5px;">Gold Member</span>
-    </div>
-  </div>
+  <!-- ── FLOATING HERO CARD ─────────────────────────────── -->
+  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;">
 
-  <!-- Stats -->
-  <div class="el stats">
-    <div class="stat">
-      <div class="stat-val" id="s-won" style="color:#4ade80;">$0</div>
-      <div class="stat-label">Total Won</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="s-finds" style="color:#fbbf24;">0</div>
-      <div class="stat-label">Quests Won</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="s-created" style="color:#60a5fa;">0</div>
-      <div class="stat-label">Quests Created</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="s-joined" style="color:#a855f7;">0</div>
-      <div class="stat-label">Quests Joined</div>
-    </div>
-  </div>
-
-  <!-- Payout Setup (Stripe Connect) -->
-  <div class="el" id="payout-section" style="display:none;margin-top:16px;">
-    <div class="section-label">Payout Account</div>
-    <div id="payout-box" class="card">
-      <div id="payout-content" style="display:flex;align-items:center;gap:14px;">
-        <div style="font-size:32px;flex-shrink:0;">💳</div>
-        <div style="flex:1;">
-          <div id="payout-title" style="font-size:18px;color:#fff;margin-bottom:4px;">Loading…</div>
-          <div id="payout-sub" style="font-size:18px;color:var(--dim);">—</div>
+    <!-- Avatar + name row -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="position:relative;width:52px;height:52px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;" id="p-ring"></div>
+        <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;" id="p-avatar-wrap">
+          <svg id="p-avatar-svg" width="26" height="26" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <span id="p-avatar" style="display:none;font-size:20px;font-weight:400;color:#e8a820;"></span>
         </div>
-        <div id="payout-pill" style="display:none;align-items:center;gap:6px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:50px;padding:4px 10px;font-size:17px;color:#4ade80;font-weight:500;flex-shrink:0;">✓ Active</div>
       </div>
-      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);">Set Up Payouts</button>
-      <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:14px;padding:14px;border:1px solid rgba(99,91,255,.35);border-radius:12px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(99,91,255,.15);color:#fff;align-items:center;justify-content:center;gap:8px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <div style="flex:1;min-width:0;">
+        <div id="p-name" style="font-size:20px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading…</div>
+        <div id="p-since" style="font-size:13px;color:rgba(255,255,255,.35);margin-top:2px;">—</div>
+      </div>
+      <div id="p-gold-badge" style="display:none;align-items:center;gap:4px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:4px 10px;flex-shrink:0;">
+        <span style="font-size:13px;">👑</span>
+        <span style="font-size:13px;color:#e8a820;">Gold</span>
+      </div>
+    </div>
+
+    <!-- Quick action icon shortcuts -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+      <div onclick="window.location.href='newquest.html'" style="background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.2);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:20px;line-height:1;">✨</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Quest</div>
+      </div>
+      <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:20px;line-height:1;">💳</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Payout</div>
+      </div>
+      <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:20px;line-height:1;">👑</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Gold</div>
+      </div>
+      <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:20px;line-height:1;">⚙️</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Settings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATS CARD ─────────────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;display:flex;overflow:hidden;">
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
+      <div id="s-won" style="font-size:17px;color:#4ade80;font-weight:400;">$0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Won</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
+      <div id="s-finds" style="font-size:17px;color:#fbbf24;font-weight:400;">0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Wins</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
+      <div id="s-created" style="font-size:17px;color:#60a5fa;font-weight:400;">0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Created</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;">
+      <div id="s-joined" style="font-size:17px;color:#a855f7;font-weight:400;">0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Joined</div>
+    </div>
+  </div>
+
+  <!-- ── QUEST HISTORY CARD ─────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
+    <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);">
+      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:8px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Joined</button>
+      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:8px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Created</button>
+    </div>
+    <div id="joined-quests"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
+    <div id="created-quests" style="display:none;"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
+  </div>
+
+  <!-- ── PAYOUT SECTION ─────────────────────────────────── -->
+  <div id="payout-section" class="el" style="display:none;margin:8px 12px 0;">
+    <div id="payout-box" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;">
+      <div id="payout-content" style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:28px;flex-shrink:0;">💳</div>
+        <div style="flex:1;">
+          <div id="payout-title" style="font-size:17px;color:#fff;margin-bottom:3px;">Loading…</div>
+          <div id="payout-sub" style="font-size:13px;color:rgba(255,255,255,.4);">—</div>
+        </div>
+        <div id="payout-pill" style="display:none;align-items:center;gap:4px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:20px;padding:3px 9px;font-size:13px;color:#4ade80;flex-shrink:0;">✓ Active</div>
+      </div>
+      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Set Up Payouts</button>
+      <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:12px;padding:12px;border:1px solid rgba(99,91,255,.3);border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:rgba(99,91,255,.12);color:#fff;align-items:center;justify-content:center;gap:8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Manage in Stripe
       </button>
-    </div>
-    <div id="payout-disconnect-wrap" style="display:none;text-align:center;margin-top:14px;">
-      <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:17px;color:#d0e4f0;opacity:.6;text-decoration:underline;">Disconnect payout account</a>
-    </div>
-  </div>
-
-  <!-- Payout onboarding modal -->
-  <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;" onclick="closePayoutModal()"></div>
-  <div id="payout-modal" style="display:none;position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;pointer-events:none;">
-    <div id="payout-modal-inner" style="background:#0d0b18;border:1px solid rgba(99,91,255,.25);border-radius:24px;max-width:420px;width:100%;padding:28px 24px 24px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.9);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;">
-      <button onclick="closePayoutModal()" aria-label="Close" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;">✕</button>
-
-      <!-- Stripe logo -->
-      <div style="text-align:center;margin-bottom:20px;">
-        <svg width="80" height="34" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M113.985 21.654c0-7.842-3.792-14.022-11.058-14.022-7.302 0-11.694 6.18-11.694 13.95 0 9.21 5.202 13.878 12.648 13.878 3.636 0 6.384-.828 8.46-1.998v-6.144c-2.076 1.044-4.464 1.686-7.494 1.686-2.97 0-5.598-1.044-5.94-4.644h14.97c0-.396.108-1.98.108-2.706zm-15.15-2.916c0-3.456 2.112-4.896 4.038-4.896 1.854 0 3.864 1.44 3.864 4.896h-7.902zM80.247 7.632c-2.988 0-4.896 1.404-5.976 2.376l-.396-1.89H67.05v35.262l7.326-1.548.018-8.568c1.116.81 2.754 1.962 5.49 1.962 5.544 0 10.602-4.464 10.602-14.31-.018-9.018-5.148-13.284-10.242-13.284zm-1.8 20.43c-1.836 0-2.916-.648-3.672-1.458l-.036-11.502c.828-.9 1.926-1.512 3.708-1.512 2.826 0 4.788 3.186 4.788 7.218 0 4.14-1.926 7.254-4.788 7.254zM56.682 6.102l7.344-1.566V-1.5l-7.344 1.548v6.054zM56.682 8.316h7.344v27h-7.344v-27zM48.15 10.224l-.468-1.908h-6.696v27h7.326V16.206c1.728-2.268 4.662-1.836 5.58-1.512V8.316c-.954-.36-4.464-1.026-5.742 1.908zM33.534 2.568l-7.164 1.53-.018 24.696c0 4.554 3.42 7.926 7.974 7.926 2.52 0 4.374-.468 5.4-.99v-5.958c-.99.396-5.886 1.818-5.886-2.736V14.652h5.886V8.316h-5.886l-.306-5.748zM12.294 15.372c0-1.188.99-1.656 2.592-1.656 2.322 0 5.238.702 7.56 1.944V8.91c-2.538-1.008-5.04-1.404-7.56-1.404C8.772 7.506 4.398 10.98 4.398 16.362c0 8.388 11.538 7.038 11.538 10.674 0 1.404-1.224 1.854-2.916 1.854-2.52 0-5.76-.99-8.316-2.376v6.858c2.826 1.224 5.706 1.728 8.316 1.728 6.264 0 10.584-3.114 10.584-8.514-.018-9.054-11.31-7.434-11.31-10.86z" transform="translate(0,10)" fill="#635bff"/>
-        </svg>
-      </div>
-
-      <div style="text-align:center;margin-bottom:22px;">
-        <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:6px;">Set up your payouts</div>
-        <div style="font-size:18px;color:var(--dim);line-height:1.5;">You'll be redirected to Stripe to securely link your bank account. Takes about 2 minutes.</div>
-      </div>
-
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:20px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(99,91,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔒</div>
-          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Secure & private</strong> — Stripe handles everything. We never see your bank details.</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
-          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Instant setup</strong> — just your email, bank account, and a quick ID check.</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,32,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💰</div>
-          <div style="font-size:18px;color:var(--dim);line-height:1.4;"><strong style="color:#fff;font-weight:400;">Get paid automatically</strong> — when you win, prizes go straight to your bank.</div>
-        </div>
-      </div>
-
-      <button id="payout-modal-btn" onclick="handlePayoutBtn()" style="width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;box-shadow:0 4px 16px rgba(99,91,255,.35);transition:transform .15s;">
-        Continue to Stripe →
-      </button>
-      <div style="text-align:center;font-size:18px;color:var(--muted);margin-top:12px;">Powered by Stripe · Trusted by millions of businesses</div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Quest History -->
-  <div class="el">
-    <div class="section-label">Quest History</div>
-
-    <!-- Tab switcher -->
-    <div style="display:flex;gap:6px;margin-bottom:10px;">
-      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:9px;border-radius:12px;background:rgba(74,222,128,.12);border:1.5px solid #4ade80;color:#4ade80;font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Joined</button>
-      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:9px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;transition:all .2s;">Created</button>
-    </div>
-
-    <div id="joined-quests" class="card">
-      <div style="padding:4px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
-    </div>
-    <div id="created-quests" class="card" style="display:none;">
-      <div style="padding:4px;text-align:center;color:var(--muted);font-size:18px;">Loading…</div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Menu -->
-  <div class="el" style="margin-top:0;">
-    <div class="section-label">Menu</div>
-    <div class="menu">
-      <div class="menu-item" onclick="window.location.href='newquest.html'">
-        <span style="font-size:22px;width:32px;text-align:center;">✨</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Create a Quest</span>
-        <span id="m-created-count" style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:#60a5fa;">0</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-      </div>
-      <a class="menu-item" href="gold.html">
-        <span style="font-size:22px;width:32px;text-align:center;">👑</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Gold Membership</span>
-        <span id="m-gold-status" style="font-size:18px;padding:2px 10px;border-radius:20px;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8;">Free</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-      </a>
-      <div class="menu-item" onclick="openModal('notifications-modal')">
-        <span style="font-size:22px;width:32px;text-align:center;">🔔</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Notifications</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-      </div>
-      <div class="menu-item" onclick="openBillingPortal()">
-        <span style="font-size:22px;width:32px;text-align:center;">💳</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Payment Methods</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-      </div>
-      <div class="menu-item" onclick="openModal('settings-modal')">
-        <span style="font-size:22px;width:32px;text-align:center;">⚙️</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Settings</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-      </div>
-      <div class="menu-item" onclick="window.location.href='mailto:finderseek1@gmail.com'">
-        <span style="font-size:22px;width:32px;text-align:center;">💬</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Contact Support</span>
-        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
+      <div id="payout-disconnect-wrap" style="display:none;text-align:center;margin-top:10px;">
+        <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:13px;color:rgba(255,255,255,.4);text-decoration:underline;">Disconnect payout account</a>
       </div>
     </div>
   </div>
 
-  <!-- Sign out -->
-  <div class="el">
-    <button class="btn-signout" onclick="signOut()">Sign Out</button>
+  <!-- ── NOTIFICATIONS ─────────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
+    <div onclick="openModal('notifications-modal')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div style="width:34px;height:34px;border-radius:10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.15);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🔔</div>
+      <div style="flex:1;font-size:17px;color:#fff;">Notifications</div>
+      <div style="color:rgba(255,255,255,.2);font-size:17px;">›</div>
+    </div>
+  </div>
+
+  <!-- ── SIGN OUT ───────────────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.1);border-radius:14px;overflow:hidden;">
+    <div onclick="signOut()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🚪</div>
+      <div style="flex:1;font-size:17px;color:#f87171;">Sign Out</div>
+    </div>
   </div>
 
   <!-- Version -->
-  <div class="el" style="text-align:center;padding:20px 0 0;">
-    <div style="font-size:18px;color:rgba(168,200,224,.3);">FinderSeek v1.0.0</div>
+  <div class="el" style="text-align:center;padding:16px 0 0;">
+    <div style="font-size:13px;color:rgba(255,255,255,.2);">FinderSeek v1.0.0</div>
   </div>
 
+  <!-- Hidden compat IDs needed by existing JS -->
+  <span id="m-created-count" style="display:none;">0</span>
+  <span id="m-gold-status" style="display:none;">Free</span>
+
+</div>
 </div>
 
 <!-- NOTIFICATIONS MODAL -->
@@ -866,8 +821,21 @@ function renderHeader(){
   var name = p.username || u.email?.split('@')[0] || 'Anonymous';
   var initials = name.substring(0,2).toUpperCase();
 
-  document.getElementById('p-avatar').textContent = initials;
+  // Update avatar — show initials, hide SVG
+  var av = document.getElementById('p-avatar');
+  var avSvg = document.getElementById('p-avatar-svg');
+  if (av) { av.textContent = initials; av.style.display = 'inline'; }
+  if (avSvg) avSvg.style.display = 'none';
   document.getElementById('p-name').textContent = name;
+  // Update ring for free tier
+  var isPro2 = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
+  if (!isPro2) {
+    var ring = document.getElementById('p-ring');
+    if (ring) { ring.style.background = 'rgba(180,190,210,.25)'; ring.style.animation = 'none'; }
+    if (av) av.style.color = 'rgba(180,190,210,.7)';
+    var avWrap = document.getElementById('p-avatar-wrap');
+    if (avWrap) avWrap.style.background = 'rgba(180,190,210,.07)';
+  }
 
   var createdAt = u.created_at || p.created_at;
   if (createdAt) {
@@ -1147,6 +1115,15 @@ async function disconnectPayout(){
     setTimeout(loadConnectStatus, 500);
   } catch(e) {
     showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function openPayoutsAction(){
+  var section = document.getElementById('payout-section');
+  if (section && section.style.display !== 'none') {
+    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    showPayoutModal();
   }
 }
 
