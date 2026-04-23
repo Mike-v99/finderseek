@@ -65,7 +65,7 @@ body::after {
   opacity: .4;
 }
 
-.page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-bottom: 60vh; }
+.page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding-bottom: 40px; }
 
 /* HERO */
 .hero { text-align: center; padding: 16px 20px 16px; }
@@ -357,7 +357,7 @@ body::after {
 /* Safe area padding for notch phones */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   /* bottom-nav removed */
-  .page { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .page { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
   .hero { padding-top: 16px; }
 }
 
@@ -410,9 +410,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
         <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
       </div>
-      <div id="hero-auth" onclick="window.location.href='profile.html'" style="display:flex;align-items:center;gap:6px;cursor:pointer;opacity:0;transition:opacity .3s ease .4s;">
-        <span id="hero-auth-name" style="font-size:15px;font-weight:400;color:rgba(255,255,255,.3);">Sign in</span>
-        <svg id="hero-auth-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+        <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+          <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+          <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;">
+            <svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+          <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+          <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
+        </div>
       </div>
     </div>
 
@@ -687,10 +695,14 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadHeroAuth() {
-  var nameEl = document.getElementById('hero-auth-name');
-  var iconEl = document.getElementById('hero-auth-icon');
-  var wrapEl = document.getElementById('hero-auth');
-  if (!nameEl || !iconEl || !wrapEl) return;
+  // Update hamburger avatar with auth state
+  var avatarInner = document.getElementById('hb-avatar-inner');
+  var avatarSvg = document.getElementById('hb-avatar-svg');
+  var drawerAvatar = document.getElementById('hb-drawer-avatar');
+  var drawerName = document.getElementById('hb-drawer-name');
+  var drawerSub = document.getElementById('hb-drawer-sub');
+  var signInSection = document.getElementById('hb-signin-section');
+  var profileSection = document.getElementById('hb-profile-section');
 
   var token = (function() {
     var t = localStorage.getItem('fs_token');
@@ -707,36 +719,43 @@ async function loadHeroAuth() {
     return null;
   })();
 
-  // Show the element regardless
-  wrapEl.style.opacity = '1';
-
-  if (!token) return; // stays as "Sign in"
+  if (!token) {
+    // Show sign in state
+    if (signInSection) signInSection.style.display = 'block';
+    if (profileSection) profileSection.style.display = 'none';
+    return;
+  }
 
   try {
-    // First get the current user's ID from the token
     var ur = await fetch(SB + '/auth/v1/user', {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token }
     });
-    if (!ur.ok) return;
+    if (!ur.ok) { if (signInSection) signInSection.style.display = 'block'; return; }
     var user = await ur.json();
-    if (!user || !user.id) return;
+    if (!user || !user.id) { if (signInSection) signInSection.style.display = 'block'; return; }
 
     var pr = await fetch(SB + '/rest/v1/profiles?id=eq.' + user.id + '&select=username,is_pro,pro_expires', {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token }
     });
-    if (!pr.ok) return;
     var profiles = await pr.json();
     var profile = profiles && profiles[0];
-    if (!profile) return;
+    var isGold = profile && profile.is_pro && (!profile.pro_expires || new Date(profile.pro_expires) > new Date());
+    var name = (profile && profile.username) || (user.email ? user.email.split('@')[0] : 'User');
+    var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2) || '?';
 
-    var isGold = profile.is_pro && (!profile.pro_expires || new Date(profile.pro_expires) > new Date());
-    var color = isGold ? '#e8a820' : '#94a3b8';
-    var name = profile.username || 'Profile';
+    // Update topbar avatar
+    if (avatarInner) { avatarInner.textContent = initials; }
+    if (avatarSvg) avatarSvg.style.display = 'none';
 
-    nameEl.textContent = name;
-    nameEl.style.color = color;
-    iconEl.setAttribute('stroke', color);
-  } catch(e) {}
+    // Update drawer
+    if (drawerAvatar) drawerAvatar.textContent = initials;
+    if (drawerName) drawerName.textContent = name;
+    if (drawerSub) drawerSub.textContent = isGold ? '👑 Gold Member' : 'Quest Seeker';
+    if (signInSection) signInSection.style.display = 'none';
+    if (profileSection) { profileSection.style.display = 'flex'; }
+  } catch(e) {
+    if (signInSection) signInSection.style.display = 'block';
+  }
 }
 
 // ============================================================
