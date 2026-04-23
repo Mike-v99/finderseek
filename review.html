@@ -224,7 +224,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" type="button" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Continue to Stripe →</button>
+  <button class="pm-pay-btn" id="pm-pay-btn" type="button" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Pay & Go Live →</button>
   <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
 </div>
 
@@ -767,7 +767,7 @@ async function openPaymentModal() {
   btn.disabled = true;
   btn.style.opacity = '.5';
   btn.style.cursor = 'not-allowed';
-  btn.textContent = 'Continue to Stripe →';
+  btn.textContent = 'Pay & Go Live →';
   document.getElementById('pm-error').textContent = '';
 
   // Show modal
@@ -811,7 +811,7 @@ async function submitPayment() {
   if (!currentUser) {
     errEl.textContent = 'Please sign in first to fund your quest.';
     btn.disabled = false;
-    btn.textContent = 'Continue to Stripe →';
+    btn.textContent = 'Pay & Go Live →';
     return;
   }
 
@@ -840,7 +840,7 @@ async function submitPayment() {
   } catch(e) {
     errEl.textContent = e.message || 'Payment failed — please try again';
     btn.disabled = false;
-    btn.textContent = 'Continue to Stripe →';
+    btn.textContent = 'Pay & Go Live →';
   }
 }
 
