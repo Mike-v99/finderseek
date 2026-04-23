@@ -21,7 +21,7 @@ body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sa
 .el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
 .el.visible{opacity:1;transform:translateY(0);}
 
-.avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(232,168,32,.2),rgba(232,168,32,.08));border:2.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:400;color:#e8a820;margin:0 auto 14px;box-shadow:0 0 30px rgba(232,168,32,.1);}
+.avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(232,168,32,.2),rgba(232,168,32,.08));border:2.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:400;color:#e8a820;margin:0 auto 14px;}
 
 .section-label{font-size:18px;color:var(--dim);margin-bottom:10px;padding-left:4px;display:flex;align-items:center;gap:8px;}
 .section-label::before{content:'';width:3px;height:16px;border-radius:2px;background:linear-gradient(180deg,var(--gold2),var(--gold));}
@@ -223,32 +223,32 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
       </div>
       <div style="flex:1;min-width:0;">
-        <div id="p-name" style="font-size:20px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading…</div>
+        <div id="p-name" style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;">Loading…</div>
         <div id="p-since" style="font-size:13px;color:rgba(255,255,255,.35);margin-top:2px;">—</div>
       </div>
       <div id="p-gold-badge" style="display:none;align-items:center;gap:4px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:4px 10px;flex-shrink:0;">
-        <span style="font-size:13px;">👑</span>
-        <span style="font-size:13px;color:#e8a820;">Gold</span>
+        <span style="font-size:20px;">👑</span>
+        <span style="font-size:25px;color:#e8a820;line-height:1.2;">Gold Member</span>
       </div>
     </div>
 
     <!-- Quick action icon shortcuts -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-      <div onclick="window.location.href='newquest.html'" style="background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.2);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:20px;line-height:1;">✨</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Quest</div>
+      <div onclick="window.location.href='index.html'" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:20px;line-height:1;">🏠</div>
+        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Home</div>
       </div>
       <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:20px;line-height:1;">💳</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Payout</div>
+        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Payout</div>
       </div>
       <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:20px;line-height:1;">👑</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Gold</div>
+        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Gold</div>
       </div>
       <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:20px;line-height:1;">⚙️</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">Settings</div>
+        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Settings</div>
       </div>
     </div>
   </div>
@@ -257,27 +257,27 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;display:flex;overflow:hidden;">
     <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
       <div id="s-won" style="font-size:17px;color:#4ade80;font-weight:400;">$0</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Won</div>
+      <div style="font-size:25px;color:rgba(255,255,255,.3);margin-top:3px;line-height:1.2;">Won</div>
     </div>
     <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
       <div id="s-finds" style="font-size:17px;color:#fbbf24;font-weight:400;">0</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Wins</div>
+      <div style="font-size:25px;color:rgba(255,255,255,.3);margin-top:3px;line-height:1.2;">Wins</div>
     </div>
     <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
       <div id="s-created" style="font-size:17px;color:#60a5fa;font-weight:400;">0</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Created</div>
+      <div style="font-size:25px;color:rgba(255,255,255,.3);margin-top:3px;line-height:1.2;">Created</div>
     </div>
     <div style="flex:1;padding:12px;text-align:center;">
       <div id="s-joined" style="font-size:17px;color:#a855f7;font-weight:400;">0</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">Joined</div>
+      <div style="font-size:25px;color:rgba(255,255,255,.3);margin-top:3px;line-height:1.2;">Joined</div>
     </div>
   </div>
 
   <!-- ── QUEST HISTORY CARD ─────────────────────────────── -->
   <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
     <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);">
-      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:8px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Joined</button>
-      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:8px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Created</button>
+      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:8px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Joined</button>
+      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:8px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Created</button>
     </div>
     <div id="joined-quests"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
     <div id="created-quests" style="display:none;"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
@@ -289,7 +289,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="payout-content" style="display:flex;align-items:center;gap:12px;">
         <div style="font-size:28px;flex-shrink:0;">💳</div>
         <div style="flex:1;">
-          <div id="payout-title" style="font-size:17px;color:#fff;margin-bottom:3px;">Loading…</div>
+          <div id="payout-title" style="font-size:25px;color:#fff;margin-bottom:3px;line-height:1.2;">Loading…</div>
           <div id="payout-sub" style="font-size:13px;color:rgba(255,255,255,.4);">—</div>
         </div>
         <div id="payout-pill" style="display:none;align-items:center;gap:4px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:20px;padding:3px 9px;font-size:13px;color:#4ade80;flex-shrink:0;">✓ Active</div>
@@ -309,7 +309,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
     <div onclick="openModal('notifications-modal')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
       <div style="width:34px;height:34px;border-radius:10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.15);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🔔</div>
-      <div style="flex:1;font-size:17px;color:#fff;">Notifications</div>
+      <div style="flex:1;font-size:25px;color:#fff;">Notifications</div>
       <div style="color:rgba(255,255,255,.2);font-size:17px;">›</div>
     </div>
   </div>
@@ -318,7 +318,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="el" style="margin:8px 12px 0;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.1);border-radius:14px;overflow:hidden;">
     <div onclick="signOut()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
       <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🚪</div>
-      <div style="flex:1;font-size:17px;color:#f87171;">Sign Out</div>
+      <div style="flex:1;font-size:25px;color:#f87171;">Sign Out</div>
     </div>
   </div>
 
@@ -331,7 +331,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <span id="m-created-count" style="display:none;">0</span>
   <span id="m-gold-status" style="display:none;">Free</span>
 
-</div>
 </div>
 
 <!-- NOTIFICATIONS MODAL -->
@@ -362,10 +361,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="settings-email" style="padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.4);font-size:17px;">—</div>
     </div>
     <button onclick="saveSettings()" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a2090,#2d3adb);border:none;color:#e0e4ff;font-size:17px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Save Changes</button>
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">
-      <div style="font-size:17px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:1px;">ACCOUNT</div>
-      <div onclick="closeModal('settings-modal');signOut();" style="padding:12px 0;font-size:17px;color:#f87171;cursor:pointer;display:flex;align-items:center;gap:10px;"><span>🚪</span> Sign Out</div>
-    </div>
+
   </div>
 </div>
 
