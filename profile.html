@@ -232,23 +232,23 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-    <!-- Quick action icon shortcuts -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-      <div onclick="window.location.href='index.html'" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:20px;line-height:1;">🏠</div>
-        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Home</div>
+    <!-- Quick action icon shortcuts — 2×2 grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+      <div onclick="window.location.href='index.html'" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:22px;line-height:1;">🏠</div>
+        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Home</div>
       </div>
-      <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:20px;line-height:1;">💳</div>
-        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Payout</div>
+      <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.18);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:22px;line-height:1;">👑</div>
+        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Gold</div>
       </div>
-      <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:20px;line-height:1;">👑</div>
-        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Gold</div>
+      <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:22px;line-height:1;">💳</div>
+        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Payout</div>
       </div>
-      <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:20px;line-height:1;">⚙️</div>
-        <div style="font-size:25px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.2;">Settings</div>
+      <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:22px;line-height:1;">⚙️</div>
+        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Settings</div>
       </div>
     </div>
   </div>
@@ -273,16 +273,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
 
-  <!-- ── QUEST HISTORY CARD ─────────────────────────────── -->
-  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
-    <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);">
-      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:8px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Joined</button>
-      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:8px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Created</button>
-    </div>
-    <div id="joined-quests"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
-    <div id="created-quests" style="display:none;"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
-  </div>
-
   <!-- ── PAYOUT SECTION ─────────────────────────────────── -->
   <div id="payout-section" class="el" style="display:none;margin:8px 12px 0;">
     <div id="payout-box" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;">
@@ -303,6 +293,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:13px;color:rgba(255,255,255,.4);text-decoration:underline;">Disconnect payout account</a>
       </div>
     </div>
+  </div>
+
+  <!-- ── QUEST HISTORY CARD ─────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
+    <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);">
+      <button id="qh-tab-joined" onclick="switchQuestTab('joined')" style="flex:1;padding:8px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Joined</button>
+      <button id="qh-tab-created" onclick="switchQuestTab('created')" style="flex:1;padding:8px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:25px;font-weight:400;cursor:pointer;font-family:inherit;transition:all .2s;">Created</button>
+    </div>
+    <div id="joined-quests"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
+    <div id="created-quests" style="display:none;"><div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:17px;">Loading…</div></div>
   </div>
 
   <!-- ── NOTIFICATIONS ─────────────────────────────────── -->
