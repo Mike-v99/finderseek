@@ -472,33 +472,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
 
     <!-- Info bar — updates based on selection -->
-    <div id="preset-infobar" style="border-radius:12px;padding:12px 16px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-      <div id="preset-info-main" style="font-size:18px;color:#fff;margin-bottom:3px;">Select a window above</div>
-      <div id="preset-info-sub" style="font-size:18px;color:rgba(255,255,255,.4);">Your quest will run during this window</div>
+    <div id="preset-infobar" style="border-radius:14px;padding:20px 20px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="preset-info-main" style="font-size:20px;color:#fff;margin-bottom:6px;line-height:1.4;">Select a window above</div>
+      <div id="preset-info-sub" style="font-size:17px;color:rgba(255,255,255,.4);line-height:1.5;">Your quest will run during this window</div>
     </div>
 
     <!-- Custom date picker — hidden until custom selected -->
-    <div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:12px 14px;margin-bottom:6px;">
-      <div style="font-size:15px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:8px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+    <div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px 18px;margin-bottom:8px;">
+      <div style="font-size:15px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:12px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
         <div style="flex:1;">
-          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:4px;">START DATE</div>
-          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:15px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:6px;">START DATE</div>
+          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
         </div>
-        <div style="color:rgba(255,255,255,.3);font-size:16px;margin-top:14px;">→</div>
+        <div style="color:rgba(255,255,255,.3);font-size:18px;margin-top:18px;">→</div>
         <div style="flex:1;">
-          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:4px;">END DATE</div>
-          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 10px;font-size:15px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+          <div style="font-size:15px;color:rgba(255,255,255,.4);margin-bottom:6px;">END DATE</div>
+          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
         </div>
       </div>
-      <div id="custom-date-msg" style="font-size:15px;color:rgba(167,139,250,.7);"></div>
-    </div>
-
-    <div style="height:1px;background:rgba(255,255,255,.07);margin:10px 0;"></div>
-
-    <!-- Stripe note -->
-    <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px 13px;font-size:15px;color:rgba(74,222,128,.7);text-align:center;line-height:1.5;">
-      🔒 Prize held by Stripe · Refunded if quest expires unclaimed
+      <div id="custom-date-msg" style="font-size:15px;color:rgba(167,139,250,.7);line-height:1.5;"></div>
     </div>
 
     <!-- Hidden compat fields -->
@@ -1611,7 +1604,8 @@ async function createQuest(previewMode){
     // ── 9. If preview mode, send to review screen ─────────
     if (previewMode) {
       showToast('✅ Quest draft saved! Redirecting to review...', 'success');
-      clearFormState();
+      // Don't clear form state — preserve it so Back from review restores everything
+      saveFormState(); // ensure step 4 is saved
       setTimeout(()=>{ window.location.href = 'review.html?id='+huntId; }, 1200);
       return;
     }
@@ -1708,6 +1702,10 @@ function restoreFormState() {
     }
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     updateExpiry(); setWeekendDates();
+    // Restore step — if returning from review, go back to step 4
+    if (s.step && s.step > 1) {
+      setTimeout(function(){ goStep(s.step); }, 50);
+    }
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
 
