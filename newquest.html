@@ -106,8 +106,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(232,168,32,.3);text-align:center;font-size:24px;font-weight:400;color:#e8a820;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
-.code-digit:focus{border-color:#e8a820;box-shadow:0 0 12px rgba(232,168,32,.35);}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit:focus{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.35);}
 .btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:300;cursor:pointer;transition:all .2s;}
 .btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
@@ -387,7 +387,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
 
-    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT + DESCRIPTION</div>
 
     <!-- Search bar -->
     <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
@@ -403,7 +403,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="map-container" class="map-box"></div>
     <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#cbd5e1;"></div>
 
-    <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:8px;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-top:14px;margin-bottom:8px;">HIDING SPOT DETAILS</div>
+    <textarea id="hiding-spot" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:0;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
     <div style="height:20px;"></div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
