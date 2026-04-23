@@ -328,7 +328,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div class="divider"></div>
 
-  <!-- Menu group 1 -->
+  <!-- Menu -->
   <div class="el" style="margin-top:0;">
     <div class="section-label">Menu</div>
     <div class="menu">
@@ -354,40 +354,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <span style="font-size:18px;color:#fff;flex:1;">Payment Methods</span>
         <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
       </div>
-      <div class="menu-item" onclick="document.getElementById('joined-quests').scrollIntoView({behavior:'smooth',block:'start'})">
-        <span style="font-size:22px;width:32px;text-align:center;">🏆</span>
-        <span style="font-size:18px;color:#fff;flex:1;">Quest History</span>
+      <div class="menu-item" onclick="openModal('settings-modal')">
+        <span style="font-size:22px;width:32px;text-align:center;">⚙️</span>
+        <span style="font-size:18px;color:#fff;flex:1;">Settings</span>
         <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
       </div>
-    </div>
-  </div>
-
-  <!-- Menu group 2 -->
-  <div class="el menu" style="margin-top:18px;">
-    <div class="menu-item" onclick="openModal('settings-modal')">
-      <span style="font-size:22px;width:32px;text-align:center;">⚙️</span>
-      <span style="font-size:18px;color:#fff;flex:1;">Settings</span>
-      <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-    </div>
-    <a class="menu-item" href="how-it-works.html">
-      <span style="font-size:22px;width:32px;text-align:center;">❓</span>
-      <span style="font-size:18px;color:#fff;flex:1;">How It Works</span>
-      <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-    </a>
-    <a class="menu-item" href="privacy.html">
-      <span style="font-size:22px;width:32px;text-align:center;">🔒</span>
-      <span style="font-size:18px;color:#fff;flex:1;">Privacy Policy</span>
-      <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-    </a>
-    <a class="menu-item" href="terms.html">
-      <span style="font-size:22px;width:32px;text-align:center;">📄</span>
-      <span style="font-size:18px;color:#fff;flex:1;">Terms & Privacy</span>
-      <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
-    </a>
-    <div class="menu-item" onclick="window.location.href='mailto:finderseek1@gmail.com'">
-      <span style="font-size:22px;width:32px;text-align:center;">💬</span>
-      <span style="font-size:18px;color:#fff;flex:1;">Contact Support</span>
-      <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
+      <div class="menu-item" onclick="window.location.href='mailto:finderseek1@gmail.com'">
+        <span style="font-size:22px;width:32px;text-align:center;">💬</span>
+        <span style="font-size:18px;color:#fff;flex:1;">Contact Support</span>
+        <span style="font-size:18px;color:rgba(255,255,255,.2);">›</span>
+      </div>
     </div>
   </div>
 
@@ -1385,11 +1361,8 @@ if ('serviceWorker' in navigator) {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
   
-      <div style="background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:200% auto;border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;animation:hbRingShim 6s linear infinite;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:20px;color:#0a0800;font-weight:500;">Sign In →</div>
-      </div>
     </div>
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section">
+  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section" style="display:none;cursor:pointer;" onclick="closeHamburger();window.location.href='profile.html';">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="position:relative;width:40px;height:40px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -1492,11 +1465,29 @@ if ('serviceWorker' in navigator) {
         if(avSvg)avSvg.style.display='none';
         // Update drawer
         var da=document.getElementById('hb-drawer-avatar');
-        if(da)da.textContent=init;
+        if(da){
+          if(isGold){
+            da.innerHTML='<span style="font-size:15px;font-weight:500;color:#e8a820;">'+init+'</span>';
+          } else {
+            da.innerHTML='<span style="font-size:15px;font-weight:500;color:rgba(180,190,210,.7);">'+init+'</span>';
+          }
+        }
         var dn=document.getElementById('hb-drawer-name');
         if(dn)dn.textContent=uname;
         var ds=document.getElementById('hb-drawer-sub');
         if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
+        // Update drawer ring color: gold shimmer for gold, silver for free
+        var ring = sp ? sp.querySelector('[style*="hbRingShim"]') : null;
+        if(ring && !isGold){
+          ring.style.background = 'none';
+          ring.style.border = '1.5px solid rgba(180,190,210,.28)';
+          ring.style.inset = '0';
+          var innerCircle = sp ? sp.querySelector('[id="hb-drawer-avatar"]') : null;
+          if(innerCircle){
+            innerCircle.style.background = 'rgba(180,190,210,.07)';
+            innerCircle.style.inset = '3px';
+          }
+        }
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
       }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
