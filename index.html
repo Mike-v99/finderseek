@@ -50,7 +50,7 @@ body::before {
   inset: 0;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(201,137,12,.07) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(6,5,10,.3) 0%, rgba(6,5,10,.92) 70%);
+    radial-gradient(ellipse at 50% 50%, rgba(6,5,10,.15) 0%, rgba(6,5,10,.4) 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -83,11 +83,12 @@ body::after {
   background-clip: text;
 }
 .logo-seek { color: var(--cream); }
-.tagline { font-size: 18px; color: var(--dim); }
+.tagline { font-size: 16px; color: rgba(255,255,255,.5); }
 .free-badge {
   display: inline-block;
   margin-top: 14px;
-  font-size: 18px;
+  font-size: 12px;
+  letter-spacing: 2px;
   color: var(--teal);
   letter-spacing: 2px;
   border: 1px solid rgba(45,212,191,.4);
@@ -124,7 +125,7 @@ body::after {
   box-shadow: 0 0 28px rgba(59,130,246,.1);
 }
 .btn-cta-icon { font-size: 34px; display: block; line-height: 1; }
-.btn-cta-label { font-size: 18px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
+.btn-cta-label { font-size: 15px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
 .btn-find .btn-cta-label { color: var(--yellow); animation: glowPulseG 3s ease-in-out infinite; }
 .btn-hide .btn-cta-label { color: #fff; animation: glowPulseB 3s ease-in-out infinite .5s; }
 @keyframes glowPulseG { 0%,100% { text-shadow: 0 0 8px rgba(251,191,36,.4); } 50% { text-shadow: 0 0 20px rgba(251,191,36,.8), 0 0 40px rgba(251,191,36,.3); } }
@@ -149,8 +150,8 @@ body::after {
   padding: 14px 4px;
 }
 .stat + .stat { border-left: 1px solid rgba(255,255,255,.07); }
-.stat-num { font-size: 22px; font-weight: 400; display: block; }
-.stat-lbl { font-size: 18px; color: #fff; display: block; margin-top: 2px; }
+.stat-num { font-size: 20px; font-weight: 400; display: block; }
+.stat-lbl { font-size: 12px; letter-spacing: 1.5px; color: rgba(255,255,255,.5); display: block; margin-top: 2px; }
 
 /* SEARCH */
 .search-row { display: flex; gap: 10px; align-items: center; margin: 18px 16px 18px; }
@@ -192,8 +193,8 @@ body::after {
   color: #ffffff;
   border: none;
   border-radius: 14px;
-  padding: 14px 20px;
-  font-size: 20px;
+  padding: 14px 16px;
+  font-size: 15px;
   font-weight: 400;
   font-family: 'Noto Sans Display', sans-serif;
   display: flex;
@@ -214,7 +215,7 @@ body::after {
 /* Live Map Modal */
 #map-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(6,5,10,.85); backdrop-filter:blur(8px); z-index:9998; opacity:0; transition:opacity .25s; }
 #map-modal-backdrop.show { opacity:1; }
-#map-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:calc(80px + env(safe-area-inset-bottom, 0px)); z-index:9999; flex-direction:column; }
+#map-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999; flex-direction:column; }
 #map-modal.show { display:flex; }
 #map-modal-inner { background:#0d0b18; flex:1; display:flex; flex-direction:column; border-top:1px solid rgba(255,255,255,.08); margin-top:env(safe-area-inset-top,0px); overflow:hidden; }
 #map-modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,.06); flex-shrink:0; }
@@ -285,7 +286,7 @@ body::after {
   color: var(--gray);
   box-shadow: 0 0 0 4px rgba(148,163,184,.08), 0 0 12px rgba(148,163,184,.15);
 }
-.section-title { font-size: 18px; font-weight: 400; letter-spacing: 2px; }
+.section-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; }
 .section-active .section-title {
   background: linear-gradient(135deg, var(--green), var(--green-dark));
   -webkit-background-clip: text;
@@ -299,8 +300,8 @@ body::after {
   background-clip: text;
 }
 .section-completed .section-title { color: var(--red-light); }
-.section-prize { font-size: 22px; font-weight: 400; color: var(--green); }
-.section-chevron { color: inherit; font-size: 18px; margin-left: 8px; transition: transform .25s; }
+.section-prize { font-size: 18px; font-weight: 400; color: var(--green); }
+.section-chevron { color: inherit; font-size: 16px; margin-left: 8px; transition: transform .25s; }
 .section-active .section-chevron { color: var(--green); }
 .section-scheduled .section-chevron { color: var(--yellow); }
 .section-completed .section-chevron { color: var(--gray); }
@@ -313,14 +314,14 @@ body::after {
 .quest-row:hover { background: rgba(255,255,255,.03); }
 .quest-row:active { background: rgba(255,255,255,.06); }
 .quest-row-left { flex: 1; min-width: 0; }
-.quest-row-title { font-size: 20px; color: #ffffff; font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.quest-row-meta { font-size: 18px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
+.quest-row-title { font-size: 16px; color: #ffffff; font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quest-row-meta { font-size: 13px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
 .quest-row-meta .dot { width: 3px; height: 3px; background: #c8c8c8; border-radius: 50%; }
-.quest-row-prize { font-size: 18px; font-weight: 400; color: var(--green); flex-shrink: 0; }
+.quest-row-prize { font-size: 15px; font-weight: 400; color: var(--green); flex-shrink: 0; }
 .section-scheduled .quest-row-prize { color: var(--yellow); }
 .section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
-.quest-empty { padding: 20px 16px; text-align: center; color: var(--muted); font-size: 18px; font-style: italic; }
-.quest-loading { padding: 16px; text-align: center; color: var(--muted); font-size: 18px; }
+.quest-empty { padding: 20px 16px; text-align: center; color: var(--muted); font-size: 14px; font-style: italic; }
+.quest-loading { padding: 16px; text-align: center; color: var(--muted); font-size: 14px; }
 .quest-loading::after { content: '⋯'; animation: dots 1.4s infinite; margin-left: 4px; }
 @keyframes dots { 0%, 20% { content: '⋯'; } 40% { content: '⋯⋯'; } 60% { content: '⋯⋯⋯'; } }
 .quest-row-pinned { background: rgba(201,137,12,.06); border-top: 1px solid rgba(201,137,12,.2); }
@@ -350,7 +351,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 40;
+  z-index: 20;
   pointer-events: none;
 }
 
@@ -406,7 +407,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="hero-halo" style="position:absolute;top:-90px;left:50%;transform:translateX(-50%) scale(0.2);width:460px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(232,168,32,.32) 0%,rgba(232,168,32,.11) 32%,rgba(232,168,32,.03) 58%,transparent 78%);border-radius:50%;opacity:0;pointer-events:none;z-index:0;will-change:transform,opacity;"></div>
 
     <!-- Top bar: logo left, auth right -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:1;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:25;">
       <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
         <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
       </div>
@@ -576,17 +577,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 })();
 
 // Nav switching
-function setNav(el) {
-  document.querySelectorAll('.nav-item,.nav-center');
-  el.classList.add('active');
-}
+function setNav(el) { /* nav updated to hamburger */ }
 
 // Quests button — scroll search row to top. Double-tap → all the way to top.
 function goToQuests(el) {
   setNav(el);
   var target = document.getElementById('search-row');
   if (!target) return;
-  var navHeight = 86; // approximate bottom nav space
   var currentScroll = window.scrollY || window.pageYOffset;
   var targetTop = target.getBoundingClientRect().top + currentScroll;
   // Offset so the search row lands near the top of the visible area (not flush against safe-area)
@@ -1254,97 +1251,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<script>
-// Color profile nav item based on tier
-(function() {
-  var token = (function() {
-    var t = localStorage.getItem('fs_token');
-    if (t) return t;
-    try {
-      var keys = Object.keys(localStorage);
-      for (var i = 0; i < keys.length; i++) {
-        if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
-          var s = JSON.parse(localStorage.getItem(keys[i]));
-          if (s && s.access_token) return s.access_token;
-        }
-      }
-    } catch(e) {}
-    return null;
-  })();
-  if (!token) return;
-  var SB_ = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-  var KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-  fetch(SB_ + '/rest/v1/profiles?select=is_pro,pro_expires', {
-    headers: { 'apikey': KEY_, 'Authorization': 'Bearer ' + token }
-  }).then(function(r){ return r.json(); }).then(function(d) {
-    var p = d && d[0];
-    if (!p) return;
-    var isGold = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
-    var color = isGold ? '#e8a820' : '#94a3b8';
-    var el = document.getElementById('nav-profile-item');
-    if (!el) return;
-    var svg = el.querySelector('svg');
-    var lbl = el.querySelector('.nav-label');
-    if (svg) svg.setAttribute('stroke', color);
-    if (lbl) lbl.style.color = color;
-  }).catch(function(){});
-})();
-</script>
-
-
-    </div>
-
-    <!-- Not signed in: sign in section -->
-    <div id="hb-signin-section" style="display:none;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);">
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
-      <div style="background:linear-gradient(135deg,#c9890c,#e8a820);border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
-        <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
-      </div>
-    </div>
-
-    <!-- Nav links -->
-    <a class="hb-nav-item active" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="hb-nav-label">Home</span>
-    </a>
-    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span class="hb-nav-label">Browse Quests</span>
-    </a>
-    <a class="hb-nav-item" href="profile.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="hb-nav-label">Profile</span>
-    </a>
-    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
-    </a>
-    <a class="hb-nav-item" href="how-it-works.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      <span class="hb-nav-label">How It Works</span>
-    </a>
-
-    <div style="flex:1;"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
-  </div>
-</div>
-
-<script>
-
-
-
-</script>
 
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
 <div class="hb-drawer" id="hb-drawer">
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-signin-section">
+  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-signin-section" style="display:none;">
       <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:.5px;">WELCOME</div>
       <div style="background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:200% auto;border-radius:22px;padding:11px 16px;text-align:center;cursor:pointer;animation:hbRingShim 6s linear infinite;margin-bottom:8px;" onclick="closeHamburger();window.location.href='profile.html';">
         <div style="font-size:14px;color:#0a0800;font-weight:500;">Sign In →</div>
       </div>
     </div>
-  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section">
+  <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;" id="hb-profile-section" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="position:relative;width:40px;height:40px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -1361,7 +1278,7 @@ if ('serviceWorker' in navigator) {
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
         <span class="hb-nav-label" style="color:#e8a820;">Home</span>
       </a>
-      <a class="hb-nav-item " href="index.html" onclick="closeHamburger();">
+      <a class="hb-nav-item " href="#quest-sections" onclick="closeHamburger();setTimeout(function(){var el=document.getElementById('quest-sections');if(el)el.scrollIntoView({behavior:'smooth'});},300);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span class="hb-nav-label" style="">Browse Quests</span>
       </a>
@@ -1395,7 +1312,6 @@ if ('serviceWorker' in navigator) {
     btn.addEventListener('click',function(){toggle(true);});
     bd.addEventListener('click',function(){toggle(false);});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});
-    loadProfile();
   }
   function toggle(open){
     _open=open===undefined?!_open:open;
@@ -1405,53 +1321,6 @@ if ('serviceWorker' in navigator) {
     if(dr)dr.classList.toggle('open',_open);
   }
   window.closeHamburger=function(){toggle(false);};
-  function loadProfile(){
-    var token='';
-    try{
-      var keys=Object.keys(localStorage);
-      for(var i=0;i<keys.length;i++){
-        if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){
-          var s=JSON.parse(localStorage.getItem(keys[i]));
-          if(s&&s.access_token){token=s.access_token;break;}
-        }
-      }
-      if(!token)token=localStorage.getItem('fs_token')||'';
-    }catch(e){}
-    var si=document.getElementById('hb-signin-section');
-    var sp=document.getElementById('hb-profile-section');
-    if(!token){
-      if(si)si.style.display='block';
-      if(sp)sp.style.display='none';
-      return;
-    }
-    fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{
-      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
-    }).then(function(r){return r.ok?r.json():null;}).then(function(u){
-      if(!u||!u.id){if(si)si.style.display='block';if(sp)sp.style.display='none';return;}
-      fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{
-        headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
-      }).then(function(r){return r.json();}).then(function(pd){
-        var p=pd&&pd[0];
-        var uname=(p&&p.username)||(u.email?u.email.split('@')[0]:'User');
-        var init=uname.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';
-        var isGold=p&&p.is_pro;
-        // Update topbar ring avatar
-        var av=document.getElementById('hb-avatar-inner');
-        if(av){av.textContent=init;av.style.color='#e8a820';}
-        var avSvg=document.getElementById('hb-avatar-svg');
-        if(avSvg)avSvg.style.display='none';
-        // Update drawer
-        var da=document.getElementById('hb-drawer-avatar');
-        if(da)da.textContent=init;
-        var dn=document.getElementById('hb-drawer-name');
-        if(dn)dn.textContent=uname;
-        var ds=document.getElementById('hb-drawer-sub');
-        if(ds)ds.textContent=isGold?'👑 Gold Member':'Quest Seeker';
-        if(si)si.style.display='none';
-        if(sp)sp.style.display='flex';
-      }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
-    }).catch(function(){if(si)si.style.display='block';if(sp)sp.style.display='none';});
-  }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
 </script>
