@@ -546,7 +546,7 @@ loadStatus();handleUrlParams();
         // Topbar — keep avatar SVG, just brighten ring when signed in
         var avSvg=document.getElementById('hb-avatar-svg');
         if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
-        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
+        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.65)'); // silver when free/signed out
         // Update drawer
         var da=document.getElementById('hb-drawer-avatar');
         if(da)da.textContent=init;
