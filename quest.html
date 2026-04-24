@@ -768,7 +768,7 @@ function renderHunt() {
   if (avatarEl && h._pirate) {
     var uname    = h._pirate.username || 'Anonymous';
     var initials = uname.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
-    avatarEl.textContent = initials;
+    // Keep SVG avatar — no initials
     if (nameEl) nameEl.textContent = uname;
     var qCount = h._pirate.quests_created || 0;
     var fCount = h._pirate.followers_count || 0;
@@ -1372,7 +1372,7 @@ if ('serviceWorker' in navigator) {
         else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
         // Update drawer
         var da=document.getElementById('hb-drawer-avatar');
-        if(da)da.textContent=init;
+        // Keep SVG in drawer — no initials
         var dn=document.getElementById('hb-drawer-name');
         if(dn)dn.textContent=uname;
         var ds=document.getElementById('hb-drawer-sub');
