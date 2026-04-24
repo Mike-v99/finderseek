@@ -974,7 +974,7 @@ async function openPaymentModal() {
 
   // If still not logged in, show email gate first
   if (!currentUser) {
-    try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
+    try { sessionStorage.setItem('fs_magic_return', 'profile.html'); } catch(e){}
     var bd = document.getElementById('eg-backdrop');
     var md = document.getElementById('eg-modal');
     var inner = document.getElementById('eg-inner');

@@ -214,8 +214,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;">
 
     <!-- Avatar + name row -->
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-      <div style="position:relative;width:68px;height:68px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      <div style="position:relative;width:70px;height:70px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;" id="p-ring"></div>
         <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;" id="p-avatar-wrap">
           <svg id="p-avatar-svg" width="32" height="32" viewBox="0 0 24 24" fill="rgba(232,168,32,.7)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
@@ -223,14 +223,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
       </div>
       <div style="flex:1;min-width:0;">
-        <div id="p-name" style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:6px;">Loading…</div>
-        <div id="p-since" style="display:none;font-size:13px;color:#b8c4d0;margin-bottom:6px;">—</div>
-        <div id="p-gold-badge" style="display:none;align-items:center;gap:5px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:3px 10px;width:fit-content;">
-          <span style="font-size:13px;">👑</span>
-          <span style="font-size:13px;color:#e8a820;font-weight:400;">Gold Member</span>
+        <div id="p-name" style="font-size:28px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:5px;">Loading…</div>
+        <div id="p-tier-label" style="display:flex;align-items:center;gap:6px;">
+          <span id="p-tier-icon" style="font-size:14px;display:none;">👑</span>
+          <span id="p-tier-text" style="font-size:17px;color:#b8c4d0;font-weight:400;">—</span>
         </div>
       </div>
     </div>
+    <!-- hidden compat refs -->
+    <span id="p-since" style="display:none;"></span>
+    <span id="p-gold-badge" style="display:none;"></span>
 
     <!-- Quick action icon shortcuts — 2×2 grid -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
@@ -602,8 +604,8 @@ async function gateSignIn(){
   if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
   btn.disabled = true; btn.innerHTML = 'Sending...';
   try {
-    var returnTo = sessionStorage.getItem('fs_magic_return') || window.location.href;
-    sessionStorage.setItem('fs_magic_return', returnTo);
+    var returnTo = sessionStorage.getItem('fs_magic_return') || 'profile.html';
+    sessionStorage.setItem('fs_magic_return', 'profile.html');
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
@@ -632,7 +634,7 @@ async function gateSignUp(){
   try {
     // Save username so we can set it after magic link login
     sessionStorage.setItem('fs_pending_username', username);
-    sessionStorage.setItem('fs_magic_return', window.location.href);
+    sessionStorage.setItem('fs_magic_return', 'profile.html');
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: {
@@ -831,21 +833,20 @@ function renderHeader(){
     if (avWrap) avWrap.style.background = 'rgba(180,190,210,.07)';
   }
 
-  // Member since
-  var createdAt = u.created_at || p.created_at;
-  var sinceEl = document.getElementById('p-since');
-  if (createdAt && sinceEl) {
-    var d = new Date(createdAt);
-    var monthName = d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    sinceEl.textContent = 'Member since ' + monthName;
-    sinceEl.style.display = 'block';
+  // Tier label — always visible
+  var tierText = document.getElementById('p-tier-text');
+  var tierIcon = document.getElementById('p-tier-icon');
+  if (isPro2) {
+    if (tierIcon) tierIcon.style.display = 'inline';
+    if (tierText) { tierText.textContent = 'Gold Member'; tierText.style.color = '#e8a820'; }
+  } else {
+    if (tierIcon) tierIcon.style.display = 'none';
+    if (tierText) { tierText.textContent = 'Free Tier'; tierText.style.color = '#b8c4d0'; }
   }
 
-  // Gold badge
-  var isPro = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
-  if (isPro) {
-    document.getElementById('p-gold-badge').style.display = 'inline-flex';
-    var gs = document.getElementById('m-gold-status');
+  // Gold status compat
+  var gs = document.getElementById('m-gold-status');
+  if (gs && isPro2) {
     gs.textContent = 'Active';
     gs.style.background = 'rgba(74,222,128,.1)';
     gs.style.borderColor = 'rgba(74,222,128,.25)';
