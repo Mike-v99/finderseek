@@ -45,7 +45,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .rv-sep{width:1px;align-self:stretch;background:rgba(255,255,255,.07);}
 .rv-detail{flex:1;}
 .rv-detail-title{font-size:15px;color:#fff;}
-.rv-detail-sub{font-size:13px;color:rgba(255,255,255,.4);margin-top:2px;}
+.rv-detail-sub{font-size:13px;color:#b8c4d0;margin-top:2px;}
 
 /* Tier row */
 .rv-tiers{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -100,7 +100,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 /* Q&A panel */
 .rv-qa-panel{margin:0 14px 14px;background:rgba(96,165,250,.05);border:1px solid rgba(96,165,250,.12);border-radius:10px;padding:12px;}
 .rv-qa-label{font-size:10px;color:rgba(96,165,250,.55);letter-spacing:1.5px;margin-bottom:10px;}
-.rv-qa-field-label{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.rv-qa-field-label{font-size:12px;color:#b8c4d0;margin-bottom:4px;}
 .rv-qa-input{width:100%;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;color:#fff;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;}
 .rv-qa-input::placeholder{color:rgba(255,255,255,.2);}
 .rv-qa-input:focus{border-color:rgba(96,165,250,.4);}
@@ -214,11 +214,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div class="rv-location-head" onclick="toggleLocationRiddle()">
       <div style="width:27px;height:27px;border-radius:8px;background:rgba(96,165,250,.15);color:#60a5fa;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">📍</div>
       <div style="flex:1;font-size:14px;color:#60a5fa;">Location Riddle</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-right:6px;">GPS unlock</div>
+      <div style="font-size:12px;color:#b8c4d0;margin-right:6px;">GPS unlock</div>
       <svg id="location-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.4)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div id="location-riddle-body" style="display:none;padding:0 14px 14px;">
-      <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:6px;line-height:1.5;">This riddle is shown before the quest starts. Seeker navigates to the area on their own. When they arrive within 1,000 feet, GPS unlocks the quest.</div>
+      <div style="font-size:13px;color:#b8c4d0;margin-bottom:6px;line-height:1.5;">This riddle is shown before the quest starts. Seeker navigates to the area on their own. When they arrive within 1,000 feet, GPS unlocks the quest.</div>
       <div id="location-riddle-text" style="font-size:15px;color:#fff;line-height:1.6;padding:11px 13px;background:rgba(96,165,250,.05);border:1px solid rgba(96,165,250,.12);border-radius:8px;margin-bottom:10px;">Loading...</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
         <button class="rv-act-btn white" onclick="editLocationRiddle()">✏️ Edit text</button>
@@ -824,7 +824,7 @@ function cancelLocationRiddle(){
 async function regenLocationRiddle(){
   const textEl = document.getElementById('location-riddle-text');
   const originalText = textEl.textContent;
-  textEl.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,.4);">✨ Generating...</div>';
+  textEl.innerHTML = '<div style="font-size:13px;color:#b8c4d0;">✨ Generating...</div>';
   try {
     const r = await fetch('/api/generate-clues', {
       method:'POST',
@@ -863,7 +863,7 @@ async function adjustClue(clueId, style){
   const c = clues.find(x => x.id === clueId);
   if (!c) return;
   const actionsEl = document.getElementById('clue-actions-'+clueId);
-  if (actionsEl) actionsEl.innerHTML = `<div style="font-size:13px;color:rgba(255,255,255,.4);padding:4px 14px;">✨ Adjusting...</div>`;
+  if (actionsEl) actionsEl.innerHTML = `<div style="font-size:13px;color:#b8c4d0;padding:4px 14px;">✨ Adjusting...</div>`;
   const stylePrompts = {
     harder: 'Make this clue significantly harder — more cryptic, more metaphorical, less direct.',
     easier: 'Make this clue easier — more direct, clearer language, less cryptic.',
@@ -917,7 +917,7 @@ async function regenerateClue(clueId){
   const c = clues.find(x => x.id === clueId);
   if (!c) return;
   const actionsEl = document.getElementById('clue-actions-'+clueId);
-  if (actionsEl) actionsEl.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,.4);padding:4px 0;">✨ Generating new clue...</div>';
+  if (actionsEl) actionsEl.innerHTML = '<div style="font-size:13px;color:#b8c4d0;padding:4px 0;">✨ Generating new clue...</div>';
   try {
     const r = await fetch('/api/generate-clues', {
       method:'POST',
