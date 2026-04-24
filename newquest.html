@@ -16,7 +16,7 @@
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
@@ -26,7 +26,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:300;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
@@ -39,7 +39,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
 .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;flex-shrink:0;}
 .step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
-.step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#cbd5e1;}
+.step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#b8c4d0;}
 .step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
 .step-num-red{background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.4);color:#e8a820;}
 .step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
@@ -52,14 +52,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:18px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
 .finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:300;font-size:28px;color:var(--blue-light);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:28px;color:var(--blue-light);}
 input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
 .slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(--muted);}
@@ -78,7 +78,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;color:var(--cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:18px;font-weight:400;}
@@ -87,7 +87,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 /* Map */
 .map-box{width:100%;height:260px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(203,213,225,.1);overflow:hidden;margin-bottom:6px;position:relative;z-index:2;}
 .map-search-wrap{position:relative;margin-bottom:10px;}
-.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .map-search-input:focus{border-color:rgba(203,213,225,.4);}
 .map-search-input::placeholder{color:rgba(203,213,225,.35);}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
@@ -101,14 +101,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .search-result-icon{font-size:18px;flex-shrink:0;}
 .search-result-main{font-size:18px;color:var(--cream);font-weight:400;}
 .search-result-sub{font-size:18px;color:var(--muted);margin-top:2px;}
-.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#cbd5e1;font-family:'Noto Sans Display',sans-serif;font-weight:300;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
+.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
 .my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:300;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.35);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:300;cursor:pointer;transition:all .2s;}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
 .btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
@@ -309,28 +309,28 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div>
       </div>
       <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Poetic</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Poetic</div>
       </div>
       <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Insults</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Insults</div>
       </div>
       <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Sarcastic</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Sarcastic</div>
       </div>
       <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Hillbilly</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Hillbilly</div>
       </div>
       <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">5 Yr Old</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">5 Yr Old</div>
       </div>
       <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Grandma</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Grandma</div>
       </div>
       <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Surfer</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Surfer</div>
       </div>
       <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-        <div class="persona-name" style="font-size:20px;font-weight:300;color:#cbd5e1;">Detective</div>
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Detective</div>
       </div>
     </div>
 
@@ -339,7 +339,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
       <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
         <div id="preview-label" style="font-size:15px;letter-spacing:1.5px;color:#b8c4d0;margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
-        <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:300;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
+        <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:400;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
       </div>
     </div>
     <!-- Keep preview-emoji for JS compat, hidden -->
@@ -376,7 +376,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
     </div>
     <div style="text-align:center;margin-bottom:16px;">
-      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:15px;font-family:inherit;cursor:pointer;">
+      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Generate New Code
       </button>
@@ -389,7 +389,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <!-- Search bar -->
     <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
       <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#cbd5e1;"/>
+      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#b8c4d0;"/>
       <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:15px;gap:4px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
         <span id="my-loc-txt">Me</span>
@@ -403,10 +403,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-size:15px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;padding:0 20px;">Tap 📍 Me, search above,<br/>or tap the map to place your pin</div>
       </div>
     </div>
-    <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#cbd5e1;"></div>
+    <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#b8c4d0;"></div>
 
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;margin-bottom:8px;"><div style="font-size:25px;font-weight:400;color:#fff;">HIDING SPOT DETAILS</div><div id="spot-char-count" style="font-size:15px;color:#b8c4d0;">0 / 200</div></div>
-    <textarea id="hiding-spot" oninput="updateSpotCount(this)" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:0;margin-bottom:0;resize:none;font-size:20px;color:#cbd5e1;"></textarea>
+    <textarea id="hiding-spot" oninput="updateSpotCount(this)" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:0;margin-bottom:0;resize:none;font-size:20px;color:#b8c4d0;"></textarea>
     <div style="height:20px;"></div>
   </div>
   <div style="padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);">
@@ -438,15 +438,15 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
       <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
         <div style="font-size:15px;color:#b8c4d0;">Clues</div>
-        <div id="ms-clues" style="font-size:15px;color:#cbd5e1;">5 · Standard</div>
+        <div id="ms-clues" style="font-size:15px;color:#b8c4d0;">5 · Standard</div>
       </div>
       <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
         <div style="font-size:15px;color:#b8c4d0;">Style</div>
-        <div id="ms-style" style="font-size:15px;color:#cbd5e1;">Pirate</div>
+        <div id="ms-style" style="font-size:15px;color:#b8c4d0;">Pirate</div>
       </div>
       <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
         <div style="font-size:15px;color:#b8c4d0;">Location</div>
-        <div id="ms-location" style="font-size:15px;color:#cbd5e1;max-width:160px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
+        <div id="ms-location" style="font-size:15px;color:#b8c4d0;max-width:160px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
       </div>
     </div>
 
@@ -542,7 +542,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
 
     <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
-      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;transition:border-color .2s;"/>
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
     <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
 
     <button id="eg-continue-btn" onclick="submitEmailGate()"
@@ -559,7 +559,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
       <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
       <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:400;"> → Pro Features</span></span></div>
       <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
     </div>
 
@@ -719,7 +719,7 @@ function selPersona(el) {
   document.querySelectorAll('.persona-card').forEach(function(c){
     c.style.background = '#0d0b18';
     var n = c.querySelector('.persona-name');
-    if (n) { n.style.color = '#cbd5e1'; n.style.fontWeight = '300'; n.style.fontSize = '17px'; }
+    if (n) { n.style.color = '#b8c4d0'; n.style.fontWeight = '400'; n.style.fontSize = '17px'; }
     c.classList.remove('selected');
   });
   el.style.background = 'rgba(232,168,32,.12)';
@@ -1833,7 +1833,7 @@ function setCoords(lat, lng) {
   var el = document.getElementById('map-coords');
   el.style.display = 'block';
   var hint = document.getElementById('map-pin-hint'); if(hint) hint.style.display = 'none';
-  el.innerHTML = '<span style="color:#cbd5e1;opacity:.7;font-size:15px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
+  el.innerHTML = '<span style="color:#b8c4d0;opacity:.7;font-size:15px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
 }
 
 async function reverseGeocode(lat, lng) {
@@ -1999,9 +1999,9 @@ if ('serviceWorker' in navigator) {
 .pm-sheet.show{transform:translateY(0);}
 .pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
 .pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
-.pm-sub{font-size:18px;color:#fff;text-align:center;margin-bottom:22px;line-height:1.5;font-weight:300;}
+.pm-sub{font-size:18px;color:#fff;text-align:center;margin-bottom:22px;line-height:1.5;font-weight:400;}
 .pm-breakdown{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:20px;}
-.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:#fff;font-weight:300;}
+.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:#fff;font-weight:400;}
 .pm-row strong{color:#fff;font-weight:400;}
 .pm-row.total{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:6px;font-size:18px;}
 .pm-row.total strong{color:#e8a820;font-size:20px;font-weight:400;}
@@ -2010,7 +2010,7 @@ if ('serviceWorker' in navigator) {
 .pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
 .pm-pay-btn:active{transform:scale(.98);}
 .pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
-.pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:300;opacity:.7;}
+.pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:400;opacity:.7;}
 .pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
 </style>
 
