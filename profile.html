@@ -120,7 +120,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
             style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
         </div>
-        <input id="gate-email" type="text" inputmode="email" autocomplete="username" placeholder="Email" name="email"
+        <input id="gate-email" type="text" inputmode="email" autocomplete="off" placeholder="Email" name="email"
           style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
 
 
@@ -1393,7 +1393,7 @@ if ('serviceWorker' in navigator) {
         // Topbar — keep avatar SVG, just brighten ring when signed in
         var avSvg=document.getElementById('hb-avatar-svg');
         if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
-        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
+        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.65)'); // silver when free/signed out
         // Update drawer
         // avatar SVG stays — just update ring colour per tier
         var ring=document.getElementById('hb-drawer-ring');
