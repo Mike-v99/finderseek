@@ -14,9 +14,8 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-.bg-glow{position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse at 50% -10%,rgba(201,137,12,.1),transparent 65%);pointer-events:none;z-index:0;}
 
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 0 100px;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px;}
 
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 
@@ -56,6 +55,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
+
+/* ── ACCORDION ─────────────────────────────────────────────── */
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.acc-body{display:none;padding:0 14px 14px;}
+.acc-body.open{display:block;}
+.acc-arrow{font-size:14px;color:rgba(255,255,255,.3);transition:transform .25s;line-height:1;flex-shrink:0;}
+.acc-arrow.open{transform:rotate(180deg);}
+.step-txt{font-size:17px;color:rgba(255,255,255,.8);line-height:1.5;}
+.tag{display:inline-block;font-size:12px;padding:3px 9px;border-radius:20px;margin-top:4px;}
+@keyframes goldShim{0%{background-position:-300% center;}100%{background-position:300% center;}}
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -74,203 +83,234 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
-<div class="bg-glow"></div>
+
+<!-- Sticky topbar -->
+<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;">
+  <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">How It Works</div>
+  <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+      <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+      <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
+        <svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(180,190,210,.5)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+      <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+      <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
+    </div>
+  </div>
+</div>
 
 <div class="page">
 
-  <!-- Header -->
-  <div style="padding:0 16px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-      <a class="back-btn" href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'">← Back</a>
-      <div class="page-title">How It Works</div>
-      <div style="width:90px;"></div>
-    </div>
+  <!-- Hero -->
+  <div style="padding:16px 14px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);">
+    <div style="font-size:26px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:goldShim 6s linear infinite;margin-bottom:5px;">Solve Clues. Win Cash.</div>
+    <div style="font-size:17px;color:rgba(255,255,255,.4);">Real treasure quests hidden in your city.</div>
   </div>
 
-  <!-- ══ FIND TREASURE ══ -->
-  <div class="el" style="text-align:center;font-size:18px;color:#e8a820;letter-spacing:3px;padding:0 0 16px;font-weight:400;">🔍 FIND TREASURE</div>
+  <!-- ── SEEKER SECTION ── -->
+  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
 
-  <div style="padding:0 20px;" class="el">
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(251,191,36,.1);border:1.5px solid #fbbf24;color:#fbbf24;">1</div>
-      <div style="font-size:18px;color:#fff;">Browse quests with real cash prizes</div>
+    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(232,168,32,.04);">
+      <div style="font-size:20px;color:#e8a820;font-weight:400;">🔍 Seeker — Find Treasure</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Join a quest and win real cash</div>
     </div>
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(52,211,153,.1);border:1.5px solid #34d399;color:#34d399;">2</div>
-      <div style="font-size:18px;color:#fff;">Follow AI clues dropped on a timer</div>
-    </div>
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(244,114,182,.1);border:1.5px solid #f472b6;color:#f472b6;">3</div>
-      <div style="font-size:18px;color:#fff;">Race to the spot, find the 6-digit code</div>
-    </div>
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;color:#4ade80;">4</div>
-      <div style="font-size:18px;color:#fff;">Enter the code — <span style="color:#4ade80;">win the cash!</span></div>
-    </div>
-  </div>
 
-  <div class="el" style="text-align:center;padding:0 16px 24px;">
-    <a href="index.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">🔍 Find Treasure</a>
-  </div>
-
-  <!-- Divider -->
-  <div class="el" style="display:flex;align-items:center;gap:12px;padding:0 24px;">
-    <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.25),transparent);"></div>
-    <div style="font-size:18px;color:rgba(96,165,250,.4);letter-spacing:2px;">or</div>
-    <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.25),transparent);"></div>
-  </div>
-
-  <!-- ══ START A QUEST ══ -->
-  <div class="el" style="text-align:center;font-size:18px;color:#60a5fa;letter-spacing:3px;padding:24px 0 16px;font-weight:400;">🏴‍☠️ START A QUEST</div>
-
-  <div style="padding:0 20px;" class="el">
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;color:#60a5fa;">1</div>
-      <div style="font-size:18px;color:#fff;">Pick a public spot, hide a 6-digit code</div>
-    </div>
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(168,85,247,.1);border:1.5px solid #a855f7;color:#a855f7;">2</div>
-      <div style="font-size:18px;color:#fff;">AI writes the clues from your description</div>
-    </div>
-    <div class="step-row">
-      <div class="step-num" style="background:rgba(74,222,128,.1);border:1.5px solid #4ade80;color:#4ade80;">3</div>
-      <div style="font-size:18px;color:#fff;">Set prize ($1-$100), go live — <span style="color:#4ade80;">watch the hunt!</span></div>
-    </div>
-  </div>
-
-  <div class="el" style="text-align:center;padding:0 16px 24px;">
-    <a href="newquest.html" style="display:inline-block;padding:16px 40px;border-radius:14px;font-size:18px;font-weight:400;border:1.5px solid #60a5fa;color:#fff;text-decoration:none;font-family:'Noto Sans Display',sans-serif;">+ Start Quest</a>
-  </div>
-
-  <!-- Trust icons -->
-  <div class="el" style="padding:20px 20px 0;border-top:1px solid rgba(255,255,255,.06);">
-    <div style="display:flex;justify-content:space-around;text-align:center;">
-      <div><div style="font-size:22px;margin-bottom:4px;">🔒</div><div style="font-size:18px;color:#d0e4f0;">Stripe<br/>payments</div></div>
-      <div><div style="font-size:22px;margin-bottom:4px;">⚡</div><div style="font-size:18px;color:#d0e4f0;">Auto<br/>payouts</div></div>
-      <div><div style="font-size:22px;margin-bottom:4px;">🎯</div><div style="font-size:18px;color:#d0e4f0;">Skill<br/>based</div></div>
-      <div><div style="font-size:22px;margin-bottom:4px;">🆓</div><div style="font-size:18px;color:#d0e4f0;">Free to<br/>play</div></div>
-    </div>
-  </div>
-
-  <!-- How Do I Get Paid -->
-  <div class="el" style="padding:24px 16px 0;">
-    <div style="border-radius:18px;padding:1.5px;background:linear-gradient(180deg,rgba(74,222,128,.3),rgba(74,222,128,.05));">
-      <div style="background:rgba(13,11,24,.94);border-radius:17px;padding:22px 18px;">
-        <div style="font-size:21px;font-weight:400;color:#4ade80;margin-bottom:14px;text-align:center;">How Do I Get Paid?</div>
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Payments powered by Stripe</div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Prize auto-transfers when code is claimed</div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>No action needed — it's automatic</div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:18px;color:#fff;"><span style="color:#4ade80;font-size:20px;">✓</span>Refunded if quest expires unclaimed</div>
+    <!-- S1 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(251,191,36,.1);border:1px solid #fbbf24;color:#fbbf24;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:17px;color:#fff;">Browse &amp; Join a Quest</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Browse quests on the home screen. Each quest shows the prize amount, city, and time remaining. Tap a quest to see the details — the map shows only the general area (city-level) until you arrive.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Free to join</span>
+          <span class="tag" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);color:#e8a820;">Real cash prizes</span>
         </div>
       </div>
     </div>
+
+    <!-- S2 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.1);border:1px solid #34d399;color:#34d399;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:17px;color:#fff;">Head to the Quest Zone</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">The quest is locked until you physically arrive near the hiding area. Once you're within <span style="color:#e8a820;">1,000 feet</span> of the treasure, a pulsing <strong style="font-weight:400;color:#4ade80;">"I'm Here — Unlock Quest"</strong> button appears.</div>
+        <div class="step-txt" style="margin-top:8px;">Tap it to unlock and start the quest. Your GPS confirms you're in the right area before the clues begin.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.15);color:#60a5fa;">GPS verified</span>
+          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);color:#a855f7;">1,000 ft radius</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(244,114,182,.1);border:1px solid #f472b6;color:#f472b6;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:17px;color:#fff;">Solve the Clues</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Up to <span style="color:#e8a820;">6 clues</span> are revealed one at a time. Each clue has a riddle — answer it correctly to unlock the next one.</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;">
+          <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;">
+            <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:5px;">After each clue solved:</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;">
+              <span style="font-size:16px;">🗺️</span><span style="font-size:17px;color:#fff;">Map zooms in one level closer</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:16px;">📸</span><span style="font-size:17px;color:#fff;">Photo of hiding spot gets less blurry</span>
+            </div>
+          </div>
+          <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px 12px;">
+            <div style="font-size:13px;color:#e8a820;margin-bottom:4px;">Final clue:</div>
+            <div style="font-size:17px;color:#fff;">🔓 Fully clear photo of the hiding spot + fully zoomed map pinpointing the exact location. Go find it!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+          <div style="font-size:17px;color:#fff;">Find the PIN &amp; Claim Your Prize</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">The Quest Master has hidden a <span style="color:#e8a820;">small card, envelope, or plastic bag</span> at the exact spot. Inside is a <strong style="font-weight:400;color:#4ade80;">6-digit PIN</strong>.</div>
+        <div class="step-txt" style="margin-top:8px;">Find it, enter the PIN into the quest screen, and the prize transfers <span style="color:#4ade80;">automatically</span> to your linked bank account.</div>
+        <div style="margin-top:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:13px;color:#4ade80;margin-bottom:4px;">💳 Banking required to receive prizes</div>
+          <div style="font-size:17px;color:rgba(255,255,255,.7);">Link a bank account via Stripe in your profile. Takes about 2 minutes to set up — prizes go straight to your bank automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:10px 14px;">
+      <a href="index.html" style="display:block;background:linear-gradient(135deg,#92400e,#e8a820);border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#0a0800;text-decoration:none;font-family:inherit;">🔍 Find a Quest Near Me</a>
+    </div>
   </div>
+
+  <!-- ── QUEST MASTER SECTION ── -->
+  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
+
+    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(96,165,250,.04);">
+      <div style="font-size:20px;color:#60a5fa;font-weight:400;">🏴‍☠️ Quest Master — Hide Treasure</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Create a quest, fund the prize, watch it unfold</div>
+    </div>
+
+    <!-- QM1 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(96,165,250,.1);border:1px solid #60a5fa;color:#60a5fa;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:17px;color:#fff;">Pick a Spot &amp; Hide the PIN Provided</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Choose a public location — a park, plaza, trail, or landmark. The app provides you with a 6-digit PIN. Write the 6-digit PIN provided by the app on a small piece of paper, card, or sticker and hide it at the exact spot.</div>
+        <div class="step-txt" style="margin-top:8px;">Then drop a pin on the map in the app to mark the hiding location. This stays <span style="color:#e8a820;">completely hidden</span> from seekers until they earn it through clues.</div>
+      </div>
+    </div>
+
+    <!-- QM2 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(168,85,247,.1);border:1px solid #a855f7;color:#a855f7;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:17px;color:#fff;">AI Writes Your Clues</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Describe the hiding spot in a few words — the AI generates up to 6 riddle clues that lead seekers from the general area to the exact location without giving it away immediately.</div>
+        <div class="step-txt" style="margin-top:8px;">You can review, edit, regenerate, or adjust the difficulty of each clue before going live.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);color:#a855f7;">AI generated</span>
+          <span class="tag" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);">Fully editable</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QM3 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:17px;color:#fff;">Choose Prize &amp; Go Live</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Choose from pre-selected prizes from <span style="color:#4ade80;">$5 to $100</span>. The prize is held securely in escrow via Stripe — it's released automatically to the winner when they enter the correct PIN.</div>
+        <div class="step-txt" style="margin-top:8px;">If no one claims it before the timer expires, you get a full refund.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Auto refund if unclaimed</span>
+          <span class="tag" style="background:rgba(99,91,255,.08);border:1px solid rgba(99,91,255,.2);color:#818cf8;">Held in escrow</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:10px 14px;">
+      <a href="newquest.html" style="display:block;background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#fff;text-decoration:none;font-family:inherit;">✨ Create a Quest</a>
+    </div>
+  </div>
+
+  <!-- Trust strip -->
+  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;display:flex;padding:12px 6px;">
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🔒</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Stripe<br/>secure</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">⚡</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Auto<br/>payouts</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🎯</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Skill<br/>based</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🆓</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Free<br/>to play</div></div>
+  </div>
+
+  <div style="text-align:center;padding:16px 0 0;font-size:13px;color:rgba(255,255,255,.2);">FinderSeek v1.0.0</div>
 
 </div>
 
-<!-- BOTTOM NAV -->
-
-
 <script>
-function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
-
-var observer=new IntersectionObserver(function(entries){
-  entries.forEach(function(entry){
-    if(entry.isIntersecting){entry.target.classList.add('visible');}
-  });
-},{threshold:0.15,rootMargin:'0px 0px -30px 0px'});
-
-document.querySelectorAll('.el').forEach(function(el){observer.observe(el);});
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  });
+function toggleAcc(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.acc-arrow');
+  var isOpen = body.classList.contains('open');
+  // Close all in same card
+  var card = header.parentElement.parentElement;
+  card.querySelectorAll('.acc-body').forEach(function(b){ b.classList.remove('open'); });
+  card.querySelectorAll('.acc-arrow').forEach(function(a){ a.classList.remove('open'); });
+  if (!isOpen) {
+    body.classList.add('open');
+    arrow.classList.add('open');
+  }
 }
-</script>
-<script>
-// Color profile nav item based on tier
-(function() {
-  var token = (function() {
-    var t = localStorage.getItem('fs_token');
-    if (t) return t;
-    try {
-      var keys = Object.keys(localStorage);
-      for (var i = 0; i < keys.length; i++) {
-        if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
-          var s = JSON.parse(localStorage.getItem(keys[i]));
-          if (s && s.access_token) return s.access_token;
-        }
-      }
-    } catch(e) {}
-    return null;
-  })();
-  if (!token) return;
-  var SB_ = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-  var KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-  fetch(SB_ + '/rest/v1/profiles?select=is_pro,pro_expires', {
-    headers: { 'apikey': KEY_, 'Authorization': 'Bearer ' + token }
-  }).then(function(r){ return r.json(); }).then(function(d) {
-    var p = d && d[0];
-    if (!p) return;
-    var isGold = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
-    var color = isGold ? '#e8a820' : '#94a3b8';
-    var el = document.getElementById('nav-profile-item');
-    if (!el) return;
-    var svg = el.querySelector('svg');
-    var lbl = el.querySelector('.nav-label')
-  }).catch(function(){});
-})();
+
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
 </script>
 
-
-    </div>
-
-    <!-- Not signed in: sign in section -->
-      
-        <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(180,190,210,.45)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-        </div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
-        <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    </div>
-
-    <!-- Nav links -->
-    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="hb-nav-label">Home</span>
-    </a>
-    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span class="hb-nav-label">Browse Quests</span>
-    </a>
-    
-    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
-    </a>
-    <a class="hb-nav-item active" href="how-it-works.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      <span class="hb-nav-label">How It Works</span>
-    </a>
-
-    <div style="flex:1;"></div>
-    <div style="font-size:17px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
-  </div>
-</div>
-
-<script>
-
-
-
-</script>
 
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
