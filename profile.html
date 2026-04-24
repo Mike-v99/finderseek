@@ -211,24 +211,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- ── FLOATING HERO CARD ─────────────────────────────── -->
-  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;">
+  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;">
 
     <!-- Avatar + name row -->
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-      <div style="position:relative;width:52px;height:52px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <div style="position:relative;width:68px;height:68px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;" id="p-ring"></div>
         <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;" id="p-avatar-wrap">
-          <svg id="p-avatar-svg" width="26" height="26" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          <span id="p-avatar" style="display:none;font-size:20px;font-weight:400;color:#e8a820;"></span>
+          <svg id="p-avatar-svg" width="32" height="32" viewBox="0 0 24 24" fill="rgba(232,168,32,.7)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <span id="p-avatar" style="display:none;font-size:22px;font-weight:400;color:#e8a820;"></span>
         </div>
       </div>
       <div style="flex:1;min-width:0;">
-        <div id="p-name" style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;">Loading…</div>
-        <div id="p-since" style="font-size:13px;color:#b8c4d0;margin-top:2px;">—</div>
-      </div>
-      <div id="p-gold-badge" style="display:none;align-items:center;gap:4px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:4px 10px;flex-shrink:0;">
-        <span style="font-size:20px;">👑</span>
-        <span style="font-size:25px;color:#e8a820;line-height:1.2;">Gold Member</span>
+        <div id="p-name" style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:6px;">Loading…</div>
+        <div id="p-since" style="display:none;font-size:13px;color:#b8c4d0;margin-bottom:6px;">—</div>
+        <div id="p-gold-badge" style="display:none;align-items:center;gap:5px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:3px 10px;width:fit-content;">
+          <span style="font-size:13px;">👑</span>
+          <span style="font-size:13px;color:#e8a820;font-weight:400;">Gold Member</span>
+        </div>
       </div>
     </div>
 
@@ -236,19 +236,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
       <div onclick="window.location.href='index.html'" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:22px;line-height:1;">🏠</div>
-        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Home</div>
+        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Home</div>
       </div>
       <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.18);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:22px;line-height:1;">👑</div>
-        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Gold</div>
+        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Gold</div>
       </div>
       <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:22px;line-height:1;">💳</div>
-        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Payout</div>
+        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Payout</div>
       </div>
       <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:22px;line-height:1;">⚙️</div>
-        <div style="font-size:20px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.2;">Settings</div>
+        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Settings</div>
       </div>
     </div>
   </div>
@@ -815,29 +815,30 @@ function renderHeader(){
   var u = currentUser;
   var p = currentProfile || {};
   var name = p.username || u.email?.split('@')[0] || 'Anonymous';
-  var initials = name.substring(0,2).toUpperCase();
 
-  // Update avatar — show initials, hide SVG
-  var av = document.getElementById('p-avatar');
+  // Keep SVG avatar visible — just update fill colour per tier
   var avSvg = document.getElementById('p-avatar-svg');
-  if (av) { av.textContent = initials; av.style.display = 'inline'; }
-  if (avSvg) avSvg.style.display = 'none';
-  document.getElementById('p-name').textContent = name;
-  // Update ring for free tier
   var isPro2 = p.is_pro && (!p.pro_expires || new Date(p.pro_expires) > new Date());
+  if (avSvg) avSvg.setAttribute('fill', isPro2 ? 'rgba(232,168,32,.7)' : 'rgba(180,190,210,.55)');
+
+  document.getElementById('p-name').textContent = name;
+
+  // Update ring for free tier
   if (!isPro2) {
     var ring = document.getElementById('p-ring');
     if (ring) { ring.style.background = 'rgba(180,190,210,.25)'; ring.style.animation = 'none'; }
-    if (av) av.style.color = 'rgba(180,190,210,.7)';
     var avWrap = document.getElementById('p-avatar-wrap');
     if (avWrap) avWrap.style.background = 'rgba(180,190,210,.07)';
   }
 
+  // Member since
   var createdAt = u.created_at || p.created_at;
-  if (createdAt) {
+  var sinceEl = document.getElementById('p-since');
+  if (createdAt && sinceEl) {
     var d = new Date(createdAt);
     var monthName = d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    document.getElementById('p-since').textContent = 'Member since ' + monthName;
+    sinceEl.textContent = 'Member since ' + monthName;
+    sinceEl.style.display = 'block';
   }
 
   // Gold badge
