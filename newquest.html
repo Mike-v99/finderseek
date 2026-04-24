@@ -508,8 +508,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
-
-
 <!-- AI Clue Generation Loading Overlay -->
 <div id="ai-loading" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;">
   <div id="ai-spinner" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(232,168,32,.15);border-top-color:#e8a820;animation:aiSpin 1s linear infinite;margin-bottom:24px;"></div>
@@ -1250,7 +1248,7 @@ async function createQuest(previewMode){
   const liveMode = document.querySelector('.golive-opt.selected')?.dataset.live || 'now';
 
   // ── 3. Validation ─────────────────────────────────────────
-  if (prize < 1 || prize > 100) return showToast('Prize must be between $1 and $100', 'error');
+  if (prize < 5 || prize > 100) return showToast('Please select a prize amount', 'error');
   if (!hidingSpot || hidingSpot.length < 10) return showToast('Hiding Spot — Add More Details', 'error');
   if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
   if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
@@ -1537,6 +1535,14 @@ async function createQuest(previewMode){
       console.error('Clue generation error:', clueData);
       throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
     }
+    // Save location_riddle to hunt row
+    if (clueData.location_riddle) {
+      fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
+        method:'PATCH',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+        body: JSON.stringify({ location_riddle: clueData.location_riddle })
+      }).catch(function(){});
+    }
 
     // ── 8. Insert clues into Supabase ───────────────────────
     btn.textContent = '⏳ Saving clues...';
@@ -1562,6 +1568,8 @@ async function createQuest(previewMode){
         tier: tier,
         reveal_at: revealAt.toISOString(),
         clue_text: c.text || '',
+        clue_question: c.question || '',
+        clue_answer: c.answer || '',
         is_photo: hasMap,
         photo_url: mapPhotoUrl,
         is_finder: idx === finderIdx,
