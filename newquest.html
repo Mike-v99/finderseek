@@ -570,7 +570,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <script>
-function setNav(el){document.querySelectorAll(');el.classList.add('active');}
+function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
 function cP(e,el,prev){if(e.key==='Backspace'){if(!el.value&&prev){document.getElementById(prev).focus();}else if(el.value){el.value='';e.preventDefault();if(prev)document.getElementById(prev).focus();}}}
 
@@ -2119,7 +2119,7 @@ async function submitPayment(){
     var el = document.getElementById('nav-profile-item');
     if (!el) return;
     var svg = el.querySelector('svg');
-    var lbl = el.querySelector('
+    if (svg) svg.style.stroke = color;
   }).catch(function(){});
 })();
 </script>
