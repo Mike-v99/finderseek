@@ -931,7 +931,7 @@ function filterQuests(query) {
 }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A&loading=async"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A"></script>
 <script>
 var liveMap = null;
 var liveMapInitialized = false;
@@ -959,7 +959,7 @@ function openLiveMap() {
     initLiveMap();
     liveMapInitialized = true;
   } else if (liveMap) {
-    setTimeout(function() { liveMap.invalidateSize(); }, 100);
+    setTimeout(function() { if(liveMap) google.maps.event.trigger(liveMap,"resize"); }, 100);
   }
 }
 
@@ -988,7 +988,7 @@ function initSheetDrag() {
   function snapTo(h, dur) {
     sheet.style.transition = 'height ' + (dur || 380) + 'ms cubic-bezier(0.22, 1, 0.36, 1)';
     sheet.style.height = h + 'px';
-    setTimeout(function() { if (liveMap) liveMap.invalidateSize(); }, (dur || 380) + 50);
+    setTimeout(function() { if(liveMap) google.maps.event.trigger(liveMap,"resize"); }, (dur || 380) + 50);
   }
 
   var startY, startH, lastY, lastT, velY;
@@ -1123,6 +1123,7 @@ async function initLiveMap() {
     zoom: 11,
     disableDefaultUI: true,
     zoomControl: true,
+    gestureHandling: 'cooperative',
     styles: [
   {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
   {elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
@@ -1237,7 +1238,7 @@ async function initLiveMap() {
       });
     });
 
-    setTimeout(function() { liveMap.invalidateSize(); }, 200);
+    setTimeout(function() { if(liveMap) google.maps.event.trigger(liveMap,"resize"); }, 200);
   } catch(e) {
     console.error('Live map error:', e);
     document.getElementById('map-chip-list').innerHTML = '<div style="padding:10px 0;text-align:center;color:rgba(239,68,68,.6);font-size:17px;">Could not load quests</div>';
