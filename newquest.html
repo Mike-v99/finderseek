@@ -366,14 +366,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
 
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
-    <div style="font-size:15px;color:#cbd5e1;opacity:.7;margin-bottom:10px;">Winner enters this 6-digit code to claim the prize</div>
+    <div style="font-size:15px;color:#b8c4d0;margin-bottom:10px;">Write this code on paper and hide it at your spot. The winner enters it to claim the prize.</div>
     <div class="code-wrap" style="margin-bottom:10px;">
-      <input id="c1" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c2')" onkeydown="cP(event,this,null)"/>
-      <input id="c2" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c3')" onkeydown="cP(event,this,'c1')"/>
-      <input id="c3" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c4')" onkeydown="cP(event,this,'c2')"/>
-      <input id="c4" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c5')" onkeydown="cP(event,this,'c3')"/>
-      <input id="c5" class="code-digit" type="tel" maxlength="1" oninput="cN(this,'c6')" onkeydown="cP(event,this,'c4')"/>
-      <input id="c6" class="code-digit" type="tel" maxlength="1" oninput="cN(this,null)" onkeydown="cP(event,this,'c5')"/>
+      <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c2" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c3" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c4" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c5" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
     </div>
     <div style="text-align:center;margin-bottom:16px;">
       <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:15px;font-family:inherit;cursor:pointer;">
@@ -595,7 +595,7 @@ function goStep(n) {
   // Validate before leaving step 3
   if (currentStep === 3 && n === 4) {
     var hidingSpot = document.getElementById('hiding-spot').value.trim();
-    var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).value; });
+    var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
     var code = codeDigits.join('');
     if (!selectedLat || !selectedLng) { showToast('Please drop a pin on the map', 'error'); return; }
     if (!hidingSpot || hidingSpot.length < 10) { showToast('Describe the hiding spot in more detail', 'error'); return; }
@@ -615,7 +615,7 @@ function goStep(n) {
     // Only auto-generate code if all fields are empty (first visit)
     var hasCode = ['c1','c2','c3','c4','c5','c6'].some(function(id){
       var el = document.getElementById(id);
-      return el && el.value !== '';
+      return el && el.textContent.trim() !== '';
     });
     if (!hasCode) genCode();
     setTimeout(function(){
@@ -815,7 +815,7 @@ function selLive(el){
 }
 function genCode(){
   for(var i=1;i<=6;i++){
-    document.getElementById('c'+i).value=Math.floor(Math.random()*10);
+    document.getElementById('c'+i).textContent=Math.floor(Math.random()*10);
   }
 }
 
@@ -1079,7 +1079,7 @@ function showToast(msg, type){
 function validateQuestForm(){
   const prize = selectedPrizeVal || 0;
   const hidingSpot = document.getElementById('hiding-spot').value.trim();
-  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).value).join('');
+  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).textContent).join('');
   if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
   if (!hidingSpot || hidingSpot.length < 10) { showToast('Hiding Spot — Add More Details', 'error'); return false; }
   if (!selectedLat || !selectedLng) { showToast('Please select a location on the map', 'error'); return false; }
@@ -1244,7 +1244,7 @@ async function createQuest(previewMode){
   const persona = document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate';
   const hidingSpot = document.getElementById('hiding-spot').value.trim();
   const searchAddress = document.getElementById('map-search').value.trim();
-  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).value).join('');
+  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).textContent).join('');
   const liveMode = document.querySelector('.golive-opt.selected')?.dataset.live || 'now';
 
   // ── 3. Validation ─────────────────────────────────────────
@@ -1671,7 +1671,7 @@ function saveFormState() {
       persona: document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate',
       hidingSpot: document.getElementById('hiding-spot')?.value || '',
       searchAddress: document.getElementById('map-search')?.value || '',
-      pin: ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.value:''; }).join(''),
+      pin: ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.textContent:''; }).join(''),
       liveMode: document.querySelector('.golive-opt.selected')?.dataset.live || 'now',
       lat: selectedLat, lng: selectedLng,
       step: currentStep,
@@ -1694,7 +1694,7 @@ function restoreFormState() {
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
-        var el = document.getElementById(id); if (el) el.value = s.pin[i] || '';
+        var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
       });
     }
     if (s.liveMode) {
