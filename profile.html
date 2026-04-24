@@ -654,11 +654,8 @@ async function gateSignUp(){
 
 async function gateSocial(provider){
   try {
-    // Save where user was so we redirect back after OAuth login
-    var returnTo = sessionStorage.getItem('fs_magic_return') || document.referrer || '';
-    if (returnTo && returnTo !== window.location.href) {
-      sessionStorage.setItem('fs_magic_return', returnTo);
-    }
+    // Always redirect to profile after OAuth sign in
+    sessionStorage.setItem('fs_magic_return', 'profile.html');
     var { data, error } = await supaClient.auth.signInWithOAuth({
       provider: provider,
       options: {
@@ -666,7 +663,6 @@ async function gateSocial(provider){
       }
     });
     if (error) throw error;
-    // Supabase client handles the redirect automatically
   } catch(e) {
     document.getElementById('gate-err').textContent = e.message;
   }
@@ -680,8 +676,8 @@ async function gateForgotPassword(){
 
   // Save where user was trying to go so we redirect back after login
   try {
-    var returnTo = sessionStorage.getItem('fs_login_return') || document.referrer || '';
-    if (returnTo) sessionStorage.setItem('fs_magic_return', returnTo);
+    // Always redirect to profile after sign in
+    sessionStorage.setItem('fs_magic_return', 'profile.html');
   } catch(e){}
 
   try {
