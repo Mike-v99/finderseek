@@ -742,12 +742,26 @@ async function loadHeroAuth() {
     var name = (profile && profile.username) || (user.email ? user.email.split('@')[0] : 'User');
     var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2) || '?';
 
-    // Update topbar avatar
-        // Keep SVG avatar — no initials
-    if (avatarSvg) avatarSvg.style.display = 'none';
+    // Update topbar avatar fill — gold for Gold members, silver for free
+    if (avatarSvg) avatarSvg.setAttribute('fill', isGold ? 'rgba(232,168,32,.8)' : 'rgba(180,190,210,.65)');
+
+    // Update drawer ring — gold shimmer for Gold, silver for free
+    var drawerRing = document.getElementById('hb-drawer-ring');
+    if (drawerRing && !isGold) {
+      drawerRing.style.background = 'none';
+      drawerRing.style.border = '1.5px solid rgba(180,190,210,.28)';
+      drawerRing.style.inset = '0';
+      drawerRing.style.animation = 'none';
+      var drawerAvatarEl = document.getElementById('hb-drawer-avatar');
+      if (drawerAvatarEl) {
+        drawerAvatarEl.style.inset = '3px';
+        drawerAvatarEl.style.background = 'rgba(180,190,210,.07)';
+        var daSvg = drawerAvatarEl.querySelector('svg');
+        if (daSvg) daSvg.setAttribute('fill', 'rgba(180,190,210,.45)');
+      }
+    }
 
     // Update drawer
-        // Keep SVG in drawer — no initials
     if (drawerName) drawerName.textContent = name;
     if (drawerSub) drawerSub.textContent = isGold ? '👑 Gold Member' : 'Free Tier';
     if (signInSection) signInSection.style.display = 'none';
