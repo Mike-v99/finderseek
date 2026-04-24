@@ -1,71 +1,12 @@
+<!-- © 2026 FinderSeek. All rights reserved. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>FinderSeek — How It Works</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&display=swap" rel="stylesheet"/>
-<style>
-:root{
-  --ink:#0a0810;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--yellow:#fbbf24;
-  --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-
-
-.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px;}
-
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
-
-@keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
-.page-title{font-size:28px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.5),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
-
-.el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
-.el.visible{opacity:1;transform:translateY(0);}
-
-.step-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
-.step-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:400;flex-shrink:0;}
-
-/* bottom-nav removed */
-
-
-
-
-
-
-
-}
-
-/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
-.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
-body{padding-top:env(safe-area-inset-top,0px);}
-
-
-
-/* ── HAMBURGER NAV v2 ─────────────────────────────────────── */
-@keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
-.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
-.hb-backdrop.open{opacity:1;pointer-events:auto;}
-.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
-.hb-drawer.open{transform:translateX(0);}
-.hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
-.hb-nav-item:last-child{border-bottom:none;}
-.hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
-.hb-nav-item.active{background:rgba(232,168,32,.05);}
-.hb-nav-item.active .hb-nav-label{color:#e8a820;}
-
-/* ── ACCORDION ─────────────────────────────────────────────── */
-.acc-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.acc-body{display:none;padding:0 14px 14px;}
-.acc-body.open{display:block;}
-.acc-arrow{font-size:14px;color:rgba(255,255,255,.3);transition:transform .25s;line-height:1;flex-shrink:0;}
-.acc-arrow.open{transform:rotate(180deg);}
-.step-txt{font-size:17px;color:rgba(255,255,255,.8);line-height:1.5;}
-.tag{display:inline-block;font-size:12px;padding:3px 9px;border-radius:20px;margin-top:4px;}
-@keyframes goldShim{0%{background-position:-300% center;}100%{background-position:300% center;}}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>FinderSeek — Review Quest</title>
+<meta name="description" content="Review and edit your AI-generated treasure hunt clues before launch."/>
+<meta name="robots" content="noindex, nofollow"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
@@ -80,375 +21,1089 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{overflow-x:hidden;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
+.page{max-width:520px;margin:0 auto;padding:0 0 80px;}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.page{padding-bottom:calc(80px + env(safe-area-inset-bottom));}}
+
+/* Sticky topbar */
+.rv-topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(6,5,10,.95);backdrop-filter:blur(16px);z-index:100;}
+.rv-back{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cream);}
+.rv-title{font-size:17px;font-weight:400;color:#fff;text-align:center;}
+
+/* Meta strip */
+.rv-meta{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;}
+.rv-prize{font-size:32px;font-weight:200;color:#4ade80;line-height:1;}
+.rv-sep{width:1px;align-self:stretch;background:rgba(255,255,255,.07);}
+.rv-detail{flex:1;}
+.rv-detail-title{font-size:15px;color:#fff;}
+.rv-detail-sub{font-size:13px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* Tier row */
+.rv-tiers{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
+.rv-tier-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;letter-spacing:.5px;border:none;transition:all .2s;}
+
+/* Section label */
+.rv-section-label{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;padding:10px 16px 4px;}
+
+/* Clue list card */
+.rv-list{margin:0 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;}
+
+/* Location riddle card */
+.rv-location-card{margin:10px 12px 0;background:rgba(96,165,250,.04);border:1px solid rgba(96,165,250,.12);border-radius:14px;overflow:hidden;}
+.rv-location-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+.rv-location-body{padding:0 14px 14px;}
+
+/* Collapsed row */
+.rv-row{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);-webkit-tap-highlight-color:transparent;}
+.rv-row:last-child{border-bottom:none;}
+.rv-num{width:27px;height:27px;border-radius:8px;background:rgba(232,168,32,.1);color:rgba(232,168,32,.6);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s;}
+.rv-row.expanded .rv-num{background:rgba(232,168,32,.2);color:#e8a820;}
+.rv-row.expanded-qa .rv-num{background:rgba(96,165,250,.15);color:#60a5fa;}
+.rv-row-title{flex:1;font-size:14px;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rv-row.expanded .rv-row-title{color:#e8a820;}
+.rv-row.expanded-qa .rv-row-title{color:#60a5fa;}
+.rv-qa-dot{width:6px;height:6px;border-radius:50%;background:#60a5fa;flex-shrink:0;}
+
+/* Expanded body */
+.rv-expanded{display:none;border-top:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.01);}
+.rv-expanded.open{display:block;}
+.rv-expanded.open-gold{display:block;border-top-color:rgba(232,168,32,.1);background:rgba(232,168,32,.01);}
+.rv-expanded.open-blue{display:block;border-top-color:rgba(96,165,250,.1);background:rgba(96,165,250,.01);}
+
+/* Tab strip */
+.rv-tabs{display:flex;gap:3px;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;margin:12px 14px 10px;}
+.rv-tab{flex:1;padding:7px;border-radius:7px;text-align:center;font-size:13px;cursor:pointer;color:rgba(255,255,255,.3);transition:all .2s;}
+.rv-tab.active-clue{background:rgba(255,255,255,.1);color:#fff;}
+.rv-tab.active-qa{background:rgba(96,165,250,.15);color:#60a5fa;}
+
+/* Clue text box */
+.rv-clue-text{font-size:15px;color:#fff;line-height:1.6;padding:11px 13px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;margin:0 14px 10px;}
+.rv-clue-textarea{width:100%;min-height:80px;background:rgba(255,255,255,.04);border:1px solid rgba(232,168,32,.3);border-radius:8px;padding:10px 12px;font-size:15px;color:#fff;font-family:inherit;font-weight:400;line-height:1.6;outline:none;resize:vertical;}
+
+/* 2×2 action grid */
+.rv-act-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0 14px 14px;}
+.rv-act-btn{border:none;border-radius:8px;padding:9px 6px;font-size:13px;cursor:pointer;font-family:inherit;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;}
+.rv-act-btn.white{background:rgba(255,255,255,.06);color:rgba(255,255,255,.65);}
+.rv-act-btn.gold{background:rgba(232,168,32,.08);color:rgba(232,168,32,.8);}
+.rv-act-btn.save{background:rgba(74,222,128,.1);color:#4ade80;}
+.rv-act-btn.cancel{background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);}
+
+/* Q&A panel */
+.rv-qa-panel{margin:0 14px 14px;background:rgba(96,165,250,.05);border:1px solid rgba(96,165,250,.12);border-radius:10px;padding:12px;}
+.rv-qa-label{font-size:10px;color:rgba(96,165,250,.55);letter-spacing:1.5px;margin-bottom:10px;}
+.rv-qa-field-label{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.rv-qa-input{width:100%;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;color:#fff;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;}
+.rv-qa-input::placeholder{color:rgba(255,255,255,.2);}
+.rv-qa-input:focus{border-color:rgba(96,165,250,.4);}
+.rv-qa-btns{display:flex;gap:6px;}
+.rv-qa-save{flex:1;padding:8px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2);border-radius:8px;font-size:13px;color:#60a5fa;cursor:pointer;font-family:inherit;}
+.rv-qa-clear{padding:8px 12px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.12);border-radius:8px;font-size:13px;color:#f87171;cursor:pointer;font-family:inherit;}
+.rv-qa-hint{font-size:11px;color:rgba(255,255,255,.2);margin-top:8px;line-height:1.5;}
+
+/* Gold upsell pill */
+.rv-upsell{margin:8px 12px 0;background:rgba(232,168,32,.04);border:1px solid rgba(232,168,32,.1);border-radius:10px;padding:9px 13px;display:flex;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+
+/* Toast */
+.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:12px 18px;color:#f5ead8;font-size:17px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{border-color:rgba(239,68,68,.5);}
+.toast.success{border-color:rgba(34,197,94,.5);}
+
+/* Skeleton */
+.skel{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.08),rgba(255,255,255,.03));background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;border-radius:8px;}
+@keyframes skel{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* Gold modal animations */
+@keyframes rvSilverPulse{0%,100%{border-color:rgba(148,163,184,.5);box-shadow:none;color:rgba(226,232,240,.8);}50%{border-color:#94a3b8;box-shadow:0 0 14px rgba(148,163,184,.2);color:#e2e8f0;}}
+@keyframes rvGoldPulse{0%,100%{border-color:rgba(232,168,32,.5);box-shadow:none;color:rgba(232,168,32,.8);}50%{border-color:#e8a820;box-shadow:0 0 16px rgba(232,168,32,.25);color:#f5c842;}}
+@keyframes rvArrowPulse{0%,100%{opacity:.5;transform:translateY(0);}50%{opacity:1;transform:translateY(2px);}}
+
+/* Confirm footer */
+.confirm-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(10,8,16,.98) 40%);padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));z-index:50;}
+.confirm-footer-inner{max-width:520px;margin:0 auto;}
+.confirm-btn{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
+.confirm-btn:active{transform:scale(.98);}
+.confirm-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Payment modal */
+.pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
+.pm-backdrop.show{opacity:1;pointer-events:auto;}
+.pm-sheet{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(232,168,32,.25);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);}
+.pm-sheet.show{transform:translateY(0);}
+.pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
+.pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
+.pm-sub{font-size:17px;color:#fff;text-align:center;margin-bottom:22px;font-weight:400;}
+.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
+.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:17px;color:#fff;}
+.pm-row strong{color:var(--cream);font-weight:400;}
+.pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;}
+.pm-row.total strong{color:var(--gold2);font-size:20px;}
+#pm-error{color:#f87171;font-size:17px;margin-bottom:12px;min-height:17px;text-align:center;}
+.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
+.pm-pay-btn:active{transform:scale(.98);}
+.pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
+.pm-secure{text-align:center;font-size:17px;color:#fff;margin-top:12px;opacity:.7;}
+.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--cream);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
+</style>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
 
-<!-- Sticky topbar -->
-<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;">
-  <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </a>
-  <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">How It Works</div>
-  <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
-    <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
-      <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-      <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
-        <svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(180,190,210,.5)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
-      <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-      <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <div class="page">
 
-  <!-- Hero -->
-  <div style="padding:16px 14px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);">
-    <div style="font-size:26px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:goldShim 6s linear infinite;margin-bottom:5px;">Solve Clues. Win Cash.</div>
-    <div style="font-size:17px;color:rgba(255,255,255,.4);">Real treasure quests hidden in your city.</div>
+  <!-- Topbar -->
+  <div class="rv-topbar">
+    <div class="rv-back" onclick="window.location.replace('newquest.html')" aria-label="Back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <div class="rv-title">Review Quest</div>
+    <div style="width:36px;"></div>
   </div>
 
-  <!-- ── SEEKER SECTION ── -->
-  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
-
-    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(232,168,32,.04);">
-      <div style="font-size:20px;color:#e8a820;font-weight:400;">🔍 Seeker — Find Treasure</div>
-      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Join a quest and win real cash</div>
+  <!-- Meta strip -->
+  <div class="rv-meta">
+    <div id="rv-prize" class="rv-prize">—</div>
+    <div class="rv-sep"></div>
+    <div class="rv-detail">
+      <div id="rv-location" class="rv-detail-title">—</div>
+      <div id="rv-meta-sub" class="rv-detail-sub">—</div>
     </div>
+    <div id="rv-tier-pill" style="font-size:11px;color:#94a3b8;border:1px solid rgba(148,163,184,.18);border-radius:20px;padding:2px 9px;flex-shrink:0;">Free</div>
+  </div>
 
-    <!-- S1 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
+  <!-- Tier buttons -->
+  <div class="rv-tiers">
+    <button id="rv-free-btn" class="rv-tier-btn" style="background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;animation:rvSilverPulse 7s ease-in-out infinite;">FREE TIER</button>
+    <button id="rv-gold-btn" onclick="toggleRvGoldModal()" class="rv-tier-btn" style="background:rgba(255,255,255,.02);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);">GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;">↓</span></button>
+  </div>
+
+  <!-- Gold modal -->
+  <div id="rv-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border-bottom:1px solid rgba(232,168,32,.1);">
+    <div id="rv-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(251,191,36,.1);border:1px solid #fbbf24;color:#fbbf24;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:17px;color:#fff;">Browse &amp; Join a Quest</div>
+          <div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👑</div>
+          <div><div style="font-size:16px;font-weight:400;color:#fff;">Quest Master Gold</div><div style="font-size:13px;color:rgba(232,168,32,.5);margin-top:1px;">$3.99/mo · 30-day free trial</div></div>
         </div>
-        <div class="acc-arrow">▾</div>
+        <button onclick="toggleRvGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;">✕</button>
       </div>
-      <div class="acc-body">
-        <div class="step-txt">Browse quests on the home screen. Each quest shows the prize amount, city, and time remaining. Tap a quest to see the details — the map shows only the general area (city-level) until you arrive.</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-          <span class="tag" style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Free to join</span>
-          <span class="tag" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);color:#e8a820;">Real cash prizes</span>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;"><div style="font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:4px;">REGEN CLUES</div><div style="font-size:13px;color:rgba(255,255,255,.5);">Regenerate any clue</div></div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;"><div style="font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:4px;">ADJUST STYLE</div><div style="font-size:13px;color:rgba(255,255,255,.5);">Harder, easier, funnier</div></div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;"><div style="font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:4px;">3 PINS</div><div style="font-size:13px;color:rgba(255,255,255,.5);">Keep top quests visible</div></div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;"><div style="font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:4px;">GOLD BADGE</div><div style="font-size:13px;color:rgba(255,255,255,.5);">Verified on profile</div></div>
       </div>
-    </div>
-
-    <!-- S2 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.1);border:1px solid #34d399;color:#34d399;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:17px;color:#fff;">Head to the Quest Zone</div>
-        </div>
-        <div class="acc-arrow">▾</div>
-      </div>
-      <div class="acc-body">
-        <div class="step-txt">The quest is locked until you physically arrive near the hiding area. Once you're within <span style="color:#e8a820;">1,000 feet</span> of the treasure, a pulsing <strong style="font-weight:400;color:#4ade80;">"I'm Here — Unlock Quest"</strong> button appears.</div>
-        <div class="step-txt" style="margin-top:8px;">Tap it to unlock and start the quest. Your GPS confirms you're in the right area before the clues begin.</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-          <span class="tag" style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.15);color:#60a5fa;">GPS verified</span>
-          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);color:#a855f7;">1,000 ft radius</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- S3 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(244,114,182,.1);border:1px solid #f472b6;color:#f472b6;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:17px;color:#fff;">Solve the Clues</div>
-        </div>
-        <div class="acc-arrow">▾</div>
-      </div>
-      <div class="acc-body">
-        <div class="step-txt">Up to <span style="color:#e8a820;">6 clues</span> are revealed one at a time. Each clue has a riddle — answer it correctly to unlock the next one.</div>
-        <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;">
-          <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;">
-            <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:5px;">After each clue solved:</div>
-            <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;">
-              <span style="font-size:16px;">🗺️</span><span style="font-size:17px;color:#fff;">Map zooms in one level closer</span>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span style="font-size:16px;">📸</span><span style="font-size:17px;color:#fff;">Photo of hiding spot gets less blurry</span>
-            </div>
-          </div>
-          <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px 12px;">
-            <div style="font-size:13px;color:#e8a820;margin-bottom:4px;">Final clue:</div>
-            <div style="font-size:17px;color:#fff;">🔓 Fully clear photo of the hiding spot + fully zoomed map pinpointing the exact location. Go find it!</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- S4 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-          <div style="font-size:17px;color:#fff;">Find the PIN &amp; Claim Your Prize</div>
-        </div>
-        <div class="acc-arrow">▾</div>
-      </div>
-      <div class="acc-body">
-        <div class="step-txt">The Quest Master has hidden a <span style="color:#e8a820;">small card, envelope, or plastic bag</span> at the exact spot. Inside is a <strong style="font-weight:400;color:#4ade80;">6-digit PIN</strong>.</div>
-        <div class="step-txt" style="margin-top:8px;">Find it, enter the PIN into the quest screen, and the prize transfers <span style="color:#4ade80;">automatically</span> to your linked bank account.</div>
-        <div style="margin-top:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:10px 12px;">
-          <div style="font-size:13px;color:#4ade80;margin-bottom:4px;">💳 Banking required to receive prizes</div>
-          <div style="font-size:17px;color:rgba(255,255,255,.7);">Link a bank account via Stripe in your profile. Takes about 2 minutes to set up — prizes go straight to your bank automatically.</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="padding:10px 14px;">
-      <a href="index.html" style="display:block;background:linear-gradient(135deg,#92400e,#e8a820);border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#0a0800;text-decoration:none;font-family:inherit;">🔍 Find a Quest Near Me</a>
+      <button onclick="goGoldFromReview()" style="width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,#92400e,#f59e0b);color:#0a0500;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;">Try Gold Free for 30 Days →</button>
     </div>
   </div>
 
-  <!-- ── QUEST MASTER SECTION ── -->
-  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
-
-    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(96,165,250,.04);">
-      <div style="font-size:20px;color:#60a5fa;font-weight:400;">🏴‍☠️ Quest Master — Hide Treasure</div>
-      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Create a quest, fund the prize, watch it unfold</div>
+  <!-- Location riddle card -->
+  <div class="rv-section-label">START QUEST — LOCATION RIDDLE</div>
+  <div class="rv-location-card" id="location-riddle-card">
+    <div class="rv-location-head" onclick="toggleLocationRiddle()">
+      <div style="width:27px;height:27px;border-radius:8px;background:rgba(96,165,250,.15);color:#60a5fa;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">📍</div>
+      <div style="flex:1;font-size:14px;color:#60a5fa;">Location Riddle</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-right:6px;">GPS unlock</div>
+      <svg id="location-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.4)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-
-    <!-- QM1 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(96,165,250,.1);border:1px solid #60a5fa;color:#60a5fa;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:17px;color:#fff;">Pick a Spot &amp; Hide the PIN Provided</div>
-        </div>
-        <div class="acc-arrow">▾</div>
+    <div id="location-riddle-body" style="display:none;padding:0 14px 14px;">
+      <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:6px;line-height:1.5;">This riddle is shown before the quest starts. Seeker navigates to the area on their own. When they arrive within 1,000 feet, GPS unlocks the quest.</div>
+      <div id="location-riddle-text" style="font-size:15px;color:#fff;line-height:1.6;padding:11px 13px;background:rgba(96,165,250,.05);border:1px solid rgba(96,165,250,.12);border-radius:8px;margin-bottom:10px;">Loading...</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+        <button class="rv-act-btn white" onclick="editLocationRiddle()">✏️ Edit text</button>
+        <button class="rv-act-btn gold" onclick="regenLocationRiddle()">✨ Regenerate</button>
       </div>
-      <div class="acc-body">
-        <div class="step-txt">Choose a public location — a park, plaza, trail, or landmark. The app provides you with a 6-digit PIN. Write the 6-digit PIN provided by the app on a small piece of paper, card, or sticker and hide it at the exact spot.</div>
-        <div class="step-txt" style="margin-top:8px;">Then drop a pin on the map in the app to mark the hiding location. This stays <span style="color:#e8a820;">completely hidden</span> from seekers until they earn it through clues.</div>
-      </div>
-    </div>
-
-    <!-- QM2 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(168,85,247,.1);border:1px solid #a855f7;color:#a855f7;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:17px;color:#fff;">AI Writes Your Clues</div>
-        </div>
-        <div class="acc-arrow">▾</div>
-      </div>
-      <div class="acc-body">
-        <div class="step-txt">Describe the hiding spot in a few words — the AI generates up to 6 riddle clues that lead seekers from the general area to the exact location without giving it away immediately.</div>
-        <div class="step-txt" style="margin-top:8px;">You can review, edit, regenerate, or adjust the difficulty of each clue before going live.</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);color:#a855f7;">AI generated</span>
-          <span class="tag" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);">Fully editable</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- QM3 -->
-    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
-      <div class="acc-header" onclick="toggleAcc(this)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:17px;color:#fff;">Choose Prize &amp; Go Live</div>
-        </div>
-        <div class="acc-arrow">▾</div>
-      </div>
-      <div class="acc-body">
-        <div class="step-txt">Choose from pre-selected prizes from <span style="color:#4ade80;">$5 to $100</span>. The prize is held securely in escrow via Stripe — it's released automatically to the winner when they enter the correct PIN.</div>
-        <div class="step-txt" style="margin-top:8px;">If no one claims it before the timer expires, you get a full refund.</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-          <span class="tag" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Auto refund if unclaimed</span>
-          <span class="tag" style="background:rgba(99,91,255,.08);border:1px solid rgba(99,91,255,.2);color:#818cf8;">Held in escrow</span>
-        </div>
-      </div>
-    </div>
-
-    <div style="padding:10px 14px;">
-      <a href="newquest.html" style="display:block;background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#fff;text-decoration:none;font-family:inherit;">✨ Create a Quest</a>
     </div>
   </div>
 
-  <!-- Trust strip -->
-  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;display:flex;padding:12px 6px;">
-    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🔒</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Stripe<br/>secure</div></div>
-    <div style="flex:1;text-align:center;"><div style="font-size:20px;">⚡</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Auto<br/>payouts</div></div>
-    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🎯</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Skill<br/>based</div></div>
-    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🆓</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Free<br/>to play</div></div>
+  <!-- Clues list -->
+  <div class="rv-section-label" style="margin-top:6px;">CLUES 1–<span id="rv-clue-count-label">6</span> — TAP TO EDIT</div>
+  <div class="rv-list" id="clues-list">
+    <div style="padding:14px;"><div class="skel" style="height:14px;width:40%;margin-bottom:8px;"></div><div class="skel" style="height:14px;width:80%;"></div></div>
+    <div style="padding:14px;border-top:1px solid rgba(255,255,255,.05);"><div class="skel" style="height:14px;width:40%;margin-bottom:8px;"></div><div class="skel" style="height:14px;width:70%;"></div></div>
+    <div style="padding:14px;border-top:1px solid rgba(255,255,255,.05);"><div class="skel" style="height:14px;width:40%;margin-bottom:8px;"></div><div class="skel" style="height:14px;width:75%;"></div></div>
   </div>
 
-  <div style="text-align:center;padding:16px 0 0;font-size:13px;color:rgba(255,255,255,.2);">FinderSeek v1.0.0</div>
+  <!-- Gold upsell -->
+  <div class="rv-upsell" id="rv-upsell-pill" style="display:none;" onclick="toggleRvGoldModal()">
+    <span style="font-size:15px;">👑</span>
+    <div style="flex:1;font-size:13px;color:rgba(232,168,32,.7);">Gold: Regenerate, Harder, Easier, Funnier, Shorter</div>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.35)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
 
 </div>
 
+<div class="confirm-footer" id="confirm-footer" style="display:none;">
+  <div class="confirm-footer-inner">
+    <button class="confirm-btn" id="confirm-btn" onclick="openPaymentModal()">
+      Looks Good — Fund Quest →
+    </button>
+  </div>
+</div>
+
+<!-- ====== PAYMENT MODAL ====== -->
+<div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
+<div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+  <div class="pm-handle"></div>
+  <button class="pm-close" onclick="closePaymentModal()" aria-label="Close">✕</button>
+  <div class="pm-title" id="pm-title">Fund your quest</div>
+  <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
+
+  <div id="pm-user" style="text-align:center;font-size:15px;color:#d0e4f0;margin-bottom:16px;opacity:.7;"></div>
+
+  <div class="pm-breakdown" id="pm-breakdown"></div>
+
+  <div id="pm-nocancel" onclick="toggleNoCancelCheck()" style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;margin:14px 0 4px;cursor:pointer;user-select:none;">
+    <div id="pm-nocancel-box" style="width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(201,137,12,.5);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;"></div>
+    <div style="font-size:15px;color:#fff;line-height:1.5;font-weight:300;">I understand this quest <strong style="color:#fff;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
+  </div>
+
+  <div id="pm-error"></div>
+  <button class="pm-pay-btn" id="pm-pay-btn" type="button" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Pay & Go Live →</button>
+  <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
+</div>
+
+<!-- Email Gate Modal — for anonymous preview users before payment -->
+<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
+  <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
+    <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
+    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+      <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
+        <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+        <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+      </div>
+    </div>
+    <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
+    <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
+    <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;"/>
+    <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
+    <button id="eg-continue-btn" onclick="submitEmailGate()"
+      style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
+    <div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div><span>OR</span><div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
+    <div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
+      <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
+      <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
+    </div>
+    <div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
+  </div>
+</div>
+
 <script>
-function toggleAcc(header) {
-  var body = header.nextElementSibling;
-  var arrow = header.querySelector('.acc-arrow');
-  var isOpen = body.classList.contains('open');
-  // Close all in same card
-  var card = header.parentElement.parentElement;
-  card.querySelectorAll('.acc-body').forEach(function(b){ b.classList.remove('open'); });
-  card.querySelectorAll('.acc-arrow').forEach(function(a){ a.classList.remove('open'); });
-  if (!isOpen) {
-    body.classList.add('open');
-    arrow.classList.add('open');
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const supaClient = window.supabase ? window.supabase.createClient(SB, KEY) : null;
+const NOTIFY_SECRET = 'fs-notify-2026';
+const STRIPE_PUBLIC_KEY = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
+
+function getToken(){
+  var t = localStorage.getItem('fs_token');
+  if (t) return t;
+  try {
+    var keys = Object.keys(localStorage);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+        var session = JSON.parse(localStorage.getItem(keys[i]));
+        if (session && session.access_token) return session.access_token;
+      }
+    }
+  } catch(e){}
+  return '';
+}
+function getParam(n){ return new URLSearchParams(window.location.search).get(n); }
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(()=>t.className = 'toast', 3500);
+}
+
+let currentUser = null;
+let currentProfile = null;
+let hunt = null;
+let clues = [];
+let isPreviewMode = false;
+
+async function init(){
+  // ════════════════════════════════════════════════════════
+  // PREVIEW MODE — anonymous user, data in sessionStorage only
+  // ════════════════════════════════════════════════════════
+  if (getParam('preview') === '1') {
+    isPreviewMode = true;
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (!pending || !pending.hunt || !pending.clues) {
+        showToast('Preview data not found — start over', 'error');
+        setTimeout(()=>window.location.href='newquest.html', 1500);
+        return;
+      }
+      hunt = { id: 'preview', ...pending.hunt };
+      clues = pending.clues.map((c, i) => ({ id: 'preview-'+i, ...c }));
+      renderMeta();
+      renderClues();
+      document.getElementById('confirm-footer').style.display = 'block';
+      // Hide/adjust any "manage" actions that need a real hunt id
+      return;
+    } catch(e) {
+      console.error('Preview load error', e);
+      setTimeout(()=>window.location.href='newquest.html', 1500);
+      return;
+    }
+  }
+
+  const huntId = getParam('id');
+  if (!huntId) {
+    showToast('No quest ID', 'error');
+    setTimeout(()=>window.location.href='newquest.html', 1500);
+    return;
+  }
+
+  // Fetch auth
+  const token = getToken();
+  if (!token) {
+    showToast('Please sign in', 'error');
+    setTimeout(()=>window.location.href='profile.html', 1500);
+    return;
+  }
+  try {
+    const r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    if (!r.ok) throw new Error('auth failed');
+    currentUser = await r.json();
+  } catch(e) {
+    localStorage.removeItem('fs_token');
+    window.location.href='profile.html';
+    return;
+  }
+
+  // Fetch profile for is_pro flag
+  try {
+    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
+      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    const pd = await pr.json();
+    currentProfile = (pd && pd[0]) || {};
+  } catch(e) { currentProfile = {}; }
+
+  // Fetch hunt
+  const hr = await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId+'&select=*', {
+    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+  });
+  const hd = await hr.json();
+  if (!hd || !hd[0]) {
+    showToast('Quest not found', 'error');
+    setTimeout(()=>window.location.href='newquest.html', 1500);
+    return;
+  }
+  hunt = hd[0];
+
+  // Verify ownership
+  if (hunt.created_by !== currentUser.id && hunt.pirate_id !== currentUser.id) {
+    showToast("That's not your quest", 'error');
+    setTimeout(()=>window.location.href='profile.html', 1500);
+    return;
+  }
+
+  // Fetch clues
+  const cr = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=*&order=clue_number.asc', {
+    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+  });
+  clues = await cr.json();
+  if (!Array.isArray(clues) || clues.length === 0) {
+    showToast('No clues found for this quest', 'error');
+    return;
+  }
+
+  renderMeta();
+  renderClues();
+  document.getElementById('confirm-footer').style.display = 'block';
+}
+
+function renderMeta(){
+  const prize = (hunt.prize_value || 0) / 100;
+  const persona = hunt.clue_persona || 'pirate';
+  const personaEmoji = {pirate:'🏴‍☠️',poetic:'🌸',insults:'🤬',sarcastic:'😏',hillbilly:'🤠',kid:'🧸',grandma:'👵',surfer:'🏄',investigator:'🔍'}[persona] || '🏴‍☠️';
+
+  document.getElementById('rv-prize').textContent = '$' + prize.toFixed(0);
+  document.getElementById('rv-location').textContent = hunt.neighborhood || hunt.city || 'Quest';
+  document.getElementById('rv-meta-sub').textContent = personaEmoji + ' ' + persona.charAt(0).toUpperCase() + persona.slice(1) + ' · ' + clues.length + ' clues';
+  const clueLabel = document.getElementById('rv-clue-count-label');
+  if (clueLabel) clueLabel.textContent = clues.length;
+
+  // Render location riddle
+  const locationText = document.getElementById('location-riddle-text');
+  if (locationText) {
+    const riddle = hunt.location_riddle || (clues[0] && clues[0].clue_text) || '—';
+    locationText.textContent = riddle;
+  }
+
+  // Render tier buttons
+  renderRvTierButtons(!!(currentProfile && currentProfile.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date())));
+}
+
+function renderRvTierButtons(isGold) {
+  var freeBtn = document.getElementById('rv-free-btn');
+  var goldBtn = document.getElementById('rv-gold-btn');
+  if (!freeBtn || !goldBtn) return;
+
+  if (isGold) {
+    freeBtn.style.animation = 'none';
+    freeBtn.style.background = 'rgba(255,255,255,.02)';
+    freeBtn.style.border = '1.5px solid rgba(255,255,255,.08)';
+    freeBtn.style.color = 'rgba(255,255,255,.2)';
+    freeBtn.style.cursor = 'default';
+
+    goldBtn.style.animation = 'rvGoldPulse 7s ease-in-out infinite';
+    goldBtn.style.background = 'rgba(201,137,12,.2)';
+    goldBtn.style.border = '2px solid #e8a820';
+    goldBtn.style.color = '#f5c842';
+    goldBtn.style.cursor = 'default';
+    goldBtn.onclick = null;
+    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:15px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
+
+    // Add Gold badge to avatar
+    var av = document.getElementById('rv-avatar');
+    if (av) {
+      av.style.border = '2px solid #e8a820';
+      var badge = document.createElement('div');
+      badge.style.cssText = 'position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#0a0810;border:1px solid #e8a820;display:flex;align-items:center;justify-content:center;font-size:15px;';
+      badge.textContent = '👑';
+      av.style.position = 'relative';
+      av.appendChild(badge);
+    }
+  } else {
+    freeBtn.style.animation = 'rvSilverPulse 7s ease-in-out infinite';
+    freeBtn.style.background = 'rgba(148,163,184,.15)';
+    freeBtn.style.border = '2px solid #94a3b8';
+    freeBtn.style.color = '#e2e8f0';
+
+    goldBtn.style.animation = 'none';
+    goldBtn.style.background = 'rgba(255,255,255,.02)';
+    goldBtn.style.border = '1.5px solid rgba(232,168,32,.2)';
+    goldBtn.style.color = 'rgba(232,168,32,.35)';
+    goldBtn.style.cursor = 'pointer';
+    goldBtn.onclick = toggleRvGoldModal;
+    goldBtn.innerHTML = 'GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span>';
   }
 }
 
-var observer = new IntersectionObserver(function(entries){
-  entries.forEach(function(entry){
-    if(entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
-</script>
+var _rvGoldModalOpen = false;
+function closeEmailGate() {
+  var bd = document.getElementById('eg-backdrop');
+  var md = document.getElementById('eg-modal');
+  var inner = document.getElementById('eg-inner');
+  if (bd) bd.style.opacity = '0';
+  if (inner) { inner.style.opacity = '0'; inner.style.transform = 'scale(0.92)'; }
+  setTimeout(function(){
+    if (bd) bd.style.display = 'none';
+    if (md) md.style.display = 'none';
+  }, 250);
+}
 
+async function submitEmailGate() {
+  var email = document.getElementById('eg-email').value.trim();
+  var errEl = document.getElementById('eg-error');
+  var btn = document.getElementById('eg-continue-btn');
+  if (!email || !email.includes('@')) { errEl.textContent = 'Enter a valid email'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    var { error } = await supaClient.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: window.location.origin + '/profile.html?magic=1' }
+    });
+    if (error) throw error;
+    errEl.style.color = '#4ade80';
+    errEl.textContent = '✓ Check your email — tap the link to sign in and come back here';
+    btn.textContent = 'Email sent!';
+  } catch(e) {
+    errEl.style.color = '#f87171';
+    errEl.textContent = e.message || 'Something went wrong';
+    btn.disabled = false;
+    btn.textContent = 'Continue to Payment →';
+  }
+}
 
-<!-- HAMBURGER DRAWER v2 -->
-<div class="hb-backdrop" id="hb-backdrop"></div>
-<div class="hb-drawer" id="hb-drawer">
-  <!-- signin section -->
-  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:12px;" id="hb-signin-section" onclick="closeHamburger();window.location.href='profile.html';">
-    <div style="position:relative;width:42px;height:42px;flex-shrink:0;">
-      <div style="position:absolute;inset:-1px;border-radius:50%;border:1px dashed rgba(255,255,255,.15);"></div>
-      <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(180,190,210,.45)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-      </div>
-    </div>
-    <div style="flex:1;">
-      <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
-      <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
-    </div>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  <!-- profile section -->
-  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:10px;" id="hb-profile-section" onclick="closeHamburger();window.location.href='profile.html';">
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hb-drawer-name">—</div>
-      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:1px;flex-shrink:0;">
-      <div style="position:relative;width:36px;height:36px;">
-        <div id="hb-drawer-ring" style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div id="hb-drawer-avatar" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;padding:6px 4px;">
-        <div style="width:14px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div style="width:10px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820);opacity:.7;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;"></div>
-      </div>
-    </div>
-  </div>
-  <!-- nav links -->
-  <div style="flex:1;overflow-y:auto;">
-    <a class="hb-nav-item " href="index.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-      <span class="hb-nav-label" style="">Home</span>
-    </a>
-    <a class="hb-nav-item " href="index.html" onclick="closeHamburger();setTimeout(function(){var el=document.getElementById('quest-sections');if(el)el.scrollIntoView({behavior:'smooth'});},300);">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span class="hb-nav-label" style="">Browse Quests</span>
-    </a>
-    <a class="hb-nav-item " href="gold.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
-    </a>
-    <a class="hb-nav-item active" href="how-it-works.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      <span class="hb-nav-label" style="color:#e8a820;">How It Works</span>
-    </a>
-    <a class="hb-nav-item" href="terms.html" onclick="closeHamburger();">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
-      <span class="hb-nav-label">Terms of Service</span>
-    </a>
-  </div>
-  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:25px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
-</div>
-<script>
-(function(){
-  var _open=false;
-  function init(){
-    var btn=document.getElementById('hb-btn');
-    var bd=document.getElementById('hb-backdrop');
-    var dr=document.getElementById('hb-drawer');
-    if(!btn||!bd||!dr)return;
-    btn.addEventListener('click',function(){toggle(true);});
-    bd.addEventListener('click',function(){toggle(false);});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});
-    loadProfile();
+function toggleRvGoldModal() {
+  _rvGoldModalOpen = !_rvGoldModalOpen;
+  var modal = document.getElementById('rv-gold-modal');
+  var inner = document.getElementById('rv-gold-modal-inner');
+  var freeBtn = document.getElementById('rv-free-btn');
+  var goldBtn = document.getElementById('rv-gold-btn');
+  var arrow  = document.getElementById('rv-gold-arrow');
+
+  if (_rvGoldModalOpen) {
+    modal.style.maxHeight = '500px';
+    setTimeout(function(){ inner.style.opacity='1'; inner.style.transform='translateY(0)'; }, 50);
+    if (freeBtn) { freeBtn.style.animation='none'; freeBtn.style.border='1.5px solid rgba(255,255,255,.08)'; freeBtn.style.color='rgba(255,255,255,.2)'; freeBtn.style.background='rgba(255,255,255,.02)'; }
+    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.5)'; goldBtn.style.color='rgba(232,168,32,.7)'; }
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  } else {
+    modal.style.maxHeight = '0';
+    inner.style.opacity = '0';
+    inner.style.transform = 'translateY(-12px)';
+    if (freeBtn) { freeBtn.style.animation='rvSilverPulse 7s ease-in-out infinite'; freeBtn.style.border='2px solid #94a3b8'; freeBtn.style.color='#e2e8f0'; freeBtn.style.background='rgba(148,163,184,.15)'; }
+    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.2)'; goldBtn.style.color='rgba(232,168,32,.35)'; }
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
   }
-  function toggle(open){
-    _open=open===undefined?!_open:open;
-    var bd=document.getElementById('hb-backdrop');
-    var dr=document.getElementById('hb-drawer');
-    if(bd)bd.classList.toggle('open',_open);
-    if(dr)dr.classList.toggle('open',_open);
-    // Lock body scroll when drawer is open
-    if(_open){
-      document.body.style.overflow='hidden';
-      document.body.style.touchAction='none';
-    } else {
-      document.body.style.overflow='';
-      document.body.style.touchAction='';
-    }
+}
+
+function goGoldFromReview() {
+  sessionStorage.setItem('fs_gold_return', 'review');
+  window.location.href = 'gold.html';
+}
+
+/* Loading skeleton */
+
+function renderClues(){
+  const isPro = !!(currentProfile && currentProfile.is_pro);
+  const list = document.getElementById('clues-list');
+  list.innerHTML = clues.map((c, i) => renderClueRow(c, i, isPro)).join('');
+  // Show upsell pill for free users
+  const upsell = document.getElementById('rv-upsell-pill');
+  if (upsell) upsell.style.display = isPro ? 'none' : 'flex';
+}
+
+// Track which clue is expanded and which tab is active
+var _expandedClue = null;
+var _expandedTab = 'clue'; // 'clue' or 'qa'
+
+function toggleClueRow(clueId, tab) {
+  tab = tab || 'clue';
+  if (_expandedClue === clueId && _expandedTab === tab) {
+    // Collapse
+    _expandedClue = null;
+  } else {
+    _expandedClue = clueId;
+    _expandedTab = tab;
   }
-  window.closeHamburger=function(){toggle(false);};
-  function loadProfile(){
-    var token='';
-    try{
-      var keys=Object.keys(localStorage);
-      for(var i=0;i<keys.length;i++){
-        if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){
-          var s=JSON.parse(localStorage.getItem(keys[i]));
-          if(s&&s.access_token){token=s.access_token;break;}
-        }
+  renderClues();
+  // Scroll expanded clue into view
+  if (_expandedClue) {
+    setTimeout(function(){
+      var el = document.getElementById('rv-expanded-'+_expandedClue);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 50);
+  }
+}
+
+function switchTab(clueId, tab) {
+  _expandedClue = clueId;
+  _expandedTab = tab;
+  renderClues();
+}
+
+function renderClueRow(c, idx, isPro){
+  const isExp = _expandedClue === c.id;
+  const isQaTab = isExp && _expandedTab === 'qa';
+  const hasQA = !!(c.clue_question && c.clue_answer);
+  const rowClass = isExp ? (isQaTab ? 'rv-row expanded-qa' : 'rv-row expanded') : 'rv-row';
+  const expandedClass = isExp ? (isQaTab ? 'rv-expanded open-blue' : 'rv-expanded open-gold') : 'rv-expanded';
+  const preview = isExp ? ('Clue ' + c.clue_number) : escapeHtml((c.clue_text||'').substring(0, 45) + ((c.clue_text||'').length > 45 ? '...' : ''));
+  const chevron = isExp
+    ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${isQaTab ? 'rgba(96,165,250,.4)' : 'rgba(232,168,32,.4)'}" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>`
+    : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+  // Clue tab content
+  const clueTabContent = `
+    <div class="rv-clue-text" id="clue-text-${c.id}">${escapeHtml(c.clue_text || '')}</div>
+    <div class="rv-act-grid" id="clue-actions-${c.id}">
+      <button class="rv-act-btn white" onclick="startEdit('${c.id}');event.stopPropagation();">✏️ Edit text</button>
+      <button class="rv-act-btn gold" onclick="${isPro ? `regenerateClue('${c.id}')` : 'toggleRvGoldModal()'};event.stopPropagation();" ${isPro ? '' : 'title="Gold only"'}>✨ Regenerate</button>
+      <button class="rv-act-btn gold" onclick="${isPro ? `adjustClue('${c.id}','harder')` : 'toggleRvGoldModal()'};event.stopPropagation();">🎯 Harder</button>
+      <button class="rv-act-btn gold" onclick="${isPro ? `adjustClue('${c.id}','easier')` : 'toggleRvGoldModal()'};event.stopPropagation();">🎈 Easier</button>
+      <button class="rv-act-btn gold" onclick="${isPro ? `adjustClue('${c.id}','funnier')` : 'toggleRvGoldModal()'};event.stopPropagation();">😂 Funnier</button>
+      <button class="rv-act-btn gold" onclick="${isPro ? `adjustClue('${c.id}','shorter')` : 'toggleRvGoldModal()'};event.stopPropagation();">✂️ Shorter</button>
+    </div>`;
+
+  // Q&A tab content
+  const qaTabContent = `
+    <div class="rv-qa-panel">
+      <div class="rv-qa-label">SEEKER ANSWERS TO UNLOCK CLUE ${c.clue_number + 1 <= clues.length ? c.clue_number + 1 : '(final — unlocks PIN entry)'}</div>
+      <div class="rv-qa-field-label">Question shown to seeker</div>
+      <input class="rv-qa-input" id="qa-q-${c.id}" value="${escapeHtml(c.clue_question||'')}" placeholder="e.g. What direction does the bench face?"/>
+      <div class="rv-qa-field-label">Correct answer</div>
+      <input class="rv-qa-input" id="qa-a-${c.id}" value="${escapeHtml(c.clue_answer||'')}" placeholder="e.g. East"/>
+      <div class="rv-qa-btns">
+        <button class="rv-qa-save" onclick="saveQA('${c.id}');event.stopPropagation();">Save Q&A</button>
+        <button class="rv-qa-clear" onclick="clearQA('${c.id}');event.stopPropagation();">Clear</button>
+      </div>
+      <div class="rv-qa-hint">Case-insensitive matching. The final clue's Q&A unlocks the PIN entry screen.</div>
+    </div>`;
+
+  return `
+    <div class="${rowClass}" id="rv-row-${c.id}" onclick="toggleClueRow('${c.id}','clue')" style="border-bottom:1px solid rgba(255,255,255,.05);">
+      <div class="rv-num">${c.clue_number}</div>
+      <div class="rv-row-title">${preview}</div>
+      ${hasQA ? '<div class="rv-qa-dot" title="Q&A set"></div>' : ''}
+      ${chevron}
+    </div>
+    <div class="${expandedClass}" id="rv-expanded-${c.id}">
+      <div class="rv-tabs">
+        <div class="rv-tab ${isQaTab ? 'inactive' : 'active-clue'}" onclick="switchTab('${c.id}','clue');event.stopPropagation();">📝 Clue</div>
+        <div class="rv-tab ${isQaTab ? 'active-qa' : 'inactive'}" onclick="switchTab('${c.id}','qa');event.stopPropagation();">❓ Q&A</div>
+      </div>
+      ${isQaTab ? qaTabContent : clueTabContent}
+    </div>`;
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function startEdit(clueId){
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  document.getElementById('clue-text-'+clueId).innerHTML =
+    `<textarea class="rv-clue-textarea" id="clue-input-${clueId}">${escapeHtml(c.clue_text)}</textarea>`;
+  document.getElementById('clue-actions-'+clueId).innerHTML = `
+    <button class="rv-act-btn save" onclick="saveEdit('${clueId}');event.stopPropagation();">✓ Save</button>
+    <button class="rv-act-btn cancel" onclick="renderClues();event.stopPropagation();">Cancel</button>`;
+  const ta = document.getElementById('clue-input-'+clueId);
+  if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; }
+}
+
+async function saveEdit(clueId){
+  const newText = document.getElementById('clue-input-'+clueId).value.trim();
+  if (!newText) { showToast('Clue cannot be empty', 'error'); return; }
+
+  if (isPreviewMode) {
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) {
+        const idx = clues.findIndex(x => x.id === clueId);
+        if (idx >= 0) pending.clues[idx].clue_text = newText;
+        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
       }
-      if(!token)token=localStorage.getItem('fs_token')||'';
-    }catch(e){}
-    var si=document.getElementById('hb-signin-section');
-    var sp=document.getElementById('hb-profile-section');
-    if(!token){
-      if(si)si.style.display='flex';
-      if(sp)sp.style.display='none';
-      return;
-    }
-    fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{
-      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
-    }).then(function(r){return r.ok?r.json():null;}).then(function(u){
-      if(!u||!u.id){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}
-      fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{
-        headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
-      }).then(function(r){return r.json();}).then(function(pd){
-        var p=pd&&pd[0];
-        var uname=(p&&p.username)||(u.email?u.email.split('@')[0]:'User');
-        var init=uname.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';
-        var isGold=p&&p.is_pro;
-        // Update topbar ring avatar
-        // Topbar — keep avatar SVG, just brighten ring when signed in
-        var avSvg=document.getElementById('hb-avatar-svg');
-        if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
-        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
-        // Update drawer
-        var da=document.getElementById('hb-drawer-avatar');
-        if(da)da.textContent=init;
-        var dn=document.getElementById('hb-drawer-name');
-        if(dn)dn.textContent=uname;
-        var ds=document.getElementById('hb-drawer-sub');
-        if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
-        if(si)si.style.display='none';
-        if(sp)sp.style.display='flex';
-      }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
-    }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
+    } catch(e){}
+    renderClues();
+    showToast('Saved', 'success');
+    return;
   }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
-})();
+
+  try {
+    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_text: newText })
+    });
+    if (!r.ok) throw new Error('save failed');
+    const c = clues.find(x => x.id === clueId);
+    if (c) c.clue_text = newText;
+    renderClues();
+    showToast('Saved', 'success');
+  } catch(e) {
+    showToast('Save failed — try again', 'error');
+  }
+}
+
+function cancelEdit(clueId){ renderClues(); }
+
+// ── Q&A save / clear ─────────────────────────────────────────
+function saveQA(clueId){
+  const q = (document.getElementById('qa-q-'+clueId).value||'').trim();
+  const a = (document.getElementById('qa-a-'+clueId).value||'').trim();
+  if (!q || !a) { showToast('Enter both question and answer', 'error'); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (c) { c.clue_question = q; c.clue_answer = a; }
+
+  if (isPreviewMode) {
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) {
+        const idx = clues.findIndex(x => x.id === clueId);
+        if (idx >= 0) { pending.clues[idx].clue_question = q; pending.clues[idx].clue_answer = a; }
+        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+      }
+    } catch(e){}
+    renderClues();
+    showToast('Q&A saved', 'success');
+    return;
+  }
+
+  fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+    method:'PATCH',
+    headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+    body: JSON.stringify({ clue_question: q, clue_answer: a })
+  }).then(r => {
+    if (!r.ok) throw new Error('save failed');
+    renderClues();
+    showToast('Q&A saved', 'success');
+  }).catch(() => showToast('Save failed', 'error'));
+}
+
+function clearQA(clueId){
+  const c = clues.find(x => x.id === clueId);
+  if (c) { c.clue_question = ''; c.clue_answer = ''; }
+  if (isPreviewMode) {
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) {
+        const idx = clues.findIndex(x => x.id === clueId);
+        if (idx >= 0) { pending.clues[idx].clue_question = ''; pending.clues[idx].clue_answer = ''; }
+        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+      }
+    } catch(e){}
+  } else {
+    fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ clue_question: '', clue_answer: '' })
+    }).catch(()=>{});
+  }
+  renderClues();
+  showToast('Q&A cleared', 'success');
+}
+
+// ── Location riddle toggle / edit / regen ────────────────────
+function toggleLocationRiddle(){
+  const body = document.getElementById('location-riddle-body');
+  const arrow = document.getElementById('location-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
+function editLocationRiddle(){
+  const textEl = document.getElementById('location-riddle-text');
+  const current = hunt.location_riddle || '';
+  textEl.innerHTML = `<textarea class="rv-clue-textarea" id="location-riddle-input">${escapeHtml(current)}</textarea>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
+      <button class="rv-act-btn save" onclick="saveLocationRiddle()">✓ Save</button>
+      <button class="rv-act-btn cancel" onclick="cancelLocationRiddle()">Cancel</button>
+    </div>`;
+  const ta = document.getElementById('location-riddle-input');
+  if (ta) ta.focus();
+}
+
+function saveLocationRiddle(){
+  const val = (document.getElementById('location-riddle-input').value||'').trim();
+  if (!val) { showToast('Riddle cannot be empty', 'error'); return; }
+  hunt.location_riddle = val;
+  if (isPreviewMode) {
+    try {
+      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+      if (pending) { pending.hunt.location_riddle = val; localStorage.setItem('fs_pending_quest', JSON.stringify(pending)); }
+    } catch(e){}
+  } else {
+    fetch(SB+'/rest/v1/hunts?id=eq.'+hunt.id, {
+      method:'PATCH',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ location_riddle: val })
+    }).catch(()=>{});
+  }
+  document.getElementById('location-riddle-text').textContent = val;
+  document.getElementById('location-riddle-text').innerHTML = escapeHtml(val);
+  renderMeta();
+  showToast('Location riddle saved', 'success');
+}
+
+function cancelLocationRiddle(){
+  document.getElementById('location-riddle-text').textContent = hunt.location_riddle || '—';
+}
+
+async function regenLocationRiddle(){
+  const textEl = document.getElementById('location-riddle-text');
+  const originalText = textEl.textContent;
+  textEl.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,.4);">✨ Generating...</div>';
+  try {
+    const r = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hunt.hiding_spot || hunt.neighborhood || '',
+        clueCount: clues.length,
+        lat: hunt.lat, lng: hunt.lng,
+        persona: hunt.clue_persona || 'pirate',
+        city: hunt.city || '',
+        neighborhood: hunt.neighborhood || '',
+        searchAddress: hunt.city || '',
+        singleClue: { position: 0, totalCount: clues.length } // 0 = location riddle
+      })
+    });
+    const d = await r.json();
+    const newRiddle = d.location_riddle || d.clue?.text || originalText;
+    hunt.location_riddle = newRiddle;
+    if (isPreviewMode) {
+      try {
+        const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+        if (pending) { pending.hunt.location_riddle = newRiddle; localStorage.setItem('fs_pending_quest', JSON.stringify(pending)); }
+      } catch(e){}
+    }
+    textEl.textContent = newRiddle;
+    showToast('Location riddle regenerated', 'success');
+  } catch(e) {
+    textEl.textContent = originalText;
+    showToast('Regenerate failed', 'error');
+  }
+}
+
+// ── Adjust clue style (harder/easier/funnier/shorter) ────────
+async function adjustClue(clueId, style){
+  if (!currentProfile.is_pro) { toggleRvGoldModal(); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const actionsEl = document.getElementById('clue-actions-'+clueId);
+  if (actionsEl) actionsEl.innerHTML = `<div style="font-size:13px;color:rgba(255,255,255,.4);padding:4px 14px;">✨ Adjusting...</div>`;
+  const stylePrompts = {
+    harder: 'Make this clue significantly harder — more cryptic, more metaphorical, less direct.',
+    easier: 'Make this clue easier — more direct, clearer language, less cryptic.',
+    funnier: 'Make this clue funnier and more playful while keeping the location hint intact.',
+    shorter: 'Shorten this clue to 1 sentence maximum while keeping the essential location hint.',
+  };
+  try {
+    const r = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hunt.hiding_spot || hunt.neighborhood || '',
+        clueCount: clues.length,
+        lat: hunt.lat, lng: hunt.lng,
+        persona: hunt.clue_persona || 'pirate',
+        city: hunt.city || '',
+        neighborhood: hunt.neighborhood || '',
+        searchAddress: hunt.city || '',
+        singleClue: { position: c.clue_number, totalCount: clues.length },
+        prompt: `${stylePrompts[style]}\n\nOriginal clue: "${c.clue_text}"\n\nKeep the same geographic information and persona voice. Return JSON: {"number": ${c.clue_number}, "text": "rewritten clue here", "question": "question here", "answer": "answer here"}`
+      })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.clue) throw new Error(d.error || 'Failed');
+    if (!isPreviewMode) {
+      await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+        method:'PATCH',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+        body: JSON.stringify({ clue_text: d.clue.text, clue_question: d.clue.question||c.clue_question, clue_answer: d.clue.answer||c.clue_answer })
+      });
+    }
+    c.clue_text = d.clue.text;
+    if (d.clue.question) c.clue_question = d.clue.question;
+    if (d.clue.answer) c.clue_answer = d.clue.answer;
+    if (isPreviewMode) {
+      try {
+        const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+        if (pending) { const idx = clues.findIndex(x=>x.id===clueId); if(idx>=0) pending.clues[idx]=c; localStorage.setItem('fs_pending_quest', JSON.stringify(pending)); }
+      } catch(e){}
+    }
+    renderClues();
+    showToast('✨ Clue adjusted', 'success');
+  } catch(e) {
+    showToast('Adjust failed — try again', 'error');
+    renderClues();
+  }
+}
+
+async function regenerateClue(clueId){
+  if (!currentProfile.is_pro) { toggleRvGoldModal(); return; }
+  const c = clues.find(x => x.id === clueId);
+  if (!c) return;
+  const actionsEl = document.getElementById('clue-actions-'+clueId);
+  if (actionsEl) actionsEl.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,.4);padding:4px 0;">✨ Generating new clue...</div>';
+  try {
+    const r = await fetch('/api/generate-clues', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description: hunt.hiding_spot || hunt.neighborhood || '',
+        clueCount: clues.length,
+        lat: hunt.lat, lng: hunt.lng,
+        persona: hunt.clue_persona || 'pirate',
+        city: hunt.city || '',
+        neighborhood: hunt.neighborhood || '',
+        searchAddress: hunt.city || '',
+        singleClue: { position: c.clue_number, totalCount: clues.length }
+      })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.clue) throw new Error(d.error || 'Generation failed');
+    if (!isPreviewMode) {
+      await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
+        method:'PATCH',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+        body: JSON.stringify({ clue_text: d.clue.text, clue_question: d.clue.question||'', clue_answer: d.clue.answer||'' })
+      });
+    }
+    c.clue_text = d.clue.text;
+    if (d.clue.question) c.clue_question = d.clue.question;
+    if (d.clue.answer) c.clue_answer = d.clue.answer;
+    if (isPreviewMode) {
+      try {
+        const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
+        if (pending) { const idx = clues.findIndex(x=>x.id===clueId); if(idx>=0) pending.clues[idx]=c; localStorage.setItem('fs_pending_quest', JSON.stringify(pending)); }
+      } catch(e){}
+    }
+    renderClues();
+    showToast('✨ New clue generated', 'success');
+  } catch(e) {
+    showToast('Regenerate failed — try again', 'error');
+    renderClues();
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  PAYMENT MODAL — Stripe Checkout redirect
+// ════════════════════════════════════════════════════
+
+async function openPaymentModal() {
+  // If no currentUser but token exists, try loading user first
+  if (!currentUser && getToken()) {
+    try {
+      var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});
+      if (ur.ok) { currentUser = await ur.json(); }
+    } catch(e){}
+  }
+
+  // If still not logged in, show email gate first
+  if (!currentUser) {
+    try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
+    var bd = document.getElementById('eg-backdrop');
+    var md = document.getElementById('eg-modal');
+    var inner = document.getElementById('eg-inner');
+    bd.style.display = 'block';
+    md.style.display = 'flex';
+    setTimeout(function(){
+      bd.style.opacity = '1';
+      if (inner) { inner.style.opacity = '1'; inner.style.transform = 'scale(1)'; }
+    }, 10);
+    return;
+  }
+
+  var prize = (hunt.prize_value || 0) / 100;
+  var fee   = Math.round(prize * 0.10 * 100) / 100;
+  var total = prize + fee;
+  var breakdown = document.getElementById('pm-breakdown');
+
+  // Populate breakdown
+  breakdown.innerHTML =
+    '<div class="pm-row"><span>Prize amount</span><span>$' + prize.toFixed(2) + '</span></div>' +
+    '<div class="pm-row"><span>FinderSeek fee (10%)</span><span>$' + fee.toFixed(2) + '</span></div>' +
+    '<div class="pm-row pm-total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
+
+  // Show user
+  var userEl = document.getElementById('pm-user');
+  if (currentUser) {
+    userEl.textContent = currentUser.email;
+  } else {
+    userEl.innerHTML = '';
+  }
+
+  // Reset checkbox and button
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  box.dataset.checked = 'false';
+  box.style.background = '';
+  box.style.borderColor = 'rgba(201,137,12,.5)';
+  box.innerHTML = '';
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.style.cursor = 'not-allowed';
+  btn.textContent = 'Pay & Go Live →';
+  document.getElementById('pm-error').textContent = '';
+
+  // Show modal
+  document.getElementById('pm-backdrop').classList.add('show');
+  document.getElementById('pm-sheet').classList.add('show');
+}
+
+function toggleNoCancelCheck() {
+  var box = document.getElementById('pm-nocancel-box');
+  var btn = document.getElementById('pm-pay-btn');
+  var checked = box.dataset.checked !== 'true';
+  box.dataset.checked = checked;
+  if (checked) {
+    box.style.background = '#c9890c';
+    box.style.borderColor = '#c9890c';
+    box.innerHTML = '<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    box.style.background = '';
+    box.style.borderColor = 'rgba(201,137,12,.5)';
+    box.innerHTML = '';
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function closePaymentModal() {
+  document.getElementById('pm-backdrop').classList.remove('show');
+  document.getElementById('pm-sheet').classList.remove('show');
+}
+
+async function submitPayment() {
+  var btn = document.getElementById('pm-pay-btn');
+  var errEl = document.getElementById('pm-error');
+  errEl.textContent = '';
+
+  // Guard — user must be signed in
+  if (!currentUser) {
+    errEl.textContent = 'Please sign in first to fund your quest.';
+    btn.disabled = false;
+    btn.textContent = 'Pay & Go Live →';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Opening Stripe...';
+
+  try {
+    var prize = (hunt.prize_value || 0) / 100;
+    var total = prize + prize * 0.10;
+    var r = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({
+        type: 'escrow',
+        userId: currentUser.id,
+        email: currentUser.email,
+        huntId: hunt.id,
+        prizeAmount: prize,
+        totalCents: Math.round(total * 100)
+      })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
+    // Redirect to Stripe Checkout
+    window.location.href = d.url;
+  } catch(e) {
+    errEl.textContent = e.message || 'Payment failed — please try again';
+    btn.disabled = false;
+    btn.textContent = 'Pay & Go Live →';
+  }
+}
+
+// ════════════════════════════════════════════════════
+// Service worker
+// ════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+}
+
+// Init
+init();
 </script>
 </body>
 </html>
