@@ -9,8 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"/>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A&libraries=places"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
@@ -1837,48 +1836,62 @@ function clearPhoto() {
   document.getElementById('photo-gallery-input').value = '';
 }
 
-// Mapbox GL JS loaded in head
 
 function initMap(lat, lng) {
   if (_mapReady) { flyTo(lat, lng); return; }
   var loading = document.getElementById('map-loading');
   if (loading) loading.remove();
-  mapboxgl.accessToken = 'pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA';
   _mapReady = true;
-  _map = new mapboxgl.Map({
-    container: 'map-container',
-    style: 'mapbox://styles/mapbox/dark-v11',
-    center: [lng, lat],
+  var mapEl = document.getElementById('map-container');
+  _map = new google.maps.Map(mapEl, {
+    center: { lat: lat, lng: lng },
     zoom: 15,
-    attributionControl: false
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'greedy',
+    styles: [
+      {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
+      {elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+      {elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},
+      {featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},
+      {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#8892a4'}]},
+      {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},
+      {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},
+      {featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},
+      {featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+      {featureType:'transit',elementType:'geometry',stylers:[{color:'#2d2d44'}]},
+      {featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}
+    ]
   });
-  var el = document.createElement('div');
-  el.style.cssText = 'font-size:34px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.7));cursor:grab;';
-  el.textContent = '📍';
-  _marker = new mapboxgl.Marker({ element: el, draggable: true, anchor: 'bottom' })
-    .setLngLat([lng, lat]).addTo(_map);
+  _marker = new google.maps.Marker({
+    position: { lat: lat, lng: lng },
+    map: _map,
+    draggable: true,
+    icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40"><text y="34" font-size="34" filter="drop-shadow(0 3px 8px rgba(0,0,0,.7))">📍</text></svg>'), scaledSize: new google.maps.Size(34, 40), anchor: new google.maps.Point(17, 40) }
+  });
   setCoords(lat, lng);
-  _marker.on('drag', function() {
-    var p = _marker.getLngLat();
-    setCoords(p.lat, p.lng);
+  google.maps.event.addListener(_marker, 'drag', function() {
+    var p = _marker.getPosition();
+    setCoords(p.lat(), p.lng());
   });
-  _marker.on('dragend', function() {
-    var p = _marker.getLngLat();
-    selectedLat = p.lat; selectedLng = p.lng;
-    setCoords(p.lat, p.lng); reverseGeocode(p.lat, p.lng);
+  google.maps.event.addListener(_marker, 'dragend', function() {
+    var p = _marker.getPosition();
+    selectedLat = p.lat(); selectedLng = p.lng();
+    setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
     if (typeof saveFormState === 'function') saveFormState();
   });
-  _map.on('click', function(e) {
-    selectedLat = e.lngLat.lat; selectedLng = e.lngLat.lng;
-    _marker.setLngLat([selectedLng, selectedLat]);
+  google.maps.event.addListener(_map, 'click', function(e) {
+    selectedLat = e.latLng.lat(); selectedLng = e.latLng.lng();
+    _marker.setPosition(e.latLng);
     setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
     if (typeof saveFormState === 'function') saveFormState();
   });
 }
 
 function flyTo(lat, lng) {
-  _map.flyTo({ center: [lng, lat], zoom: 16, duration: 1200 });
-  _marker.setLngLat([lng, lat]);
+  _map.panTo({ lat: lat, lng: lng });
+  _map.setZoom(17);
+  _marker.setPosition({ lat: lat, lng: lng });
   selectedLat = lat; selectedLng = lng; setCoords(lat, lng);
 }
 
@@ -1892,14 +1905,15 @@ function setCoords(lat, lng) {
 
 async function reverseGeocode(lat, lng) {
   try {
-    var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + lng + ',' + lat + '.json?access_token=pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA&types=address,poi,neighborhood,locality,place&language=en';
-    var r = await fetch(url);
-    var d = await r.json();
-    if (d.features && d.features.length) {
-      document.getElementById('map-search').value = d.features[0].place_name;
-    }
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat: lat, lng: lng } }, function(results, status) {
+      if (status === 'OK' && results[0]) {
+        document.getElementById('map-search').value = results[0].formatted_address;
+      }
+    });
   } catch(e) { console.error('Reverse geocode failed', e); }
 }
+
 
 
 function scrollToMap() {
@@ -1955,25 +1969,40 @@ function liveSearch(val) {
   searchTimeout = setTimeout(() => fetchSearchResults(val), 350);
 }
 
+var _placesService = null;
+var _autocompleteService = null;
+
+function getPlacesService() {
+  if (!_autocompleteService) _autocompleteService = new google.maps.places.AutocompleteService();
+  return _autocompleteService;
+}
+
 async function fetchSearchResults(query) {
   try {
+    var svc = getPlacesService();
     var biasLat = selectedLat || 29.7604, biasLng = selectedLng || -95.3698;
-    var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(query) + '.json?access_token=pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA&autocomplete=true&limit=6&country=us&language=en&proximity=' + biasLng + ',' + biasLat + '&types=poi,address,neighborhood,locality,place,district';
-    var r = await fetch(url);
-    var d = await r.json();
-    searchResults = d.features || [];
-    var dropdown = document.getElementById('search-dropdown');
-    if (!searchResults.length) { dropdown.classList.remove('show'); return; }
-    dropdown.innerHTML = searchResults.map(function(f, i) {
-      var main = f.text || f.place_name.split(',')[0];
-      var sub = f.place_name.replace(main + ', ', '').split(',').slice(0,2).join(',').trim();
-      var cat = f.properties && f.properties.category;
-      var icon = (cat && cat.includes('park')) ? '🌳' : f.place_type[0] === 'address' ? '🏠' : f.place_type[0] === 'poi' ? '📍' : '📌';
-      return '<div class="search-result" onclick="selectResult(' + i + ')" onmouseover="highlightResult(' + i + ')">' +
-        '<div class="search-result-icon">' + icon + '</div>' +
-        '<div><div class="search-result-main">' + main + '</div><div class="search-result-sub">' + sub + '</div></div></div>';
-    }).join('');
-    dropdown.classList.add('show'); selectedResultIdx = -1;
+    var circle = new google.maps.Circle({ center: { lat: biasLat, lng: biasLng }, radius: 50000 });
+    svc.getPlacePredictions({
+      input: query,
+      bounds: circle.getBounds(),
+      componentRestrictions: { country: 'us' },
+      types: ['establishment', 'geocode']
+    }, function(predictions, status) {
+      var dropdown = document.getElementById('search-dropdown');
+      if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions) {
+        dropdown.classList.remove('show'); return;
+      }
+      searchResults = predictions;
+      dropdown.innerHTML = predictions.map(function(p, i) {
+        var main = p.structured_formatting.main_text;
+        var sub = p.structured_formatting.secondary_text || '';
+        var icon = p.types.includes('park') ? '🌳' : p.types.includes('street_address') ? '🏠' : '📍';
+        return '<div class="search-result" onclick="selectResult(' + i + ')" onmouseover="highlightResult(' + i + ')">' +
+          '<div class="search-result-icon">' + icon + '</div>' +
+          '<div><div class="search-result-main">' + main + '</div><div class="search-result-sub">' + sub + '</div></div></div>';
+      }).join('');
+      dropdown.classList.add('show'); selectedResultIdx = -1;
+    });
   } catch(e) { console.error('Search failed', e); }
 }
 
@@ -1984,18 +2013,25 @@ function highlightResult(idx) {
 }
 
 function selectResult(idx) {
-  var f = searchResults[idx]; if (!f) return;
-  var lng = f.center[0], lat = f.center[1];
-  if (_mapReady && _map && _marker) {
-    _map.flyTo({ center: [lng, lat], zoom: 17, duration: 600 });
-    _marker.setLngLat([lng, lat]);
-    selectedLat = lat; selectedLng = lng; setCoords(lat, lng);
-  } else { initMap(lat, lng); }
-  document.getElementById('map-search').value = f.place_name;
-  document.getElementById('search-dropdown').classList.remove('show');
-  document.getElementById('map-search').blur();
-  if (typeof saveFormState === 'function') saveFormState();
+  var prediction = searchResults[idx]; if (!prediction) return;
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ placeId: prediction.place_id }, function(results, status) {
+    if (status === 'OK' && results[0]) {
+      var loc = results[0].geometry.location;
+      var lat = loc.lat(), lng = loc.lng();
+      if (_mapReady && _map && _marker) {
+        _map.panTo({ lat: lat, lng: lng }); _map.setZoom(17);
+        _marker.setPosition({ lat: lat, lng: lng });
+        selectedLat = lat; selectedLng = lng; setCoords(lat, lng);
+      } else { initMap(lat, lng); }
+      document.getElementById('map-search').value = results[0].formatted_address;
+      document.getElementById('search-dropdown').classList.remove('show');
+      document.getElementById('map-search').blur();
+      if (typeof saveFormState === 'function') saveFormState();
+    }
+  });
 }
+
 
 
 // Keyboard nav for search dropdown
