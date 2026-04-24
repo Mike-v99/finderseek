@@ -571,7 +571,7 @@ function showGate(){
   void gate.offsetWidth;
   gate.classList.add('animate-in');
   // Focus email after animation settles (prevents password autofill from stealing focus)
-  setTimeout(function(){ document.getElementById('gate-email').focus(); }, 600);
+  // Don't auto-focus — let user tap the field to trigger keyboard/autofill
 }
 
 function closeGate(){
