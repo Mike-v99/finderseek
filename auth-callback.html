@@ -8,7 +8,169 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;400&display=swap" rel="stylesheet"/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>FinderSeek — Signing in...</title>
+<meta name="theme-color" content="#0a0810"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:#0a0810;
+  color:#f5ead8;
+  font-family:'Noto Sans Display',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%);
+  pointer-events:none;
+}
+.logo{font-size:42px;font-weight:300;margin-bottom:32px;}
+.logo .f{background:linear-gradient(90deg,#e8a820,#f5c842,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo .s{color:#f5ead8;}
+.card{background:rgba(13,11,24,.95);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;}
+.icon{font-size:48px;margin-bottom:16px;}
+.title{font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;}
+.sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:24px;}
+.btn{display:block;width:100%;padding:15px;border-radius:30px;border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;letter-spacing:.5px;text-decoration:none;margin-bottom:10px;}
+.btn-solid{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;border:none;font-weight:500;}
+.err{font-size:14px;color:#f87171;margin-top:12px;line-height:1.5;}
+.spinner{width:40px;height:40px;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<div class="logo"><span class="f">Finder</span><span class="s">Seek</span></div>
+
+<div class="card" id="card-loading">
+  <div class="spinner"></div>
+  <div class="title">Signing you in...</div>
+  <div class="sub">Just a moment</div>
+</div>
+
+<div class="card" id="card-success" style="display:none;">
+  <div class="icon">✅</div>
+  <div class="title">You're signed in!</div>
+  <div class="sub" id="success-sub">Welcome back. Tap below to continue.</div>
+  <a href="profile.html" id="continue-btn" class="btn btn-solid">Continue to FinderSeek →</a>
+  <div style="font-size:13px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.5;">
+    If the app doesn't open automatically,<br/>copy your link and paste it in your usual browser.
+  </div>
+</div>
+
+<div class="card" id="card-error" style="display:none;">
+  <div class="icon">⚠️</div>
+  <div class="title">Link expired</div>
+  <div class="sub">This sign-in link has expired or already been used. Request a new one.</div>
+  <a href="profile.html" class="btn">Back to Sign In →</a>
+</div>
+
+<script>
+var SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+var supaClient = window.supabase.createClient(SB, KEY);
+
+function show(id) {
+  ['card-loading','card-success','card-error'].forEach(function(c){
+    document.getElementById(c).style.display = c === id ? 'block' : 'none';
+  });
+}
+
+async function handleCallback() {
+  try {
+    // Try to get session from URL params (magic link / OAuth)
+    var { data, error } = await supaClient.auth.getSession();
+
+    if (error || !data.session) {
+      // Try exchanging code if present
+      var params = new URLSearchParams(window.location.search);
+      var hash = new URLSearchParams(window.location.hash.substring(1));
+      var code = params.get('code');
+      var accessToken = hash.get('access_token') || params.get('access_token');
+      var refreshToken = hash.get('refresh_token') || params.get('refresh_token');
+
+      if (accessToken) {
+        localStorage.setItem('fs_token', accessToken);
+        if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
+        data = { session: { access_token: accessToken, refresh_token: refreshToken } };
+        error = null;
+      } else if (code) {
+        var result = await supaClient.auth.exchangeCodeForSession(code);
+        if (result.error) throw result.error;
+        data = result.data;
+      } else {
+        throw new Error('No session found in link');
+      }
+    }
+
+    if (data && data.session) {
+      // Store tokens
+      localStorage.setItem('fs_token', data.session.access_token);
+      if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+
+      // Save pending username if signup flow
+      try {
+        var pendingUsername = sessionStorage.getItem('fs_pending_username');
+        if (pendingUsername && data.session.user) {
+          sessionStorage.removeItem('fs_pending_username');
+          fetch(SB+'/rest/v1/profiles?id=eq.'+data.session.user.id, {
+            method: 'PATCH',
+            headers: {'apikey':KEY,'Authorization':'Bearer '+data.session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body: JSON.stringify({ username: pendingUsername })
+          }).catch(function(){});
+        }
+      } catch(e) {}
+
+      // Figure out where to go back to
+      var returnTo = sessionStorage.getItem('fs_magic_return') || 'profile.html';
+      try { sessionStorage.removeItem('fs_magic_return'); } catch(e) {}
+
+      // Clean up URL
+      window.history.replaceState({}, '', '/auth-callback.html');
+
+      // Show success and auto-redirect after 1.5s
+      var subEl = document.getElementById('success-sub');
+      var btnEl = document.getElementById('continue-btn');
+      if (data.session.user && data.session.user.email) {
+        subEl.textContent = 'Signed in as ' + data.session.user.email + '. Redirecting...';
+      }
+      btnEl.href = returnTo;
+      show('card-success');
+
+      // Auto redirect
+      setTimeout(function() {
+        window.location.href = returnTo;
+      }, 1500);
+    } else {
+      throw new Error('Could not complete sign in');
+    }
+  } catch(e) {
+    console.error('Auth callback error:', e);
+    show('card-error');
+  }
+}
+
+handleCallback();
+</script>
+</body>
+</html>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
