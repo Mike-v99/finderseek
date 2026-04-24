@@ -1,12 +1,71 @@
-<!-- © 2026 FinderSeek. All rights reserved. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>FinderSeek — Review Quest</title>
-<meta name="description" content="Review and edit your AI-generated treasure hunt clues before launch."/>
-<meta name="robots" content="noindex, nofollow"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>FinderSeek — How It Works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0a0810;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--yellow:#fbbf24;
+  --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px;}
+
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
+
+@keyframes shimmerGold{0%{background-position:-300% center;}100%{background-position:300% center;}}
+.page-title{font-size:28px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.5),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerGold 6s linear infinite;}
+
+.el{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
+.el.visible{opacity:1;transform:translateY(0);}
+
+.step-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.step-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:400;flex-shrink:0;}
+
+/* bottom-nav removed */
+
+
+
+
+
+
+
+}
+
+/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
+
+
+
+/* ── HAMBURGER NAV v2 ─────────────────────────────────────── */
+@keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
+.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
+.hb-backdrop.open{opacity:1;pointer-events:auto;}
+.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
+.hb-drawer.open{transform:translateX(0);}
+.hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.hb-nav-item:last-child{border-bottom:none;}
+.hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
+.hb-nav-item.active{background:rgba(232,168,32,.05);}
+.hb-nav-item.active .hb-nav-label{color:#e8a820;}
+
+/* ── ACCORDION ─────────────────────────────────────────────── */
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.acc-body{display:none;padding:0 14px 14px;}
+.acc-body.open{display:block;}
+.acc-arrow{font-size:14px;color:rgba(255,255,255,.3);transition:transform .25s;line-height:1;flex-shrink:0;}
+.acc-arrow.open{transform:rotate(180deg);}
+.step-txt{font-size:17px;color:rgba(255,255,255,.8);line-height:1.5;}
+.tag{display:inline-block;font-size:12px;padding:3px 9px;border-radius:20px;margin-top:4px;}
+@keyframes goldShim{0%{background-position:-300% center;}100%{background-position:300% center;}}
+</style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
@@ -21,840 +80,375 @@
   <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-:root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:300;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
-.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
-body{padding-top:env(safe-area-inset-top,0px);}
-.page{max-width:520px;margin:0 auto;padding:16px 16px 120px;}
-@supports(padding-bottom:env(safe-area-inset-bottom)){.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
-
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;}
-.back-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cream);flex-shrink:0;}
-.page-title{font-size:20px;font-weight:400;color:var(--cream);}
-
-.hdr{text-align:center;padding:8px 0 24px;}
-.hdr h1{font-size:32px;font-weight:200;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;}
-.hdr p{font-size:18px;color:var(--dim);line-height:1.5;}
-
-.quest-meta{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-.quest-meta .prize{font-size:22px;font-weight:400;color:var(--gold2);}
-.quest-meta .sep{width:1px;align-self:stretch;background:var(--border);}
-.quest-meta .detail{flex:1;font-size:18px;color:var(--muted);line-height:1.5;}
-.quest-meta .detail strong{color:var(--cream);font-weight:400;display:block;font-size:18px;}
-
-.tier-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-bg);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:4px 10px;font-size:18px;color:var(--purple);margin-left:auto;letter-spacing:0.5px;}
-.tier-badge.free{background:rgba(168,200,224,.08);border-color:rgba(168,200,224,.2);color:var(--dim);}
-
-.clue-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s;}
-.clue-card.editing{border-color:rgba(232,168,32,.4);}
-.clue-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.clue-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:18px;flex-shrink:0;}
-.clue-label{font-size:18px;color:var(--muted);flex:1;}
-.clue-label strong{color:var(--cream);font-weight:400;}
-.clue-text{font-size:20px;color:#fff;line-height:1.55;font-weight:300;padding:4px 0 2px;}
-.clue-edit-textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:20px;color:#fff;font-family:inherit;font-weight:300;line-height:1.55;outline:none;resize:vertical;}
-.clue-edit-textarea:focus{border-color:rgba(232,168,32,.5);}
-
-.clue-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.clue-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 12px;font-size:18px;color:var(--cream);cursor:pointer;font-family:inherit;font-weight:300;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
-.clue-btn:hover{background:rgba(255,255,255,.08);}
-.clue-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;border:none;font-weight:400;}
-.clue-btn.pro{background:var(--purple-bg);border-color:rgba(167,139,250,.3);color:var(--purple);}
-.clue-btn.pro:hover{background:rgba(167,139,250,.18);}
-.clue-btn:disabled{opacity:0.5;cursor:not-allowed;}
-
-.pro-unlock{background:rgba(201,137,12,.05);border:1px solid rgba(232,168,32,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:10px;}
-.pro-unlock a{color:#e8a820;text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;}
-
-.time-editor{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:18px;color:var(--muted);}
-.time-editor input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;font-size:18px;color:var(--cream);font-family:'DM Mono',monospace;outline:none;}
-
-.confirm-footer{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(10,8,16,.98) 40%);padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));z-index:50;}
-.confirm-footer-inner{max-width:520px;margin:0 auto;}
-.confirm-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 6px 24px rgba(34,197,94,.35);transition:transform .15s;}
-.confirm-btn:active{transform:scale(.98);}
-.confirm-btn:disabled{opacity:.5;cursor:not-allowed;}
-
-/* Toast */
-.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:12px 18px;color:#f5ead8;font-size:18px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.toast.error{border-color:rgba(239,68,68,.5);}
-.toast.success{border-color:rgba(34,197,94,.5);}
-
-@keyframes rvSilverPulse{0%,100%{border-color:rgba(148,163,184,.5);box-shadow:none;color:rgba(226,232,240,.8);}50%{border-color:#94a3b8;box-shadow:0 0 14px rgba(148,163,184,.2);color:#e2e8f0;}}
-@keyframes rvGoldPulse{0%,100%{border-color:rgba(232,168,32,.5);box-shadow:none;color:rgba(232,168,32,.8);}50%{border-color:#e8a820;box-shadow:0 0 16px rgba(232,168,32,.25);color:#f5c842;}}
-@keyframes rvArrowPulse{0%,100%{opacity:.5;transform:translateY(0);}50%{opacity:1;transform:translateY(2px);}}
-.skel{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.08),rgba(255,255,255,.03));background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;border-radius:8px;}
-@keyframes skel{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-
-/* ====== PAYMENT MODAL ====== */
-.pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
-.pm-backdrop.show{opacity:1;pointer-events:auto;}
-.pm-sheet{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0d0b18;border-top:1px solid rgba(232,168,32,.25);border-radius:24px 24px 0 0;max-width:520px;margin:0 auto;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(0.22,1,0.36,1);padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.6);}
-.pm-sheet.show{transform:translateY(0);}
-.pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
-.pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
-.pm-sub{font-size:18px;color:#fff;text-align:center;margin-bottom:22px;font-weight:300;}
-.pm-breakdown{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
-.pm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:18px;color:#fff;font-weight:300;}
-.pm-row strong{color:var(--cream);font-weight:400;}
-.pm-row.total{border-top:1px solid var(--border);padding-top:12px;margin-top:6px;font-size:18px;}
-.pm-row.total strong{color:var(--gold2);font-size:20px;font-weight:400;}
-#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;min-height:240px;}
-#pm-error{color:#f87171;font-size:18px;margin-bottom:12px;min-height:18px;text-align:center;}
-.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
-.pm-pay-btn:active{transform:scale(.98);}
-.pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
-.pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:300;opacity:.7;}
-
-/* Safe close button */
-.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
-</style>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
 
-<div class="toast" id="toast"></div>
+<!-- Sticky topbar -->
+<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;">
+  <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">How It Works</div>
+  <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+      <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+      <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
+        <svg id="hb-avatar-svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(180,190,210,.5)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+      <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+      <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
+    </div>
+  </div>
+</div>
 
 <div class="page">
-  <div class="topbar">
-    <div class="back-btn" onclick="window.location.replace('newquest.html')" aria-label="Back">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </div>
-    <div class="page-title">Review your quest</div>
-    <div style="width:40px;"></div>
+
+  <!-- Hero -->
+  <div style="padding:16px 14px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);">
+    <div style="font-size:26px;font-weight:200;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,rgba(255,255,255,.6),#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:goldShim 6s linear infinite;margin-bottom:5px;">Solve Clues. Win Cash.</div>
+    <div style="font-size:17px;color:rgba(255,255,255,.4);">Real treasure quests hidden in your city.</div>
   </div>
 
-  <!-- Info bar: Prize | Clues+Time | Persona+Avatar -->
-  <div id="review-info-bar" style="display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:0;">
-    <div style="padding:18px 18px;border-right:1px solid rgba(255,255,255,.05);">
-      <div style="font-size:15px;letter-spacing:1.5px;color:rgba(74,222,128,.5);margin-bottom:4px;">PRIZE</div>
-      <div id="rv-prize" style="font-size:34px;font-weight:200;color:#4ade80;line-height:1;">—</div>
-    </div>
-    <div style="flex:1;padding:16px 14px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
-      <div id="rv-clues" style="font-size:18px;font-weight:300;color:#fff;">—</div>
-      <div id="rv-duration" style="font-size:15px;color:rgba(255,255,255,.35);margin-top:4px;">—</div>
-    </div>
-    <div style="padding:14px 16px;display:flex;flex-direction:column;align-items:center;gap:5px;">
-      <div id="rv-avatar" style="width:40px;height:40px;border-radius:50%;background:rgba(13,11,24,.9);border:2px solid rgba(232,168,32,.5);display:flex;align-items:center;justify-content:center;font-size:15px;color:#e8a820;flex-shrink:0;position:relative;">??</div>
-      <div id="rv-persona" style="font-size:15px;color:rgba(255,255,255,.35);">—</div>
-    </div>
-  </div>
+  <!-- ── SEEKER SECTION ── -->
+  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
 
-  <!-- Tier buttons -->
-  <div style="display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
-    <button id="rv-free-btn" style="flex:1;padding:11px;border-radius:14px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:15px;font-weight:400;cursor:default;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;animation:rvSilverPulse 7s ease-in-out infinite;line-height:1.2;">FREE TIER</button>
-    <button id="rv-gold-btn" onclick="toggleRvGoldModal()" style="flex:1;padding:11px;border-radius:14px;background:rgba(255,255,255,.02);border:1.5px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;letter-spacing:.5px;line-height:1.2;">GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span></button>
-  </div>
+    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(232,168,32,.04);">
+      <div style="font-size:20px;color:#e8a820;font-weight:400;">🔍 Seeker — Find Treasure</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Join a quest and win real cash</div>
+    </div>
 
-  <!-- Gold modal — slides down -->
-  <div id="rv-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border-bottom:1px solid rgba(232,168,32,.1);">
-    <div id="rv-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <!-- S1 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👑</div>
-          <div>
-            <div style="font-size:16px;font-weight:400;color:#fff;">Quest Master Gold</div>
-            <div style="font-size:15px;color:rgba(232,168,32,.5);margin-top:1px;">$3.99/mo · 30-day free trial</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(251,191,36,.1);border:1px solid #fbbf24;color:#fbbf24;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:17px;color:#fff;">Browse &amp; Join a Quest</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Browse quests on the home screen. Each quest shows the prize amount, city, and time remaining. Tap a quest to see the details — the map shows only the general area (city-level) until you arrive.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Free to join</span>
+          <span class="tag" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);color:#e8a820;">Real cash prizes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.1);border:1px solid #34d399;color:#34d399;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:17px;color:#fff;">Head to the Quest Zone</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">The quest is locked until you physically arrive near the hiding area. Once you're within <span style="color:#e8a820;">1,000 feet</span> of the treasure, a pulsing <strong style="font-weight:400;color:#4ade80;">"I'm Here — Unlock Quest"</strong> button appears.</div>
+        <div class="step-txt" style="margin-top:8px;">Tap it to unlock and start the quest. Your GPS confirms you're in the right area before the clues begin.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.15);color:#60a5fa;">GPS verified</span>
+          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);color:#a855f7;">1,000 ft radius</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(244,114,182,.1);border:1px solid #f472b6;color:#f472b6;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:17px;color:#fff;">Solve the Clues</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Up to <span style="color:#e8a820;">6 clues</span> are revealed one at a time. Each clue has a riddle — answer it correctly to unlock the next one.</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;">
+          <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;">
+            <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:5px;">After each clue solved:</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;">
+              <span style="font-size:16px;">🗺️</span><span style="font-size:17px;color:#fff;">Map zooms in one level closer</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:16px;">📸</span><span style="font-size:17px;color:#fff;">Photo of hiding spot gets less blurry</span>
+            </div>
+          </div>
+          <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px 12px;">
+            <div style="font-size:13px;color:#e8a820;margin-bottom:4px;">Final clue:</div>
+            <div style="font-size:17px;color:#fff;">🔓 Fully clear photo of the hiding spot + fully zoomed map pinpointing the exact location. Go find it!</div>
           </div>
         </div>
-        <button onclick="toggleRvGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;font-family:'Noto Sans Display',sans-serif;display:flex;align-items:center;justify-content:center;">✕</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
-        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
-          <div style="font-size:15px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">ANALYTICS</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Live seeker views &amp; stats</div>
-        </div>
-        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
-          <div style="font-size:15px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">EDIT CLUES</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Tweak AI clues before live</div>
-        </div>
-        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
-          <div style="font-size:15px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">3 PINS</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Keep top quests visible</div>
-        </div>
-        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:11px;">
-          <div style="font-size:15px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">GOLD BADGE</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Verified on your profile</div>
-        </div>
-      </div>
-      <button onclick="goGoldFromReview()" style="width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#92400e,#f59e0b);color:#0a0500;font-size:15px;font-weight:400;cursor:pointer;font-family:'Noto Sans Display',sans-serif;">Try Gold Free for 30 Days →</button>
-    </div>
-  </div>
-
-  <div id="quest-meta-wrap"></div>
-
-  <div id="clues-list">
-    <!-- populated by JS; show skeleton while loading -->
-    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
-    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
-    <div class="clue-card"><div class="skel" style="height:16px;width:40%;margin-bottom:10px;"></div><div class="skel" style="height:50px;width:100%;"></div></div>
-  </div>
-</div>
-
-<div class="confirm-footer" id="confirm-footer" style="display:none;">
-  <div class="confirm-footer-inner">
-    <button class="confirm-btn" id="confirm-btn" onclick="openPaymentModal()">
-      Looks Good — Fund Quest →
-    </button>
-  </div>
-</div>
-
-<!-- ====== PAYMENT MODAL ====== -->
-<div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
-<div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
-  <div class="pm-handle"></div>
-  <button class="pm-close" onclick="closePaymentModal()" aria-label="Close">✕</button>
-  <div class="pm-title" id="pm-title">Fund your quest</div>
-  <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
-
-  <div id="pm-user" style="text-align:center;font-size:15px;color:#d0e4f0;margin-bottom:16px;opacity:.7;"></div>
-
-  <div class="pm-breakdown" id="pm-breakdown"></div>
-
-  <div id="pm-nocancel" onclick="toggleNoCancelCheck()" style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;margin:14px 0 4px;cursor:pointer;user-select:none;">
-    <div id="pm-nocancel-box" style="width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(201,137,12,.5);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;"></div>
-    <div style="font-size:15px;color:#fff;line-height:1.5;font-weight:300;">I understand this quest <strong style="color:#fff;font-weight:500;">cannot be cancelled</strong> once funded. If unclaimed, my prize is refunded within 1–2 business days.</div>
-  </div>
-
-  <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" type="button" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Pay & Go Live →</button>
-  <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
-</div>
-
-<!-- Email Gate Modal — for anonymous preview users before payment -->
-<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
-<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
-  <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
-    <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
-    <div style="display:flex;justify-content:center;margin-bottom:16px;">
-      <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
-        <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
-        <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
       </div>
     </div>
-    <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
-    <div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
-    <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
-      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:300;"/>
-    <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
-    <button id="eg-continue-btn" onclick="submitEmailGate()"
-      style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
-    <div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div><span>OR</span><div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+
+    <!-- S4 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+          <div style="font-size:17px;color:#fff;">Find the PIN &amp; Claim Your Prize</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">The Quest Master has hidden a <span style="color:#e8a820;">small card, envelope, or plastic bag</span> at the exact spot. Inside is a <strong style="font-weight:400;color:#4ade80;">6-digit PIN</strong>.</div>
+        <div class="step-txt" style="margin-top:8px;">Find it, enter the PIN into the quest screen, and the prize transfers <span style="color:#4ade80;">automatically</span> to your linked bank account.</div>
+        <div style="margin-top:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:13px;color:#4ade80;margin-bottom:4px;">💳 Banking required to receive prizes</div>
+          <div style="font-size:17px;color:rgba(255,255,255,.7);">Link a bank account via Stripe in your profile. Takes about 2 minutes to set up — prizes go straight to your bank automatically.</div>
+        </div>
+      </div>
     </div>
-    <div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
-      <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:300;"> → Pro Features</span></span></div>
-      <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
+
+    <div style="padding:10px 14px;">
+      <a href="index.html" style="display:block;background:linear-gradient(135deg,#92400e,#e8a820);border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#0a0800;text-decoration:none;font-family:inherit;">🔍 Find a Quest Near Me</a>
     </div>
-    <div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
   </div>
+
+  <!-- ── QUEST MASTER SECTION ── -->
+  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;">
+
+    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(96,165,250,.04);">
+      <div style="font-size:20px;color:#60a5fa;font-weight:400;">🏴‍☠️ Quest Master — Hide Treasure</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;">Create a quest, fund the prize, watch it unfold</div>
+    </div>
+
+    <!-- QM1 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(96,165,250,.1);border:1px solid #60a5fa;color:#60a5fa;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:17px;color:#fff;">Pick a Spot &amp; Hide the PIN Provided</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Choose a public location — a park, plaza, trail, or landmark. The app provides you with a 6-digit PIN. Write the 6-digit PIN provided by the app on a small piece of paper, card, or sticker and hide it at the exact spot.</div>
+        <div class="step-txt" style="margin-top:8px;">Then drop a pin on the map in the app to mark the hiding location. This stays <span style="color:#e8a820;">completely hidden</span> from seekers until they earn it through clues.</div>
+      </div>
+    </div>
+
+    <!-- QM2 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(168,85,247,.1);border:1px solid #a855f7;color:#a855f7;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:17px;color:#fff;">AI Writes Your Clues</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Describe the hiding spot in a few words — the AI generates up to 6 riddle clues that lead seekers from the general area to the exact location without giving it away immediately.</div>
+        <div class="step-txt" style="margin-top:8px;">You can review, edit, regenerate, or adjust the difficulty of each clue before going live.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);color:#a855f7;">AI generated</span>
+          <span class="tag" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);">Fully editable</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QM3 -->
+    <div style="border-bottom:1px solid rgba(255,255,255,.04);">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid #4ade80;color:#4ade80;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:17px;color:#fff;">Choose Prize &amp; Go Live</div>
+        </div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="step-txt">Choose from pre-selected prizes from <span style="color:#4ade80;">$5 to $100</span>. The prize is held securely in escrow via Stripe — it's released automatically to the winner when they enter the correct PIN.</div>
+        <div class="step-txt" style="margin-top:8px;">If no one claims it before the timer expires, you get a full refund.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <span class="tag" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Auto refund if unclaimed</span>
+          <span class="tag" style="background:rgba(99,91,255,.08);border:1px solid rgba(99,91,255,.2);color:#818cf8;">Held in escrow</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:10px 14px;">
+      <a href="newquest.html" style="display:block;background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#fff;text-decoration:none;font-family:inherit;">✨ Create a Quest</a>
+    </div>
+  </div>
+
+  <!-- Trust strip -->
+  <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;display:flex;padding:12px 6px;">
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🔒</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Stripe<br/>secure</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">⚡</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Auto<br/>payouts</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🎯</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Skill<br/>based</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🆓</div><div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:4px;">Free<br/>to play</div></div>
+  </div>
+
+  <div style="text-align:center;padding:16px 0 0;font-size:13px;color:rgba(255,255,255,.2);">FinderSeek v1.0.0</div>
+
 </div>
 
 <script>
-const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const supaClient = window.supabase ? window.supabase.createClient(SB, KEY) : null;
-const NOTIFY_SECRET = 'fs-notify-2026';
-const STRIPE_PUBLIC_KEY = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
-
-function getToken(){
-  var t = localStorage.getItem('fs_token');
-  if (t) return t;
-  try {
-    var keys = Object.keys(localStorage);
-    for (var i = 0; i < keys.length; i++) {
-      if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
-        var session = JSON.parse(localStorage.getItem(keys[i]));
-        if (session && session.access_token) return session.access_token;
-      }
-    }
-  } catch(e){}
-  return '';
-}
-function getParam(n){ return new URLSearchParams(window.location.search).get(n); }
-
-function showToast(msg, type){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type ? ' '+type : '');
-  clearTimeout(window._toastT);
-  window._toastT = setTimeout(()=>t.className = 'toast', 3500);
+function toggleAcc(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.acc-arrow');
+  var isOpen = body.classList.contains('open');
+  // Close all in same card
+  var card = header.parentElement.parentElement;
+  card.querySelectorAll('.acc-body').forEach(function(b){ b.classList.remove('open'); });
+  card.querySelectorAll('.acc-arrow').forEach(function(a){ a.classList.remove('open'); });
+  if (!isOpen) {
+    body.classList.add('open');
+    arrow.classList.add('open');
+  }
 }
 
-let currentUser = null;
-let currentProfile = null;
-let hunt = null;
-let clues = [];
-let isPreviewMode = false;
-
-async function init(){
-  // ════════════════════════════════════════════════════════
-  // PREVIEW MODE — anonymous user, data in sessionStorage only
-  // ════════════════════════════════════════════════════════
-  if (getParam('preview') === '1') {
-    isPreviewMode = true;
-    try {
-      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
-      if (!pending || !pending.hunt || !pending.clues) {
-        showToast('Preview data not found — start over', 'error');
-        setTimeout(()=>window.location.href='newquest.html', 1500);
-        return;
-      }
-      hunt = { id: 'preview', ...pending.hunt };
-      clues = pending.clues.map((c, i) => ({ id: 'preview-'+i, ...c }));
-      renderMeta();
-      renderClues();
-      document.getElementById('confirm-footer').style.display = 'block';
-      // Hide/adjust any "manage" actions that need a real hunt id
-      return;
-    } catch(e) {
-      console.error('Preview load error', e);
-      setTimeout(()=>window.location.href='newquest.html', 1500);
-      return;
-    }
-  }
-
-  const huntId = getParam('id');
-  if (!huntId) {
-    showToast('No quest ID', 'error');
-    setTimeout(()=>window.location.href='newquest.html', 1500);
-    return;
-  }
-
-  // Fetch auth
-  const token = getToken();
-  if (!token) {
-    showToast('Please sign in', 'error');
-    setTimeout(()=>window.location.href='profile.html', 1500);
-    return;
-  }
-  try {
-    const r = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    if (!r.ok) throw new Error('auth failed');
-    currentUser = await r.json();
-  } catch(e) {
-    localStorage.removeItem('fs_token');
-    window.location.href='profile.html';
-    return;
-  }
-
-  // Fetch profile for is_pro flag
-  try {
-    const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {
-      headers:{'apikey':KEY,'Authorization':'Bearer '+token}
-    });
-    const pd = await pr.json();
-    currentProfile = (pd && pd[0]) || {};
-  } catch(e) { currentProfile = {}; }
-
-  // Fetch hunt
-  const hr = await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId+'&select=*', {
-    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting) entry.target.classList.add('visible');
   });
-  const hd = await hr.json();
-  if (!hd || !hd[0]) {
-    showToast('Quest not found', 'error');
-    setTimeout(()=>window.location.href='newquest.html', 1500);
-    return;
-  }
-  hunt = hd[0];
+}, { threshold: 0.1 });
+document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
+</script>
 
-  // Verify ownership
-  if (hunt.created_by !== currentUser.id && hunt.pirate_id !== currentUser.id) {
-    showToast("That's not your quest", 'error');
-    setTimeout(()=>window.location.href='profile.html', 1500);
-    return;
-  }
 
-  // Fetch clues
-  const cr = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=*&order=clue_number.asc', {
-    headers:{'apikey':KEY,'Authorization':'Bearer '+token}
-  });
-  clues = await cr.json();
-  if (!Array.isArray(clues) || clues.length === 0) {
-    showToast('No clues found for this quest', 'error');
-    return;
-  }
-
-  renderMeta();
-  renderClues();
-  document.getElementById('confirm-footer').style.display = 'block';
-}
-
-function renderMeta(){
-  const prize = (hunt.prize_value || 0) / 100;
-  const fee = Math.round(prize * 0.10 * 100) / 100;
-  const total = prize + fee;
-  const start = new Date(hunt.starts_at);
-  const end = new Date(hunt.ends_at);
-  const durHours = Math.round((end - start) / (1000*60*60));
-  const persona = hunt.clue_persona || 'pirate';
-  const personaEmoji = {pirate:'🏴‍☠️',poetic:'🌸',insults:'🤬',sarcastic:'😏',hillbilly:'🤠',kid:'🧸',grandma:'👵',surfer:'🏄',investigator:'🔍'}[persona] || '🏴‍☠️';
-  const personaLabel = persona.charAt(0).toUpperCase() + persona.slice(1);
-
-  // Populate info bar
-  document.getElementById('rv-prize').textContent = '$' + prize.toFixed(0);
-  document.getElementById('rv-clues').textContent = clues.length + ' clues';
-  document.getElementById('rv-duration').textContent = 'over ' + durHours + ' hours';
-  document.getElementById('rv-persona').textContent = personaEmoji + ' ' + personaLabel;
-
-  // Avatar initials from username or email
-  var uname = currentProfile?.username || currentUser?.email?.split('@')[0] || '??';
-  var initials = uname.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('rv-avatar').textContent = initials;
-
-  // Render tier buttons based on Gold status
-  renderRvTierButtons(!!(currentProfile && currentProfile.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date())));
-}
-
-function renderRvTierButtons(isGold) {
-  var freeBtn = document.getElementById('rv-free-btn');
-  var goldBtn = document.getElementById('rv-gold-btn');
-  if (!freeBtn || !goldBtn) return;
-
-  if (isGold) {
-    freeBtn.style.animation = 'none';
-    freeBtn.style.background = 'rgba(255,255,255,.02)';
-    freeBtn.style.border = '1.5px solid rgba(255,255,255,.08)';
-    freeBtn.style.color = 'rgba(255,255,255,.2)';
-    freeBtn.style.cursor = 'default';
-
-    goldBtn.style.animation = 'rvGoldPulse 7s ease-in-out infinite';
-    goldBtn.style.background = 'rgba(201,137,12,.2)';
-    goldBtn.style.border = '2px solid #e8a820';
-    goldBtn.style.color = '#f5c842';
-    goldBtn.style.cursor = 'default';
-    goldBtn.onclick = null;
-    goldBtn.innerHTML = 'GOLD TIER<br><span style="font-size:15px;color:#4ade80;font-weight:400;letter-spacing:0;">✓ You\'re Gold</span>';
-
-    // Add Gold badge to avatar
-    var av = document.getElementById('rv-avatar');
-    if (av) {
-      av.style.border = '2px solid #e8a820';
-      var badge = document.createElement('div');
-      badge.style.cssText = 'position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#0a0810;border:1px solid #e8a820;display:flex;align-items:center;justify-content:center;font-size:15px;';
-      badge.textContent = '👑';
-      av.style.position = 'relative';
-      av.appendChild(badge);
-    }
-  } else {
-    freeBtn.style.animation = 'rvSilverPulse 7s ease-in-out infinite';
-    freeBtn.style.background = 'rgba(148,163,184,.15)';
-    freeBtn.style.border = '2px solid #94a3b8';
-    freeBtn.style.color = '#e2e8f0';
-
-    goldBtn.style.animation = 'none';
-    goldBtn.style.background = 'rgba(255,255,255,.02)';
-    goldBtn.style.border = '1.5px solid rgba(232,168,32,.2)';
-    goldBtn.style.color = 'rgba(232,168,32,.35)';
-    goldBtn.style.cursor = 'pointer';
-    goldBtn.onclick = toggleRvGoldModal;
-    goldBtn.innerHTML = 'GOLD TIER <span id="rv-gold-arrow" style="display:inline-block;animation:rvArrowPulse 3s ease-in-out infinite;color:rgba(232,168,32,.5);">↓</span>';
-  }
-}
-
-var _rvGoldModalOpen = false;
-function closeEmailGate() {
-  var bd = document.getElementById('eg-backdrop');
-  var md = document.getElementById('eg-modal');
-  var inner = document.getElementById('eg-inner');
-  if (bd) bd.style.opacity = '0';
-  if (inner) { inner.style.opacity = '0'; inner.style.transform = 'scale(0.92)'; }
-  setTimeout(function(){
-    if (bd) bd.style.display = 'none';
-    if (md) md.style.display = 'none';
-  }, 250);
-}
-
-async function submitEmailGate() {
-  var email = document.getElementById('eg-email').value.trim();
-  var errEl = document.getElementById('eg-error');
-  var btn = document.getElementById('eg-continue-btn');
-  if (!email || !email.includes('@')) { errEl.textContent = 'Enter a valid email'; return; }
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-  try {
-    var { error } = await supaClient.auth.signInWithOtp({
-      email: email,
-      options: { emailRedirectTo: window.location.origin + '/profile.html?magic=1' }
-    });
-    if (error) throw error;
-    errEl.style.color = '#4ade80';
-    errEl.textContent = '✓ Check your email — tap the link to sign in and come back here';
-    btn.textContent = 'Email sent!';
-  } catch(e) {
-    errEl.style.color = '#f87171';
-    errEl.textContent = e.message || 'Something went wrong';
-    btn.disabled = false;
-    btn.textContent = 'Continue to Payment →';
-  }
-}
-
-function toggleRvGoldModal() {
-  _rvGoldModalOpen = !_rvGoldModalOpen;
-  var modal = document.getElementById('rv-gold-modal');
-  var inner = document.getElementById('rv-gold-modal-inner');
-  var freeBtn = document.getElementById('rv-free-btn');
-  var goldBtn = document.getElementById('rv-gold-btn');
-  var arrow  = document.getElementById('rv-gold-arrow');
-
-  if (_rvGoldModalOpen) {
-    modal.style.maxHeight = '500px';
-    setTimeout(function(){ inner.style.opacity='1'; inner.style.transform='translateY(0)'; }, 50);
-    if (freeBtn) { freeBtn.style.animation='none'; freeBtn.style.border='1.5px solid rgba(255,255,255,.08)'; freeBtn.style.color='rgba(255,255,255,.2)'; freeBtn.style.background='rgba(255,255,255,.02)'; }
-    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.5)'; goldBtn.style.color='rgba(232,168,32,.7)'; }
-    if (arrow) arrow.style.transform = 'rotate(180deg)';
-  } else {
-    modal.style.maxHeight = '0';
-    inner.style.opacity = '0';
-    inner.style.transform = 'translateY(-12px)';
-    if (freeBtn) { freeBtn.style.animation='rvSilverPulse 7s ease-in-out infinite'; freeBtn.style.border='2px solid #94a3b8'; freeBtn.style.color='#e2e8f0'; freeBtn.style.background='rgba(148,163,184,.15)'; }
-    if (goldBtn) { goldBtn.style.borderColor='rgba(232,168,32,.2)'; goldBtn.style.color='rgba(232,168,32,.35)'; }
-    if (arrow) arrow.style.transform = 'rotate(0deg)';
-  }
-}
-
-function goGoldFromReview() {
-  sessionStorage.setItem('fs_gold_return', 'review');
-  window.location.href = 'gold.html';
-}
-
-/* Loading skeleton */
-
-function renderClues(){
-  const isPro = !!(currentProfile && currentProfile.is_pro);
-  const list = document.getElementById('clues-list');
-  list.innerHTML = clues.map((c, i) => renderClue(c, i, isPro)).join('');
-  if (!isPro) {
-    list.innerHTML += `
-      <div class="pro-unlock" style="margin-top:14px;" onclick="toggleRvGoldModal()" role="button">
-        <span>👑</span>
-        <span>Gold members can regenerate clues and change reveal times</span>
-        <a onclick="event.stopPropagation();toggleRvGoldModal()" style="color:#e8a820;text-decoration:none;font-weight:400;margin-left:auto;white-space:nowrap;cursor:pointer;">See benefits ↓</a>
-      </div>`;
-  }
-}
-
-function renderClue(c, idx, isPro){
-  const revealDate = c.reveal_at ? new Date(c.reveal_at) : null;
-  const revealStr = revealDate ? revealDate.toLocaleString('en-US', {
-    weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'
-  }) : '';
-  const tierBadge = c.tier === 'pro'
-    ? '<span class="tier-badge">Pro tier</span>'
-    : '<span class="tier-badge free">Free tier</span>';
-
-  return `
-    <div class="clue-card" id="clue-${c.id}">
-      <div class="clue-head">
-        <div class="clue-num">${c.clue_number}</div>
-        <div class="clue-label">
-          <strong>Clue ${c.clue_number}</strong>
-          Reveals ${escapeHtml(revealStr)}
-        </div>
-        ${tierBadge}
+<!-- HAMBURGER DRAWER v2 -->
+<div class="hb-backdrop" id="hb-backdrop"></div>
+<div class="hb-drawer" id="hb-drawer">
+  <!-- signin section -->
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:12px;" id="hb-signin-section" onclick="closeHamburger();window.location.href='profile.html';">
+    <div style="position:relative;width:42px;height:42px;flex-shrink:0;">
+      <div style="position:absolute;inset:-1px;border-radius:50%;border:1px dashed rgba(255,255,255,.15);"></div>
+      <div style="position:absolute;inset:2px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(180,190,210,.45)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
       </div>
-      <div class="clue-text" id="clue-text-${c.id}">${escapeHtml(c.clue_text)}</div>
-      <div class="clue-actions" id="clue-actions-${c.id}">
-        <button class="clue-btn" onclick="startEdit('${c.id}')">✏️ Edit text</button>
-        ${isPro ? `<button class="clue-btn pro" onclick="regenerateClue('${c.id}')">✨ Regenerate</button>` : ''}
-        ${isPro ? `<button class="clue-btn pro" onclick="editTime('${c.id}')">🕒 Change time</button>` : ''}
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
+    </div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  <!-- profile section -->
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:10px;" id="hb-profile-section" onclick="closeHamburger();window.location.href='profile.html';">
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hb-drawer-name">—</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.35);margin-top:2px;" id="hb-drawer-sub">—</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1px;flex-shrink:0;">
+      <div style="position:relative;width:36px;height:36px;">
+        <div id="hb-drawer-ring" style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div id="hb-drawer-avatar" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
       </div>
-    </div>`;
-}
-
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-function startEdit(clueId){
-  const c = clues.find(x => x.id === clueId);
-  if (!c) return;
-  const card = document.getElementById('clue-'+clueId);
-  card.classList.add('editing');
-  document.getElementById('clue-text-'+clueId).innerHTML =
-    `<textarea class="clue-edit-textarea" id="clue-input-${clueId}">${escapeHtml(c.clue_text)}</textarea>`;
-  document.getElementById('clue-actions-'+clueId).innerHTML = `
-    <button class="clue-btn primary" onclick="saveEdit('${clueId}')">Save</button>
-    <button class="clue-btn" onclick="cancelEdit('${clueId}')">Cancel</button>`;
-  document.getElementById('clue-input-'+clueId).focus();
-}
-
-async function saveEdit(clueId){
-  const newText = document.getElementById('clue-input-'+clueId).value.trim();
-  if (!newText) { showToast('Clue cannot be empty', 'error'); return; }
-
-  // Preview mode — update in-memory + sessionStorage
-  if (isPreviewMode) {
-    const c = clues.find(x => x.id === clueId);
-    if (c) c.clue_text = newText;
-    try {
-      const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
-      if (pending) {
-        const idx = clues.findIndex(x => x.id === clueId);
-        if (idx >= 0) pending.clues[idx].clue_text = newText;
-        localStorage.setItem('fs_pending_quest', JSON.stringify(pending));
+      <div style="display:flex;flex-direction:column;gap:4px;padding:6px 4px;">
+        <div style="width:14px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div style="width:10px;height:2px;border-radius:1px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820);opacity:.7;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;"></div>
+      </div>
+    </div>
+  </div>
+  <!-- nav links -->
+  <div style="flex:1;overflow-y:auto;">
+    <a class="hb-nav-item " href="index.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span class="hb-nav-label" style="">Home</span>
+    </a>
+    <a class="hb-nav-item " href="index.html" onclick="closeHamburger();setTimeout(function(){var el=document.getElementById('quest-sections');if(el)el.scrollIntoView({behavior:'smooth'});},300);">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="hb-nav-label" style="">Browse Quests</span>
+    </a>
+    <a class="hb-nav-item " href="gold.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="hb-nav-label" style="color:#e8a820;">Gold</span>
+    </a>
+    <a class="hb-nav-item active" href="how-it-works.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span class="hb-nav-label" style="color:#e8a820;">How It Works</span>
+    </a>
+    <a class="hb-nav-item" href="terms.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+      <span class="hb-nav-label">Terms of Service</span>
+    </a>
+  </div>
+  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:25px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
+</div>
+<script>
+(function(){
+  var _open=false;
+  function init(){
+    var btn=document.getElementById('hb-btn');
+    var bd=document.getElementById('hb-backdrop');
+    var dr=document.getElementById('hb-drawer');
+    if(!btn||!bd||!dr)return;
+    btn.addEventListener('click',function(){toggle(true);});
+    bd.addEventListener('click',function(){toggle(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});
+    loadProfile();
+  }
+  function toggle(open){
+    _open=open===undefined?!_open:open;
+    var bd=document.getElementById('hb-backdrop');
+    var dr=document.getElementById('hb-drawer');
+    if(bd)bd.classList.toggle('open',_open);
+    if(dr)dr.classList.toggle('open',_open);
+    // Lock body scroll when drawer is open
+    if(_open){
+      document.body.style.overflow='hidden';
+      document.body.style.touchAction='none';
+    } else {
+      document.body.style.overflow='';
+      document.body.style.touchAction='';
+    }
+  }
+  window.closeHamburger=function(){toggle(false);};
+  function loadProfile(){
+    var token='';
+    try{
+      var keys=Object.keys(localStorage);
+      for(var i=0;i<keys.length;i++){
+        if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){
+          var s=JSON.parse(localStorage.getItem(keys[i]));
+          if(s&&s.access_token){token=s.access_token;break;}
+        }
       }
-    } catch(e){}
-    cancelEdit(clueId);
-    showToast('Saved', 'success');
-    return;
+      if(!token)token=localStorage.getItem('fs_token')||'';
+    }catch(e){}
+    var si=document.getElementById('hb-signin-section');
+    var sp=document.getElementById('hb-profile-section');
+    if(!token){
+      if(si)si.style.display='flex';
+      if(sp)sp.style.display='none';
+      return;
+    }
+    fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{
+      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
+    }).then(function(r){return r.ok?r.json():null;}).then(function(u){
+      if(!u||!u.id){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}
+      fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{
+        headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}
+      }).then(function(r){return r.json();}).then(function(pd){
+        var p=pd&&pd[0];
+        var uname=(p&&p.username)||(u.email?u.email.split('@')[0]:'User');
+        var init=uname.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';
+        var isGold=p&&p.is_pro;
+        // Update topbar ring avatar
+        // Topbar — keep avatar SVG, just brighten ring when signed in
+        var avSvg=document.getElementById('hb-avatar-svg');
+        if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
+        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
+        // Update drawer
+        var da=document.getElementById('hb-drawer-avatar');
+        if(da)da.textContent=init;
+        var dn=document.getElementById('hb-drawer-name');
+        if(dn)dn.textContent=uname;
+        var ds=document.getElementById('hb-drawer-sub');
+        if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
+        if(si)si.style.display='none';
+        if(sp)sp.style.display='flex';
+      }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
+    }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
   }
-
-  try {
-    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
-      method:'PATCH',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify({ clue_text: newText })
-    });
-    if (!r.ok) throw new Error('save failed');
-    const c = clues.find(x => x.id === clueId);
-    if (c) c.clue_text = newText;
-    cancelEdit(clueId);
-    showToast('Saved', 'success');
-  } catch(e) {
-    showToast('Save failed — try again', 'error');
-  }
-}
-
-function cancelEdit(clueId){
-  const card = document.getElementById('clue-'+clueId);
-  card.classList.remove('editing');
-  renderClues();
-}
-
-async function regenerateClue(clueId){
-  if (!currentProfile.is_pro) { showToast('Gold members can regenerate clues', 'error'); return; }
-  const c = clues.find(x => x.id === clueId);
-  if (!c) return;
-  const card = document.getElementById('clue-'+clueId);
-  const actionsEl = document.getElementById('clue-actions-'+clueId);
-  actionsEl.innerHTML = '<div style="font-size:18px;color:var(--muted);padding:4px 0;">✨ Generating new clue...</div>';
-
-  try {
-    const r = await fetch('/api/generate-clues', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        description: hunt.hiding_spot || hunt.neighborhood || '',
-        clueCount: clues.length,
-        lat: hunt.lat, lng: hunt.lng,
-        persona: hunt.clue_persona || 'pirate',
-        city: hunt.city || '',
-        neighborhood: hunt.neighborhood || '',
-        searchAddress: hunt.city || '',
-        singleClue: { position: c.clue_number, totalCount: clues.length }
-      })
-    });
-    const d = await r.json();
-    if (!r.ok || !d.clue) throw new Error(d.error || 'Generation failed');
-
-    // Save new clue text to Supabase
-    const pr = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
-      method:'PATCH',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify({ clue_text: d.clue.text })
-    });
-    if (!pr.ok) throw new Error('save failed');
-    c.clue_text = d.clue.text;
-    renderClues();
-    showToast('✨ New clue generated', 'success');
-  } catch(e) {
-    showToast('Regenerate failed — try again', 'error');
-    renderClues();
-  }
-}
-
-function editTime(clueId){
-  if (!currentProfile.is_pro) { showToast('Gold members can change reveal times', 'error'); return; }
-  const c = clues.find(x => x.id === clueId);
-  if (!c) return;
-  const current = c.reveal_at ? new Date(c.reveal_at).toISOString().slice(0,16) : '';
-  const start = new Date(hunt.starts_at).toISOString().slice(0,16);
-  const end = new Date(hunt.ends_at).toISOString().slice(0,16);
-  const card = document.getElementById('clue-'+clueId);
-  document.getElementById('clue-actions-'+clueId).innerHTML = `
-    <div class="time-editor">
-      <input type="datetime-local" id="time-input-${clueId}" value="${current}" min="${start}" max="${end}"/>
-      <button class="clue-btn primary" onclick="saveTime('${clueId}')">Save</button>
-      <button class="clue-btn" onclick="renderClues()">Cancel</button>
-    </div>`;
-}
-
-async function saveTime(clueId){
-  const val = document.getElementById('time-input-'+clueId).value;
-  if (!val) { showToast('Pick a time', 'error'); return; }
-  const iso = new Date(val).toISOString();
-  try {
-    const r = await fetch(SB+'/rest/v1/clues?id=eq.'+clueId, {
-      method:'PATCH',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify({ reveal_at: iso })
-    });
-    if (!r.ok) throw new Error('save failed');
-    const c = clues.find(x => x.id === clueId);
-    if (c) c.reveal_at = iso;
-    renderClues();
-    showToast('Time updated', 'success');
-  } catch(e) {
-    showToast('Save failed', 'error');
-  }
-}
-
-// ════════════════════════════════════════════════════
-//  PAYMENT MODAL — Stripe Checkout redirect
-// ════════════════════════════════════════════════════
-
-async function openPaymentModal() {
-  // If no currentUser but token exists, try loading user first
-  if (!currentUser && getToken()) {
-    try {
-      var ur = await fetch(SB+'/auth/v1/user', { headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}});
-      if (ur.ok) { currentUser = await ur.json(); }
-    } catch(e){}
-  }
-
-  // If still not logged in, show email gate first
-  if (!currentUser) {
-    try { sessionStorage.setItem('fs_magic_return', window.location.href); } catch(e){}
-    var bd = document.getElementById('eg-backdrop');
-    var md = document.getElementById('eg-modal');
-    var inner = document.getElementById('eg-inner');
-    bd.style.display = 'block';
-    md.style.display = 'flex';
-    setTimeout(function(){
-      bd.style.opacity = '1';
-      if (inner) { inner.style.opacity = '1'; inner.style.transform = 'scale(1)'; }
-    }, 10);
-    return;
-  }
-
-  var prize = (hunt.prize_value || 0) / 100;
-  var fee   = Math.round(prize * 0.10 * 100) / 100;
-  var total = prize + fee;
-  var breakdown = document.getElementById('pm-breakdown');
-
-  // Populate breakdown
-  breakdown.innerHTML =
-    '<div class="pm-row"><span>Prize amount</span><span>$' + prize.toFixed(2) + '</span></div>' +
-    '<div class="pm-row"><span>FinderSeek fee (10%)</span><span>$' + fee.toFixed(2) + '</span></div>' +
-    '<div class="pm-row pm-total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
-
-  // Show user
-  var userEl = document.getElementById('pm-user');
-  if (currentUser) {
-    userEl.textContent = currentUser.email;
-  } else {
-    userEl.innerHTML = '';
-  }
-
-  // Reset checkbox and button
-  var box = document.getElementById('pm-nocancel-box');
-  var btn = document.getElementById('pm-pay-btn');
-  box.dataset.checked = 'false';
-  box.style.background = '';
-  box.style.borderColor = 'rgba(201,137,12,.5)';
-  box.innerHTML = '';
-  btn.disabled = true;
-  btn.style.opacity = '.5';
-  btn.style.cursor = 'not-allowed';
-  btn.textContent = 'Pay & Go Live →';
-  document.getElementById('pm-error').textContent = '';
-
-  // Show modal
-  document.getElementById('pm-backdrop').classList.add('show');
-  document.getElementById('pm-sheet').classList.add('show');
-}
-
-function toggleNoCancelCheck() {
-  var box = document.getElementById('pm-nocancel-box');
-  var btn = document.getElementById('pm-pay-btn');
-  var checked = box.dataset.checked !== 'true';
-  box.dataset.checked = checked;
-  if (checked) {
-    box.style.background = '#c9890c';
-    box.style.borderColor = '#c9890c';
-    box.innerHTML = '<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.8 6L9 1" stroke="#0a0800" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-  } else {
-    box.style.background = '';
-    box.style.borderColor = 'rgba(201,137,12,.5)';
-    box.innerHTML = '';
-    btn.disabled = true;
-    btn.style.opacity = '.5';
-    btn.style.cursor = 'not-allowed';
-  }
-}
-
-function closePaymentModal() {
-  document.getElementById('pm-backdrop').classList.remove('show');
-  document.getElementById('pm-sheet').classList.remove('show');
-}
-
-async function submitPayment() {
-  var btn = document.getElementById('pm-pay-btn');
-  var errEl = document.getElementById('pm-error');
-  errEl.textContent = '';
-
-  // Guard — user must be signed in
-  if (!currentUser) {
-    errEl.textContent = 'Please sign in first to fund your quest.';
-    btn.disabled = false;
-    btn.textContent = 'Pay & Go Live →';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Opening Stripe...';
-
-  try {
-    var prize = (hunt.prize_value || 0) / 100;
-    var total = prize + prize * 0.10;
-    var r = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-      body: JSON.stringify({
-        type: 'escrow',
-        userId: currentUser.id,
-        email: currentUser.email,
-        huntId: hunt.id,
-        prizeAmount: prize,
-        totalCents: Math.round(total * 100)
-      })
-    });
-    var d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
-    // Redirect to Stripe Checkout
-    window.location.href = d.url;
-  } catch(e) {
-    errEl.textContent = e.message || 'Payment failed — please try again';
-    btn.disabled = false;
-    btn.textContent = 'Pay & Go Live →';
-  }
-}
-
-// ════════════════════════════════════════════════════
-// Service worker
-// ════════════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  });
-}
-
-// Init
-init();
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
 </script>
 </body>
 </html>
