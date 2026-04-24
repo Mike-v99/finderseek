@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"/>
 <style>
 :root {
   --ink: #0d0b18;
@@ -381,6 +381,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
+.mapboxgl-ctrl-attrib,.mapboxgl-ctrl-logo{display:none!important;}
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -931,7 +932,7 @@ function filterQuests(query) {
 }
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <script>
 var liveMap = null;
 var liveMapInitialized = false;
@@ -1118,30 +1119,16 @@ async function initLiveMap() {
     }
   }
 
-  liveMap = L.map('live-map', {
-    center: [30.05, -95.5],
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA';
+  liveMap = new mapboxgl.Map({
+    container: 'live-map',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-95.5, 30.05],
     zoom: 11,
-    zoomControl: false,
     attributionControl: false,
+    interactive: true
   });
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    subdomains: 'abcd',
-  }).addTo(liveMap);
-  // Brighter labels — stack two label layers for extra boldness
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    subdomains: 'abcd',
-    opacity: 1,
-  }).addTo(liveMap);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    subdomains: 'abcd',
-    opacity: 0.8,
-  }).addTo(liveMap);
-
-  L.control.zoom({ position: 'topright' }).addTo(liveMap);
+  liveMap.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'top-right');
 
   try {
     var r = await fetch(SB + '/rest/v1/hunts?status=eq.active&select=id,city,neighborhood,prize_value,ends_at,lat,lng,payment_type,escrow_status&order=ends_at.asc&limit=50', {
