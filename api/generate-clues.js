@@ -114,9 +114,10 @@ This is clue #${pos} of ${total}. Here is your specific instruction for this clu
 ${tierInstruction}
 
 Write ONE clue, 1-3 sentences, in second person, staying in character. Include the geographic information required by the tier instruction above.
+Also write a Q&A pair: a simple question directly answerable from the clue text, with a 1-3 word answer.
 
 Return ONLY a JSON object (no markdown, no explanation):
-{"number": ${pos}, "text": "clue text here"}`;
+{"number": ${pos}, "text": "clue text here", "question": "question here", "answer": "answer here"}`;
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -153,7 +154,7 @@ Return ONLY a JSON object (no markdown, no explanation):
 
   const prompt = customPrompt || `You are writing quest clues for FinderSeek, a real-money treasure quest app where seekers physically go find hidden cash prizes.
 
-The Pirate has hidden real cash and described the hiding spot as:
+The Quest Master has hidden real cash and described the hiding spot as:
 "${description}"
 
 Full address: ${searchAddress || ''}
@@ -169,16 +170,22 @@ CRITICAL RULES:
 3. Stay in character (voice/style above) throughout, but NEVER let the persona override the geographic information. The clue must contain the real location detail even if it's delivered in a silly voice.
 4. Write in second person ("you", "your").
 5. 1-3 sentences per clue.
+6. For each clue, also write a Q&A pair: a simple question the seeker must answer correctly to unlock the next clue. The question and answer must be directly answerable from reading the clue text. The answer should be 1-3 words, case-insensitive. Make the question feel like a natural comprehension check — not a trick. Example: clue mentions "the old oak tree" → question: "What type of tree are you looking for?" → answer: "Oak"
+
+Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must guide the seeker to the general area (city/neighborhood level only — not the exact spot) using a riddle in the persona voice. No Q&A needed for the location riddle — it is unlocked by GPS when the seeker physically arrives within 1,000 feet.
 
 Write exactly ${clueCount} clues following these tier instructions precisely:
 
 ${tierList}
 
-Return ONLY a JSON array (no markdown, no explanation):
-[
-  {"number": 1, "text": "clue text here"},
-  {"number": 2, "text": "clue text here"}
-]`;
+Return ONLY a JSON object (no markdown, no explanation) in this exact format:
+{
+  "location_riddle": "riddle text to get seeker to the general area",
+  "clues": [
+    {"number": 1, "text": "clue text here", "question": "question here", "answer": "answer here"},
+    {"number": 2, "text": "clue text here", "question": "question here", "answer": "answer here"}
+  ]
+}`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -204,18 +211,22 @@ Return ONLY a JSON array (no markdown, no explanation):
 
     const raw = data.content?.[0]?.text || '';
     const clean = raw.replace(/```json|```/g, '').trim();
-    // Extract JSON array even if Claude wrapped it in extra text
-    const jsonMatch = clean.match(/\[[\s\S]*\]/);
+    // Extract JSON object
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
     const jsonStr = jsonMatch ? jsonMatch[0] : clean;
-    let clues;
+    let parsed;
     try {
-      clues = JSON.parse(jsonStr);
+      parsed = JSON.parse(jsonStr);
     } catch(parseErr) {
       console.error('JSON parse error. Raw:', raw.substring(0, 300));
       return res.status(500).json({ error: 'Failed to parse clues. Raw: ' + raw.substring(0, 150) });
     }
 
-    return res.status(200).json({ clues });
+    // Support both new format {location_riddle, clues} and legacy array format
+    const clues = Array.isArray(parsed) ? parsed : (parsed.clues || []);
+    const location_riddle = parsed.location_riddle || null;
+
+    return res.status(200).json({ clues, location_riddle });
 
   } catch (e) {
     console.error('Server error:', e);
