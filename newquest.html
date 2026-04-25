@@ -1644,8 +1644,9 @@ async function createQuest(previewMode){
         lng: selectedLng,
         persona: persona,
         city: city,
-        neighborhood: searchAddress.split(',')[0] || '',
-        searchAddress: searchAddress,
+        neighborhood: selectedPlaceName || searchAddress.split(',')[0] || '',
+        searchAddress: selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress,
+        placeName: selectedPlaceName || '',
       })
     });
     const clueData = await clueRes.json();
@@ -2457,14 +2458,15 @@ function openMapModal() {
 
   setTimeout(function() {
     if (_modalMapReady) {
-      // Already initialized — just resize and re-center
       google.maps.event.trigger(_modalMap, 'resize');
-      if (selectedLat && selectedLng) _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
+      if (selectedLat && selectedLng) {
+        _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
+        document.getElementById('map-modal-confirm').disabled = false;
+      }
     } else if (selectedLat && selectedLng) {
-      // Already have a confirmed location — use it
       initModalMap(selectedLat, selectedLng);
+      modalReverseGeocode(selectedLat, selectedLng);
     } else {
-      // First open — go to player's GPS location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(pos) {
@@ -2472,13 +2474,14 @@ function openMapModal() {
             modalReverseGeocode(pos.coords.latitude, pos.coords.longitude);
           },
           function() {
-            // GPS blocked — default to Houston
             initModalMap(29.7604, -95.3698);
+            modalReverseGeocode(29.7604, -95.3698);
           },
           { timeout: 5000, enableHighAccuracy: true }
         );
       } else {
         initModalMap(29.7604, -95.3698);
+        modalReverseGeocode(29.7604, -95.3698);
       }
     }
   }, 100);
@@ -2544,7 +2547,7 @@ function modalReverseGeocode(lat, lng) {
 }
 
 function confirmMapLocation() {
-  if (!_modalLat || !_modalLng) return;
+  if (_modalLat === null || _modalLng === null) return;
   selectedLat = _modalLat;
   selectedLng = _modalLng;
   var addr = document.getElementById('map-modal-address').textContent.replace('📍 ', '');
