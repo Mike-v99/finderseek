@@ -2484,6 +2484,7 @@ function modalReverseGeocode(lat, lng) {
     if (status === 'OK' && results[0]) {
       var addr = results[0].formatted_address;
       if (searchEl) searchEl.value = addr;
+      toggleModalSearchClear(addr);
       // Store address for confirmMapLocation
       document.getElementById('map-modal-address').textContent = addr;
       confirmBtn.disabled = false;
@@ -2548,6 +2549,20 @@ function modalGoToMyLocation() {
 
 // Search using Google Places Autocomplete
 var _modalAC = null;
+function clearModalSearch() {
+  var el = document.getElementById('map-modal-search');
+  if (el) { el.value = ''; el.focus(); }
+  document.getElementById('map-predictions').classList.remove('show');
+  var clearBtn = document.getElementById('map-search-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+  document.getElementById('map-modal-confirm').disabled = true;
+}
+
+function toggleModalSearchClear(val) {
+  var btn = document.getElementById('map-search-clear');
+  if (btn) btn.style.display = (val && val.length > 0) ? 'block' : 'none';
+}
+
 function modalLiveSearch(val) {
   clearTimeout(_modalSearchTimeout);
   var pred = document.getElementById('map-predictions');
@@ -2625,8 +2640,11 @@ document.addEventListener('click', function(e) {
       <div style="display:flex;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:0 12px;height:42px;gap:8px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="map-modal-search" type="text" placeholder="Search park, address, landmark..." autocomplete="off"
-          oninput="modalLiveSearch(this.value)" onfocus="modalLiveSearch(this.value)"
+          oninput="modalLiveSearch(this.value);toggleModalSearchClear(this.value);" onfocus="modalLiveSearch(this.value);toggleModalSearchClear(this.value);"
           style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:15px;font-family:inherit;font-weight:400;min-width:0;"/>
+        <button id="map-search-clear" onclick="clearModalSearch()" style="display:none;background:none;border:none;padding:4px;cursor:pointer;flex-shrink:0;opacity:.6;-webkit-tap-highlight-color:transparent;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div id="map-predictions" class="map-predictions"></div>
     </div>
