@@ -2461,7 +2461,7 @@ function openMapModal() {
       google.maps.event.trigger(_modalMap, 'resize');
       if (selectedLat && selectedLng) {
         _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
-        document.getElementById('map-modal-confirm').disabled = false;
+        // confirm always active
       }
     } else if (selectedLat && selectedLng) {
       initModalMap(selectedLat, selectedLng);
@@ -2508,7 +2508,7 @@ function initModalMap(lat, lng) {
   _modalMap.addListener('dragstart', function() {
     document.getElementById('map-center-pin').classList.add('dragging');
     var _se = document.getElementById('map-modal-search'); if(_se) _se.placeholder = 'Move the map to position the pin'; if(_se) _se.value = '';
-    document.getElementById('map-modal-confirm').disabled = true;
+    // confirm always active
     clearTimeout(_modalMoveTimer);
   });
   _modalMap.addListener('dragend', function() {
@@ -2536,18 +2536,25 @@ function modalReverseGeocode(lat, lng) {
       toggleModalSearchClear(addr);
       // Store address for confirmMapLocation
       document.getElementById('map-modal-address').textContent = addr;
-      confirmBtn.disabled = false;
+      // confirm always active
     } else {
       var coords = lat.toFixed(5) + ', ' + lng.toFixed(5);
       if (searchEl) searchEl.value = coords;
       document.getElementById('map-modal-address').textContent = coords;
-      confirmBtn.disabled = false;
+      // confirm always active
     }
   });
 }
 
 function confirmMapLocation() {
-  if (_modalLat === null || _modalLng === null) return;
+  // If _modalLat not set yet, use map center
+  if ((_modalLat === null || _modalLng === null) && _modalMap) {
+    var center = _modalMap.getCenter();
+    if (center) { _modalLat = center.lat(); _modalLng = center.lng(); }
+  }
+  if (_modalLat === null || _modalLng === null) {
+    showToast('Please wait for the map to load', 'error'); return;
+  }
   selectedLat = _modalLat;
   selectedLng = _modalLng;
   var addr = document.getElementById('map-modal-address').textContent.replace('📍 ', '');
@@ -2604,7 +2611,7 @@ function clearModalSearch() {
   document.getElementById('map-predictions').classList.remove('show');
   var clearBtn = document.getElementById('map-search-clear');
   if (clearBtn) clearBtn.style.display = 'none';
-  document.getElementById('map-modal-confirm').disabled = true;
+  // confirm always active
 }
 
 function toggleModalSearchClear(val) {
@@ -2667,7 +2674,7 @@ function modalSelectPrediction(idx) {
       var addr = _placeName + ', ' + results[0].formatted_address;
       var _se2 = document.getElementById('map-modal-search'); if(_se2) _se2.value = _placeName;
       document.getElementById('map-modal-address').textContent = addr;
-      document.getElementById('map-modal-confirm').disabled = false;
+      // confirm always active
     }
   });
 }
@@ -2720,7 +2727,7 @@ document.addEventListener('click', function(e) {
   <!-- Footer with satellite toggle + confirm -->
   <div class="map-modal-footer">
     <button class="map-modal-sat" id="map-modal-sat" onclick="toggleModalSatellite()">🛰️ Satellite</button>
-    <button class="map-modal-confirm" id="map-modal-confirm" onclick="confirmMapLocation()" disabled>Confirm Location</button>
+    <button class="map-modal-confirm" id="map-modal-confirm" onclick="confirmMapLocation()">Confirm Location</button>
   </div>
 </div>
 </body>
