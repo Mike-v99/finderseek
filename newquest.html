@@ -261,17 +261,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-modal-sheet{background:#0d0b18;width:100%;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 .hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 /* Tab row */
-.hs-tabs{display:flex;gap:5px;padding:10px 12px 8px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);}
+.hs-top-row{display:flex;align-items:center;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
 .hs-tab{flex:1;padding:8px 4px;border-radius:8px;font-size:14px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
 .hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
 .hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
 /* Action scroll row */
-.hs-actions{display:flex;gap:5px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
-.hs-actions::-webkit-scrollbar{display:none;}
-.hs-action{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:8px;font-size:16px;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s;border:none;font-family:inherit;}
-.hs-action.sel{background:#e8a820;color:#0a0800;font-weight:500;}
+.hs-action-row{padding:8px 12px 4px;flex-shrink:0;}
+
+.hs-action-select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:9px 14px;color:#e8a820;font-size:17px;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:170px;}
+.hs-action-wrap{position:relative;display:inline-block;}
 .hs-action.un{background:rgba(255,255,255,.0);color:rgba(255,255,255,.3);font-weight:400;}
 .hs-action-locked{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;font-size:18px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
+
+/* Radar map background */
+.hs-radar-map{position:absolute;inset:0;border-radius:50%;overflow:hidden;}
+.hs-radar-glow{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,168,32,.08);}
 /* Radar */
 .hs-radar-wrap{display:flex;justify-content:center;padding:4px 0 6px;flex-shrink:0;}
 .hs-radar{position:relative;}
@@ -2856,46 +2860,67 @@ function renderHsModal() {
   // ── Action area ───────────────────────────────────────────
   var actionArea = document.getElementById('hs-action-area');
   if (cur === 0) {
-    // Location — locked to "Travel to"
-    actionArea.innerHTML = '<div class="hs-action-locked">🚗 Travel to this location</div>';
+    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);border-radius:9px;font-size:17px;color:#e8a820;">🚗 Travel to this location</div>';
   } else if (cur === total) {
-    // Final clue — locked to "Stop here"
-    actionArea.innerHTML = '<div class="hs-action-locked">📍 Stop here &mdash; you have arrived</div>';
+    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:9px;font-size:17px;color:#4ade80;">📍 Stop here — you have arrived</div>';
   } else {
-    // Regular clue — scrollable action chips
     var cl = _hsData.clues[cur-1] || {};
     var selAction = cl.action || 'walk';
-    var chipsHtml = '<div class="hs-actions" id="hs-action-scroll">';
-    HS_ACTIONS.forEach(function(a) {
-      var isSel = a.id === selAction;
-      chipsHtml += '<button class="hs-action ' + (isSel ? 'sel' : 'un') + '" onclick="hsSetAction(&quot;' + a.id + '&quot;)">' + a.emoji + ' ' + a.label + '</button>';
-    });
-    chipsHtml += '</div>';
-    actionArea.innerHTML = chipsHtml;
+    var opts = HS_ACTIONS.map(function(a) {
+      return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>';
+    }).join('');
+    actionArea.innerHTML = '<div class="hs-action-wrap"><select class="hs-action-select" onchange="hsSetAction(this.value)">' + opts + '</select><div class="hs-action-arrow">▾</div></div>';
   }
 
-  // ── Radar ─────────────────────────────────────────────────
+  // ── Radar with map background ────────────────────────────
   var radarWrap = document.getElementById('hs-radar-wrap');
-  var rings = total + 1; // location + N clues
-  var maxR = 120, minR = 18;
+  var rings = total + 1;
+  var maxR = 140, minR = 22;
   var step = (maxR - minR) / (rings - 1 || 1);
-  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;">';
+  var allDoneRadar = cur >= rings;
+  var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
+  var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor.replace(')', ',.35)').replace('rgba','rgba') + ';') : '';
+
+  // Map SVG background — dark roads + overlay
+  var mapSvg = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
+    '<rect width="' + maxR + '" height="' + maxR + '" fill="#1a1a2e"/>' +
+    '<line x1="0" y1="70" x2="' + maxR + '" y2="70" stroke="#2d2d44" stroke-width="10"/>' +
+    '<line x1="70" y1="0" x2="70" y2="' + maxR + '" stroke="#2d2d44" stroke-width="10"/>' +
+    '<line x1="0" y1="42" x2="' + maxR + '" y2="42" stroke="#2d2d44" stroke-width="5"/>' +
+    '<line x1="0" y1="100" x2="' + maxR + '" y2="100" stroke="#2d2d44" stroke-width="5"/>' +
+    '<line x1="42" y1="0" x2="42" y2="' + maxR + '" stroke="#2d2d44" stroke-width="5"/>' +
+    '<line x1="102" y1="0" x2="102" y2="' + maxR + '" stroke="#2d2d44" stroke-width="5"/>' +
+    '<rect x="75" y="46" width="24" height="18" fill="#1a2e1a" rx="2"/>' +
+    '<rect x="14" y="74" width="16" height="12" fill="#1e1e30" rx="1"/>' +
+    '<rect x="106" y="106" width="18" height="14" fill="#1e1e30" rx="1"/>' +
+    '<rect width="' + maxR + '" height="' + maxR + '" fill="#0d0b18" opacity="0.38"/>' +
+    '</svg>';
+
+  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;position:relative;">' +
+    '<div class="hs-radar-map">' + mapSvg + '</div>';
+
+  // Active ring glow halo
   for (var r = 0; r < rings; r++) {
     var size = maxR - r * step;
-    var ringIdx = r; // 0 = outermost = location
-    var isDone = ringIdx < cur;
-    var isActive = ringIdx === cur;
-    var color = isDone ? 'rgba(74,222,128,' : 'rgba(255,255,255,';
-    var opacity = isDone ? (0.3 + r*0.08) : isActive ? 0.9 : 0.08;
-    var glow = isActive ? ';box-shadow:0 0 10px rgba(232,168,32,.4)' : '';
-    var pulse = isActive ? ';animation:hsRingPulse 2s ease-in-out infinite' : '';
-    var borderColor = isDone ? 'rgba(74,222,128,' + (0.3 + r*0.08) + ')' : isActive ? 'rgba(232,168,32,.9)' : 'rgba(255,255,255,.08)';
-    radarHtml += '<div class="hs-ring" style="width:' + size + 'px;height:' + size + 'px;border-color:' + borderColor + glow + pulse + ';"></div>';
+    var isDone = r < cur;
+    var isActive = r === cur;
+    var borderColor = isDone
+      ? 'rgba(74,222,128,' + (0.5 + r*0.08) + ')'
+      : isActive
+        ? (allDoneRadar ? '#4ade80' : 'rgba(232,168,32,.92)')
+        : 'rgba(255,255,255,.1)';
+    var glowStyle = isActive && !allDoneRadar
+      ? ';box-shadow:0 0 16px rgba(232,168,32,.5),0 0 32px rgba(232,168,32,.15);animation:hsRingPulse 2s ease-in-out infinite'
+      : isActive && allDoneRadar
+        ? ';box-shadow:0 0 14px rgba(74,222,128,.6);animation:hsRingPulse 1.5s ease-in-out infinite'
+        : '';
+    if (isActive && !allDoneRadar) {
+      // Gold glow fill behind active ring
+      radarHtml += '<div style="position:absolute;width:' + (size * 0.85) + 'px;height:' + (size * 0.85) + 'px;border-radius:50%;background:rgba(232,168,32,.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>';
+    }
+    radarHtml += '<div class="hs-ring" style="width:' + size + 'px;height:' + size + 'px;border-color:' + borderColor + glowStyle + ';"></div>';
   }
-  // Center dot
-  var dotColor = cur >= rings ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.2)';
-  var dotGlow = cur > 0 ? 'box-shadow:0 0 10px ' + dotColor + ';' : '';
-  radarHtml += '<div class="hs-dot" style="width:10px;height:10px;background:' + dotColor + ';' + dotGlow + '"></div>';
+  radarHtml += '<div class="hs-dot" style="width:12px;height:12px;background:' + dotColor + ';' + dotGlow + 'z-index:2;"></div>';
   radarHtml += '</div>';
   radarWrap.innerHTML = radarHtml;
 
@@ -2942,17 +2967,6 @@ function hsSetAction(actionId) {
   if (idx < 0) return;
   if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'walk' };
   _hsData.clues[idx].action = actionId;
-  // Update chips visually without full re-render
-  document.querySelectorAll('.hs-action').forEach(function(btn) {
-    btn.className = 'hs-action ' + (btn.textContent.trim().includes(HS_ACTIONS.find(function(a){return a.id===actionId;})?.emoji || '@@') ? 'sel' : 'un');
-  });
-  // Simpler: just re-render actions
-  var selAction = actionId;
-  var chipsHtml = '';
-  HS_ACTIONS.forEach(function(a) {
-    chipsHtml += '<button class="hs-action ' + (a.id === selAction ? 'sel' : 'un') + '" onclick="hsSetAction(&quot;' + a.id + '&quot;)">' + a.emoji + ' ' + a.label + '</button>';
-  });
-  document.getElementById('hs-action-scroll').innerHTML = chipsHtml;
 }
 
 function buildHsText() {
@@ -3030,12 +3044,18 @@ function handleHsPhoto(input) {
       <div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>
       <button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button>
     </div>
-    <!-- Tab row -->
-    <div class="hs-tabs" id="hs-tabs"></div>
-    <!-- Action row (swapped per clue) -->
-    <div id="hs-action-area"></div>
-    <!-- Radar -->
-    <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
+    <!-- Top row: tabs left + radar right -->
+    <div class="hs-top-row">
+      <div>
+        <div class="hs-tabs-label">CLUES</div>
+        <div class="hs-tabs" id="hs-tabs"></div>
+      </div>
+      <div style="flex:1;display:flex;justify-content:center;align-items:center;">
+        <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
+      </div>
+    </div>
+    <!-- Action row -->
+    <div class="hs-action-row" id="hs-action-area"></div>
     <!-- Single clue panel -->
     <div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;"></div>
     <!-- Nav -->
