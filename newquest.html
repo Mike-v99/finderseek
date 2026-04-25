@@ -92,7 +92,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;}
 .map-coords span{color:var(--gold);}
-.search-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.25);border-radius:12px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:100;display:none;backdrop-filter:blur(16px);}
+.search-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.25);border-radius:12px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:10000;display:none;backdrop-filter:blur(16px);}
 .search-dropdown.show{display:block;}
 .search-result{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
 .search-result:hover,.search-result.active{background:rgba(201,137,12,.1);}
@@ -429,9 +429,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT + DESCRIPTION</div>
 
     <!-- Search bar -->
-    <div class="map-search-wrap" style="position:relative;margin-bottom:8px;">
+    <div class="map-search-wrap" style="position:relative;margin-bottom:8px;z-index:10001;">
       <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" style="color:#b8c4d0;"/>
+      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" oninput="liveSearch(this.value)" style="color:#b8c4d0;"/>
       <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:15px;gap:4px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
         <span id="my-loc-txt">Me</span>
@@ -444,6 +444,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-size:32px;opacity:.6;">📍</div>
         <div style="font-size:15px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;padding:0 20px;">Tap 📍 Me, search above,<br/>or tap the map to place your pin</div>
       </div>
+      <!-- Satellite toggle -->
+      <button id="sat-toggle" onclick="toggleSatellite()" style="position:absolute;bottom:8px;right:8px;z-index:10;background:rgba(13,11,24,.9);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 10px;font-size:12px;color:#b8c4d0;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);display:none;">🛰️ Satellite</button>
     </div>
     <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#b8c4d0;"></div>
 
@@ -1870,6 +1872,7 @@ function initMap(lat, lng) {
     icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40"><text y="34" font-size="34" filter="drop-shadow(0 3px 8px rgba(0,0,0,.7))">📍</text></svg>'), scaledSize: new google.maps.Size(34, 40), anchor: new google.maps.Point(17, 40) }
   });
   setCoords(lat, lng);
+  var satBtn = document.getElementById('sat-toggle'); if(satBtn) satBtn.style.display='block';
   google.maps.event.addListener(_marker, 'drag', function() {
     var p = _marker.getPosition();
     setCoords(p.lat(), p.lng());
@@ -1886,6 +1889,20 @@ function initMap(lat, lng) {
     setCoords(selectedLat, selectedLng); reverseGeocode(selectedLat, selectedLng);
     if (typeof saveFormState === 'function') saveFormState();
   });
+}
+
+
+var _isSatellite = false;
+function toggleSatellite() {
+  if (!_map) return;
+  _isSatellite = !_isSatellite;
+  _map.setMapTypeId(_isSatellite ? google.maps.MapTypeId.HYBRID : google.maps.MapTypeId.ROADMAP);
+  var btn = document.getElementById('sat-toggle');
+  if (btn) {
+    btn.textContent = _isSatellite ? '🗺️ Map' : '🛰️ Satellite';
+    btn.style.color = _isSatellite ? '#4ade80' : '#b8c4d0';
+    btn.style.borderColor = _isSatellite ? 'rgba(74,222,128,.3)' : 'rgba(255,255,255,.15)';
+  }
 }
 
 function flyTo(lat, lng) {
