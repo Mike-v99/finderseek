@@ -80,17 +80,35 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing description or clueCount' });
   }
 
-  // Extract place name from description if not explicitly provided
-  // Look for capitalised business/location names mentioned in the hiding spot description
-  const resolvedPlaceName = placeName || (function() {
-    // Common patterns: "at Kroger", "behind Target", "near Memorial Park", "inside Walmart", etc.
-    const match = description.match(/(?:at|near|behind|inside|outside|front of|back of|next to|beside|by)\s+([A-Z][A-Za-z0-9'\-\s]{1,30}?)(?:\s+on|\s+at|\s*[,\.!]|$)/);
-    if (match) return match[1].trim();
-    // Also try: starts with capital, multiple words, looks like a name
-    const nameMatch = description.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\b/);
-    if (nameMatch && nameMatch[1].length > 3) return nameMatch[1].trim();
-    return null;
-  })();
+  // Extract place name — use provided placeName or ask AI to extract from description
+  let resolvedPlaceName = placeName || null;
+  if (!resolvedPlaceName && description) {
+    try {
+      const extractRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 50,
+          messages: [{
+            role: 'user',
+            content: `Extract the specific named location (store, park, building, landmark) from this hiding spot description. Return ONLY the name, nothing else. If no specific named location is mentioned, return "none".\n\nDescription: "${description}"`
+          }]
+        })
+      });
+      const extractData = await extractRes.json();
+      const extracted = extractData.content?.[0]?.text?.trim();
+      if (extracted && extracted.toLowerCase() !== 'none' && extracted.length < 50) {
+        resolvedPlaceName = extracted;
+      }
+    } catch(e) { /* non-fatal — continue without place name */ }
+  }
+
+  console.log('[generate-clues] placeName:', placeName, '| resolvedPlaceName:', resolvedPlaceName);
 
   const styleHint = PERSONA_STYLES[persona] || PERSONA_STYLES.pirate;
   const tierInstructions = buildTierInstructions(clueCount, city, neighborhood, searchAddress);
