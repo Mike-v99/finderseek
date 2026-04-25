@@ -164,7 +164,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- Topbar -->
   <div class="rv-topbar">
-    <div class="rv-back" onclick="window.location.replace('newquest.html')" aria-label="Back">
+    <div class="rv-back" onclick="window.location.replace('newquest.html?from=app')" aria-label="Back">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </div>
     <div class="rv-title">Review Quest</div>
@@ -354,7 +354,7 @@ async function init(){
       const pending = JSON.parse(localStorage.getItem('fs_pending_quest') || 'null');
       if (!pending || !pending.hunt || !pending.clues) {
         showToast('Preview data not found — start over', 'error');
-        setTimeout(()=>window.location.href='newquest.html', 1500);
+        setTimeout(()=>window.location.href='newquest.html?from=app', 1500);
         return;
       }
       hunt = { id: 'preview', ...pending.hunt };
@@ -366,7 +366,7 @@ async function init(){
       return;
     } catch(e) {
       console.error('Preview load error', e);
-      setTimeout(()=>window.location.href='newquest.html', 1500);
+      setTimeout(()=>window.location.href='newquest.html?from=app', 1500);
       return;
     }
   }
@@ -374,7 +374,7 @@ async function init(){
   const huntId = getParam('id');
   if (!huntId) {
     showToast('No quest ID', 'error');
-    setTimeout(()=>window.location.href='newquest.html', 1500);
+    setTimeout(()=>window.location.href='newquest.html?from=app', 1500);
     return;
   }
 
@@ -411,7 +411,7 @@ async function init(){
   const hd = await hr.json();
   if (!hd || !hd[0]) {
     showToast('Quest not found', 'error');
-    setTimeout(()=>window.location.href='newquest.html', 1500);
+    setTimeout(()=>window.location.href='newquest.html?from=app', 1500);
     return;
   }
   hunt = hd[0];

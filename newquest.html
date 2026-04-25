@@ -663,8 +663,6 @@ var PERSONA_SAMPLES = {
 };
 
 function goStep(n) {
-  // Keep the inapp flag alive during step navigation
-  sessionStorage.setItem('fs_from_inapp', '1');
   // Validate before leaving step 3
   if (currentStep === 3 && n === 4) {
     var hidingSpot = document.getElementById('hiding-spot').value.trim();
@@ -1451,7 +1449,7 @@ async function createQuest(previewMode){
       }));
       showToast('✅ Clues generated! Review them next...', 'success');
       saveFormState();
-      setTimeout(function(){ sessionStorage.removeItem('fs_from_inapp'); window.location.replace('review.html?preview=1'); }, 1000);
+      setTimeout(function(){ window.location.replace('review.html?preview=1'); }, 1000);
       return;
     }
 
@@ -1681,7 +1679,7 @@ async function createQuest(previewMode){
       showToast('✅ Quest draft saved! Redirecting to review...', 'success');
       // Don't clear form state — preserve it so Back from review restores everything
       saveFormState(); // ensure step 4 is saved
-      setTimeout(()=>{ sessionStorage.removeItem('fs_from_inapp'); window.location.href = 'review.html?id='+huntId; }, 1200);
+      setTimeout(()=>{ window.location.href = 'review.html?id='+huntId; }, 1200);
       return;
     }
 
@@ -1723,7 +1721,7 @@ loadCurrentUser();
     if (localStorage.getItem('fs_pending_quest')) {
       await loadCurrentUser();
       if (currentUser) {
-        sessionStorage.removeItem('fs_from_inapp'); window.location.href = 'review.html?preview=1';
+        window.location.href = 'review.html?preview=1';
         return;
       }
     }
@@ -1788,15 +1786,17 @@ function clearFormState() { try { sessionStorage.removeItem(FORM_KEY); } catch(e
 
 document.addEventListener('DOMContentLoaded',function(){
 
-  // If user launched app fresh (Safari fully closed = sessionStorage cleared),
-  // redirect to home. sessionStorage persists within a session but clears on close.
-  var fromInApp = sessionStorage.getItem('fs_from_inapp');
-  if (!fromInApp) {
+  // Redirect to home if opened directly (not from within the app)
+  // Use URL parameter — reliable on iOS PWA, survives any JS timing issues
+  var urlParams = new URLSearchParams(window.location.search);
+  var fromApp = urlParams.get('from') === 'app';
+  var hasStep = urlParams.get('step');
+  // Also allow if there's a pending quest (returning to finish)
+  var hasPending = !!localStorage.getItem('fs_pending_quest');
+  if (!fromApp && !hasStep && !hasPending) {
     window.location.replace('index.html');
     return;
   }
-  // Don't clear the flag here — keep it alive in case of any internal reloads
-  // It gets cleared when the user navigates away from this page entirely
 
   updPay(25);
   updateExpiry();
@@ -2604,14 +2604,6 @@ document.addEventListener('click', function(e) {
 });
 
 
-// Clear inapp flag when user leaves newquest entirely
-window.addEventListener('pagehide', function() {
-  // Only clear if navigating away (not internal step changes)
-  // goStep re-sets it, so this just handles closing the tab/browser
-  setTimeout(function() {
-    sessionStorage.removeItem('fs_from_inapp');
-  }, 100);
-});
 </script>
 
 <!-- FULL SCREEN MAP MODAL -->

@@ -965,7 +965,7 @@ async function loadCreatedQuests(){
     var rows = await r.json();
 
     if (!rows || rows.length === 0) {
-      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;font-style:italic;">No quests created yet — <a href="newquest.html" style="color:var(--gold2);">create one</a></div>';
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;font-style:italic;">No quests created yet — <a href="newquest.html" onclick="sessionStorage.setItem(\'fs_from_inapp\',\'1\')" style="color:var(--gold2);">create one</a></div>';
       return;
     }
 
