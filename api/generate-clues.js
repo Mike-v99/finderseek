@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { description, clueCount, lat, lng, persona, prompt: customPrompt, singleClue, city, neighborhood, searchAddress, finderPosition } = req.body;
+  const { description, clueCount, lat, lng, persona, prompt: customPrompt, singleClue, city, neighborhood, searchAddress, placeName, finderPosition } = req.body;
 
   if (!description || !clueCount) {
     return res.status(400).json({ error: 'Missing description or clueCount' });
@@ -193,10 +193,10 @@ The goal is fun and achievable — never frustrating. Every clue should feel sol
 Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must:
 - Guide the seeker to the general area (city/neighborhood level — NOT the exact spot)
 - Be written as a rhyming riddle in the persona voice
-- MUST contain the EXACT WORDS of the real place name — every word. For example if the location is "Memorial Park, Houston" then the words "Memorial", "Park", and "Houston" must ALL appear in the riddle text, even if split across lines. The seeker must be able to read the riddle and know the exact place to go — the name is hidden inside the rhyme, not replaced by description.
+- MUST contain the EXACT WORDS of the real place name — every word. For example if the location is "Kroger" or "Memorial Park, Houston" then those exact words must ALL appear in the riddle text, even if split across lines. The seeker must be able to read the riddle and know the exact place to go — the name is hidden inside the rhyme, not replaced by description.
 - Be unlocked by GPS when the seeker physically arrives within 1,000 feet — no Q&A needed
 
-Location to encode: ${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
+Location to encode: ${placeName ? placeName + ' — ' : ''}${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
 
 Write exactly ${clueCount} clues following these tier instructions precisely:
 
