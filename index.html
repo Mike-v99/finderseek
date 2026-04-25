@@ -421,23 +421,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="page">
 
   <!-- PENDING QUEST BANNER -->
-<div id="pq-banner">
-  <div class="pq-row" onclick="expandPendingBanner()">
-    <div class="pq-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+  <div id="pq-banner">
+    <div class="pq-row" onclick="expandPendingBanner()">
+      <div class="pq-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="pq-text">
+        <div class="pq-text-title">Unfinished quest</div>
+        <div class="pq-text-sub" id="pq-sub">Your details are saved — tap to continue</div>
+      </div>
+      <div class="pq-btns">
+        <button class="pq-btn-cont" onclick="event.stopPropagation();continuePendingQuest()">Continue →</button>
+        <button class="pq-btn-hide" onclick="event.stopPropagation();hidePendingBanner()" title="Hide banner">✕</button>
+      </div>
     </div>
-    <div class="pq-text">
-      <div class="pq-text-title">Unfinished quest</div>
-      <div class="pq-text-sub" id="pq-sub">Your details are saved — tap to continue</div>
+    <div class="pq-expanded" id="pq-expanded">
+      <button class="pq-btn-cont-big" onclick="continuePendingQuest()">Continue Quest →</button>
+      <button class="pq-btn-clear" onclick="clearPendingQuest()">Clear Quest</button>
     </div>
-    <div class="pq-btns">
-      <button class="pq-btn-cont" onclick="event.stopPropagation();continuePendingQuest()">Continue →</button>
-      <button class="pq-btn-hide" onclick="event.stopPropagation();hidePendingBanner()" title="Hide banner">✕</button>
-    </div>
-  </div>
-  <div class="pq-expanded" id="pq-expanded">
-    <button class="pq-btn-cont-big" onclick="continuePendingQuest()">Continue Quest →</button>
-    <button class="pq-btn-clear" onclick="clearPendingQuest()">Clear Quest</button>
   </div>
 
   <!-- HERO -->
@@ -1400,9 +1401,8 @@ function checkPendingQuest() {
     try {
       var s = JSON.parse(formState);
       var parts = [];
-      if (s.prize) parts.push('$' + s.prize);
-      if (s.persona) parts.push(s.persona.charAt(0).toUpperCase() + s.persona.slice(1) + ' style');
-      if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,28) + (s.hidingSpot.length>28?'...':'"'));
+      if (s.prize) parts.push('$' + s.prize + ' prize');
+      if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,32) + (s.hidingSpot.length>32?'...' : '"'));
       if (parts.length && sub) sub.textContent = parts.join(' · ');
     } catch(e){}
   }
