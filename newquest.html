@@ -663,6 +663,8 @@ var PERSONA_SAMPLES = {
 };
 
 function goStep(n) {
+  // Keep the inapp flag alive during step navigation
+  sessionStorage.setItem('fs_from_inapp', '1');
   // Validate before leaving step 3
   if (currentStep === 3 && n === 4) {
     var hidingSpot = document.getElementById('hiding-spot').value.trim();
@@ -1786,14 +1788,14 @@ function clearFormState() { try { sessionStorage.removeItem(FORM_KEY); } catch(e
 
 document.addEventListener('DOMContentLoaded',function(){
 
-  // If user launched app fresh (not navigating from another page),
-  // send them to the home screen instead of restoring mid-flow state
+  // If user launched app fresh (Safari fully closed = sessionStorage cleared),
+  // redirect to home. sessionStorage persists within a session but clears on close.
   var fromInApp = sessionStorage.getItem('fs_from_inapp');
-  if (!fromInApp && !document.referrer) {
+  if (!fromInApp) {
     window.location.replace('index.html');
     return;
   }
-  // Clear the flag so next direct open also redirects
+  // Clear flag — will be re-set by any page that navigates here
   sessionStorage.removeItem('fs_from_inapp');
 
   updPay(25);
@@ -2393,17 +2395,44 @@ function openMapModal() {
   var overlay = document.getElementById('map-modal-overlay');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Initialize map if not done
-  setTimeout(function() {
-    if (!_modalMapReady) initModalMap(selectedLat || 29.7604, selectedLng || -95.3698);
-    else if (selectedLat && selectedLng) _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
-    google.maps.event.trigger(_modalMap, 'resize');
-  }, 100);
-  // Pre-fill search if address known
-  var addr = document.getElementById('location-btn-sub').textContent;
-  if (addr && addr !== 'Opens full screen Google Map') {
-    document.getElementById('map-modal-search').value = addr;
+
+  // Clear search bar
+  var searchEl = document.getElementById('map-modal-search');
+  if (searchEl) searchEl.value = '';
+
+  // Pre-fill search if location already confirmed
+  var sub = document.getElementById('location-btn-sub');
+  if (sub && sub.textContent && sub.textContent !== 'Opens full screen map') {
+    if (searchEl) searchEl.value = sub.textContent;
   }
+
+  setTimeout(function() {
+    if (_modalMapReady) {
+      // Already initialized — just resize and re-center
+      google.maps.event.trigger(_modalMap, 'resize');
+      if (selectedLat && selectedLng) _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
+    } else if (selectedLat && selectedLng) {
+      // Already have a confirmed location — use it
+      initModalMap(selectedLat, selectedLng);
+    } else {
+      // First open — go to player's GPS location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(pos) {
+            initModalMap(pos.coords.latitude, pos.coords.longitude);
+            modalReverseGeocode(pos.coords.latitude, pos.coords.longitude);
+          },
+          function() {
+            // GPS blocked — default to Houston
+            initModalMap(29.7604, -95.3698);
+          },
+          { timeout: 5000, enableHighAccuracy: true }
+        );
+      } else {
+        initModalMap(29.7604, -95.3698);
+      }
+    }
+  }, 100);
 }
 
 function closeMapModal() {
