@@ -161,6 +161,11 @@ Return ONLY a JSON object (no markdown, no explanation):
 The Quest Master has hidden real cash and described the hiding spot as:
 "${description}"
 
+⚠️ PLACE NAME — THIS IS CRITICAL: ${placeName 
+  ? `The quest is located at "${placeName}". This EXACT name must appear word-for-word in the location riddle. Do not paraphrase, describe, or replace it with a generic description.`
+  : `No place name was explicitly provided. Check the hiding spot description above — if the Quest Master mentioned a specific named location (a store, park, building, landmark), extract that name and use it word-for-word in the location riddle. If no named location is mentioned, use the city and neighborhood from the address.`
+}
+
 Full address: ${searchAddress || ''}
 City: ${city || ''}
 Neighborhood/area: ${neighborhood || ''}
