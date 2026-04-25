@@ -1451,7 +1451,7 @@ async function createQuest(previewMode){
       }));
       showToast('✅ Clues generated! Review them next...', 'success');
       saveFormState();
-      setTimeout(function(){ window.location.replace('review.html?preview=1'); }, 1000);
+      setTimeout(function(){ sessionStorage.removeItem('fs_from_inapp'); window.location.replace('review.html?preview=1'); }, 1000);
       return;
     }
 
@@ -1681,7 +1681,7 @@ async function createQuest(previewMode){
       showToast('✅ Quest draft saved! Redirecting to review...', 'success');
       // Don't clear form state — preserve it so Back from review restores everything
       saveFormState(); // ensure step 4 is saved
-      setTimeout(()=>{ window.location.href = 'review.html?id='+huntId; }, 1200);
+      setTimeout(()=>{ sessionStorage.removeItem('fs_from_inapp'); window.location.href = 'review.html?id='+huntId; }, 1200);
       return;
     }
 
@@ -1723,7 +1723,7 @@ loadCurrentUser();
     if (localStorage.getItem('fs_pending_quest')) {
       await loadCurrentUser();
       if (currentUser) {
-        window.location.href = 'review.html?preview=1';
+        sessionStorage.removeItem('fs_from_inapp'); window.location.href = 'review.html?preview=1';
         return;
       }
     }
@@ -1795,8 +1795,8 @@ document.addEventListener('DOMContentLoaded',function(){
     window.location.replace('index.html');
     return;
   }
-  // Clear flag — will be re-set by any page that navigates here
-  sessionStorage.removeItem('fs_from_inapp');
+  // Don't clear the flag here — keep it alive in case of any internal reloads
+  // It gets cleared when the user navigates away from this page entirely
 
   updPay(25);
   updateExpiry();
@@ -2603,6 +2603,15 @@ document.addEventListener('click', function(e) {
   }
 });
 
+
+// Clear inapp flag when user leaves newquest entirely
+window.addEventListener('pagehide', function() {
+  // Only clear if navigating away (not internal step changes)
+  // goStep re-sets it, so this just handles closing the tab/browser
+  setTimeout(function() {
+    sessionStorage.removeItem('fs_from_inapp');
+  }, 100);
+});
 </script>
 
 <!-- FULL SCREEN MAP MODAL -->
