@@ -270,7 +270,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
 
     <div style="padding:10px 14px;">
-      <a href="newquest.html" style="display:block;background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#fff;text-decoration:none;font-family:inherit;">✨ Create a Quest</a>
+      <a href="newquest.html" onclick="sessionStorage.setItem('fs_from_inapp','1')" style="display:block;background:rgba(96,165,250,.1);border:1.5px solid #60a5fa;border-radius:10px;padding:13px;text-align:center;font-size:17px;color:#fff;text-decoration:none;font-family:inherit;">✨ Create a Quest</a>
     </div>
   </div>
 
@@ -432,7 +432,7 @@ document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
         // Topbar — keep avatar SVG, just brighten ring when signed in
         var avSvg=document.getElementById('hb-avatar-svg');
         if(avSvg&&isGold)avSvg.setAttribute('fill','rgba(232,168,32,.75)');
-        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.6)');
+        else if(avSvg)avSvg.setAttribute('fill','rgba(180,190,210,.65)'); // silver when free/signed out
         // Update drawer
         var da=document.getElementById('hb-drawer-avatar');
         if(da)da.textContent=init;
