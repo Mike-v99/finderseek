@@ -1811,6 +1811,7 @@ function restoreFormState() {
     if (s.persona) { var pp = document.querySelector('.persona-card[data-persona="'+s.persona+'"]'); if (pp) selPersona(pp); }
     if (s.hidingSpot) { var hs = document.getElementById('hiding-spot'); if (hs) hs.value = s.hidingSpot; }
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
+    if (s.placeName) selectedPlaceName = s.placeName;
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
         var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
@@ -2546,14 +2547,14 @@ function confirmMapLocation() {
   if (!_modalLat || !_modalLng) return;
   selectedLat = _modalLat;
   selectedLng = _modalLng;
-  // Update the pick location button
   var addr = document.getElementById('map-modal-address').textContent.replace('📍 ', '');
-  document.getElementById('location-btn-title').textContent = '📍 ' + (addr.split(',')[0] || addr);
+  var displayName = selectedPlaceName || addr.split(',')[0] || addr;
+  document.getElementById('location-btn-title').textContent = '📍 ' + displayName;
   document.getElementById('location-btn-sub').textContent = addr;
   document.getElementById('location-btn-sub').style.color = '#4ade80';
-  // Also update map-search for form submission compat
+  // Store place name + full address for AI — "Kroger, 5765 Westheimer Rd, Houston TX"
   var ms = document.getElementById('map-search');
-  if (ms) ms.value = addr;
+  if (ms) ms.value = selectedPlaceName ? (selectedPlaceName + ', ' + addr) : addr;
   if (typeof saveFormState === 'function') saveFormState();
   closeMapModal();
   showToast('📍 Location saved', 'success');
@@ -2645,19 +2646,24 @@ function modalFetchPredictions(query) {
 function modalSelectPrediction(idx) {
   var p = _modalPredictions[idx]; if (!p) return;
   document.getElementById('map-predictions').classList.remove('show');
-  document.getElementById('map-modal-search').value = p.structured_formatting.main_text;
+  // Save the human-readable place name (e.g. "Kroger") for AI clue generation
+  var _placeName = p.structured_formatting.main_text;
+  document.getElementById('map-modal-search').value = _placeName;
   document.getElementById('map-modal-search').blur();
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({placeId: p.place_id}, function(results, status) {
     if (status === 'OK' && results[0]) {
       var loc = results[0].geometry.location;
       _modalLat = loc.lat(); _modalLng = loc.lng();
+      // Store both place name and full address
+      selectedPlaceName = _placeName;
       if (_modalMapReady) {
         _modalMap.setCenter({lat: _modalLat, lng: _modalLng});
         _modalMap.setZoom(17);
       } else { initModalMap(_modalLat, _modalLng); }
-      var addr = results[0].formatted_address;
-      var _se2 = document.getElementById('map-modal-search'); if(_se2) _se2.value = addr; document.getElementById('map-modal-address').textContent = addr;
+      var addr = _placeName + ', ' + results[0].formatted_address;
+      var _se2 = document.getElementById('map-modal-search'); if(_se2) _se2.value = _placeName;
+      document.getElementById('map-modal-address').textContent = addr;
       document.getElementById('map-modal-confirm').disabled = false;
     }
   });
