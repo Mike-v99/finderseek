@@ -288,10 +288,11 @@ Return ONLY a JSON object (no markdown, no explanation) in this exact format:
     const clues = Array.isArray(parsed) ? parsed : (parsed.clues || []);
     let location_riddle = parsed.location_riddle || null;
 
-    // Validate — if place name not in riddle, fix it with a targeted call
+    // Validate — if place name not in riddle, inject it directly
     if (resolvedPlaceName && location_riddle) {
-      const nameInRiddle = location_riddle.toLowerCase().includes(resolvedPlaceName.toLowerCase().replace(/['s]+$/,''));
-      console.log('[generate-clues] riddle check — name:', resolvedPlaceName, 'found:', nameInRiddle, 'riddle:', location_riddle.substring(0,80));
+      const nameCore = resolvedPlaceName.replace(/[''\u2018\u2019s]+$/i, '').toLowerCase();
+      const nameInRiddle = location_riddle.toLowerCase().includes(nameCore);
+      console.log('[generate-clues] riddle check — name:', resolvedPlaceName, 'core:', nameCore, 'found:', nameInRiddle, 'riddle:', location_riddle.substring(0,80));
       if (!nameInRiddle) {
         try {
           const fixRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -300,16 +301,29 @@ Return ONLY a JSON object (no markdown, no explanation) in this exact format:
             body: JSON.stringify({
               model: 'claude-haiku-4-5-20251001',
               max_tokens: 200,
-              messages: [{ role: 'user', content: `Rewrite this location riddle so that the word "${resolvedPlaceName}" appears literally in it. Keep the same ${persona || 'pirate'} persona and rhyming style. The word must be in there — not paraphrased.\n\nOriginal riddle: "${location_riddle}"\n\nReturn ONLY the rewritten riddle text, nothing else.` }]
+              messages: [{ role: 'user', content: `Rewrite this ${persona || 'pirate'}-style rhyming riddle. You MUST include the word "${resolvedPlaceName}" literally — it must appear spelled out in the text. Do not replace it with any synonym or description. Just include "${resolvedPlaceName}" in the riddle.\n\nOriginal: "${location_riddle}"\n\nReturn ONLY the rewritten riddle, nothing else.` }]
             })
           });
           const fixData = await fixRes.json();
           const fixed = fixData.content?.[0]?.text?.trim();
-          if (fixed && fixed.toLowerCase().includes(resolvedPlaceName.toLowerCase().replace(/['s]+$/,''))) {
+          const fixedHasName = fixed && fixed.toLowerCase().includes(nameCore);
+          console.log('[generate-clues] fix attempt — hasName:', fixedHasName, 'fixed:', fixed?.substring(0,80));
+          if (fixedHasName) {
             location_riddle = fixed;
-            console.log('[generate-clues] riddle fixed:', fixed.substring(0,80));
+          } else {
+            // Last resort — surgically insert the place name into the first line
+            const lines = location_riddle.split('\n');
+            lines[0] = `Arrr, to ${resolvedPlaceName} ye must sail — ` + lines[0];
+            location_riddle = lines.join('\n');
+            console.log('[generate-clues] surgical insert applied');
           }
-        } catch(e) { console.error('Riddle fix failed:', e); }
+        } catch(e) {
+          // Last resort fallback
+          const lines = location_riddle.split('\n');
+          lines[0] = `Head to ${resolvedPlaceName}! ` + lines[0];
+          location_riddle = lines.join('\n');
+          console.error('Riddle fix failed, used fallback:', e);
+        }
       }
     }
 
