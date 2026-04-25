@@ -238,7 +238,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .map-modal-confirm{flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#0a0800;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;}
 .map-modal-confirm:disabled{opacity:.4;cursor:not-allowed;}
 .map-modal-sat{padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;}
-.map-modal-address{padding:8px 14px;font-size:13px;color:#b8c4d0;background:rgba(10,8,22,.97);flex-shrink:0;min-height:36px;line-height:1.4;}
+.map-modal-address{display:none;}
 .map-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;z-index:10;filter:drop-shadow(0 3px 8px rgba(0,0,0,.8));transition:transform .1s;}
 .map-center-pin.dragging{transform:translate(-50%,-110%) scale(1.1);}
 /* Search predictions dropdown */
@@ -2458,7 +2458,7 @@ function initModalMap(lat, lng) {
   // Map moves, center pin stays fixed — update address on move end
   _modalMap.addListener('dragstart', function() {
     document.getElementById('map-center-pin').classList.add('dragging');
-    document.getElementById('map-modal-address').textContent = 'Move the map to position the pin';
+    var _se = document.getElementById('map-modal-search'); if(_se) _se.placeholder = 'Move the map to position the pin'; if(_se) _se.value = '';
     document.getElementById('map-modal-confirm').disabled = true;
     clearTimeout(_modalMoveTimer);
   });
@@ -2479,13 +2479,18 @@ function initModalMap(lat, lng) {
 function modalReverseGeocode(lat, lng) {
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({location: {lat: lat, lng: lng}}, function(results, status) {
-    var addrEl = document.getElementById('map-modal-address');
+    var searchEl = document.getElementById('map-modal-search');
     var confirmBtn = document.getElementById('map-modal-confirm');
     if (status === 'OK' && results[0]) {
-      addrEl.textContent = '📍 ' + results[0].formatted_address;
+      var addr = results[0].formatted_address;
+      if (searchEl) searchEl.value = addr;
+      // Store address for confirmMapLocation
+      document.getElementById('map-modal-address').textContent = addr;
       confirmBtn.disabled = false;
     } else {
-      addrEl.textContent = '📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
+      var coords = lat.toFixed(5) + ', ' + lng.toFixed(5);
+      if (searchEl) searchEl.value = coords;
+      document.getElementById('map-modal-address').textContent = coords;
       confirmBtn.disabled = false;
     }
   });
@@ -2592,7 +2597,7 @@ function modalSelectPrediction(idx) {
         _modalMap.setZoom(17);
       } else { initModalMap(_modalLat, _modalLng); }
       var addr = results[0].formatted_address;
-      document.getElementById('map-modal-address').textContent = '📍 ' + addr;
+      var _se2 = document.getElementById('map-modal-search'); if(_se2) _se2.value = addr; document.getElementById('map-modal-address').textContent = addr;
       document.getElementById('map-modal-confirm').disabled = false;
     }
   });
@@ -2638,7 +2643,7 @@ document.addEventListener('click', function(e) {
   </div>
 
   <!-- Address display -->
-  <div class="map-modal-address" id="map-modal-address">Move the map to position the pin</div>
+  <div id="map-modal-address" style="display:none;"></div>
 
   <!-- Footer with satellite toggle + confirm -->
   <div class="map-modal-footer">
