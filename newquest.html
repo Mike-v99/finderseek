@@ -495,21 +495,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
 
-    <div style="font-size:17px;font-weight:400;color:#fff;margin-bottom:8px;">HIDING SPOT MAP</div>
-
-    <!-- Pick Location Button -->
-    <div id="pick-location-btn" onclick="openMapModal()" style="display:flex;align-items:center;gap:12px;padding:16px;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.3);border-radius:14px;cursor:pointer;margin-bottom:12px;-webkit-tap-highlight-color:transparent;">
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(232,168,32,.15);border:1.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </div>
-      <div style="flex:1;">
-        <div id="location-btn-title" style="font-size:15px;color:#fff;font-weight:400;">Tap to pick hiding spot</div>
-        <div id="location-btn-sub" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen map</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
+    <!-- Map coords hidden fields kept for form compat -->
     <div id="map-coords" style="display:none;"></div>
     <input type="hidden" id="map-search" value=""/>
+    <input type="hidden" id="location-btn-title" value=""/>
+    <input type="hidden" id="location-btn-sub" value=""/>
 
     <div style="font-size:17px;font-weight:400;color:#fff;margin-bottom:8px;">HIDING SPOT DETAILS</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -1516,6 +1506,7 @@ async function createQuest(previewMode){
           lat: selectedLat,
           lng: selectedLng,
           hiding_spot: hidingSpot,
+        static_map_url: window._staticMapUrl || null,
           clue_persona: persona,
           clue_count: clueCount,
           duration_hours: duration,
@@ -1875,6 +1866,7 @@ function restoreFormState() {
     if (s.hidingSpot) { var hs = document.getElementById('hiding-spot'); if (hs) hs.value = s.hidingSpot; }
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
     if (s.placeName) selectedPlaceName = s.placeName;
+    if (s.staticMapUrl) window._staticMapUrl = s.staticMapUrl;
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
         var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
@@ -2623,6 +2615,8 @@ function confirmMapLocation() {
   }
   selectedLat = _modalLat;
   selectedLng = _modalLng;
+  // Store static map URL for dual unblur
+  window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng + '&zoom=18&size=600x400&scale=2&maptype=roadmap&style=element:geometry|color:0x1a1a2e&style=element:labels.text.fill|color:0xb8c4d0&style=feature:road|element:geometry|color:0x2d2d44&style=feature:water|element:geometry|color:0x0d1117&style=feature:poi.park|element:geometry|color:0x1a2e1a&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng + '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
   console.log('Coords confirmed:', selectedLat, selectedLng);
   // Get address from search bar (most reliable source)
   var searchEl = document.getElementById('map-modal-search');
@@ -2636,6 +2630,8 @@ function confirmMapLocation() {
   if (typeof saveFormState === 'function') saveFormState();
   closeMapModal();
   showToast('📍 Location saved', 'success');
+  // If hs modal is on location screen, re-render to show thumbnail
+  if (document.getElementById('hs-modal-overlay').classList.contains('open') && _hsCurrent === 0) { renderHsModal(); }
 }
 
 function toggleModalSatellite() {
