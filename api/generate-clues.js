@@ -192,9 +192,11 @@ The Quest Master has hidden real cash and described the hiding spot as:
 "${description}"
 
 ⚠️ PLACE NAME — THIS IS CRITICAL: ${resolvedPlaceName
-  ? `The quest is located at "${resolvedPlaceName}". This EXACT name must appear word-for-word in the location riddle. Do not paraphrase it.`
-  : `No named location found. Use the city and street from the address for the location riddle.`
+  ? `The quest is located at "${resolvedPlaceName}". The word "${resolvedPlaceName}" MUST appear literally in the location riddle. No exceptions.`
+  : `Scan the hiding spot description above for any store, business, park, or landmark name (e.g. "Kroger", "Walmart", "Target", "Memorial Park"). If you find one, that name MUST appear literally in the location riddle.`
 }
+
+LOCATION RIDDLE REQUIREMENT: The location riddle MUST name the exact place. If it only mentions a ZIP code, city name, or generic description like "shopping" — it is WRONG. Rewrite it until the actual place name appears.
 
 Full address: ${searchAddress || ''}
 City: ${city || ''}
@@ -226,12 +228,13 @@ The goal is fun and achievable — never frustrating. Every clue should feel sol
 7. For each clue, also write a Q&A pair: a simple question the seeker must answer correctly to unlock the next clue. The question and answer must be directly answerable from reading the clue text. The answer should be 1-3 words, case-insensitive. Make the question feel like a natural comprehension check — not a trick. Example: clue mentions "the old oak tree" → question: "What type of tree are you looking for?" → answer: "Oak"
 
 Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must:
-- Guide the seeker to the general area (city/neighborhood level — NOT the exact spot)
 - Be written as a rhyming riddle in the persona voice
-- MUST contain the EXACT WORDS of the real place name — every word. For example if the location is "Kroger" or "Memorial Park, Houston" then those exact words must ALL appear in the riddle text, even if split across lines. The seeker must be able to read the riddle and know the exact place to go — the name is hidden inside the rhyme, not replaced by description.
-- Be unlocked by GPS when the seeker physically arrives within 1,000 feet — no Q&A needed
+- MUST contain the EXACT place name word-for-word — "${resolvedPlaceName || 'the named location from the description'}" must appear literally in the riddle
+- Must NOT just mention a ZIP code or city — the actual business/park/landmark name must be in there
+- Guide the seeker to the general area — NOT the exact hiding spot
+- Be unlocked by GPS when the seeker physically arrives within 1,000 feet
 
-Location to encode: ${resolvedPlaceName ? resolvedPlaceName + ' — ' : ''}${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
+Location to encode: ${resolvedPlaceName ? resolvedPlaceName + ' — ' : ''}${searchAddress || ''} — city: ${city || ''}
 
 Write exactly ${clueCount} clues following these tier instructions precisely:
 
