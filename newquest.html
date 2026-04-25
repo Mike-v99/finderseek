@@ -226,6 +226,30 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-nav-item{display:flex;align-items:center;gap:13px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
+
+/* ── FULL SCREEN MAP MODAL ─────────────────────────────── */
+.map-modal-overlay{position:fixed;inset:0;z-index:20000;display:none;flex-direction:column;background:#0a0818;}
+.map-modal-overlay.open{display:flex;}
+.map-modal-topbar{padding:10px 14px;display:flex;align-items:center;gap:10px;background:rgba(10,8,22,.97);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;padding-top:calc(10px + env(safe-area-inset-top,0px));}
+.map-modal-search{flex:1;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-size:15px;font-family:inherit;font-weight:400;outline:none;}
+.map-modal-search::placeholder{color:rgba(255,255,255,.3);}
+.map-modal-map{flex:1;position:relative;}
+#map-modal-container{position:absolute;inset:0;}
+.map-modal-footer{padding:12px 14px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-shrink:0;}
+.map-modal-confirm{flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#0a0800;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;}
+.map-modal-confirm:disabled{opacity:.4;cursor:not-allowed;}
+.map-modal-sat{padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.map-modal-address{padding:8px 14px;font-size:13px;color:#b8c4d0;background:rgba(10,8,22,.97);flex-shrink:0;min-height:36px;line-height:1.4;}
+.map-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;z-index:10;filter:drop-shadow(0 3px 8px rgba(0,0,0,.8));transition:transform .1s;}
+.map-center-pin.dragging{transform:translate(-50%,-110%) scale(1.1);}
+/* Search predictions dropdown */
+.map-predictions{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.98);border:1px solid rgba(232,168,32,.2);border-radius:10px;margin-top:4px;max-height:280px;overflow-y:auto;z-index:30000;display:none;}
+.map-predictions.show{display:block;}
+.map-pred-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.map-pred-item:last-child{border-bottom:none;}
+.map-pred-item:active{background:rgba(255,255,255,.05);}
+.map-pred-main{font-size:15px;color:#fff;font-weight:400;}
+.map-pred-sub{font-size:13px;color:#b8c4d0;margin-top:1px;}
 </style>
 </head>
 <body>
@@ -428,25 +452,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT + DESCRIPTION</div>
 
-    <!-- Search bar -->
-    <div class="map-search-wrap" style="position:relative;margin-bottom:8px;z-index:10001;">
-      <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" oninput="liveSearch(this.value)" style="color:#b8c4d0;"/>
-      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" title="Use my location" style="padding:6px 10px;">
-        <svg id="my-loc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </button>
-      <div id="search-dropdown" class="search-dropdown"></div>
-    </div>
-
-    <div id="map-container" class="map-box" style="position:relative;">
-      <div id="map-pin-hint" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:3;pointer-events:none;background:rgba(13,11,24,.5);border-radius:12px;">
-        <div style="font-size:32px;opacity:.6;">📍</div>
-        <div style="font-size:15px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;padding:0 20px;">Tap 📍 Me, search above,<br/>or tap the map to place your pin</div>
+    <!-- Pick Location Button -->
+    <div id="pick-location-btn" onclick="openMapModal()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.15);border-radius:14px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </div>
-      <!-- Satellite toggle -->
-      <button id="sat-toggle" onclick="toggleSatellite()" style="position:absolute;bottom:8px;right:8px;z-index:10;background:rgba(13,11,24,.9);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 10px;font-size:12px;color:#b8c4d0;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);display:none;">🛰️ Satellite</button>
+      <div style="flex:1;">
+        <div id="location-btn-title" style="font-size:17px;color:#fff;font-weight:400;">Tap to pick hiding spot on map</div>
+        <div id="location-btn-sub" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <div id="map-coords" class="map-coords" style="display:none;font-size:15px;color:#b8c4d0;"></div>
+    <div id="map-coords" style="display:none;"></div>
+    <input type="hidden" id="map-search" value=""/>
 
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;margin-bottom:8px;"><div style="font-size:25px;font-weight:400;color:#fff;">HIDING SPOT DETAILS</div><div id="spot-char-count" style="font-size:15px;color:#b8c4d0;">0 / 200</div></div>
     <textarea id="hiding-spot" oninput="updateSpotCount(this)" class="finput" rows="3" placeholder="Describe exactly where it's hidden — e.g. under the blue bench near the fountain at Memorial Park" style="margin-top:0;margin-bottom:0;resize:none;font-size:20px;color:#b8c4d0;"></textarea>
@@ -2341,6 +2359,245 @@ async function submitPayment(){
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
+
+// ── FULL SCREEN MAP MODAL ────────────────────────────────────
+var _modalMap = null, _modalMapReady = false, _modalSatellite = false;
+var _modalLat = null, _modalLng = null, _modalMoveTimer = null;
+var _modalPredictions = [], _modalSearchTimeout = null;
+var _modalAutocomplete = null;
+
+var DARK_STYLES = [
+  {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#8892a4'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},
+  {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},
+  {featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},
+  {featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}
+];
+
+function openMapModal() {
+  var overlay = document.getElementById('map-modal-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Initialize map if not done
+  setTimeout(function() {
+    if (!_modalMapReady) initModalMap(selectedLat || 29.7604, selectedLng || -95.3698);
+    else if (selectedLat && selectedLng) _modalMap.setCenter({lat: selectedLat, lng: selectedLng});
+    google.maps.event.trigger(_modalMap, 'resize');
+  }, 100);
+  // Pre-fill search if address known
+  var addr = document.getElementById('location-btn-sub').textContent;
+  if (addr && addr !== 'Opens full screen Google Map') {
+    document.getElementById('map-modal-search').value = addr;
+  }
+}
+
+function closeMapModal() {
+  document.getElementById('map-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('map-predictions').classList.remove('show');
+}
+
+function initModalMap(lat, lng) {
+  _modalMapReady = true;
+  _modalLat = lat; _modalLng = lng;
+  _modalMap = new google.maps.Map(document.getElementById('map-modal-container'), {
+    center: {lat: lat, lng: lng},
+    zoom: 15,
+    disableDefaultUI: true,
+    zoomControl: true,
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+    gestureHandling: 'greedy',
+    styles: DARK_STYLES
+  });
+  // Map moves, center pin stays fixed — update address on move end
+  _modalMap.addListener('dragstart', function() {
+    document.getElementById('map-center-pin').classList.add('dragging');
+    document.getElementById('map-modal-address').textContent = 'Move the map to position the pin';
+    document.getElementById('map-modal-confirm').disabled = true;
+    clearTimeout(_modalMoveTimer);
+  });
+  _modalMap.addListener('dragend', function() {
+    document.getElementById('map-center-pin').classList.remove('dragging');
+    var c = _modalMap.getCenter();
+    _modalLat = c.lat(); _modalLng = c.lng();
+    modalReverseGeocode(_modalLat, _modalLng);
+  });
+  _modalMap.addListener('zoom_changed', function() {
+    var c = _modalMap.getCenter();
+    _modalLat = c.lat(); _modalLng = c.lng();
+  });
+  // Initial reverse geocode
+  if (lat !== 29.7604) modalReverseGeocode(lat, lng);
+}
+
+function modalReverseGeocode(lat, lng) {
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({location: {lat: lat, lng: lng}}, function(results, status) {
+    var addrEl = document.getElementById('map-modal-address');
+    var confirmBtn = document.getElementById('map-modal-confirm');
+    if (status === 'OK' && results[0]) {
+      addrEl.textContent = '📍 ' + results[0].formatted_address;
+      confirmBtn.disabled = false;
+    } else {
+      addrEl.textContent = '📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
+      confirmBtn.disabled = false;
+    }
+  });
+}
+
+function confirmMapLocation() {
+  if (!_modalLat || !_modalLng) return;
+  selectedLat = _modalLat;
+  selectedLng = _modalLng;
+  // Update the pick location button
+  var addr = document.getElementById('map-modal-address').textContent.replace('📍 ', '');
+  document.getElementById('location-btn-title').textContent = '📍 ' + (addr.split(',')[0] || addr);
+  document.getElementById('location-btn-sub').textContent = addr;
+  document.getElementById('location-btn-sub').style.color = '#4ade80';
+  // Also update map-search for form submission compat
+  var ms = document.getElementById('map-search');
+  if (ms) ms.value = addr;
+  if (typeof saveFormState === 'function') saveFormState();
+  closeMapModal();
+  showToast('📍 Location saved', 'success');
+}
+
+function toggleModalSatellite() {
+  _modalSatellite = !_modalSatellite;
+  if (_modalMap) _modalMap.setMapTypeId(_modalSatellite ? google.maps.MapTypeId.HYBRID : google.maps.MapTypeId.ROADMAP);
+  var btn = document.getElementById('map-modal-sat');
+  if (btn) {
+    btn.textContent = _modalSatellite ? '🗺️ Map' : '🛰️ Satellite';
+    btn.style.color = _modalSatellite ? '#4ade80' : '#b8c4d0';
+    btn.style.borderColor = _modalSatellite ? 'rgba(74,222,128,.3)' : 'rgba(255,255,255,.12)';
+  }
+}
+
+function modalGoToMyLocation() {
+  var btn = document.querySelector('.map-modal-topbar button:last-child');
+  if (btn) btn.style.opacity = '0.5';
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude, lng = pos.coords.longitude;
+      _modalLat = lat; _modalLng = lng;
+      if (_modalMapReady) {
+        _modalMap.setCenter({lat: lat, lng: lng});
+        _modalMap.setZoom(17);
+        modalReverseGeocode(lat, lng);
+      } else { initModalMap(lat, lng); }
+      if (btn) btn.style.opacity = '1';
+    },
+    function() {
+      if (btn) btn.style.opacity = '1';
+      showToast('Location blocked — search instead', 'error');
+    },
+    {timeout: 8000, enableHighAccuracy: true}
+  );
+}
+
+// Search using Google Places Autocomplete
+var _modalAC = null;
+function modalLiveSearch(val) {
+  clearTimeout(_modalSearchTimeout);
+  var pred = document.getElementById('map-predictions');
+  if (!val || val.length < 2) { pred.classList.remove('show'); return; }
+  _modalSearchTimeout = setTimeout(function() { modalFetchPredictions(val); }, 300);
+}
+
+function modalFetchPredictions(query) {
+  if (typeof google === 'undefined' || !google.maps.places) return;
+  if (!_modalAC) _modalAC = new google.maps.places.AutocompleteService();
+  var biasLat = _modalLat || selectedLat || 29.7604;
+  var biasLng = _modalLng || selectedLng || -95.3698;
+  _modalAC.getPlacePredictions({
+    input: query,
+    location: new google.maps.LatLng(biasLat, biasLng),
+    radius: 50000,
+    componentRestrictions: {country: 'us'},
+    types: ['establishment', 'geocode']
+  }, function(predictions, status) {
+    var pred = document.getElementById('map-predictions');
+    if (!predictions || !predictions.length) { pred.classList.remove('show'); return; }
+    _modalPredictions = predictions;
+    pred.innerHTML = predictions.map(function(p, i) {
+      var main = p.structured_formatting.main_text;
+      var sub = p.structured_formatting.secondary_text || '';
+      var icon = (p.types && p.types.includes('park')) ? '🌳' : '📍';
+      return '<div class="map-pred-item" onclick="modalSelectPrediction(' + i + ')">' +
+        '<span style="font-size:16px;">' + icon + '</span>' +
+        '<div><div class="map-pred-main">' + main + '</div><div class="map-pred-sub">' + sub + '</div></div></div>';
+    }).join('');
+    pred.classList.add('show');
+  });
+}
+
+function modalSelectPrediction(idx) {
+  var p = _modalPredictions[idx]; if (!p) return;
+  document.getElementById('map-predictions').classList.remove('show');
+  document.getElementById('map-modal-search').value = p.structured_formatting.main_text;
+  document.getElementById('map-modal-search').blur();
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({placeId: p.place_id}, function(results, status) {
+    if (status === 'OK' && results[0]) {
+      var loc = results[0].geometry.location;
+      _modalLat = loc.lat(); _modalLng = loc.lng();
+      if (_modalMapReady) {
+        _modalMap.setCenter({lat: _modalLat, lng: _modalLng});
+        _modalMap.setZoom(17);
+      } else { initModalMap(_modalLat, _modalLng); }
+      var addr = results[0].formatted_address;
+      document.getElementById('map-modal-address').textContent = '📍 ' + addr;
+      document.getElementById('map-modal-confirm').disabled = false;
+    }
+  });
+}
+
+// Close predictions when tapping outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#map-modal-search') && !e.target.closest('#map-predictions')) {
+    var pred = document.getElementById('map-predictions');
+    if (pred) pred.classList.remove('show');
+  }
+});
+
 </script>
+
+<!-- FULL SCREEN MAP MODAL -->
+<div class="map-modal-overlay" id="map-modal-overlay">
+  <!-- Topbar with back + search -->
+  <div class="map-modal-topbar" style="position:relative;">
+    <button onclick="closeMapModal()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div style="flex:1;position:relative;">
+      <input id="map-modal-search" class="map-modal-search" type="text" placeholder="Search park, address, landmark..." autocomplete="off" oninput="modalLiveSearch(this.value)" onfocus="modalLiveSearch(this.value)"/>
+      <div id="map-predictions" class="map-predictions"></div>
+    </div>
+    <button onclick="modalGoToMyLocation()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" title="My location">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    </button>
+  </div>
+
+  <!-- Map fills remaining space -->
+  <div class="map-modal-map">
+    <div id="map-modal-container"></div>
+    <!-- Fixed center pin — map moves under it -->
+    <div class="map-center-pin" id="map-center-pin">📍</div>
+  </div>
+
+  <!-- Address display -->
+  <div class="map-modal-address" id="map-modal-address">Move the map to position the pin</div>
+
+  <!-- Footer with satellite toggle + confirm -->
+  <div class="map-modal-footer">
+    <button class="map-modal-sat" id="map-modal-sat" onclick="toggleModalSatellite()">🛰️ Satellite</button>
+    <button class="map-modal-confirm" id="map-modal-confirm" onclick="confirmMapLocation()" disabled>Confirm Location</button>
+  </div>
+</div>
 </body>
 </html>
