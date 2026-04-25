@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>FinderSeek — Quest Detail</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"/>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
@@ -92,7 +91,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
-.mapboxgl-ctrl-attrib,.mapboxgl-ctrl-logo{display:none!important;}
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -475,22 +473,30 @@ function initQuestMap(lat, lng, solved, total) {
   var zoom = ZOOM_LEVELS[zoomIdx];
   var mapEl = document.getElementById('q-map-leaflet');
   if (!mapEl) return;
-  if (_questMap) { _questMap.remove(); _questMap = null; }
-  mapboxgl.accessToken = 'pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA';
-  _questMap = new mapboxgl.Map({
-    container: mapEl,
-    style: 'mapbox://styles/mapbox/dark-v11',
-    center: [lng, lat],
+  if (_questMap) { _questMap = null; }
+  _questMap = new google.maps.Map(mapEl, {
+    center: { lat: lat, lng: lng },
     zoom: zoom,
-    interactive: false,
-    attributionControl: false
+    disableDefaultUI: true,
+    gestureHandling: 'none',
+    styles: [
+  {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#8892a4'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},
+  {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},
+  {featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},
+  {featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}
+]
   });
-  // Gold pin marker
-  var pinEl = document.createElement('div');
-  pinEl.style.cssText = 'width:14px;height:14px;border-radius:50%;background:#e8a820;box-shadow:0 0 12px rgba(232,168,32,.9);border:2px solid #fff;';
-  new mapboxgl.Marker({ element: pinEl, anchor: 'center' })
-    .setLngLat([lng, lat])
-    .addTo(_questMap);
+  new google.maps.Marker({
+    position: { lat: lat, lng: lng },
+    map: _questMap,
+    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 7, fillColor: '#e8a820', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
+  });
   // Update label
   var lbl = document.getElementById('q-map-zoom-label');
   if (lbl) lbl.textContent = ZOOM_LABELS[zoomIdx];
@@ -926,27 +932,33 @@ function renderClues() {
       var radiusM = radiusFt * 0.3048;
       // Pick zoom so the circle fits comfortably in the 220px map
       var zoom = radiusFt >= 2000 ? 14 : radiusFt >= 1000 ? 15 : radiusFt >= 400 ? 16 : radiusFt >= 150 ? 17 : 18;
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZmluZGVyc2VlayIsImEiOiJjbW9kaHc0OXIwMHo1Mnhvc3hrZXl1NTZ6In0.c6eJi84s-hexEVZ-TSjXEA';
-      var m = new mapboxgl.Map({
-        container: el,
-        style: 'mapbox://styles/mapbox/dark-v11',
-        center: [lng, lat], zoom: zoom,
-        interactive: false, attributionControl: false
+      var m = new google.maps.Map(el, {
+        center: { lat: lat, lng: lng },
+        zoom: zoom,
+        disableDefaultUI: true,
+        gestureHandling: 'none',
+        styles: [
+  {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#8892a4'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},
+  {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},
+  {featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},
+  {featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},
+  {featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}
+]
       });
-      m.on('load', function() {
-        // Build circle GeoJSON using turf-like approximation
-        var points = 64;
-        var coords = [];
-        for (var i = 0; i <= points; i++) {
-          var angle = (i / points) * 2 * Math.PI;
-          var dx = (radiusM / 111320) * Math.cos(angle);
-          var dy = (radiusM / (111320 * Math.cos(lat * Math.PI / 180))) * Math.sin(angle);
-          coords.push([lng + dy, lat + dx]);
-        }
-        m.addSource('radius', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'Polygon', coordinates: [coords] } } });
-        m.addLayer({ id: 'radius-fill', type: 'fill', source: 'radius', paint: { 'fill-color': 'rgba(74,222,128,0.06)', 'fill-opacity': 1 } });
-        m.addLayer({ id: 'radius-glow', type: 'line', source: 'radius', paint: { 'line-color': 'rgba(74,222,128,0.2)', 'line-width': 12, 'line-blur': 8 } });
-        m.addLayer({ id: 'radius-line', type: 'line', source: 'radius', paint: { 'line-color': '#4ade80', 'line-width': 3, 'line-dasharray': [2, 1.5] } });
+      new google.maps.Circle({
+        map: m,
+        center: { lat: lat, lng: lng },
+        radius: radiusM,
+        strokeColor: '#4ade80',
+        strokeOpacity: 1,
+        strokeWeight: 3,
+        fillColor: '#4ade80',
+        fillOpacity: 0.06
       });
     });
   }, 50);
