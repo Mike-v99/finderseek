@@ -286,7 +286,32 @@ Return ONLY a JSON object (no markdown, no explanation) in this exact format:
 
     // Support both new format {location_riddle, clues} and legacy array format
     const clues = Array.isArray(parsed) ? parsed : (parsed.clues || []);
-    const location_riddle = parsed.location_riddle || null;
+    let location_riddle = parsed.location_riddle || null;
+
+    // Validate — if place name not in riddle, fix it with a targeted call
+    if (resolvedPlaceName && location_riddle) {
+      const nameInRiddle = location_riddle.toLowerCase().includes(resolvedPlaceName.toLowerCase().replace(/['s]+$/,''));
+      console.log('[generate-clues] riddle check — name:', resolvedPlaceName, 'found:', nameInRiddle, 'riddle:', location_riddle.substring(0,80));
+      if (!nameInRiddle) {
+        try {
+          const fixRes = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+            body: JSON.stringify({
+              model: 'claude-haiku-4-5-20251001',
+              max_tokens: 200,
+              messages: [{ role: 'user', content: `Rewrite this location riddle so that the word "${resolvedPlaceName}" appears literally in it. Keep the same ${persona || 'pirate'} persona and rhyming style. The word must be in there — not paraphrased.\n\nOriginal riddle: "${location_riddle}"\n\nReturn ONLY the rewritten riddle text, nothing else.` }]
+            })
+          });
+          const fixData = await fixRes.json();
+          const fixed = fixData.content?.[0]?.text?.trim();
+          if (fixed && fixed.toLowerCase().includes(resolvedPlaceName.toLowerCase().replace(/['s]+$/,''))) {
+            location_riddle = fixed;
+            console.log('[generate-clues] riddle fixed:', fixed.substring(0,80));
+          }
+        } catch(e) { console.error('Riddle fix failed:', e); }
+      }
+    }
 
     return res.status(200).json({ clues, location_riddle });
 
