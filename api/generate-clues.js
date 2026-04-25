@@ -108,12 +108,16 @@ ${lat && lng ? `Coordinates: ${lat}, ${lng}` : ''}
 
 VOICE & STYLE: ${styleHint}
 
+DIFFICULTY: Match the position — early clues (1-2) should be easy and fun, middle clues (3-4) medium, late clues challenging but solvable. Never frustrating.
+
 CRITICAL RULE: Name real, recognizable local places. Seekers should say "I know exactly where that is." Use actual street names, business names, parks, schools, landmarks — never generic descriptions like "a busy road" or "near some shops."
+
+RHYME RULE: The clue MUST rhyme — write it as a rhyming couplet or short verse. The location details must still be clear and accurate inside the rhyme.
 
 This is clue #${pos} of ${total}. Here is your specific instruction for this clue:
 ${tierInstruction}
 
-Write ONE clue, 1-3 sentences, in second person, staying in character. Include the geographic information required by the tier instruction above.
+Write ONE clue in second person, staying in character, with length scaled to clue count — ${clueCount <= 3 ? '3-4 sentences (fewer clues = more detail per clue)' : clueCount <= 4 ? '2-3 sentences' : '1-2 sentences'}. Include the geographic information required by the tier instruction above.
 Also write a Q&A pair: a simple question directly answerable from the clue text, with a 1-3 word answer.
 
 Return ONLY a JSON object (no markdown, no explanation):
@@ -164,15 +168,35 @@ ${lat && lng ? `Coordinates: ${lat}, ${lng}` : ''}
 
 VOICE & STYLE: ${styleHint}
 
-CRITICAL RULES:
+DIFFICULTY CURVE — this is important:
+- Location riddle: EASY — fun and playful, the place name is clearly findable in the rhyme within 30 seconds. A local should immediately recognize it. The challenge is the delight of spotting it, not solving a puzzle.
+- Clues 1-2: EASY-MEDIUM — confirms broad area, enjoyable to read, answer is obvious from the verse.
+- Clues 3-4: MEDIUM — more specific, seeker needs to think but answer is clear if they read carefully.
+- Clues 5+: MEDIUM-HARD — very specific physical details, seeker is on foot and close. The rhyme should feel tense and exciting.
+- Final clue: HARD — inches away, one specific physical feature, maximum suspense.
+
+The goal is fun and achievable — never frustrating. Every clue should feel solvable.
 1. Name real, recognizable local places in EVERY clue — actual business names, park names, street names, school names, landmarks. Never say "a nearby store" or "a busy road" — say the real name. Seekers should read a clue and think "I know exactly where that is."
 2. Each clue must zoom in geographically — city first, then neighborhood, then a landmark, then the street, then the spot itself.
 3. Stay in character (voice/style above) throughout, but NEVER let the persona override the geographic information. The clue must contain the real location detail even if it's delivered in a silly voice.
 4. Write in second person ("you", "your").
-5. 1-3 sentences per clue.
-6. For each clue, also write a Q&A pair: a simple question the seeker must answer correctly to unlock the next clue. The question and answer must be directly answerable from reading the clue text. The answer should be 1-3 words, case-insensitive. Make the question feel like a natural comprehension check — not a trick. Example: clue mentions "the old oak tree" → question: "What type of tree are you looking for?" → answer: "Oak"
+5. CLUE LENGTH scales with count — fewer clues means each must carry more geographic detail:
+   - 6 clues: 1-2 sentences each (can be tight, info spreads across all 6)
+   - 5 clues: 2 sentences each
+   - 4 clues: 2-3 sentences each (each clue must work harder)
+   - 3 clues: 3 sentences each (pack in city + area + landmark per clue)
+   - 2 clues: 3-4 sentences each (maximum detail, each clue is a paragraph)
+   Current clue count: ${clueCount} — write accordingly.
+6. EVERY clue must RHYME — write each clue as a rhyming couplet or short rhyming verse. The rhyme must feel natural, not forced. The location details must still be accurate and clear inside the rhyme.
+7. For each clue, also write a Q&A pair: a simple question the seeker must answer correctly to unlock the next clue. The question and answer must be directly answerable from reading the clue text. The answer should be 1-3 words, case-insensitive. Make the question feel like a natural comprehension check — not a trick. Example: clue mentions "the old oak tree" → question: "What type of tree are you looking for?" → answer: "Oak"
 
-Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must guide the seeker to the general area (city/neighborhood level only — not the exact spot) using a riddle in the persona voice. No Q&A needed for the location riddle — it is unlocked by GPS when the seeker physically arrives within 1,000 feet.
+Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must:
+- Guide the seeker to the general area (city/neighborhood level — NOT the exact spot)
+- Be written as a rhyming riddle in the persona voice
+- MUST contain the EXACT WORDS of the real place name — every word. For example if the location is "Memorial Park, Houston" then the words "Memorial", "Park", and "Houston" must ALL appear in the riddle text, even if split across lines. The seeker must be able to read the riddle and know the exact place to go — the name is hidden inside the rhyme, not replaced by description.
+- Be unlocked by GPS when the seeker physically arrives within 1,000 feet — no Q&A needed
+
+Location to encode: ${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
 
 Write exactly ${clueCount} clues following these tier instructions precisely:
 
