@@ -1495,6 +1495,26 @@ async function createQuest(previewMode){
       }
     }
 
+    // ── 5c. Ensure profile exists before inserting hunt ────────
+    // New OAuth users (Google/Apple) may not have a profile row yet.
+    // hunts.created_by has a FK to profiles.id so we upsert first.
+    try {
+      await fetch(SB + '/rest/v1/profiles', {
+        method: 'POST',
+        headers: {
+          'apikey': KEY,
+          'Authorization': 'Bearer ' + freshToken,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=ignore-duplicates,return=minimal'
+        },
+        body: JSON.stringify({
+          id: currentUser.id,
+          email: currentUser.email || '',
+          username: (currentUser.email || '').split('@')[0].replace(/[^a-zA-Z0-9_]/g,'').substring(0,20) || 'user' + Math.floor(Math.random()*9999)
+        })
+      });
+    } catch(e) { /* profile already exists — fine */ }
+
     // ── 6. Insert or update hunt in Supabase ────────────────
     // If the user has an existing draft (created but never paid for),
     // UPDATE that row in place instead of inserting a duplicate. This
