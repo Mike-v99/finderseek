@@ -254,28 +254,43 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .step-next-btn{width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:20px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 
 /* ── HIDING SPOT MODAL ───────────────────────────────────── */
-.hs-modal-overlay{position:fixed;inset:0;z-index:18000;display:none;align-items:flex-end;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);}
+@keyframes hsRingPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1);}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.05);}}
+@keyframes hsDotGlow{0%,100%{opacity:.7;}50%{opacity:1;}}
+.hs-modal-overlay{position:fixed;inset:0;z-index:18000;display:none;align-items:flex-end;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);}
 .hs-modal-overlay.open{display:flex;}
-.hs-modal-sheet{background:#0d0b18;border-radius:20px 20px 0 0;border-top:1px solid rgba(255,255,255,.1);width:100%;max-height:90vh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);}
+.hs-modal-sheet{background:#0d0b18;border-radius:20px 20px 0 0;border-top:1px solid rgba(255,255,255,.1);width:100%;max-height:92vh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);}
 .hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.hs-modal-scroll{flex:1;overflow-y:auto;padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px;}
-.hs-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px;}
-.hs-card.gold{border-color:rgba(232,168,32,.2);background:rgba(232,168,32,.04);}
-.hs-card.final{border-color:rgba(232,168,32,.2);background:rgba(232,168,32,.04);}
-.hs-card-label{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.hs-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:400;flex-shrink:0;}
-.hs-badge.gold{background:rgba(232,168,32,.15);border:1px solid rgba(232,168,32,.3);color:#e8a820;}
-.hs-badge.num{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;}
-.hs-title{font-size:13px;color:#b8c4d0;font-weight:400;}
-.hs-title.gold{color:#e8a820;}
+/* Tab row */
+.hs-tabs{display:flex;gap:5px;padding:10px 12px 8px;flex-shrink:0;}
+.hs-tab{flex:1;padding:6px 4px;border-radius:6px;font-size:10px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
+.hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
+.hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
+/* Action scroll row */
+.hs-actions{display:flex;gap:5px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+.hs-actions::-webkit-scrollbar{display:none;}
+.hs-action{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:7px;font-size:12px;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s;border:none;font-family:inherit;}
+.hs-action.sel{background:#e8a820;color:#0a0800;font-weight:500;}
+.hs-action.un{background:rgba(255,255,255,.0);color:rgba(255,255,255,.3);font-weight:400;}
+.hs-action-locked{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:7px;font-size:12px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
+/* Radar */
+.hs-radar-wrap{display:flex;justify-content:center;padding:4px 0 6px;flex-shrink:0;}
+.hs-radar{position:relative;}
+.hs-ring{position:absolute;border-radius:50%;border:1.5px solid;top:50%;left:50%;transform:translate(-50%,-50%);}
+.hs-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:hsDotGlow 1.5s ease-in-out infinite;}
+/* Single clue panel */
+.hs-panel{padding:0 12px;flex-shrink:0;}
 .hs-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;color:#fff;font-size:15px;font-family:inherit;font-weight:400;resize:none;box-sizing:border-box;outline:none;}
 .hs-ta:focus{border-color:rgba(232,168,32,.4);}
-.hs-hint{font-size:11px;color:rgba(184,196,208,.45);margin-top:5px;}
-.hs-hint.gold{color:rgba(232,168,32,.5);}
 .hs-qa{display:flex;gap:8px;margin-top:8px;}
-.hs-inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;color:#fff;font-size:15px;font-family:inherit;font-weight:400;box-sizing:border-box;outline:none;width:100%;}
+.hs-inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#fff;font-size:15px;font-family:inherit;font-weight:400;box-sizing:border-box;outline:none;width:100%;}
 .hs-inp:focus{border-color:rgba(232,168,32,.4);}
-.hs-qa-label{font-size:11px;color:rgba(184,196,208,.45);margin-bottom:4px;}
+.hs-qa-label{font-size:11px;color:rgba(184,196,208,.4);margin-bottom:4px;}
+.hs-hint{font-size:11px;color:rgba(184,196,208,.4);margin-top:6px;}
+.hs-hint.gold{color:rgba(232,168,32,.5);}
+/* Nav */
+.hs-nav{display:flex;gap:8px;padding:10px 12px 12px;flex-shrink:0;}
+.hs-nav-back{flex:1;padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;text-align:center;font-size:15px;color:#b8c4d0;cursor:pointer;font-family:inherit;}
+.hs-nav-next{flex:2;padding:12px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:10px;text-align:center;font-size:15px;color:#fff;cursor:pointer;font-family:inherit;font-weight:400;}
 </style>
 </head>
 <body>
@@ -2760,121 +2775,197 @@ document.addEventListener('click', function(e) {
 
 
 // ── HIDING SPOT DETAILS MODAL ────────────────────────────────
-var _hsData = { location: '', clues: [] }; // {hint, question, answer} per clue
+var _hsData = { location: '', clues: [] };
+var _hsCurrent = 0; // 0 = location, 1..N = clue index
+var _hsClueCount = 4;
+
+var HS_ACTIONS = [
+  { id:'walk',  emoji:'🚶', label:'Walk towards' },
+  { id:'look',  emoji:'👀', label:'Look for' },
+  { id:'left',  emoji:'👈', label:'Look left' },
+  { id:'right', emoji:'👉', label:'Look right' },
+  { id:'up',    emoji:'⬆️', label:'Look up' },
+  { id:'down',  emoji:'⬇️', label:'Look down' },
+  { id:'find',  emoji:'🔍', label:'Find' },
+  { id:'turn',  emoji:'🔄', label:'Turn around' },
+];
 
 function openHsModal() {
-  var cc = parseInt(document.getElementById('clue-count-val') && document.getElementById('clue-count-val').textContent) || 4;
-  // Try reading clue count from the prize/step1 state
-  try { var fs = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}'); if (fs.clueCount) cc = fs.clueCount; } catch(e){}
-  buildHsModal(cc);
+  try { var fs = JSON.parse(localStorage.getItem('fs_newquest_form')||'{}'); if (fs.clueCount) _hsClueCount = parseInt(fs.clueCount); } catch(e){}
+  // Init clues array if needed
+  while (_hsData.clues.length < _hsClueCount) _hsData.clues.push({ hint:'', question:'', answer:'', action:'walk' });
+  _hsCurrent = 0;
+  renderHsModal();
   document.getElementById('hs-modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeHsModal() {
-  // Save all values before closing
-  saveHsData();
+  saveHsPanel();
   document.getElementById('hs-modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
-  // Update button label
-  var loc = document.getElementById('hs-loc-input') && document.getElementById('hs-loc-input').value.trim();
+  var loc = _hsData.location;
   var btn = document.getElementById('hs-details-btn-sub');
-  if (btn) btn.textContent = loc ? '✓ ' + loc.substring(0,30) : 'Clue hints + Q&A';
-  if (btn) btn.style.color = loc ? '#4ade80' : '#b8c4d0';
-  // Sync to hidden hiding-spot textarea for form compat
+  if (btn) { btn.textContent = loc ? '✓ ' + loc.substring(0,30) : 'Clue hints + Q&A'; btn.style.color = loc ? '#4ade80' : '#b8c4d0'; }
   var hs = document.getElementById('hiding-spot');
   if (hs) hs.value = buildHsText();
   if (typeof saveFormState === 'function') saveFormState();
 }
 
-function hsModalBgClose(e) {
-  if (e.target === document.getElementById('hs-modal-overlay')) closeHsModal();
+function hsModalBgClose(e) { if (e.target === document.getElementById('hs-modal-overlay')) closeHsModal(); }
+
+function saveHsPanel() {
+  if (_hsCurrent === 0) {
+    var el = document.getElementById('hs-loc-input');
+    if (el) _hsData.location = el.value;
+  } else {
+    var idx = _hsCurrent - 1;
+    var h = document.getElementById('hs-hint-cur');
+    var q = document.getElementById('hs-q-cur');
+    var a = document.getElementById('hs-a-cur');
+    if (h) _hsData.clues[idx].hint = h.value;
+    if (q) _hsData.clues[idx].question = q.value;
+    if (a) _hsData.clues[idx].answer = a.value;
+  }
 }
 
-function saveHsData() {
-  _hsData.location = (document.getElementById('hs-loc-input') && document.getElementById('hs-loc-input').value) || '';
-  _hsData.clues = [];
-  var i = 1;
-  while (document.getElementById('hs-hint-' + i)) {
-    _hsData.clues.push({
-      hint: document.getElementById('hs-hint-' + i).value || '',
-      question: document.getElementById('hs-q-' + i) ? document.getElementById('hs-q-' + i).value : '',
-      answer: document.getElementById('hs-a-' + i) ? document.getElementById('hs-a-' + i).value : ''
-    });
-    i++;
+function hsGoTo(idx) {
+  saveHsPanel();
+  _hsCurrent = idx;
+  renderHsModal();
+}
+
+function renderHsModal() {
+  var total = _hsClueCount;
+  var cur = _hsCurrent;
+
+  // ── Tabs ──────────────────────────────────────────────────
+  var tabsHtml = '';
+  // Location tab
+  var locDone = _hsData.location.trim().length > 0;
+  tabsHtml += '<div class="hs-tab ' + (cur===0 ? 'active' : locDone ? 'done' : '') + '" onclick="hsGoTo(0)">📍</div>';
+  for (var i = 1; i <= total; i++) {
+    var cl = _hsData.clues[i-1] || {};
+    var done = (cl.hint||'').trim().length > 0;
+    var isFinal = i === total;
+    var label = isFinal ? i + '★' : (done && cur !== i ? i + '✓' : i + '');
+    tabsHtml += '<div class="hs-tab ' + (cur===i ? 'active' : done ? 'done' : '') + '" onclick="hsGoTo(' + i + ')">' + label + '</div>';
   }
+  document.getElementById('hs-tabs').innerHTML = tabsHtml;
+
+  // ── Action area ───────────────────────────────────────────
+  var actionArea = document.getElementById('hs-action-area');
+  if (cur === 0) {
+    // Location — locked to "Travel to"
+    actionArea.innerHTML = '<div class="hs-action-locked">🚗 Travel to this location</div>';
+  } else if (cur === total) {
+    // Final clue — locked to "Stop here"
+    actionArea.innerHTML = '<div class="hs-action-locked">📍 Stop here &mdash; you have arrived</div>';
+  } else {
+    // Regular clue — scrollable action chips
+    var cl = _hsData.clues[cur-1] || {};
+    var selAction = cl.action || 'walk';
+    var chipsHtml = '<div class="hs-actions" id="hs-action-scroll">';
+    HS_ACTIONS.forEach(function(a) {
+      var isSel = a.id === selAction;
+      chipsHtml += '<button class="hs-action ' + (isSel ? 'sel' : 'un') + '" onclick="hsSetAction(&quot;' + a.id + '&quot;)">' + a.emoji + ' ' + a.label + '</button>';
+    });
+    chipsHtml += '</div>';
+    actionArea.innerHTML = chipsHtml;
+  }
+
+  // ── Radar ─────────────────────────────────────────────────
+  var radarWrap = document.getElementById('hs-radar-wrap');
+  var rings = total + 1; // location + N clues
+  var maxR = 120, minR = 18;
+  var step = (maxR - minR) / (rings - 1 || 1);
+  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;">';
+  for (var r = 0; r < rings; r++) {
+    var size = maxR - r * step;
+    var ringIdx = r; // 0 = outermost = location
+    var isDone = ringIdx < cur;
+    var isActive = ringIdx === cur;
+    var color = isDone ? 'rgba(74,222,128,' : 'rgba(255,255,255,';
+    var opacity = isDone ? (0.3 + r*0.08) : isActive ? 0.9 : 0.08;
+    var glow = isActive ? ';box-shadow:0 0 10px rgba(232,168,32,.4)' : '';
+    var pulse = isActive ? ';animation:hsRingPulse 2s ease-in-out infinite' : '';
+    var borderColor = isDone ? 'rgba(74,222,128,' + (0.3 + r*0.08) + ')' : isActive ? 'rgba(232,168,32,.9)' : 'rgba(255,255,255,.08)';
+    radarHtml += '<div class="hs-ring" style="width:' + size + 'px;height:' + size + 'px;border-color:' + borderColor + glow + pulse + ';"></div>';
+  }
+  // Center dot
+  var dotColor = cur >= rings ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.2)';
+  var dotGlow = cur > 0 ? 'box-shadow:0 0 10px ' + dotColor + ';' : '';
+  radarHtml += '<div class="hs-dot" style="width:10px;height:10px;background:' + dotColor + ';' + dotGlow + '"></div>';
+  radarHtml += '</div>';
+  radarWrap.innerHTML = radarHtml;
+
+  // ── Panel ─────────────────────────────────────────────────
+  var panel = document.getElementById('hs-panel');
+  if (cur === 0) {
+    panel.innerHTML = '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="Krogers on Loop 336 · Memorial Park · Walmart on Hwy 105...">' + (_hsData.location||'') + '</textarea>' +
+      '<div class="hs-hint gold">AI wraps this in a rhyming riddle · GPS unlocks when seeker arrives · no Q&A</div>';
+  } else {
+    var cl2 = _hsData.clues[cur-1] || {};
+    var isFinal2 = cur === total;
+    var hintPhs = ['Light poles on the left facing the store','Walk towards the pharmacy','Entrance — something used for chimneys','Behind the brick pillar at the entrance','Base of the oak tree near the exit','Under the green bench by the cart return'];
+    var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
+    var aPhs = ['4','2','brick','black','oak','green'];
+    var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
+    panel.innerHTML = '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
+      (isFinal2 ? '<div class="hs-hint gold">Final clue · photo reveals alongside · no Q&A needed</div>' :
+        '<div class="hs-qa">' +
+          '<div style="flex:3;"><div class="hs-qa-label">Question</div><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
+          '<div style="flex:1;"><div class="hs-qa-label">Answer</div><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
+        '</div>' +
+        '<div class="hs-hint">AI writes the riddle · you set Q&A</div>');
+  }
+
+  // ── Nav ───────────────────────────────────────────────────
+  var nav = document.getElementById('hs-nav');
+  var allDone = _hsData.location.trim() && _hsData.clues.slice(0,total).every(function(cl){ return cl.hint.trim(); });
+  if (cur === total && allDone) {
+    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+      '<button class="hs-nav-next" onclick="closeHsModal()">Save &amp; Continue →</button>';
+  } else if (cur === 0) {
+    nav.innerHTML = '<div style="flex:1;"></div><button class="hs-nav-next" onclick="hsGoTo(1)">Next Clue →</button>';
+  } else if (cur === total) {
+    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+      '<button class="hs-nav-next" onclick="closeHsModal()">Save &amp; Continue →</button>';
+  } else {
+    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+      '<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')">Next Clue →</button>';
+  }
+}
+
+function hsSetAction(actionId) {
+  var idx = _hsCurrent - 1;
+  if (idx < 0) return;
+  if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'walk' };
+  _hsData.clues[idx].action = actionId;
+  // Update chips visually without full re-render
+  document.querySelectorAll('.hs-action').forEach(function(btn) {
+    btn.className = 'hs-action ' + (btn.textContent.trim().includes(HS_ACTIONS.find(function(a){return a.id===actionId;})?.emoji || '@@') ? 'sel' : 'un');
+  });
+  // Simpler: just re-render actions
+  var selAction = actionId;
+  var chipsHtml = '';
+  HS_ACTIONS.forEach(function(a) {
+    chipsHtml += '<button class="hs-action ' + (a.id === selAction ? 'sel' : 'un') + '" onclick="hsSetAction(&quot;' + a.id + '&quot;)">' + a.emoji + ' ' + a.label + '</button>';
+  });
+  document.getElementById('hs-action-scroll').innerHTML = chipsHtml;
 }
 
 function buildHsText() {
   var parts = [];
   if (_hsData.location) parts.push('Location: ' + _hsData.location);
   _hsData.clues.forEach(function(cl, i) {
-    if (cl.hint) parts.push('Clue ' + (i+1) + ': ' + cl.hint);
-  });
-  return parts.join('\\n');
-}
-
-function buildHsModal(clueCount) {
-  var scroll = document.getElementById('hs-modal-scroll');
-  if (!scroll) return;
-  var html = '';
-
-  // Location card
-  html += '<div class="hs-card gold">' +
-    '<div class="hs-card-label"><div class="hs-badge gold">📍</div><div class="hs-title gold">Location — start quest clue</div></div>' +
-    '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="Krogers · Memorial Park · Walmart on Hwy 105...">' + (_hsData.location || '') + '</textarea>' +
-    '<div class="hs-hint gold">AI wraps this in a rhyming riddle · GPS unlocks it · no Q&amp;A needed</div>' +
-    '</div>';
-
-  // Clue cards
-  for (var i = 1; i <= clueCount; i++) {
-    var isFinal = i === clueCount;
-    var saved = _hsData.clues[i-1] || {};
-    var placeholders = [
-      'Light poles on the left side facing Krogers',
-      'Walk towards the pharmacy — drive through lanes',
-      'Krogers entrance — something used for chimneys on the left',
-      'Behind the brick pillar at the entrance, under the black mat',
-      'Base of the oak tree near the parking lot exit',
-      'Under the green bench beside the cart return'
-    ];
-    var qPlaceholders = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
-    var aPlaceholders = ['4','2','brick','black','oak','green'];
-    var ph = placeholders[i-1] || 'Specific detail, landmark, feature at this location';
-    var qph = qPlaceholders[i-1] || 'Question seeker must answer';
-    var aph = aPlaceholders[i-1] || 'Answer';
-
-    if (isFinal) {
-      html += '<div class="hs-card final">' +
-        '<div class="hs-card-label"><div class="hs-badge gold">' + i + '</div><div class="hs-title gold">Clue ' + i + ' — final hiding spot</div></div>' +
-        '<textarea class="hs-ta" id="hs-hint-' + i + '" rows="3" placeholder="Exact hiding spot — e.g. ' + ph + '">' + (saved.hint||'') + '</textarea>' +
-        '<div class="hs-hint gold">Final clue · photo reveals alongside · no Q&amp;A needed</div>' +
-        '</div>';
-    } else {
-      html += '<div class="hs-card">' +
-        '<div class="hs-card-label"><div class="hs-badge num">' + i + '</div><div class="hs-title">Clue ' + i + ' — keywords / hint</div></div>' +
-        '<textarea class="hs-ta" id="hs-hint-' + i + '" rows="2" placeholder="e.g. ' + ph + '">' + (saved.hint||'') + '</textarea>' +
-        '<div class="hs-qa">' +
-          '<div style="flex:3;">' +
-            '<div class="hs-qa-label">Question for seeker</div>' +
-            '<input type="text" class="hs-inp" id="hs-q-' + i + '" placeholder="e.g. ' + qph + '" value="' + (saved.question||'') + '"/>' +
-          '</div>' +
-          '<div style="flex:1;">' +
-            '<div class="hs-qa-label">Answer</div>' +
-            '<input type="text" class="hs-inp" id="hs-a-' + i + '" placeholder="' + aph + '" value="' + (saved.answer||'') + '"/>' +
-          '</div>' +
-        '</div>' +
-        '<div class="hs-hint">AI writes the riddle · you set the question + answer</div>' +
-        '</div>';
+    if (cl.hint) {
+      var action = HS_ACTIONS.find(function(a){ return a.id === cl.action; });
+      parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + ']: ' + cl.hint);
     }
-  }
-
-  // Generate button
-  html += '<button onclick="closeHsModal()" style="width:100%;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:400;font-family:inherit;cursor:pointer;margin-top:4px;">Save &amp; Continue →</button>';
-
-  scroll.innerHTML = html;
+  });
+  return parts.join('\n');
 }
-
 // Photo handler
 function handleHsPhoto(input) {
   if (!input.files || !input.files[0]) return;
@@ -2936,15 +3027,19 @@ function handleHsPhoto(input) {
 <div class="hs-modal-overlay" id="hs-modal-overlay" onclick="hsModalBgClose(event)">
   <div class="hs-modal-sheet">
     <div class="hs-modal-header">
-      <div>
-        <div style="font-size:16px;color:#fff;font-weight:400;">Hiding Spot Details</div>
-        <div style="font-size:12px;color:#b8c4d0;margin-top:2px;">AI uses your hints to write each clue</div>
-      </div>
+      <div style="font-size:16px;color:#fff;font-weight:400;">Hiding Spot Details</div>
       <button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:15px;padding:7px 14px;font-family:inherit;cursor:pointer;">Done</button>
     </div>
-    <div class="hs-modal-scroll" id="hs-modal-scroll">
-      <!-- Cards injected by buildHsModal() -->
-    </div>
+    <!-- Tab row -->
+    <div class="hs-tabs" id="hs-tabs"></div>
+    <!-- Action row (swapped per clue) -->
+    <div id="hs-action-area"></div>
+    <!-- Radar -->
+    <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
+    <!-- Single clue panel -->
+    <div class="hs-panel" id="hs-panel"></div>
+    <!-- Nav -->
+    <div class="hs-nav" id="hs-nav"></div>
   </div>
 </div>
 </body>
