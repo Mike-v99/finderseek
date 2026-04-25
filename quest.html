@@ -169,11 +169,15 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-bottom:10px;" class="el" data-d="150">
 
     <!-- MAP CELL -->
-    <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;background:#0a0f1a;" onclick="openMapModal()">
-      <div id="q-map-leaflet" style="position:absolute;inset:0;border-radius:inherit;"></div>
+    <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;background:#0a0f1a;">
+      <!-- Static map image — zooms in as clues solved -->
+      <img id="q-static-map" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transition:transform .8s ease;"/>
+      <div id="q-map-leaflet" style="position:absolute;inset:0;border-radius:inherit;display:none;"></div>
+      <!-- Map blur layer synced with photo -->
+      <div id="q-map-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(10,8,26,.95),transparent);z-index:10;">
         <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
-        <div id="q-map-zoom-label" style="font-size:17px;color:#b8c4d0;">City view</div>
+        <div id="q-map-zoom-label" style="font-size:17px;color:#b8c4d0;">Locked</div>
       </div>
     </div>
 
@@ -503,26 +507,57 @@ function initQuestMap(lat, lng, solved, total) {
 }
 
 function updatePhotoBlur(solved, total) {
-  var blurEl = document.getElementById('q-photo-blur');
-  if (!blurEl) return;
   var idx = Math.min(solved, BLUR_PX.length - 1);
   var px = BLUR_PX[idx];
-  if (px === 0) {
-    blurEl.style.backdropFilter = 'none';
-    blurEl.style.webkitBackdropFilter = 'none';
-    blurEl.style.background = 'transparent';
-  } else {
-    blurEl.style.backdropFilter = 'blur(' + px + 'px)';
-    blurEl.style.webkitBackdropFilter = 'blur(' + px + 'px)';
-    blurEl.style.background = 'rgba(13,11,24,' + (0.1 + px * 0.015) + ')';
+  var pct = total > 0 ? solved / total : 0;
+
+  // ── Photo blur ──────────────────────────────────────────
+  var blurEl = document.getElementById('q-photo-blur');
+  if (blurEl) {
+    if (px === 0) {
+      blurEl.style.backdropFilter = 'none';
+      blurEl.style.webkitBackdropFilter = 'none';
+      blurEl.style.background = 'transparent';
+    } else {
+      blurEl.style.backdropFilter = 'blur(' + px + 'px)';
+      blurEl.style.webkitBackdropFilter = 'blur(' + px + 'px)';
+      blurEl.style.background = 'rgba(13,11,24,' + (0.1 + px * 0.015) + ')';
+    }
   }
-  // Progress dots
+
+  // ── Map blur — same percentage, synced ──────────────────
+  var mapBlur = document.getElementById('q-map-blur');
+  if (mapBlur) {
+    if (px === 0) {
+      mapBlur.style.backdropFilter = 'none';
+      mapBlur.style.webkitBackdropFilter = 'none';
+      mapBlur.style.background = 'transparent';
+    } else {
+      mapBlur.style.backdropFilter = 'blur(' + px + 'px)';
+      mapBlur.style.webkitBackdropFilter = 'blur(' + px + 'px)';
+      mapBlur.style.background = 'rgba(13,11,24,' + (0.1 + px * 0.015) + ')';
+    }
+  }
+
+  // ── Map zoom scale — zooms in as clues solved ────────────
+  var smi = document.getElementById('q-static-map');
+  if (smi) {
+    // Scale from 1x (zoomed out) to 1.8x (zoomed in) as pct goes 0→1
+    var scale = 1 + (pct * 0.8);
+    smi.style.transform = 'scale(' + scale + ')';
+    smi.style.transformOrigin = 'center center';
+  }
+
+  // ── Map zoom label ───────────────────────────────────────
+  var lbl = document.getElementById('q-map-zoom-label');
+  if (lbl) lbl.textContent = ZOOM_LABELS[Math.min(solved, ZOOM_LABELS.length-1)];
+
+  // ── Progress dots ────────────────────────────────────────
   var dotsEl = document.getElementById('q-photo-dots');
   if (!dotsEl) return;
   var dots = '';
   for (var i = 0; i < total; i++) {
-    var filled = i < solved;
-    dots += '<div style="width:5px;height:5px;border-radius:50%;background:' + (filled ? '#4ade80' : 'rgba(255,255,255,.15)') + ';"></div>';
+    dots += '<div style="width:5px;height:5px;border-radius:50%;background:' + (i < solved ? '#4ade80' : 'rgba(255,255,255,.15)') + ';"></div>';
   }
   dotsEl.innerHTML = dots;
 }
@@ -791,6 +826,11 @@ function renderHunt() {
   if (h.photo_url) {
     var img = document.getElementById('q-photo-img');
     if (img) { img.src = h.photo_url; img.style.display = 'block'; }
+  }
+  // Load static map image
+  if (h.static_map_url) {
+    var smi = document.getElementById('q-static-map');
+    if (smi) { smi.src = h.static_map_url; smi.style.display = 'block'; }
   }
 
   // Pin button — only show to quest creator
