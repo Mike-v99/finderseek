@@ -1338,13 +1338,27 @@ async function createQuest(previewMode){
         var row = settingsRows.find(function(r){ return r.key === k; });
         return row ? parseInt(row.value) : def;
       };
-      var startHour = getVal('listing_start_hour', 0);
-      var endHour   = getVal('listing_end_hour', 23);
+      var startHour = parseInt(getVal('listing_start_hour', 0));
+      var endHour   = parseInt(getVal('listing_end_hour', 23));
       var nowHour   = new Date().getHours();
-      if (nowHour < startHour || nowHour >= endHour) {
-        var startLabel = startHour >= 12 ? (startHour - 12 || 12) + ' PM' : (startHour || 12) + ' AM';
-        var endLabel   = endHour   >= 12 ? (endHour   - 12 || 12) + ' PM' : (endHour   || 12) + ' AM';
-        return showToast('Quests can only be created between ' + startLabel + ' and ' + endLabel, 'error');
+
+      // If endHour is 0 (midnight) or 23, treat as end of day — always allow
+      // Otherwise check if current hour is within the allowed window
+      var blocked = false;
+      if (endHour !== 0 && endHour !== 23) {
+        blocked = (nowHour < startHour || nowHour >= endHour);
+      } else if (startHour > 0) {
+        blocked = nowHour < startHour;
+      }
+
+      if (blocked) {
+        var fmtHour = function(h) {
+          if (h === 0) return '12 AM';
+          if (h === 12) return '12 PM';
+          if (h < 12) return h + ' AM';
+          return (h - 12) + ' PM';
+        };
+        return showToast('Quests can only be created between ' + fmtHour(startHour) + ' and ' + fmtHour(endHour), 'error');
       }
     }
   } catch(e) {
