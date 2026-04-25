@@ -1770,13 +1770,13 @@ function saveFormState() {
       lat: selectedLat, lng: selectedLng,
       step: currentStep,
     };
-    sessionStorage.setItem(FORM_KEY, JSON.stringify(state));
+    localStorage.setItem(FORM_KEY, JSON.stringify(state));
   } catch(e){}
 }
 
 function restoreFormState() {
   try {
-    var raw = sessionStorage.getItem(FORM_KEY);
+    var raw = localStorage.getItem(FORM_KEY);
     if (!raw) { updateExpiry(); setWeekendDates(); return; }
     var s = JSON.parse(raw);
     if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) selPrize(s.prize, pc); }
@@ -1805,7 +1805,7 @@ function restoreFormState() {
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
 
-function clearFormState() { try { sessionStorage.removeItem(FORM_KEY); } catch(e){} }
+function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); } catch(e){} }
 
 document.addEventListener('DOMContentLoaded',function(){
 

@@ -381,6 +381,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
+
+/* ── PENDING QUEST POPUP ─────────────────────────────────── */
+.pq-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:8000;display:none;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);}
+.pq-backdrop.show{display:flex;}
+.pq-sheet{background:#0d0b18;border:1px solid rgba(232,168,32,.2);border-radius:20px 20px 0 0;max-width:520px;width:100%;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));animation:pqSlide .3s cubic-bezier(0.22,1,0.36,1);}
+@keyframes pqSlide{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.pq-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 16px;}
+.pq-title{font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;}
+.pq-sub{font-size:14px;color:#b8c4d0;margin-bottom:18px;line-height:1.5;}
+.pq-btn-continue{width:100%;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:8px;}
+.pq-btn-clear{width:100%;padding:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:12px;color:#f87171;font-size:15px;font-family:inherit;cursor:pointer;}
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -1352,6 +1363,63 @@ if ('serviceWorker' in navigator) {
   window.closeHamburger=function(){toggle(false);};
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
+
+// ── PENDING QUEST POPUP ──────────────────────────────────────
+function checkPendingQuest() {
+  var pending = localStorage.getItem('fs_pending_quest');
+  var formState = localStorage.getItem('fs_newquest_form');
+  if (!pending && !formState) return;
+  // Show sub text with some context
+  var sub = document.getElementById('pq-sub');
+  if (formState) {
+    try {
+      var s = JSON.parse(formState);
+      var parts = [];
+      if (s.prize) parts.push('$' + s.prize + ' prize');
+      if (s.persona) parts.push(s.persona + ' style');
+      if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,30) + (s.hidingSpot.length>30?'...':'"'));
+      if (parts.length) sub.textContent = parts.join(' · ') + ' — tap to continue.';
+    } catch(e){}
+  }
+  setTimeout(function() {
+    document.getElementById('pq-backdrop').classList.add('show');
+  }, 800);
+}
+
+function closePendingQuestPopup(e) {
+  if (e && e.target !== document.getElementById('pq-backdrop')) return;
+  document.getElementById('pq-backdrop').classList.remove('show');
+}
+
+function continuePendingQuest() {
+  document.getElementById('pq-backdrop').classList.remove('show');
+  sessionStorage.setItem('fs_from_inapp', '1');
+  window.location.href = 'newquest.html?from=app';
+}
+
+function clearPendingQuest() {
+  localStorage.removeItem('fs_pending_quest');
+  localStorage.removeItem('fs_newquest_form');
+  document.getElementById('pq-backdrop').classList.remove('show');
+}
+
+// Check on page load
+document.addEventListener('DOMContentLoaded', function() {
+  checkPendingQuest();
+});
+
 </script>
+
+<!-- PENDING QUEST POPUP -->
+<div class="pq-backdrop" id="pq-backdrop" onclick="closePendingQuestPopup(event)">
+  <div class="pq-sheet">
+    <div class="pq-handle"></div>
+    <div style="font-size:24px;margin-bottom:8px;">🗺️</div>
+    <div class="pq-title">You have an unfinished quest</div>
+    <div class="pq-sub" id="pq-sub">Your quest details are saved. Would you like to continue where you left off?</div>
+    <button class="pq-btn-continue" onclick="continuePendingQuest()">Continue Quest →</button>
+    <button class="pq-btn-clear" onclick="clearPendingQuest()">Discard &amp; Start Over</button>
+  </div>
+</div>
 </body>
 </html>
