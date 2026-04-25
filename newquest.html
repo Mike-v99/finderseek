@@ -233,7 +233,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .map-modal-topbar{padding:10px 14px;display:flex;align-items:center;gap:10px;background:rgba(10,8,22,.97);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;padding-top:calc(10px + env(safe-area-inset-top,0px));position:relative;z-index:25000;}
 .map-modal-search-placeholder{color:rgba(255,255,255,.3);}
 .map-modal-map{flex:1;position:relative;min-height:0;}
-#map-modal-container{position:absolute;inset:0;}
+#map-modal-container{position:absolute;inset:0;touch-action:none;}
 .map-modal-footer{padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-shrink:0;position:relative;z-index:25000;}
 .map-modal-confirm{flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;position:relative;z-index:25001;-webkit-tap-highlight-color:transparent;}
 .map-modal-confirm:disabled{opacity:.4;cursor:not-allowed;}
@@ -2679,6 +2679,28 @@ function modalSelectPrediction(idx) {
   });
 }
 
+// Wire map modal buttons with touchend for iOS reliability
+(function() {
+  function addTapListener(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var tapped = false;
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!tapped) { tapped = true; fn(); setTimeout(function(){ tapped = false; }, 300); }
+    }, { passive: false });
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      fn();
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    addTapListener('map-modal-confirm', confirmMapLocation);
+    addTapListener('map-modal-sat', toggleModalSatellite);
+  });
+})();
+
 // Close predictions when tapping outside
 document.addEventListener('click', function(e) {
   if (!e.target.closest('#map-modal-search') && !e.target.closest('#map-predictions')) {
@@ -2686,7 +2708,6 @@ document.addEventListener('click', function(e) {
     if (pred) pred.classList.remove('show');
   }
 });
-
 
 </script>
 
@@ -2726,8 +2747,8 @@ document.addEventListener('click', function(e) {
 
   <!-- Footer with satellite toggle + confirm -->
   <div class="map-modal-footer">
-    <button class="map-modal-sat" id="map-modal-sat" onclick="toggleModalSatellite()">🛰️ Satellite</button>
-    <button class="map-modal-confirm" id="map-modal-confirm" onclick="confirmMapLocation()">Confirm Location</button>
+    <button class="map-modal-sat" id="map-modal-sat">🛰️ Satellite</button>
+    <button class="map-modal-confirm" id="map-modal-confirm">Confirm Location</button>
   </div>
 </div>
 </body>
