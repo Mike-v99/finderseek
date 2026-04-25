@@ -80,6 +80,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing description or clueCount' });
   }
 
+  // Extract place name from description if not explicitly provided
+  // Look for capitalised business/location names mentioned in the hiding spot description
+  const resolvedPlaceName = placeName || (function() {
+    // Common patterns: "at Kroger", "behind Target", "near Memorial Park", "inside Walmart", etc.
+    const match = description.match(/(?:at|near|behind|inside|outside|front of|back of|next to|beside|by)\s+([A-Z][A-Za-z0-9'\-\s]{1,30}?)(?:\s+on|\s+at|\s*[,\.!]|$)/);
+    if (match) return match[1].trim();
+    // Also try: starts with capital, multiple words, looks like a name
+    const nameMatch = description.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\b/);
+    if (nameMatch && nameMatch[1].length > 3) return nameMatch[1].trim();
+    return null;
+  })();
+
   const styleHint = PERSONA_STYLES[persona] || PERSONA_STYLES.pirate;
   const tierInstructions = buildTierInstructions(clueCount, city, neighborhood, searchAddress);
 
@@ -161,9 +173,9 @@ Return ONLY a JSON object (no markdown, no explanation):
 The Quest Master has hidden real cash and described the hiding spot as:
 "${description}"
 
-⚠️ PLACE NAME — THIS IS CRITICAL: ${placeName 
-  ? `The quest is located at "${placeName}". This EXACT name must appear word-for-word in the location riddle. Do not paraphrase, describe, or replace it with a generic description.`
-  : `No place name was explicitly provided. Check the hiding spot description above — if the Quest Master mentioned a specific named location (a store, park, building, landmark), extract that name and use it word-for-word in the location riddle. If no named location is mentioned, use the city and neighborhood from the address.`
+⚠️ PLACE NAME — THIS IS CRITICAL: ${resolvedPlaceName
+  ? `The quest is located at "${resolvedPlaceName}". This EXACT name must appear word-for-word in the location riddle. Do not paraphrase it.`
+  : `No named location found. Use the city and street from the address for the location riddle.`
 }
 
 Full address: ${searchAddress || ''}
@@ -201,7 +213,7 @@ Also write a LOCATION RIDDLE — this is shown BEFORE the quest starts. It must:
 - MUST contain the EXACT WORDS of the real place name — every word. For example if the location is "Kroger" or "Memorial Park, Houston" then those exact words must ALL appear in the riddle text, even if split across lines. The seeker must be able to read the riddle and know the exact place to go — the name is hidden inside the rhyme, not replaced by description.
 - Be unlocked by GPS when the seeker physically arrives within 1,000 feet — no Q&A needed
 
-Location to encode: ${placeName ? placeName + ' — ' : ''}${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
+Location to encode: ${resolvedPlaceName ? resolvedPlaceName + ' — ' : ''}${searchAddress || ''} — city: ${city || ''} — area: ${neighborhood || ''}
 
 Write exactly ${clueCount} clues following these tier instructions precisely:
 
