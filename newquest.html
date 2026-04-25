@@ -432,9 +432,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div class="map-search-wrap" style="position:relative;margin-bottom:8px;z-index:10001;">
       <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="map-search" type="text" class="map-search-input" placeholder="Search address, park, landmark..." autocomplete="off" oninput="liveSearch(this.value)" style="color:#b8c4d0;"/>
-      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" style="font-size:15px;gap:4px;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        <span id="my-loc-txt">Me</span>
+      <button id="my-loc-btn" class="my-loc-btn" onclick="goToMyLocation()" title="Use my location" style="padding:6px 10px;">
+        <svg id="my-loc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </button>
       <div id="search-dropdown" class="search-dropdown"></div>
     </div>
@@ -1946,8 +1945,7 @@ function scrollToMap() {
 function goToMyLocation() {
   const btn = document.getElementById('my-loc-btn');
   const coords = document.getElementById('map-coords');
-  var mlt=document.getElementById('my-loc-txt'); if(mlt) mlt.textContent = '⏳';
-  btn.style.pointerEvents = 'none';
+  btn.style.pointerEvents = 'none'; btn.style.opacity = '0.5';
   if (!navigator.geolocation) {
     coords.innerHTML = '⚠️ Location not supported — search manually above';
     var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍';
@@ -1962,12 +1960,10 @@ function goToMyLocation() {
         _map.setView([lat, lng], 17); _marker.setLatLng([lat, lng]);
         selectedLat = lat; selectedLng = lng; setCoords(lat, lng); reverseGeocode(lat, lng);
       } else { initMap(lat, lng); reverseGeocode(lat, lng); }
-      var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '✅';
-      setTimeout(() => { var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍'; btn.style.pointerEvents = 'auto'; }, 2000);
+      btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
     },
     err => {
-      var _mlt=document.getElementById('my-loc-txt'); if(_mlt) _mlt.textContent = '📍';
-      btn.style.pointerEvents = 'auto';
+      btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
       // Init map at default location on geolocation failure
       if (!_mapReady) initMap(29.7604, -95.3698);
       coords.innerHTML = '⚠️ Location blocked — search an address above or tap the map';
@@ -1996,31 +1992,37 @@ function getPlacesService() {
 
 async function fetchSearchResults(query) {
   try {
-    var svc = getPlacesService();
+    // Make sure Google Maps is loaded
+    if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
+      console.warn('Google Maps not ready yet'); return;
+    }
+    if (!_autocompleteService) {
+      _autocompleteService = new google.maps.places.AutocompleteService();
+    }
     var biasLat = selectedLat || 29.7604, biasLng = selectedLng || -95.3698;
-    var circle = new google.maps.Circle({ center: { lat: biasLat, lng: biasLng }, radius: 50000 });
-    svc.getPlacePredictions({
+    _autocompleteService.getPlacePredictions({
       input: query,
-      bounds: circle.getBounds(),
+      location: new google.maps.LatLng(biasLat, biasLng),
+      radius: 50000,
       componentRestrictions: { country: 'us' },
       types: ['establishment', 'geocode']
     }, function(predictions, status) {
       var dropdown = document.getElementById('search-dropdown');
-      if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions) {
+      if (!predictions || !predictions.length) {
         dropdown.classList.remove('show'); return;
       }
       searchResults = predictions;
       dropdown.innerHTML = predictions.map(function(p, i) {
         var main = p.structured_formatting.main_text;
         var sub = p.structured_formatting.secondary_text || '';
-        var icon = p.types.includes('park') ? '🌳' : p.types.includes('street_address') ? '🏠' : '📍';
+        var icon = (p.types && p.types.includes('park')) ? '🌳' : (p.types && p.types.includes('street_address')) ? '🏠' : '📍';
         return '<div class="search-result" onclick="selectResult(' + i + ')" onmouseover="highlightResult(' + i + ')">' +
           '<div class="search-result-icon">' + icon + '</div>' +
           '<div><div class="search-result-main">' + main + '</div><div class="search-result-sub">' + sub + '</div></div></div>';
       }).join('');
       dropdown.classList.add('show'); selectedResultIdx = -1;
     });
-  } catch(e) { console.error('Search failed', e); }
+  } catch(e) { console.error('Search failed:', e); }
 }
 
 
