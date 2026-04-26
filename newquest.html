@@ -2921,13 +2921,8 @@ function renderHsModal() {
       '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
     radarMapContent = '<img src="' + sMapUrl + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>';
   } else {
-    radarMapContent = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
-      '<rect width="' + maxR + '" height="' + maxR + '" fill="#1a1a2e"/>' +
-      '<line x1="0" y1="60" x2="' + maxR + '" y2="60" stroke="#2d2d44" stroke-width="8"/>' +
-      '<line x1="60" y1="0" x2="60" y2="' + maxR + '" stroke="#2d2d44" stroke-width="8"/>' +
-      '<rect x="42" y="30" width="26" height="20" fill="#1a2e1a" rx="2"/>' +
-      '<rect width="' + maxR + '" height="' + maxR + '" fill="#0a0818" opacity="0.42"/>' +
-      '</svg>';
+    // No location yet — plain dark background
+    radarMapContent = '';
   }
 
   var radarHtml = '<div class="hs-radar" style="width:100%;aspect-ratio:1 / 1;max-height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
