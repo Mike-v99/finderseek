@@ -2622,7 +2622,7 @@ function confirmMapLocation() {
   selectedLat = _modalLat;
   selectedLng = _modalLng;
   // Store static map URL for dual unblur
-  window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng + '&zoom=18&size=600x400&scale=2&maptype=roadmap&style=element:geometry|color:0x1a1a2e&style=element:labels.text.fill|color:0xb8c4d0&style=feature:road|element:geometry|color:0x2d2d44&style=feature:water|element:geometry|color:0x0d1117&style=feature:poi.park|element:geometry|color:0x1a2e1a&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng + '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
+  window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng + '&zoom=18&size=600x400&scale=2&maptype=roadmap&markers=color:red|label:★|' + selectedLat + ',' + selectedLng + '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
   console.log('Coords confirmed:', selectedLat, selectedLng);
   // Get address from search bar (most reliable source)
   var searchEl = document.getElementById('map-modal-search');
@@ -2890,15 +2890,10 @@ function renderHsModal() {
   var radarMapContent = '';
   if (selectedLat && selectedLng) {
     var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
-      '&zoom=16&size=300x300&scale=2&maptype=roadmap' +
-      '&style=element:geometry|color:0x1a1a2e' +
-      '&style=element:labels.text.fill|color:0xb8c4d0' +
-      '&style=feature:road|element:geometry|color:0x2d2d44' +
-      '&style=feature:water|element:geometry|color:0x0d1117' +
-      '&style=feature:poi.park|element:geometry|color:0x1a2e1a' +
-      '&markers=color:0xe8a820|size:small|' + selectedLat + ',' + selectedLng +
+      '&zoom=17&size=600x600&scale=2&maptype=roadmap' +
+      '&markers=color:red|label:★|' + selectedLat + ',' + selectedLng +
       '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
-    radarMapContent = '<img src="' + sMapUrl + '" style="width:100%;height:100%;object-fit:cover;"/>';
+    radarMapContent = '<img src="' + sMapUrl + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>';
   } else {
     radarMapContent = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
       '<rect width="' + maxR + '" height="' + maxR + '" fill="#1a1a2e"/>' +
