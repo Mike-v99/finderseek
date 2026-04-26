@@ -1872,6 +1872,15 @@ function restoreFormState() {
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
     if (s.placeName) selectedPlaceName = s.placeName;
     if (s.selectedAddress) selectedAddress = s.selectedAddress;
+    // If no saved address but we have coords, reverse geocode to get it
+    else if (selectedLat && selectedLng && typeof google !== 'undefined') {
+      var gc = new google.maps.Geocoder();
+      gc.geocode({location:{lat:selectedLat,lng:selectedLng}}, function(results,status) {
+        if (status==='OK' && results[0]) {
+          selectedAddress = results[0].formatted_address.replace(/, USA$/,'');
+        }
+      });
+    }
     if (s.staticMapUrl) window._staticMapUrl = s.staticMapUrl;
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
@@ -1884,6 +1893,7 @@ function restoreFormState() {
       if (lm) lm.classList.add('selected');
     }
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
+    if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
     updateExpiry(); setWeekendDates();
     // Restore step — if returning from review, go back to step 4
     if (s.step && s.step > 1) {
@@ -1892,7 +1902,7 @@ function restoreFormState() {
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
 
-function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); selectedLat = null; selectedLng = null; selectedPlaceName = null; window._staticMapUrl = null; _hsData = { location: '', clues: [] }; } catch(e){} }
+function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); selectedLat = null; selectedLng = null; selectedPlaceName = null; window._staticMapUrl = null; _hsData = { location: '', clues: [] }; locationConfirmed = false; } catch(e){} }
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -1936,7 +1946,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 // ── MAP ──────────────────────────────────────────────
-let selectedLat = null, selectedLng = null, selectedPlaceName = null, selectedAddress = null;
+let selectedLat = null, selectedLng = null, selectedPlaceName = null, selectedAddress = null, locationConfirmed = false;
 let _map = null, _marker = null, _mapReady = false;
 let searchTimeout = null;
 
@@ -2621,6 +2631,7 @@ function confirmMapLocation() {
   }
   selectedLat = _modalLat;
   selectedLng = _modalLng;
+  locationConfirmed = true;
   // Store static map URL for dual unblur
   window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
     '&zoom=18&size=600x400&scale=2&maptype=roadmap' +
@@ -2906,9 +2917,9 @@ function renderHsModal() {
   var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
   var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor.replace(')', ',.35)').replace('rgba','rgba') + ';') : '';
 
-  // Real static map behind radar if location set, else decorative SVG
+  // Real static map behind radar only after Quest Master explicitly confirms location
   var radarMapContent = '';
-  if (selectedLat && selectedLng) {
+  if (locationConfirmed && selectedLat && selectedLng) {
     var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
       '&zoom=17&size=600x600&scale=2&maptype=roadmap' +
       '&style=feature:all|element:labels.text.fill|color:0x9ca3af' +
@@ -2959,12 +2970,12 @@ function renderHsModal() {
   var panel = document.getElementById('hs-panel');
   if (cur === 0) {
     // Map picker button — pick if no location, change if already set
-    var mapPickerHtml = selectedLat && selectedLng ?
+    var mapPickerHtml = locationConfirmed ?
       '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);border-radius:11px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">' +
       '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
       '<div style="flex:1;min-width:0;">' +
-      '<div style="font-size:16px;color:#4ade80;font-weight:400;">✓ ' + (selectedPlaceName || (selectedAddress ? selectedAddress.split(',')[0] : 'Location set')) + '</div>' +
-      (selectedAddress ? '<div style="font-size:12px;color:rgba(74,222,128,.65);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + selectedAddress + '</div>' : '') +
+      '<div style="font-size:16px;color:#4ade80;font-weight:400;">✓ ' + (selectedPlaceName || (selectedAddress ? selectedAddress.split(',')[0] : 'Tap to change location')) + '</div>' +
+      (selectedAddress ? '<div style="font-size:12px;color:rgba(74,222,128,.65);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + selectedAddress + '</div>' : '<div style="font-size:12px;color:rgba(74,222,128,.5);margin-top:2px;">Location confirmed · tap Change to update</div>') +
       '</div>' +
       '<div style="font-size:13px;color:rgba(255,255,255,.4);text-decoration:underline;">Change</div>' +
       '</div>' :
