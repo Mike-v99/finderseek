@@ -239,7 +239,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .map-modal-confirm:disabled{opacity:.4;cursor:not-allowed;}
 .map-modal-sat{padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;position:relative;z-index:25001;-webkit-tap-highlight-color:transparent;}
 .map-modal-address{display:none;}
-.map-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;z-index:10;filter:drop-shadow(0 3px 8px rgba(0,0,0,.8));transition:transform .1s;}
+.map-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:44px;pointer-events:none;z-index:10;filter:drop-shadow(0 4px 12px rgba(0,0,0,.9));transition:transform .1s;}
 .map-center-pin.dragging{transform:translate(-50%,-110%) scale(1.1);}
 /* Search predictions dropdown */
 .map-predictions{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.98);border:1px solid rgba(232,168,32,.2);border-radius:10px;margin-top:4px;max-height:280px;overflow-y:auto;z-index:30000;display:none;}
@@ -520,12 +520,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
     <div id="hs-photo-preview" style="display:none;margin-bottom:8px;border-radius:10px;overflow:hidden;max-height:120px;"><img id="hs-photo-img" style="width:100%;object-fit:cover;max-height:120px;" /></div>
-    <!-- Google Maps link — opens native maps to browse the area -->
-    <a id="gmaps-link" href="https://maps.google.com" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;text-decoration:none;margin-bottom:8px;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      <span style="font-size:17px;color:#b8c4d0;">Open Google Maps to browse area</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+
     <!-- hidden fields for backward compat -->
     <textarea id="hiding-spot" style="display:none;"></textarea>
     <div style="height:12px;"></div>
@@ -2961,13 +2956,7 @@ function renderHsModal() {
       '<div style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div></div>' +
       '</div>';
 
-    var mapsLinkHref = (selectedLat && selectedLng)
-      ? 'https://www.google.com/maps?q=' + selectedLat + ',' + selectedLng
-      : 'https://maps.google.com';
-    var mapsLinkHtml = '<a href="' + mapsLinkHref + '" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 13px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);border-radius:9px;text-decoration:none;margin-bottom:10px;">' +
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
-      '<span style="font-size:17px;color:#4ade80;flex:1;">Open in Google Maps</span>' +
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></a>';
+    var mapsLinkHtml = '';
     panel.innerHTML = mapPickerHtml + mapsLinkHtml +
       '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:8px;">Exact location details</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
@@ -3074,6 +3063,7 @@ function handleHsPhoto(input) {
   <div class="map-modal-map" style="padding-bottom:calc(72px + env(safe-area-inset-bottom,16px));">
     <div id="map-modal-container"></div>
     <div class="map-center-pin" id="map-center-pin">📍</div>
+    <div id="map-pin-instruction" style="position:absolute;top:calc(50% + 10px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:13px;padding:5px 12px;border-radius:20px;white-space:nowrap;z-index:10;pointer-events:none;font-family:'Noto Sans Display',sans-serif;">Drag map to move pin</div>
   </div>
 
   <div id="map-modal-address" style="display:none;"></div>
