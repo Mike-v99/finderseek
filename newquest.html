@@ -2884,17 +2884,12 @@ function renderHsModal() {
   // ── Action area ───────────────────────────────────────────
   var actionArea = document.getElementById('hs-action-area');
   if (cur === 0) {
-    // Location screen — "Travel to" shown inline with the header, no separate row
     actionArea.innerHTML = '';
   } else if (cur === total) {
-    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:9px;font-size:17px;color:#4ade80;">📍 Stop here — you have arrived</div>';
+    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;font-size:17px;color:#4ade80;">📍 Stop here — you have arrived</div>';
   } else {
-    var cl = _hsData.clues[cur-1] || {};
-    var selAction = cl.action || 'walk';
-    var opts = HS_ACTIONS.map(function(a) {
-      return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>';
-    }).join('');
-    actionArea.innerHTML = '<div class="hs-action-wrap"><select class="hs-action-select" onchange="hsSetAction(this.value)">' + opts + '</select><div class="hs-action-arrow">▾</div></div>';
+    // No action area — handled inside panel with Pick Action button
+    actionArea.innerHTML = '';
   }
 
   // ── Radar with map background ────────────────────────────
@@ -2995,13 +2990,67 @@ function renderHsModal() {
     var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
     var aPhs = ['4','2','brick','black','oak','green'];
     var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
-    panel.innerHTML = '<div style="font-size:18px;color:#fff;font-weight:400;margin-bottom:8px;">Clue ' + cur + (isFinal2 ? ' ★' : '') + ' — Keywords</div>' + '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
-      (isFinal2 ? '<div class="hs-hint gold">Final clue · photo reveals alongside · no Q&A needed</div>' :
-        '<div class="hs-qa">' +
-          '<div style="flex:3;"><div class="hs-qa-label">Question</div><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
-          '<div style="flex:1;"><div class="hs-qa-label">Answer</div><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
-        '</div>' +
-        '<div class="hs-hint">AI writes the riddle · you set Q&A</div>');
+    var selAction = cl2.action || '';
+    var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
+
+    // Pick Action button
+    var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
+      '<div id="hs-action-pick" style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:' + (actionObj ? 'rgba(232,168,32,.1)' : 'rgba(232,168,32,.05)') + ';border:2px ' + (actionObj ? 'solid rgba(232,168,32,.6)' : 'dashed rgba(232,168,32,.3)') + ';border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;">' +
+        '<div style="font-size:21px;color:' + (actionObj ? '#e8a820' : 'rgba(232,168,32,.5)') + ';font-weight:' + (actionObj ? '500' : '400') + ';">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action') + '</div>' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + (actionObj ? '#e8a820' : 'rgba(232,168,32,.45)') + '" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '</div>' +
+      '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.08);border:1.5px solid rgba(232,168,32,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<div style="font-size:10px;color:rgba(232,168,32,.5);letter-spacing:1px;">CLUE</div>' +
+        '<div style="font-size:26px;color:#e8a820;font-weight:500;line-height:1;">' + cur + (isFinal2 ? '★' : '') + '</div>' +
+      '</div>' +
+    '</div>';
+
+    // Fields — shown fully if action picked, dimmed if not
+    var fieldsOpacity = actionObj ? '1' : '0.3';
+    var fieldsPointer = actionObj ? 'auto' : 'none';
+    var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
+      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI</div>' +
+      '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
+      (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
+        '<div style="margin-top:10px;">' +
+          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock</div>' +
+          '<div class="hs-qa">' +
+            '<div style="flex:3;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
+            '<div style="flex:1;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
+          '</div>' +
+          '<div class="hs-hint" style="margin-top:6px;">AI writes the riddle · you set Q&A</div>' +
+        '</div>'
+      ) +
+    '</div>';
+
+    panel.innerHTML = actionPickHtml + fieldsHtml;
+
+    // Wire Pick Action button — show native select sheet
+    setTimeout(function() {
+      var pickBtn = document.getElementById('hs-action-pick');
+      if (pickBtn) {
+        // Create hidden select and trigger it
+        var sel = document.createElement('select');
+        sel.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;';
+        HS_ACTIONS.forEach(function(a) {
+          var opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = a.emoji + ' ' + a.label;
+          if (a.id === selAction) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        pickBtn.appendChild(sel);
+        var touched = false;
+        pickBtn.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          if (!touched) { touched = true; sel.focus(); sel.click(); setTimeout(function(){ touched = false; }, 500); }
+        }, { passive: false });
+        pickBtn.addEventListener('click', function() { sel.focus(); sel.click(); });
+        sel.addEventListener('change', function() {
+          hsSetAction(this.value);
+        });
+      }
+    }, 0);
   }
 
   // ── Nav ───────────────────────────────────────────────────
