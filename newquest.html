@@ -261,7 +261,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-modal-sheet{background:#0d0b18;width:100%;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 .hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 /* Tab row */
-.hs-top-row{display:flex;align-items:center;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
+.hs-top-row{display:flex;align-items:center;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;max-height:200px;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
 .hs-tab{flex:1;padding:8px 4px;border-radius:8px;font-size:14px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
 .hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
 .hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
@@ -282,7 +282,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-ring{position:absolute;border-radius:50%;border:1.5px solid;top:50%;left:50%;transform:translate(-50%,-50%);}
 .hs-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:hsDotGlow 1.5s ease-in-out infinite;}
 /* Single clue panel */
-.hs-panel{padding:0 12px;flex-shrink:0;}
+.hs-panel{padding:0 12px;flex:1;overflow-y:auto;}
 .hs-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;color:#fff;font-size:20px;font-family:inherit;font-weight:400;resize:none;box-sizing:border-box;outline:none;line-height:1.5;}
 .hs-ta:focus{border-color:rgba(232,168,32,.4);}
 .hs-qa{display:flex;gap:8px;margin-top:8px;}
@@ -2871,29 +2871,37 @@ function renderHsModal() {
   // ── Radar with map background ────────────────────────────
   var radarWrap = document.getElementById('hs-radar-wrap');
   var rings = total + 1;
-  var maxR = 140, minR = 22;
+  var maxR = 120, minR = 18;
   var step = (maxR - minR) / (rings - 1 || 1);
   var allDoneRadar = cur >= rings;
   var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
   var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor.replace(')', ',.35)').replace('rgba','rgba') + ';') : '';
 
-  // Map SVG background — dark roads + overlay
-  var mapSvg = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
-    '<rect width="' + maxR + '" height="' + maxR + '" fill="#1a1a2e"/>' +
-    '<line x1="0" y1="70" x2="' + maxR + '" y2="70" stroke="#2d2d44" stroke-width="10"/>' +
-    '<line x1="70" y1="0" x2="70" y2="' + maxR + '" stroke="#2d2d44" stroke-width="10"/>' +
-    '<line x1="0" y1="42" x2="' + maxR + '" y2="42" stroke="#2d2d44" stroke-width="5"/>' +
-    '<line x1="0" y1="100" x2="' + maxR + '" y2="100" stroke="#2d2d44" stroke-width="5"/>' +
-    '<line x1="42" y1="0" x2="42" y2="' + maxR + '" stroke="#2d2d44" stroke-width="5"/>' +
-    '<line x1="102" y1="0" x2="102" y2="' + maxR + '" stroke="#2d2d44" stroke-width="5"/>' +
-    '<rect x="75" y="46" width="24" height="18" fill="#1a2e1a" rx="2"/>' +
-    '<rect x="14" y="74" width="16" height="12" fill="#1e1e30" rx="1"/>' +
-    '<rect x="106" y="106" width="18" height="14" fill="#1e1e30" rx="1"/>' +
-    '<rect width="' + maxR + '" height="' + maxR + '" fill="#0d0b18" opacity="0.38"/>' +
-    '</svg>';
+  // Real static map behind radar if location set, else decorative SVG
+  var radarMapContent = '';
+  if (selectedLat && selectedLng) {
+    var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
+      '&zoom=16&size=300x300&scale=2&maptype=roadmap' +
+      '&style=element:geometry|color:0x1a1a2e' +
+      '&style=element:labels.text.fill|color:0xb8c4d0' +
+      '&style=feature:road|element:geometry|color:0x2d2d44' +
+      '&style=feature:water|element:geometry|color:0x0d1117' +
+      '&style=feature:poi.park|element:geometry|color:0x1a2e1a' +
+      '&markers=color:0xe8a820|size:small|' + selectedLat + ',' + selectedLng +
+      '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
+    radarMapContent = '<img src="' + sMapUrl + '" style="width:100%;height:100%;object-fit:cover;"/>';
+  } else {
+    radarMapContent = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
+      '<rect width="' + maxR + '" height="' + maxR + '" fill="#1a1a2e"/>' +
+      '<line x1="0" y1="60" x2="' + maxR + '" y2="60" stroke="#2d2d44" stroke-width="8"/>' +
+      '<line x1="60" y1="0" x2="60" y2="' + maxR + '" stroke="#2d2d44" stroke-width="8"/>' +
+      '<rect x="42" y="30" width="26" height="20" fill="#1a2e1a" rx="2"/>' +
+      '<rect width="' + maxR + '" height="' + maxR + '" fill="#0a0818" opacity="0.42"/>' +
+      '</svg>';
+  }
 
   var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;position:relative;">' +
-    '<div class="hs-radar-map">' + mapSvg + '</div>';
+    '<div class="hs-radar-map">' + radarMapContent + '</div>';
 
   // Active ring glow halo
   for (var r = 0; r < rings; r++) {
@@ -2923,44 +2931,23 @@ function renderHsModal() {
   // ── Panel ─────────────────────────────────────────────────
   var panel = document.getElementById('hs-panel');
   if (cur === 0) {
-    var mapPickerHtml = '';
-    if (selectedLat && selectedLng) {
-      // Show static map thumbnail + Change button
-      var sUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
-        '&zoom=16&size=600x200&scale=2&maptype=roadmap' +
-        '&style=element:geometry|color:0x1a1a2e' +
-        '&style=element:labels.text.fill|color:0xb8c4d0' +
-        '&style=feature:road|element:geometry|color:0x2d2d44' +
-        '&style=feature:water|element:geometry|color:0x0d1117' +
-        '&style=feature:poi.park|element:geometry|color:0x1a2e1a' +
-        '&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng +
-        '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
-      var locLabel = (selectedPlaceName || '').split(',')[0] || 'Location selected';
-      mapPickerHtml = '<div style="margin-bottom:10px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.1);position:relative;">' +
-        '<img src="' + sUrl + '" style="width:100%;height:100px;object-fit:cover;display:block;"/>' +
-        '<div style="position:absolute;top:6px;left:8px;font-size:12px;color:#4ade80;background:rgba(0,0,0,.7);padding:3px 8px;border-radius:5px;">✓ ' + locLabel + '</div>' +
-        '<button id="hs-change-map-btn" style="position:absolute;top:6px;right:8px;font-size:12px;color:#b8c4d0;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:3px 8px;font-family:inherit;cursor:pointer;">Change</button>' +
-        '</div>';
-    } else {
-      // Show pick location button
-      mapPickerHtml = '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.3);border-radius:11px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">' +
-        '<div style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.15);border:1.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
-        '<div><div style="font-size:17px;color:#fff;">Tap to pick location on map</div>' +
-        '<div style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div></div>' +
-        '</div>';
-    }
+    // Map picker button only shows when no location yet
+    var mapPickerHtml = selectedLat && selectedLng ? '' :
+      '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.3);border-radius:11px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">' +
+      '<div style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.15);border:1.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
+      '<div><div style="font-size:17px;color:#fff;">Tap to pick location on map</div>' +
+      '<div style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div></div>' +
+      '</div>';
+
     panel.innerHTML = mapPickerHtml +
-      '<div style="font-size:14px;color:rgba(184,196,208,.5);margin-bottom:5px;">Where should seekers go?</div>' +
+      '<div style="font-size:14px;color:rgba(184,196,208,.5);margin-bottom:5px;">Exact location details</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
       '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
 
-    // Wire buttons after innerHTML set — use addEventListener not onclick
     setTimeout(function() {
       var pickBtn = document.getElementById('hs-map-pick-btn');
       if (pickBtn) pickBtn.addEventListener('click', function() { openMapModal(); });
-      var changeBtn = document.getElementById('hs-change-map-btn');
-      if (changeBtn) changeBtn.addEventListener('click', function() { openMapModal(); });
     }, 0);
   } else {
     var cl2 = _hsData.clues[cur-1] || {};
@@ -3087,6 +3074,7 @@ function handleHsPhoto(input) {
         <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
       </div>
     </div>
+
     <!-- Action row -->
     <div class="hs-action-row" id="hs-action-area"></div>
     <!-- Single clue panel -->
