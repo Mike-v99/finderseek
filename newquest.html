@@ -1871,6 +1871,7 @@ function restoreFormState() {
     if (s.hidingSpot) { var hs = document.getElementById('hiding-spot'); if (hs) hs.value = s.hidingSpot; }
     if (s.searchAddress) { var ms = document.getElementById('map-search'); if (ms) ms.value = s.searchAddress; }
     if (s.placeName) selectedPlaceName = s.placeName;
+    if (s.selectedAddress) selectedAddress = s.selectedAddress;
     if (s.staticMapUrl) window._staticMapUrl = s.staticMapUrl;
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
@@ -1935,7 +1936,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 // ── MAP ──────────────────────────────────────────────
-let selectedLat = null, selectedLng = null, selectedPlaceName = null;
+let selectedLat = null, selectedLng = null, selectedPlaceName = null, selectedAddress = null;
 let _map = null, _marker = null, _mapReady = false;
 let searchTimeout = null;
 
@@ -2635,6 +2636,7 @@ function confirmMapLocation() {
   // Get address from search bar (most reliable source)
   var searchEl = document.getElementById('map-modal-search');
   var addr = (searchEl && searchEl.value) || (_modalLat.toFixed(5) + ', ' + _modalLng.toFixed(5));
+  selectedAddress = addr;
   var displayName = selectedPlaceName || addr.split(',')[0] || addr;
   document.getElementById('location-btn-title').textContent = '📍 ' + displayName;
   document.getElementById('location-btn-sub').textContent = addr;
