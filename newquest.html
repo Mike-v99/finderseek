@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI&libraries=places"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
@@ -261,12 +261,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-modal-sheet{background:#0d0b18;width:100%;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 .hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 /* Tab row */
-.hs-top-row{display:flex;align-items:center;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;max-height:200px;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
+.hs-top-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
 .hs-tab{flex:1;padding:8px 4px;border-radius:8px;font-size:14px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
 .hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
 .hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
 /* Action scroll row */
-.hs-action-row{padding:8px 12px 4px;flex-shrink:0;}
+.hs-action-row{flex-shrink:0;}
 
 .hs-action-select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:9px 14px;color:#e8a820;font-size:17px;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:170px;}
 .hs-action-wrap{position:relative;display:inline-block;}
@@ -274,7 +274,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-action-locked{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;font-size:18px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
 
 /* Radar map background */
-.hs-radar-map{position:absolute;inset:0;border-radius:50%;overflow:hidden;}
+.hs-radar-map{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;} .hs-radar-map img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .hs-radar-glow{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,168,32,.08);}
 /* Radar */
 .hs-radar-wrap{display:flex;justify-content:center;padding:4px 0 6px;flex-shrink:0;}
@@ -2616,7 +2616,7 @@ function confirmMapLocation() {
   selectedLat = _modalLat;
   selectedLng = _modalLng;
   // Store static map URL for dual unblur
-  window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng + '&zoom=18&size=600x400&scale=2&maptype=roadmap&style=element:geometry|color:0x1a1a2e&style=element:labels.text.fill|color:0xb8c4d0&style=feature:road|element:geometry|color:0x2d2d44&style=feature:water|element:geometry|color:0x0d1117&style=feature:poi.park|element:geometry|color:0x1a2e1a&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng + '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
+  window._staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng + '&zoom=18&size=600x400&scale=2&maptype=roadmap&style=element:geometry|color:0x1a1a2e&style=element:labels.text.fill|color:0xb8c4d0&style=feature:road|element:geometry|color:0x2d2d44&style=feature:water|element:geometry|color:0x0d1117&style=feature:poi.park|element:geometry|color:0x1a2e1a&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng + '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
   console.log('Coords confirmed:', selectedLat, selectedLng);
   // Get address from search bar (most reliable source)
   var searchEl = document.getElementById('map-modal-search');
@@ -2888,7 +2888,7 @@ function renderHsModal() {
       '&style=feature:water|element:geometry|color:0x0d1117' +
       '&style=feature:poi.park|element:geometry|color:0x1a2e1a' +
       '&markers=color:0xe8a820|size:small|' + selectedLat + ',' + selectedLng +
-      '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
+      '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
     radarMapContent = '<img src="' + sMapUrl + '" style="width:100%;height:100%;object-fit:cover;"/>';
   } else {
     radarMapContent = '<svg width="' + maxR + '" height="' + maxR + '" viewBox="0 0 ' + maxR + ' ' + maxR + '">' +
@@ -2941,7 +2941,7 @@ function renderHsModal() {
       '</div>';
 
     panel.innerHTML = mapPickerHtml +
-      '<div style="font-size:14px;color:rgba(184,196,208,.5);margin-bottom:5px;">Exact location details</div>' +
+      '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:8px;">Exact location details</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
       '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
 
@@ -2956,7 +2956,7 @@ function renderHsModal() {
     var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
     var aPhs = ['4','2','brick','black','oak','green'];
     var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
-    panel.innerHTML = '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
+    panel.innerHTML = '<div style="font-size:18px;color:#fff;font-weight:400;margin-bottom:8px;">Clue ' + cur + (isFinal2 ? ' ★' : '') + ' — Keywords</div>' + '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
       (isFinal2 ? '<div class="hs-hint gold">Final clue · photo reveals alongside · no Q&A needed</div>' :
         '<div class="hs-qa">' +
           '<div style="flex:3;"><div class="hs-qa-label">Question</div><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
@@ -3064,19 +3064,17 @@ function handleHsPhoto(input) {
       <div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>
       <button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button>
     </div>
-    <!-- Top row: tabs left + radar right -->
-    <div class="hs-top-row">
-      <div>
+    <!-- Top row: tabs left + (radar + action) right -->
+    <div class="hs-top-row" style="align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
         <div class="hs-tabs-label">CLUES</div>
         <div class="hs-tabs" id="hs-tabs"></div>
       </div>
-      <div style="flex:1;display:flex;justify-content:center;align-items:center;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:2px;">
         <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
+        <div class="hs-action-row" id="hs-action-area" style="width:100%;padding:0 4px;"></div>
       </div>
     </div>
-
-    <!-- Action row -->
-    <div class="hs-action-row" id="hs-action-area"></div>
     <!-- Single clue panel -->
     <div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;"></div>
     <!-- Nav -->
