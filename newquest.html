@@ -3041,27 +3041,10 @@ function renderHsModal() {
 
     panel.innerHTML = actionPickHtml + fieldsHtml;
 
-    // Wire Pick Action button — show native select sheet
+    // Wire overlay select — directly on top of button, triggers native iOS picker
     setTimeout(function() {
-      var pickBtn = document.getElementById('hs-action-pick');
-      if (pickBtn) {
-        // Create hidden select and trigger it
-        var sel = document.createElement('select');
-        sel.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;';
-        HS_ACTIONS.forEach(function(a) {
-          var opt = document.createElement('option');
-          opt.value = a.id;
-          opt.textContent = a.emoji + ' ' + a.label;
-          if (a.id === selAction) opt.selected = true;
-          sel.appendChild(opt);
-        });
-        pickBtn.appendChild(sel);
-        var touched = false;
-        pickBtn.addEventListener('touchend', function(e) {
-          e.preventDefault();
-          if (!touched) { touched = true; sel.focus(); sel.click(); setTimeout(function(){ touched = false; }, 500); }
-        }, { passive: false });
-        pickBtn.addEventListener('click', function() { sel.focus(); sel.click(); });
+      var sel = document.getElementById('hs-action-sel');
+      if (sel) {
         sel.addEventListener('change', function() {
           hsSetAction(this.value);
         });
