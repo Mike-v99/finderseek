@@ -3082,6 +3082,7 @@ function hsSetAction(actionId) {
   if (idx < 0) return;
   if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
   _hsData.clues[idx].action = actionId;
+  renderHsModal(); // re-render so button updates and fields appear
 }
 
 function buildHsText() {
