@@ -274,10 +274,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-action-locked{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;font-size:18px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
 
 /* Radar map background */
-.hs-radar-map{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;} .hs-radar-map img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.hs-radar-map{position:absolute;inset:0;overflow:hidden;} .hs-radar-map img{width:100%;height:100%;object-fit:cover;}
 .hs-radar-glow{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,168,32,.08);}
 /* Radar */
-.hs-radar-wrap{display:flex;justify-content:center;padding:4px 0 6px;flex-shrink:0;}
+.hs-radar-wrap{display:flex;justify-content:center;padding:0;flex-shrink:0;}
 .hs-radar{position:relative;}
 .hs-ring{position:absolute;border-radius:50%;border:1.5px solid;top:50%;left:50%;transform:translate(-50%,-50%);}
 .hs-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:hsDotGlow 1.5s ease-in-out infinite;}
@@ -520,6 +520,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
     <div id="hs-photo-preview" style="display:none;margin-bottom:8px;border-radius:10px;overflow:hidden;max-height:120px;"><img id="hs-photo-img" style="width:100%;object-fit:cover;max-height:120px;" /></div>
+    <!-- Google Maps link — opens native maps to browse the area -->
+    <a id="gmaps-link" href="https://maps.google.com" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;text-decoration:none;margin-bottom:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span style="font-size:17px;color:#b8c4d0;">Open Google Maps to browse area</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
     <!-- hidden fields for backward compat -->
     <textarea id="hiding-spot" style="display:none;"></textarea>
     <div style="height:12px;"></div>
@@ -2630,6 +2636,9 @@ function confirmMapLocation() {
   if (typeof saveFormState === 'function') saveFormState();
   closeMapModal();
   showToast('📍 Location saved', 'success');
+  // Update Google Maps link with exact coordinates
+  var gmLink = document.getElementById('gmaps-link');
+  if (gmLink) gmLink.href = 'https://www.google.com/maps?q=' + selectedLat + ',' + selectedLng;
   // If hs modal is on location screen, re-render to show thumbnail
   if (document.getElementById('hs-modal-overlay').classList.contains('open') && _hsCurrent === 0) { renderHsModal(); }
 }
@@ -2900,7 +2909,7 @@ function renderHsModal() {
       '</svg>';
   }
 
-  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;position:relative;">' +
+  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
     '<div class="hs-radar-map">' + radarMapContent + '</div>';
 
   // Active ring glow halo
@@ -2940,7 +2949,14 @@ function renderHsModal() {
       '<div style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div></div>' +
       '</div>';
 
-    panel.innerHTML = mapPickerHtml +
+    var mapsLinkHref = (selectedLat && selectedLng)
+      ? 'https://www.google.com/maps?q=' + selectedLat + ',' + selectedLng
+      : 'https://maps.google.com';
+    var mapsLinkHtml = '<a href="' + mapsLinkHref + '" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 13px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);border-radius:9px;text-decoration:none;margin-bottom:10px;">' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+      '<span style="font-size:17px;color:#4ade80;flex:1;">Open in Google Maps</span>' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></a>';
+    panel.innerHTML = mapPickerHtml + mapsLinkHtml +
       '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:8px;">Exact location details</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
       '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
