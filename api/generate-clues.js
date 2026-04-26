@@ -156,10 +156,10 @@ Question to ask seeker: "${question}"
 Correct answer: "${answer}"
 
 Write EXACTLY 2 sentences:
-Sentence 1: A rhyming riddle in the persona voice that naturally includes the action "${action}" and describes the hint "${hint}". Make it fun and clear.
-Sentence 2: The question "${question}" rewritten in the same persona voice.
+Sentence 1: A rhyming riddle in the persona voice that naturally includes the action "${action}" and describes "${hint}" — but DO NOT reveal the answer "${answer}" anywhere in the riddle. The riddle should make the seeker go look for something and discover the answer themselves. Tease and hint, never tell.
+Sentence 2: The question "${question}" rewritten in the same persona voice. Keep it as a question.
 
-The answer "${answer}" must be directly discoverable from reading sentence 1.
+CRITICAL: The answer "${answer}" must NOT appear in sentence 1. The seeker discovers it by going there.
 
 Return ONLY a JSON object (no markdown):
 {"number": ${position}, "text": "sentence 1 here sentence 2 here", "question": "${question}", "answer": "${answer}"}`;
