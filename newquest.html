@@ -2923,8 +2923,45 @@ function renderHsModal() {
   // ── Panel ─────────────────────────────────────────────────
   var panel = document.getElementById('hs-panel');
   if (cur === 0) {
-    panel.innerHTML = '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="Krogers on Loop 336 · Memorial Park · Walmart on Hwy 105...">' + (_hsData.location||'') + '</textarea>' +
-      '<div class="hs-hint gold">AI wraps this in a rhyming riddle · GPS unlocks when seeker arrives · no Q&A</div>';
+    var mapPickerHtml = '';
+    if (selectedLat && selectedLng) {
+      // Show static map thumbnail + Change button
+      var sUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
+        '&zoom=16&size=600x200&scale=2&maptype=roadmap' +
+        '&style=element:geometry|color:0x1a1a2e' +
+        '&style=element:labels.text.fill|color:0xb8c4d0' +
+        '&style=feature:road|element:geometry|color:0x2d2d44' +
+        '&style=feature:water|element:geometry|color:0x0d1117' +
+        '&style=feature:poi.park|element:geometry|color:0x1a2e1a' +
+        '&markers=color:0xe8a820|' + selectedLat + ',' + selectedLng +
+        '&key=AIzaSyD9A_J_f1K2wgecnuk6hGFp-VUURK07u1A';
+      var locLabel = (selectedPlaceName || '').split(',')[0] || 'Location selected';
+      mapPickerHtml = '<div style="margin-bottom:10px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.1);position:relative;">' +
+        '<img src="' + sUrl + '" style="width:100%;height:100px;object-fit:cover;display:block;"/>' +
+        '<div style="position:absolute;top:6px;left:8px;font-size:12px;color:#4ade80;background:rgba(0,0,0,.7);padding:3px 8px;border-radius:5px;">✓ ' + locLabel + '</div>' +
+        '<button id="hs-change-map-btn" style="position:absolute;top:6px;right:8px;font-size:12px;color:#b8c4d0;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:3px 8px;font-family:inherit;cursor:pointer;">Change</button>' +
+        '</div>';
+    } else {
+      // Show pick location button
+      mapPickerHtml = '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.3);border-radius:11px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.15);border:1.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
+        '<div><div style="font-size:17px;color:#fff;">Tap to pick location on map</div>' +
+        '<div style="font-size:13px;color:#b8c4d0;margin-top:2px;">Opens full screen Google Map</div></div>' +
+        '</div>';
+    }
+    panel.innerHTML = mapPickerHtml +
+      '<div style="font-size:14px;color:rgba(184,196,208,.5);margin-bottom:5px;">Where should seekers go?</div>' +
+      '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
+      '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
+
+    // Wire buttons after innerHTML set — use addEventListener not onclick
+    setTimeout(function() {
+      var pickBtn = document.getElementById('hs-map-pick-btn');
+      if (pickBtn) pickBtn.addEventListener('click', function() { openMapModal(); });
+      var changeBtn = document.getElementById('hs-change-map-btn');
+      if (changeBtn) changeBtn.addEventListener('click', function() { openMapModal(); });
+    }, 0);
   } else {
     var cl2 = _hsData.clues[cur-1] || {};
     var isFinal2 = cur === total;
