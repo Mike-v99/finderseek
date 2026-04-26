@@ -261,7 +261,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-modal-sheet{background:#0d0b18;width:100%;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 .hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 /* Tab row */
-.hs-top-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;} .hs-tabs{display:flex;flex-direction:column;gap:5px;flex-shrink:0;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
+ .hs-tabs{display:flex;gap:4px;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
 .hs-tab{flex:1;padding:8px 4px;border-radius:8px;font-size:14px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
 .hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
 .hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
@@ -274,7 +274,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-action-locked{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;font-size:18px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
 
 /* Radar map background */
-.hs-radar-map{position:absolute;inset:0;overflow:hidden;} .hs-radar-map img{width:100%;height:100%;object-fit:cover;}
+.hs-radar-map{position:absolute;inset:0;overflow:hidden;border-radius:12px;} .hs-radar-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .hs-radar-glow{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,168,32,.08);}
 /* Radar */
 .hs-radar-wrap{display:flex;justify-content:center;padding:0;flex-shrink:0;}
@@ -2880,7 +2880,7 @@ function renderHsModal() {
   // ── Radar with map background ────────────────────────────
   var radarWrap = document.getElementById('hs-radar-wrap');
   var rings = total + 1;
-  var maxR = 120, minR = 18;
+  var maxR = 180, minR = 22;
   var step = (maxR - minR) / (rings - 1 || 1);
   var allDoneRadar = cur >= rings;
   var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
@@ -2909,7 +2909,7 @@ function renderHsModal() {
       '</svg>';
   }
 
-  var radarHtml = '<div class="hs-radar" style="width:' + maxR + 'px;height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
+  var radarHtml = '<div class="hs-radar" style="width:100%;aspect-ratio:1 / 1;max-height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
     '<div class="hs-radar-map">' + radarMapContent + '</div>';
 
   // Active ring glow halo
@@ -3080,17 +3080,17 @@ function handleHsPhoto(input) {
       <div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>
       <button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button>
     </div>
-    <!-- Top row: tabs left + (radar + action) right -->
-    <div class="hs-top-row" style="align-items:flex-start;">
-      <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
-        <div class="hs-tabs-label">CLUES</div>
-        <div class="hs-tabs" id="hs-tabs"></div>
-      </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:2px;">
-        <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
-        <div class="hs-action-row" id="hs-action-area" style="width:100%;padding:0 4px;"></div>
-      </div>
+    <!-- Tabs horizontal across top -->
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px 8px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;">
+      <div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div>
+      <div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div>
     </div>
+    <!-- Radar full width -->
+    <div style="padding:10px 12px 0;flex-shrink:0;">
+      <div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;"></div>
+    </div>
+    <!-- Action below radar -->
+    <div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>
     <!-- Single clue panel -->
     <div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;"></div>
     <!-- Nav -->
