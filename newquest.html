@@ -2867,9 +2867,11 @@ function saveHsPanel() {
     var h = document.getElementById('hs-hint-cur');
     var q = document.getElementById('hs-q-cur');
     var a = document.getElementById('hs-a-cur');
+    var s = document.getElementById('hs-action-sel');
     if (h) _hsData.clues[idx].hint = h.value;
     if (q) _hsData.clues[idx].question = q.value;
     if (a) _hsData.clues[idx].answer = a.value;
+    if (s && s.value) _hsData.clues[idx].action = s.value;
   }
 }
 
@@ -3011,12 +3013,18 @@ function renderHsModal() {
 
     // Pick Action button
     var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-      '<div id="hs-action-pick" style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:' + (actionObj ? 'rgba(232,168,32,.1)' : 'rgba(232,168,32,.05)') + ';border:2px ' + (actionObj ? 'solid rgba(232,168,32,.6)' : 'dashed rgba(232,168,32,.3)') + ';border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;">' +
-        '<div style="font-size:21px;color:' + (actionObj ? '#e8a820' : 'rgba(232,168,32,.5)') + ';font-weight:' + (actionObj ? '500' : '400') + ';">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action') + '</div>' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + (actionObj ? '#e8a820' : 'rgba(232,168,32,.45)') + '" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '<div style="flex:1;position:relative;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;">' +
+          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + '</div>' +
+          (actionObj ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' : '') +
+        '</div>' +
+        '<select id="hs-action-sel" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;">' +
+          '<option value="">Pick Action...</option>' +
+          HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
+        '</select>' +
       '</div>' +
-      '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.08);border:1.5px solid rgba(232,168,32,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
-        '<div style="font-size:10px;color:rgba(232,168,32,.5);letter-spacing:1px;">CLUE</div>' +
+      '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
         '<div style="font-size:26px;color:#e8a820;font-weight:500;line-height:1;">' + cur + (isFinal2 ? '★' : '') + '</div>' +
       '</div>' +
     '</div>';
@@ -3041,12 +3049,12 @@ function renderHsModal() {
 
     panel.innerHTML = actionPickHtml + fieldsHtml;
 
-    // Wire overlay select — directly on top of button, triggers native iOS picker
+    // Wire overlay select
     setTimeout(function() {
       var sel = document.getElementById('hs-action-sel');
       if (sel) {
         sel.addEventListener('change', function() {
-          hsSetAction(this.value);
+          if (this.value) hsSetAction(this.value);
         });
       }
     }, 0);
