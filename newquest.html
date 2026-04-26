@@ -2837,7 +2837,7 @@ function openHsModal() {
     if (fs.placeName) selectedPlaceName = fs.placeName;
   } catch(e){}
   // Init clues array if needed
-  while (_hsData.clues.length < _hsClueCount) _hsData.clues.push({ hint:'', question:'', answer:'', action:'walk' });
+  while (_hsData.clues.length < _hsClueCount) _hsData.clues.push({ hint:'', question:'', answer:'', action:'' });
   _hsCurrent = 0;
   renderHsModal();
   document.getElementById('hs-modal-overlay').classList.add('open');
@@ -3089,7 +3089,7 @@ function renderHsModal() {
 function hsSetAction(actionId) {
   var idx = _hsCurrent - 1;
   if (idx < 0) return;
-  if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'walk' };
+  if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
   _hsData.clues[idx].action = actionId;
 }
 
