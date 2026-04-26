@@ -1887,7 +1887,7 @@ function restoreFormState() {
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
 
-function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); } catch(e){} }
+function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); selectedLat = null; selectedLng = null; selectedPlaceName = null; window._staticMapUrl = null; _hsData = { location: '', clues: [] }; } catch(e){} }
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -2582,22 +2582,22 @@ function initModalMap(lat, lng) {
 }
 
 function modalReverseGeocode(lat, lng) {
+  if (typeof google === 'undefined' || !google.maps) return;
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({location: {lat: lat, lng: lng}}, function(results, status) {
     var searchEl = document.getElementById('map-modal-search');
-    var confirmBtn = document.getElementById('map-modal-confirm');
     if (status === 'OK' && results[0]) {
+      // Try to get a clean readable name — prefer establishment/point of interest
       var addr = results[0].formatted_address;
-      if (searchEl) searchEl.value = addr;
+      // Strip ZIP code and country for cleaner display
+      addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '');
+      if (searchEl) { searchEl.value = addr; searchEl.placeholder = 'Search park, address, landmark...'; }
       toggleModalSearchClear(addr);
-      // Store address for confirmMapLocation
       document.getElementById('map-modal-address').textContent = addr;
-      // confirm always active
     } else {
-      var coords = lat.toFixed(5) + ', ' + lng.toFixed(5);
-      if (searchEl) searchEl.value = coords;
-      document.getElementById('map-modal-address').textContent = coords;
-      // confirm always active
+      // Geocoding failed — show placeholder, don't show raw coords
+      if (searchEl) { searchEl.value = ''; searchEl.placeholder = 'Drag map to position pin'; }
+      document.getElementById('map-modal-address').textContent = lat.toFixed(5) + ', ' + lng.toFixed(5);
     }
   });
 }
@@ -2804,7 +2804,16 @@ var HS_ACTIONS = [
 ];
 
 function openHsModal() {
-  try { var fs = JSON.parse(localStorage.getItem('fs_newquest_form')||'{}'); if (fs.clueCount) _hsClueCount = parseInt(fs.clueCount); } catch(e){}
+  try {
+    var fs = JSON.parse(localStorage.getItem('fs_newquest_form')||'{}');
+    if (fs.clueCount) _hsClueCount = parseInt(fs.clueCount);
+    // Restore saved hs data if it exists
+    if (fs.hsData) {
+      _hsData = fs.hsData;
+    }
+    // Restore placeName
+    if (fs.placeName) selectedPlaceName = fs.placeName;
+  } catch(e){}
   // Init clues array if needed
   while (_hsData.clues.length < _hsClueCount) _hsData.clues.push({ hint:'', question:'', answer:'', action:'walk' });
   _hsCurrent = 0;
