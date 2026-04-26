@@ -2644,6 +2644,11 @@ function confirmMapLocation() {
   var ms = document.getElementById('map-search');
   if (ms) ms.value = selectedPlaceName ? (selectedPlaceName + ', ' + addr) : addr;
   if (typeof saveFormState === 'function') saveFormState();
+  // Update step 3 button to show location confirmed
+  var btnLabel = document.getElementById('hs-details-btn-label');
+  var btnSub = document.getElementById('hs-details-btn-sub');
+  if (btnLabel) { btnLabel.textContent = 'Set Location'; btnLabel.style.color = '#fff'; }
+  if (btnSub) { btnSub.textContent = '✓ ' + (selectedPlaceName || addr.split(',')[0] || 'Location set'); btnSub.style.color = '#4ade80'; }
   closeMapModal();
   showToast('📍 Location saved', 'success');
   // Update Google Maps link with exact coordinates
