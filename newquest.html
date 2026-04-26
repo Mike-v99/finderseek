@@ -1692,27 +1692,38 @@ async function createQuest(previewMode){
     btn.textContent = '⏳ Generating clues...';
     var aiOverlay = document.getElementById('ai-loading');
     aiOverlay.style.display = 'flex';
-    const clueRes = await fetch('/api/generate-clues', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        description: hidingSpot,
-        clueCount: clueCount,
-        lat: selectedLat,
-        lng: selectedLng,
-        persona: persona,
-        city: city,
-        neighborhood: selectedPlaceName || searchAddress.split(',')[0] || '',
-        searchAddress: selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress,
-        placeName: selectedPlaceName || '',
-      })
-    });
-    const clueData = await clueRes.json();
-    aiOverlay.style.display = 'none';
-    if (!clueRes.ok || !clueData.clues) {
-      console.error('Clue generation error:', clueData);
-      throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
+
+    var clueData;
+    // Use pre-generated clues from hs modal if available
+    if (_generatedClues && _generatedClues.length === clueCount) {
+      clueData = { clues: _generatedClues, location_riddle: _generatedLocationRiddle || '' };
+      console.log('[createQuest] Using pre-generated clues from modal preview');
+    } else {
+      const clueRes = await fetch('/api/generate-clues', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          description: hidingSpot,
+          clueCount: clueCount,
+          lat: selectedLat,
+          lng: selectedLng,
+          persona: persona,
+          city: city,
+          neighborhood: selectedPlaceName || searchAddress.split(',')[0] || '',
+          searchAddress: selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress,
+          placeName: selectedPlaceName || '',
+          hsData: _hsData,
+        })
+      });
+      clueData = await clueRes.json();
+      if (!clueRes.ok || !clueData.clues) {
+        aiOverlay.style.display = 'none';
+        console.error('Clue generation error:', clueData);
+        throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
+      }
     }
+
+    aiOverlay.style.display = 'none';
     // Save location_riddle to hunt row
     if (clueData.location_riddle) {
       fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
@@ -3062,19 +3073,122 @@ function renderHsModal() {
 
   // ── Nav ───────────────────────────────────────────────────
   var nav = document.getElementById('hs-nav');
-  var allDone = _hsData.location.trim() && _hsData.clues.slice(0,total).every(function(cl){ return cl.hint.trim(); });
-  if (cur === total && allDone) {
+  var allDone = _hsData.location.trim() && _hsData.clues.slice(0,total).every(function(cl){ return cl.hint.trim() && cl.action; });
+  if (cur === total) {
     nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
-      '<button class="hs-nav-next" onclick="closeHsModal()">Save &amp; Continue →</button>';
+      '<button class="hs-nav-next" onclick="hsGenerateAndPreview()">' + (allDone ? 'Generate Clues ✨' : 'Generate Clues ✨') + '</button>';
   } else if (cur === 0) {
     nav.innerHTML = '<div style="flex:1;"></div><button class="hs-nav-next" onclick="hsGoTo(1)">Next Clue →</button>';
-  } else if (cur === total) {
-    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
-      '<button class="hs-nav-next" onclick="closeHsModal()">Save &amp; Continue →</button>';
   } else {
     nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
       '<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')">Next Clue →</button>';
   }
+}
+
+
+// ── Generate clues from hsData then show inline preview ───────
+var _generatedClues = null;
+var _generatedLocationRiddle = null;
+
+async function hsGenerateAndPreview() {
+  saveHsPanel();
+  var sheet = document.querySelector('.hs-modal-sheet');
+  if (!sheet) return;
+  var origHTML = sheet.innerHTML;
+
+  sheet.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">' +
+    '<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>' +
+    '<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues...</div>' +
+    '<div style="font-size:15px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>' +
+    '</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>';
+
+  try {
+    var searchAddress = (document.getElementById("map-search") && document.getElementById("map-search").value) || "";
+    var persona = "pirate";
+    try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
+
+    var resp = await fetch("/api/generate-clues", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        description: _hsData.location || searchAddress,
+        clueCount: _hsClueCount,
+        lat: selectedLat, lng: selectedLng,
+        persona: persona,
+        placeName: selectedPlaceName || "",
+        searchAddress: searchAddress,
+        hsData: _hsData
+      })
+    });
+    var data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "Generation failed");
+    _generatedClues = data.clues || [];
+    _generatedLocationRiddle = data.location_riddle || "";
+    sheet.innerHTML = origHTML;
+    hsShowPreview();
+  } catch(err) {
+    sheet.innerHTML = origHTML;
+    showToast("Generation failed: " + err.message, "error");
+    renderHsModal();
+  }
+}
+
+function hsShowPreview() {
+  var sheet = document.querySelector(".hs-modal-sheet");
+  if (!sheet) return;
+  var html = '<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
+    '<div style="font-size:20px;color:#fff;">Quest Preview</div>' +
+    '<div style="font-size:13px;color:#b8c4d0;">Seeker view</div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">';
+  if (_generatedLocationRiddle) {
+    html += '<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">' +
+      '<div style="font-size:12px;color:rgba(232,168,32,.6);letter-spacing:1px;margin-bottom:6px;">LOCATION RIDDLE</div>' +
+      '<div style="font-size:17px;color:#fff;line-height:1.6;">' + _generatedLocationRiddle + "</div></div>";
+  }
+  (_generatedClues || []).forEach(function(clue, i) {
+    var isFinal = i === _hsClueCount - 1;
+    html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">' +
+      '<div style="font-size:12px;color:rgba(184,196,208,.5);letter-spacing:1px;margin-bottom:6px;">' + (isFinal ? "FINAL CLUE" : "CLUE " + (i+1)) + "</div>" +
+      '<div style="font-size:17px;color:#fff;line-height:1.6;margin-bottom:' + (clue.question && !isFinal ? "10px" : "0") + ';">' + (clue.text || "") + "</div>" +
+      (clue.question && !isFinal ? '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">' + clue.question + "</div>" : "") +
+      (clue.answer && !isFinal ? '<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">' + clue.answer + "</span></div>" : "") +
+      "</div>";
+  });
+  html += "</div>" +
+    '<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">' +
+    '<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:17px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>' +
+    '<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;">Confirm &amp; Save →</button>' +
+    "</div>";
+  sheet.innerHTML = html;
+}
+
+function hsEditFromPreview() {
+  _hsCurrent = _hsClueCount;
+  var sheet = document.querySelector(".hs-modal-sheet");
+  sheet.innerHTML =
+    '<div class="hs-modal-header"><div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>' +
+    '<button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>' +
+    '<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>' +
+    '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
+    '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
+    '<div class="hs-nav" id="hs-nav"></div>';
+  renderHsModal();
+}
+
+function hsConfirmClues() {
+  if (_generatedClues) {
+    _generatedClues.forEach(function(cl, i) {
+      if (_hsData.clues[i]) {
+        _hsData.clues[i].generatedText = cl.text || "";
+        _hsData.clues[i].generatedQuestion = cl.question || "";
+        _hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || "";
+      }
+    });
+  }
+  _hsData.locationRiddle = _generatedLocationRiddle || "";
+  closeHsModal();
+  showToast("✓ Clues saved!", "success");
 }
 
 function hsSetAction(actionId) {
