@@ -2669,7 +2669,7 @@ function confirmMapLocation() {
   // Update step 3 button to show location confirmed
   var btnLabel = document.getElementById('hs-details-btn-label');
   var btnSub = document.getElementById('hs-details-btn-sub');
-  if (btnLabel) { btnLabel.textContent = 'Set Location'; btnLabel.style.color = '#fff'; }
+  if (btnLabel) { btnLabel.innerHTML = 'Set Location <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>'; btnLabel.style.color = '#fff'; }
   if (btnSub) { btnSub.textContent = '✓ ' + (selectedPlaceName || addr.split(',')[0] || 'Location set'); btnSub.style.color = '#4ade80'; }
   closeMapModal();
   showToast('📍 Location saved', 'success');
@@ -2899,12 +2899,12 @@ function renderHsModal() {
   // ── Tabs ──────────────────────────────────────────────────
   var tabsHtml = '';
   // Location tab
-  var locDone = _hsData.location.trim().length > 0;
+  var locDone = _hsData.location.trim().length > 0 && locationConfirmed;
   tabsHtml += '<div class="hs-tab ' + (cur===0 ? 'active' : locDone ? 'done' : '') + '" onclick="hsGoTo(0)">📍</div>';
   for (var i = 1; i <= total; i++) {
     var cl = _hsData.clues[i-1] || {};
-    var done = (cl.hint||'').trim().length > 0;
     var isFinal = i === total;
+    var done = !!(cl.hint||'').trim() && !!cl.action && (isFinal || ((cl.question||'').trim() && (cl.answer||'').trim()));
     var label = isFinal ? i + '★' : (done && cur !== i ? i + '✓' : i + '');
     tabsHtml += '<div class="hs-tab ' + (cur===i ? 'active' : done ? 'done' : '') + '" onclick="hsGoTo(' + i + ')">' + label + '</div>';
   }
@@ -3002,7 +3002,7 @@ function renderHsModal() {
     var mapsLinkHtml = '';
     panel.innerHTML = mapPickerHtml + mapsLinkHtml +
       '<div style="margin-bottom:8px;">' +
-        '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;">Exact location details</div>' +
+        '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;">Exact location details' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>' : '') + '</div>' +
         '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:4px 12px;font-size:15px;color:#e8a820;">🚗 Seekers will navigate here</div>' +
       '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
@@ -3026,7 +3026,7 @@ function renderHsModal() {
     var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
       '<div style="flex:1;position:relative;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;">' +
-          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + '</div>' +
+          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
           (actionObj ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' : '') +
         '</div>' +
         '<select id="hs-action-sel" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;">' +
@@ -3041,14 +3041,18 @@ function renderHsModal() {
     '</div>';
 
     // Fields — shown fully if action picked, dimmed if not
+    var hintDone = (cl2.hint||'').trim().length > 0;
+    var qDone    = (cl2.question||'').trim().length > 0;
+    var aDone    = (cl2.answer||'').trim().length > 0;
+    var CK = '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>';
     var fieldsOpacity = actionObj ? '1' : '0.3';
     var fieldsPointer = actionObj ? 'auto' : 'none';
     var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
-      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI</div>' +
+      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
       '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
       (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
         '<div style="margin-top:10px;">' +
-          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock</div>' +
+          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
           '<div class="hs-qa">' +
             '<div style="flex:3;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
             '<div style="flex:1;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
@@ -3073,7 +3077,7 @@ function renderHsModal() {
 
   // ── Nav ───────────────────────────────────────────────────
   var nav = document.getElementById('hs-nav');
-  var allDone = _hsData.location.trim() && _hsData.clues.slice(0,total).every(function(cl){ return cl.hint.trim() && cl.action; });
+  var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||'').trim() && cl.action && (isFin || ((cl.question||'').trim() && (cl.answer||'').trim())); });
   if (cur === total) {
     nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
       '<button class="hs-nav-next" onclick="hsGenerateAndPreview()">' + (allDone ? 'Generate Clues ✨' : 'Generate Clues ✨') + '</button>';
@@ -3310,6 +3314,14 @@ function handleHsPhoto(input) {
     document.getElementById('hs-photo-preview').style.display = 'block';
     document.getElementById('hs-photo-label').textContent = '✓ Photo added';
     document.getElementById('hs-photo-label').style.color = '#4ade80';
+    // Update photo button title with checkmark
+    var photoBtn = document.getElementById('hs-photo-btn');
+    if (photoBtn) {
+      var titleEl = photoBtn.querySelector('div[style*="font-size:18px"]');
+      if (titleEl) titleEl.innerHTML = 'Add Photo <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>';
+      photoBtn.style.borderColor = 'rgba(74,222,128,.35)';
+      photoBtn.style.background = 'rgba(74,222,128,.04)';
+    }
     // Store for upload
     window._hsPhotoDataUrl = e.target.result;
   };
