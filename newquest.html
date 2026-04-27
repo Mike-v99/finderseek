@@ -3133,7 +3133,87 @@ async function hsGenerateAndPreview() {
   }
 }
 
+// ── PREVIEW VOICE ────────────────────────────────────────────
+var _pvSpeaking = false;
+var _pvKey = null;
+
+var PREVIEW_PERSONA_VOICE = {
+  pirate:       { rate: 0.82, pitch: 0.78, preferMale: true  },
+  poetic:       { rate: 0.75, pitch: 0.90, preferMale: false },
+  insults:      { rate: 1.05, pitch: 0.85, preferMale: true  },
+  sarcastic:    { rate: 1.00, pitch: 1.05, preferMale: false },
+  hillbilly:    { rate: 0.88, pitch: 0.92, preferMale: true  },
+  kid:          { rate: 1.10, pitch: 1.30, preferMale: false },
+  grandma:      { rate: 0.72, pitch: 1.05, preferMale: false },
+  surfer:       { rate: 0.95, pitch: 1.00, preferMale: true  },
+  investigator: { rate: 0.90, pitch: 0.80, preferMale: true  },
+  mysterious:   { rate: 0.72, pitch: 0.65, preferMale: false },
+  detective:    { rate: 0.95, pitch: 0.88, preferMale: true  },
+  wizard:       { rate: 0.78, pitch: 0.60, preferMale: true  },
+  default:      { rate: 0.88, pitch: 0.82, preferMale: false }
+};
+
+function pvGetSettings() {
+  var p = (document.querySelector('.persona-card.selected')||{}).dataset;
+  var persona = (p && p.persona) || 'default';
+  return PREVIEW_PERSONA_VOICE[persona] || PREVIEW_PERSONA_VOICE.default;
+}
+
+function pvPickVoice(settings) {
+  var voices = window.speechSynthesis.getVoices();
+  if (!voices || !voices.length) return null;
+  var eng = voices.filter(function(v){ return v.lang.indexOf('en')===0; });
+  if (!eng.length) eng = voices;
+  var gk = settings.preferMale
+    ? ['male','man','daniel','alex','fred','ralph','aaron','tom','david','james','mark','ryan','oliver']
+    : ['female','woman','samantha','victoria','karen','moira','fiona','tessa','alice','zoe','kate','emily','susan'];
+  var match = eng.filter(function(v){ var n=v.name.toLowerCase(); return gk.some(function(k){ return n.indexOf(k)>=0; }); });
+  var pool = match.length ? match : eng;
+  var local = pool.filter(function(v){ return v.localService; });
+  return local.length ? local[0] : pool[0];
+}
+
+function pvSpeak(key, text) {
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device',''); return; }
+  if (_pvSpeaking && _pvKey === key) { pvStop(); return; }
+  pvStop(true);
+  var settings = pvGetSettings();
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.rate = settings.rate;
+  utt.pitch = settings.pitch;
+  utt.lang = 'en-US';
+  var voice = pvPickVoice(settings);
+  if (voice) utt.voice = voice;
+  utt.onstart = function(){ _pvSpeaking=true; _pvKey=key; pvUpdateBtn(key,true); };
+  utt.onend = utt.onerror = function(){ _pvSpeaking=false; _pvKey=null; pvUpdateBtn(key,false); };
+  window.speechSynthesis.speak(utt);
+}
+
+function pvStop(silent) {
+  window.speechSynthesis.cancel();
+  var prev=_pvKey; _pvSpeaking=false; _pvKey=null;
+  if(prev&&!silent) pvUpdateBtn(prev,false);
+}
+
+var PV_SPEAKER_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+var PV_PAUSE_SVG  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+
+function pvUpdateBtn(key, speaking) {
+  var btn = document.getElementById('pv-voice-'+key);
+  if (!btn) return;
+  btn.innerHTML = speaking ? PV_PAUSE_SVG : PV_SPEAKER_SVG;
+  btn.style.background = speaking ? 'rgba(74,222,128,.2)' : 'rgba(255,255,255,.06)';
+  btn.style.borderColor = speaking ? 'rgba(74,222,128,.5)' : 'rgba(255,255,255,.12)';
+  btn.style.color = speaking ? '#4ade80' : '#b8c4d0';
+}
+
+function pvBtn(key, text) {
+  var safe = text.replace(/'/g, "\\'").replace(/\n/g, ' ');
+  return '<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+PV_SPEAKER_SVG+'</button>';
+}
+
 function hsShowPreview() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   var sheet = document.querySelector(".hs-modal-sheet");
   if (!sheet) return;
   var html = '<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
@@ -3142,13 +3222,21 @@ function hsShowPreview() {
     '<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">';
   if (_generatedLocationRiddle) {
     html += '<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">' +
-      '<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;margin-bottom:8px;">Location Riddle</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+        '<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>' +
+        pvBtn('loc', _generatedLocationRiddle) +
+      '</div>' +
       '<div style="font-size:17px;color:#fff;line-height:1.6;">' + _generatedLocationRiddle + "</div></div>";
   }
   (_generatedClues || []).forEach(function(clue, i) {
     var isFinal = i === _hsClueCount - 1;
+    var label = isFinal ? "Final Clue" : "Clue " + (i+1);
+    var key = 'clue' + i;
     html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">' +
-      '<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;margin-bottom:8px;">' + (isFinal ? "Final Clue" : "Clue " + (i+1)) + "</div>" +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+        '<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">' + label + "</div>" +
+        pvBtn(key, clue.text || '') +
+      '</div>' +
       '<div style="font-size:17px;color:#fff;line-height:1.6;margin-bottom:' + (clue.question && !isFinal ? "10px" : "0") + ';">' + (clue.text || "") + "</div>" +
       (clue.question && !isFinal ? '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">' + clue.question + "</div>" : "") +
       (clue.answer && !isFinal ? '<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">' + clue.answer + "</span></div>" : "") +
@@ -3163,6 +3251,7 @@ function hsShowPreview() {
 }
 
 function hsEditFromPreview() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   _hsCurrent = _hsClueCount;
   var sheet = document.querySelector(".hs-modal-sheet");
   sheet.innerHTML =
@@ -3177,6 +3266,7 @@ function hsEditFromPreview() {
 }
 
 function hsConfirmClues() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   if (_generatedClues) {
     _generatedClues.forEach(function(cl, i) {
       if (_hsData.clues[i]) {
