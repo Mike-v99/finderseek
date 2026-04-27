@@ -673,45 +673,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
 
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
-<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-start;justify-content:center;padding:40px 20px 20px;pointer-events:none;overflow-y:auto;">
-  <div id="eg-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:22px;max-width:400px;width:100%;padding:26px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);pointer-events:auto;transform:scale(0.92);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1), opacity .3s ease;position:relative;max-height:92vh;overflow-y:auto;">
-    <button onclick="closeEmailGate()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;padding:0;line-height:1;">✕</button>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-end;justify-content:center;padding:0;pointer-events:none;">
+  <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.1);border-bottom:none;border-radius:24px 24px 0 0;max-width:480px;width:100%;padding:28px 22px 36px;box-shadow:0 -20px 60px rgba(0,0,0,.8);pointer-events:auto;transform:translateY(100%);opacity:0;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .35s ease;position:relative;">
 
 ```
-<!-- FinderSeek logo tile -->
-<div style="display:flex;justify-content:center;margin-bottom:16px;">
-  <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);">
-    <div style="font-size:16px;color:#fff;font-weight:400;line-height:1;">Finder</div>
-    <div style="font-size:16px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+<!-- Drag handle -->
+<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 22px;"></div>
+
+<!-- Icon + heading -->
+<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;">
+  <div style="width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);margin-bottom:14px;">
+    <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+    <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
   </div>
+  <div style="font-size:23px;color:#fff;font-weight:400;margin-bottom:5px;">Almost there</div>
+  <div style="font-size:16px;color:#b8c4d0;line-height:1.5;text-align:center;padding:0 8px;">Sign in to schedule your quest and get notified when someone wins.</div>
 </div>
 
-<div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:6px;text-align:center;letter-spacing:-0.3px;">Stay in the Loop</div>
-<div style="font-size:18px;color:#d0e4f0;line-height:1.55;text-align:center;margin-bottom:20px;padding:0 4px;">We'll send your quest link, receipt, and a little note the moment someone cracks your treasure.</div>
+<div id="eg-error" style="font-size:15px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
 
+<!-- Apple Sign In — primary -->
+<button onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:#fff;border:none;border-radius:14px;font-size:18px;font-weight:500;color:#000;cursor:pointer;font-family:inherit;margin-bottom:10px;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+  Sign in with Apple
+</button>
+
+<!-- Google Sign In — secondary -->
+<button onclick="signUpFromGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-size:18px;font-weight:400;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:16px;">
+  <svg width="19" height="19" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+  Sign in with Google
+</button>
+
+<!-- Divider -->
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+  <span style="font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;">OR</span>
+  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+</div>
+
+<!-- Email fallback -->
 <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
-  style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
-<div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
-
+  style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
 <button id="eg-continue-btn" onclick="submitEmailGate()"
-  style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:18px;font-weight:500;box-shadow:0 4px 16px rgba(201,137,12,.35);margin-bottom:16px;cursor:pointer;font-family:inherit;">Continue to Payment →</button>
+  style="width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:14px;">Continue with Email →</button>
 
-<div style="text-align:center;color:#fff;font-size:18px;letter-spacing:2px;margin:16px 0 14px;display:flex;align-items:center;gap:10px;">
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-  <span>OR</span>
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-</div>
-
-<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:14px;padding:14px;">
-  <div style="font-size:18px;color:#e8a820;font-weight:500;margin-bottom:10px;">✨ Create a free account for more</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Manage all your quests</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Edit clues & reveal times</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span>Find quests and win prizes</div>
-  <div style="display:flex;gap:10px;align-items:center;font-size:18px;line-height:1.5;font-weight:400;"><span style="color:#4ade80;font-size:18px;flex-shrink:0;">✓</span><span><strong style="color:#e8a820;font-weight:500;">Upgrade to Gold</strong><span style="color:#d0e4f0;font-weight:400;"> → Pro Features</span></span></div>
-  <a href="javascript:void(0)" onclick="signUpFromGate()" style="display:block;text-align:center;font-size:18px;color:#e8a820;text-decoration:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">Sign up with Google →</a>
-</div>
-
-<div style="font-size:18px;color:rgba(208,228,240,.5);text-align:center;margin-top:14px;line-height:1.5;">🔒 Your email is only used for quest notifications and the payment receipt.</div>
+<div style="font-size:13px;color:rgba(184,196,208,.4);text-align:center;line-height:1.5;">🔒 Used only for quest notifications and payment receipt.</div>
 ```
 
   </div>
@@ -1239,29 +1245,40 @@ function validateQuestForm(){
 
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
-  // Save current page so magic link redirects back here after login
-  try { sessionStorage.setItem('fs_magic_return', 'profile.html'); } catch(e){}
+  try { sessionStorage.setItem('fs_magic_return', 'newquest.html'); } catch(e){}
   document.getElementById('eg-backdrop').style.display = 'block';
   var modal = document.getElementById('eg-modal');
   var inner = document.getElementById('eg-inner');
   modal.style.display = 'flex';
   setTimeout(function(){
     document.getElementById('eg-backdrop').style.opacity = '1';
-    inner.style.transform = 'scale(1)';
+    inner.style.transform = 'translateY(0)';
     inner.style.opacity = '1';
   }, 10);
 }
 
 function closeEmailGate(){
   var inner = document.getElementById('eg-inner');
-  inner.style.transform = 'scale(0.92)';
+  inner.style.transform = 'translateY(100%)';
   inner.style.opacity = '0';
   document.getElementById('eg-backdrop').style.opacity = '0';
   setTimeout(function(){
     document.getElementById('eg-modal').style.display = 'none';
     document.getElementById('eg-backdrop').style.display = 'none';
     document.getElementById('eg-error').textContent = '';
-  }, 300);
+  }, 350);
+}
+
+async function signInWithAppleGate(){
+  try {
+    var { error } = await supaClient.auth.signInWithOAuth({
+      provider: 'apple',
+      options: { redirectTo: window.location.origin + '/newquest.html' }
+    });
+    if (error) throw error;
+  } catch(e) {
+    document.getElementById('eg-error').textContent = e.message || 'Apple sign-in failed';
+  }
 }
 
 async function submitEmailGate(){
