@@ -256,7 +256,7 @@ function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var
 function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._toastT);window._toastT=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';},4000);}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function fmtTimeRemaining(ms){if(ms<=0)return'00:00';var m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
-function goBack(){var b=new URLSearchParams(window.location.search).get('back');if(b==='map')window.location.href='index.html#openmap';else history.length>1?history.back():location.href='index.html';}
+function goBack(){if(window.speechSynthesis)window.speechSynthesis.cancel();var b=new URLSearchParams(window.location.search).get('back');if(b==='map')window.location.href='index.html#openmap';else history.length>1?history.back():location.href='index.html';}
 function openPhotoModal(){var sc=_solvedCount,tot=(currentClues||[]).length;if(sc===0){showToast('Solve clues to reveal the photo','');return;}showToast(sc>=tot?'Photo fully revealed!':'Keep solving — '+Math.round((sc/Math.max(1,tot))*100)+'% revealed','');}
 function shareQuest(){var url=window.location.href;if(navigator.share)navigator.share({title:'FinderSeek Quest',text:'Join this quest!',url:url});else navigator.clipboard.writeText(url).then(function(){showToast('Link copied!','success');});}
 var _questSaved=false;
@@ -266,6 +266,104 @@ function followQuestMaster(){_following=!_following;var btn=document.getElementB
 var _goldModalOpen=false;
 function renderTierButtons(isGold){var fb=document.getElementById('q-free-tier-btn'),gb=document.getElementById('q-gold-tier-btn');if(!fb||!gb)return;if(isGold){fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.2);font-size:17px;font-family:inherit;animation:none;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(201,137,12,.2);border:2px solid #e8a820;color:#f5c842;font-size:17px;font-family:inherit;animation:goldTierPulse 7s ease-in-out infinite;cursor:default;';gb.innerHTML='GOLD TIER<br><span style="font-size:13px;color:#4ade80;">You are Gold</span>';gb.onclick=null;}else{fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:17px;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:17px;font-family:inherit;animation:none;cursor:pointer;';gb.onclick=toggleGoldModal;gb.innerHTML='GOLD TIER';}  }
 function toggleGoldModal(){_goldModalOpen=!_goldModalOpen;var m=document.getElementById('q-gold-modal'),inner=document.getElementById('q-gold-modal-inner');m.style.maxHeight=_goldModalOpen?'520px':'0';inner.style.opacity=_goldModalOpen?'1':'0';inner.style.transform=_goldModalOpen?'translateY(0)':'translateY(-12px)';}
+
+// ── VOICE NARRATION ──────────────────────────────────────────
+var _voiceSpeaking = false;
+var _voiceClueNum = null;
+
+var PERSONA_VOICE = {
+  pirate:      { rate: 0.82, pitch: 0.78, preferMale: true,  lang: 'en-US' },
+  mysterious:  { rate: 0.72, pitch: 0.65, preferMale: false, lang: 'en-US' },
+  detective:   { rate: 0.95, pitch: 0.88, preferMale: true,  lang: 'en-US' },
+  wizard:      { rate: 0.78, pitch: 0.60, preferMale: true,  lang: 'en-US' },
+  ghost:       { rate: 0.68, pitch: 0.55, preferMale: false, lang: 'en-US' },
+  adventurer:  { rate: 1.00, pitch: 1.00, preferMale: true,  lang: 'en-US' },
+  default:     { rate: 0.88, pitch: 0.82, preferMale: false, lang: 'en-US' }
+};
+
+function getPersonaVoiceSettings() {
+  var persona = ((currentHunt && currentHunt.persona) || 'default').toLowerCase();
+  return PERSONA_VOICE[persona] || PERSONA_VOICE.default;
+}
+
+function pickVoice(settings) {
+  var voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+  var lang = settings.lang || 'en-US';
+  // Filter to English voices
+  var eng = voices.filter(function(v) { return v.lang.indexOf('en') === 0; });
+  if (eng.length === 0) eng = voices;
+  // Prefer gender match
+  var genderKeywords = settings.preferMale
+    ? ['male','man','guy','daniel','alex','fred','ralph','bruce','aaron','tom','david','james','mark','ryan','oliver']
+    : ['female','woman','samantha','victoria','karen','moira','fiona','tessa','veena','alice','zoe','kate','emily','susan'];
+  var genMatch = eng.filter(function(v) {
+    var n = v.name.toLowerCase();
+    return genderKeywords.some(function(k) { return n.indexOf(k) >= 0; });
+  });
+  // Prefer local/premium voices over network
+  var local = (genMatch.length ? genMatch : eng).filter(function(v) { return v.localService; });
+  if (local.length) return local[0];
+  return (genMatch.length ? genMatch : eng)[0];
+}
+
+function speakClue(clueNum, text) {
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device', ''); return; }
+  // If already speaking this clue, stop it
+  if (_voiceSpeaking && _voiceClueNum === clueNum) {
+    stopVoice();
+    return;
+  }
+  // Stop any current speech
+  stopVoice(true);
+
+  var settings = getPersonaVoiceSettings();
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.rate = settings.rate;
+  utt.pitch = settings.pitch;
+  utt.lang = settings.lang;
+  // Voice selection — may need to wait for voices to load
+  var voice = pickVoice(settings);
+  if (voice) utt.voice = voice;
+
+  utt.onstart = function() {
+    _voiceSpeaking = true;
+    _voiceClueNum = clueNum;
+    updateSpeakerBtn(clueNum, true);
+  };
+  utt.onend = utt.onerror = function() {
+    _voiceSpeaking = false;
+    _voiceClueNum = null;
+    updateSpeakerBtn(clueNum, false);
+  };
+  window.speechSynthesis.speak(utt);
+}
+
+function stopVoice(silent) {
+  window.speechSynthesis.cancel();
+  var prev = _voiceClueNum;
+  _voiceSpeaking = false;
+  _voiceClueNum = null;
+  if (prev && !silent) updateSpeakerBtn(prev, false);
+}
+
+function updateSpeakerBtn(clueNum, speaking) {
+  var btn = document.getElementById('voice-btn-' + clueNum);
+  if (!btn) return;
+  if (speaking) {
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+    btn.style.background = 'rgba(74,222,128,.2)';
+    btn.style.borderColor = 'rgba(74,222,128,.5)';
+    btn.style.color = '#4ade80';
+  } else {
+    btn.innerHTML = SPEAKER_SVG;
+    btn.style.background = 'rgba(255,255,255,.05)';
+    btn.style.borderColor = 'rgba(255,255,255,.12)';
+    btn.style.color = '#b8c4d0';
+  }
+}
+
+var SPEAKER_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
 
 // ── ATTEMPT TRACKING ─────────────────────────────────────────
 var COOLDOWN_MS=[0,15*60*1000,60*60*1000,24*60*60*1000];
@@ -404,7 +502,7 @@ function renderClues(){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;"><div style="font-size:17px;color:#b8c4d0;margin-bottom:10px;">'+escapeHtml(c.clue_question)+'</div>'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<div style="display:flex;gap:8px;"><input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div></div>';}
       }
-      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">'+c.clue_number+'</div><div style="flex:1;min-width:0;"><div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #'+c.clue_number+titleSuffix+'</div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div></div>';
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">'+c.clue_number+'</div><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+titleSuffix+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div></div>';
     }else{
       var diffMs=revealAt-now,dropsIn=diffMs>3600000?Math.round(diffMs/3600000)+'h':Math.round(diffMs/60000)+' min';
       return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">'+c.clue_number+'</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #'+c.clue_number+titleSuffix+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">This clue has not been revealed yet.</div><div style="font-size:17px;color:var(--yellow);margin-top:6px;font-weight:500;">Drops in '+dropsIn+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>':'')+'</div></div></div></div>';
