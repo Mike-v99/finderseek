@@ -304,7 +304,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:28px;font-weight:500;color:#e8a820;text-align:left;padding-left:4px;">1 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
+    <div style="font-size:28px;font-weight:500;color:#e8a820;text-align:left;padding-left:4px;">1 <span style="font-size:17px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -331,15 +331,15 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Heading + inline steps -->
     <div style="text-align:center;">
-      <div style="font-size:26px;font-weight:500;color:#fff;margin-bottom:9px;">Hide the Treasure</div>
+      <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:9px;">Hide the Treasure</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;">
-        <span style="font-size:13px;color:#e8a820;font-weight:500;">Generate PIN</span>
-        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
-        <span style="font-size:13px;color:rgba(255,255,255,.45);">Write on paper</span>
-        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
-        <span style="font-size:13px;color:rgba(255,255,255,.45);">Put in envelope</span>
-        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
-        <span style="font-size:13px;color:#4ade80;font-weight:500;">Hide it!</span>
+        <span style="font-size:17px;color:#e8a820;font-weight:500;">Generate PIN</span>
+        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
+        <span style="font-size:17px;color:rgba(255,255,255,.45);">Write on paper</span>
+        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
+        <span style="font-size:17px;color:rgba(255,255,255,.45);">Put in envelope</span>
+        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
+        <span style="font-size:17px;color:#4ade80;font-weight:500;">Hide it!</span>
       </div>
     </div>
 
@@ -354,11 +354,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button onclick="genCode()" id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
+        <button onclick="genCode()" id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Generate PIN
         </button>
-        <button id="save-code-btn" onclick="saveCodeToPhotos()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:15px;font-family:inherit;cursor:pointer;">
+        <button id="save-code-btn" onclick="saveCodeToPhotos()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:17px;font-family:inherit;cursor:pointer;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Save copy
         </button>
@@ -367,17 +367,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Photo section -->
     <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.35;pointer-events:none;transition:opacity .3s;">
-      <div style="font-size:13px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:10px;letter-spacing:.3px;">Capture the Hiding Spot</div>
+      <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:10px;">Capture the Hiding Spot</div>
       <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
         <div style="width:42px;height:42px;border-radius:50%;background:rgba(232,168,32,.1);border:1.5px solid rgba(232,168,32,.22);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
         </div>
-        <div style="font-size:15px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.28);">Camera or library</div>
+        <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
+        <div style="font-size:17px;color:rgba(255,255,255,.28);">Camera or library</div>
       </div>
       <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;">
         <img id="hs-photo-img" style="width:100%;max-height:160px;object-fit:cover;display:block;"/>
-        <button onclick="document.getElementById('hs-photo-input').click()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:13px;font-family:inherit;cursor:pointer;">Change photo</button>
+        <button onclick="document.getElementById('hs-photo-input').click()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">Change photo</button>
       </div>
     </div>
 
