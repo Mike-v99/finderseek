@@ -16,8 +16,8 @@ export default async function handler(req, res) {
 
   const {
     description, clueCount, lat, lng, persona, placeName,
-    city, neighborhood, searchAddress,
-    hsData, // NEW — full clue hints + Q&A from Quest Master
+    city, neighborhood, searchAddress, startingPoint,
+    hsData,
     singleClue, customPrompt, finderPosition
   } = req.body;
 
@@ -116,7 +116,7 @@ Return ONLY the two sentences, nothing else.`;
     const pos = parseInt(singleClue.position, 10) || 1;
     const clueHint = clues[pos - 1] || {};
     const isFinal = pos === totalClues;
-    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, resolvedCity);
+    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, resolvedCity, startingPoint);
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -200,7 +200,7 @@ Return ONLY the two sentences, nothing else.`;
   }
 }
 
-function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city) {
+function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city, startingPoint) {
   const action = clueHint.action || '';
   const hint = clueHint.hint || '';
   const question = clueHint.question || '';
@@ -215,12 +215,17 @@ Do NOT write a question — the final clue has no Q&A.
 Return ONLY a JSON object: {"number": ${position}, "text": "riddle sentence here", "question": "", "answer": ""}`;
   }
 
+  // Inject starting point into clue 1 only
+  const startingLine = (position === 1 && startingPoint)
+    ? `\nStarting point: The seeker begins at "${startingPoint}" — naturally weave this into the riddle so they know exactly where to stand when they start.`
+    : '';
+
   return `You are writing clue #${position} of ${total} for FinderSeek, a real-money treasure hunt app.
 Style: ${styleHint}
 Action: "${action}" — the seeker must physically do this
 Hint/keyword from Quest Master: "${hint}"
 Question to ask seeker: "${question}"
-Correct answer: "${answer}"
+Correct answer: "${answer}"${startingLine}
 
 Write EXACTLY 2 sentences:
 Sentence 1: A rhyming riddle in the persona voice that naturally includes the action "${action}" and describes "${hint}" — but DO NOT reveal the answer "${answer}" anywhere in the riddle. The riddle should make the seeker go look for something and discover the answer themselves. Tease and hint, never tell.
