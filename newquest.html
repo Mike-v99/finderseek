@@ -358,8 +358,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Generate PIN
         </button>
-        <button id="save-code-btn" onclick="saveCodeToPhotos()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:17px;font-family:inherit;cursor:pointer;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <button id="save-code-btn" onclick="openPinCard()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:17px;font-family:inherit;cursor:pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
           Save copy
         </button>
       </div>
@@ -971,6 +971,27 @@ function genCode(){
   if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
   checkStep1Complete();
   saveFormState();
+}
+
+
+function openPinCard() {
+  var digits = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+    return document.getElementById(id).textContent || '?';
+  });
+  // Build digit display
+  var container = document.getElementById('pin-card-digits');
+  if (container) {
+    container.innerHTML = digits.map(function(d) {
+      return '<div style="width:40px;height:50px;border-radius:10px;background:rgba(232,168,32,.08);border:1.5px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;color:#f5c842;">' + d + '</div>';
+    }).join('');
+  }
+  var modal = document.getElementById('pin-card-modal');
+  if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+}
+
+function closePinCard() {
+  var modal = document.getElementById('pin-card-modal');
+  if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; }
 }
 
 function saveCodeToPhotos(){
@@ -3518,5 +3539,32 @@ function handleHsPhoto(input) {
   </div>
 </div>
 
+
+<!-- PIN CARD MODAL -->
+<div id="pin-card-modal" style="display:none;position:fixed;inset:0;z-index:25000;background:rgba(6,5,10,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#0d0b18;border:1.5px solid rgba(232,168,32,.4);border-radius:20px;max-width:360px;width:100%;padding:24px 20px;position:relative;">
+    <!-- Close button -->
+    <button onclick="closePinCard()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">✕</button>
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:13px;letter-spacing:2px;color:#e8a820;margin-bottom:4px;">FINDSERSEEK</div>
+      <div style="font-size:13px;letter-spacing:1.5px;color:rgba(255,255,255,.4);">SECRET PIN</div>
+    </div>
+    <!-- PIN digits display -->
+    <div id="pin-card-digits" style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;"></div>
+    <!-- Instructions -->
+    <div style="text-align:center;font-size:14px;color:rgba(255,255,255,.35);line-height:1.6;margin-bottom:20px;">Write this on paper · hide it with your treasure<br>Winner enters it to claim the prize</div>
+    <!-- Screenshot hint -->
+    <div style="text-align:center;font-size:13px;color:rgba(232,168,32,.5);margin-bottom:16px;">📸 Screenshot this screen to save</div>
+    <!-- Divider -->
+    <div style="height:1px;background:rgba(232,168,32,.15);margin-bottom:16px;"></div>
+    <!-- Quest ID placeholder -->
+    <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.2);margin-bottom:20px;">Quest ID: assigned after payment</div>
+    <!-- Buttons -->
+    <div style="display:flex;gap:8px;">
+      <button onclick="closePinCard()" style="width:100%;padding:12px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
