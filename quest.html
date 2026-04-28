@@ -1,284 +1,693 @@
-// api/stripe-webhook.js
-// Handles Stripe subscription lifecycle events + escrow payments
-//
-// Env vars needed in Vercel:
-//   STRIPE_SECRET_KEY       — sk_live_... or sk_test_...
-//   STRIPE_WEBHOOK_SECRET   — whsec_... (from Stripe dashboard → Webhooks)
-//   SUPABASE_URL            — https://qeiuycuasjkopxfkmggp.supabase.co
-//   SUPABASE_SERVICE_KEY    — service role key (from Supabase → Settings → API)
-//
-// Register this webhook URL in Stripe dashboard:
-//   https://finderseek.com/api/stripe-webhook
-//
-// Events to enable in Stripe:
-//   customer.subscription.created
-//   customer.subscription.updated
-//   customer.subscription.deleted
-//   invoice.payment_failed
-//   payment_intent.succeeded        ← ADD THIS for escrow
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<title>FinderSeek — Quest Detail</title>
+<meta name="theme-color" content="#0d0b18"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+:root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;overflow-x:hidden;}
+body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,137,12,.07) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(6,5,10,.3) 0%,rgba(6,5,10,.92) 70%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:180px;opacity:.4;}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 40px;}
+.green-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.3),rgba(74,222,128,.08));}
+.locked-wrap{border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));}
+.inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
+@keyframes goldTierPulse{0%,100%{border-color:rgba(232,168,32,.4);box-shadow:none;color:rgba(232,168,32,.7);}50%{border-color:rgba(232,168,32,.85);box-shadow:0 0 16px rgba(232,168,32,.25);color:rgba(232,168,32,.95);}}
+@keyframes silverTierPulse{0%,100%{border-color:rgba(148,163,184,.4);box-shadow:none;color:rgba(148,163,184,.7);}50%{border-color:rgba(148,163,184,.85);box-shadow:0 0 14px rgba(148,163,184,.25);color:rgba(148,163,184,.95);}}
+@keyframes arrowPulse{0%,100%{opacity:.5;transform:translateY(0);}50%{opacity:1;transform:translateY(2px);}}
+@keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
+.clue-accent-on{height:2px;background:linear-gradient(90deg,var(--green-dark),rgba(74,222,128,.2),transparent);}
+.clue-accent-off{height:2px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent);}
+.clue-num-on{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#16a34a,var(--green));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:#0a1a0a;flex-shrink:0;box-shadow:0 2px 12px rgba(34,197,94,.3);}
+.clue-num-off{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;color:rgba(255,255,255,.2);flex-shrink:0;}
+.el{opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;}
+.el.show{opacity:1;transform:translateY(0);}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
+.status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
+body{padding-top:env(safe-area-inset-top,0px);}
+.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
+.hb-backdrop.open{opacity:1;pointer-events:auto;}
+.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
+.hb-drawer.open{transform:translateX(0);}
+.hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.hb-nav-item:last-child{border-bottom:none;}
+.hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
+.hb-nav-item.active{background:rgba(232,168,32,.05);}
+.hb-nav-item.active .hb-nav-label{color:#e8a820;}
+</style>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="apple-mobile-web-app-title" content="FinderSeek"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
+<link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png"/>
+<link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"/>
+<link rel="apple-touch-startup-image" href="/splash-2796x1290.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+<link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+<link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+<link rel="apple-touch-startup-image" href="/splash-1334x750.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
+</head>
+<body>
+<div class="status-strip" aria-hidden="true"></div>
+<div id="toast" style="position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
 
-import { buffer } from 'micro';
+<!-- WIN MODAL -->
+<div id="win-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;"></div>
+<div id="win-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:24px;">
+  <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:340px;width:100%;padding:28px 24px;text-align:center;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;">
+    <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+    <div style="font-size:28px;font-weight:200;color:#4ade80;margin-bottom:6px;">You Found It!</div>
+    <div style="font-size:44px;font-weight:200;color:#fff;margin-bottom:6px;" id="win-amount">$0</div>
+    <div style="font-size:17px;color:#b8c4d0;margin-bottom:20px;">is being sent to your account</div>
+    <button onclick="closeWinModal()" style="width:100%;padding:14px;border:none;border-radius:13px;font-size:18px;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;">Awesome! →</button>
+  </div>
+</div>
 
-export const config = { api: { bodyParser: false } };
+<!-- FUNDED MODAL -->
+<div id="fund-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;"></div>
+<div id="fund-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:16px;">
+  <div id="fund-inner" style="background:#0d0b18;border:1px solid rgba(232,168,32,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;text-align:center;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;max-height:90vh;overflow-y:auto;">
+    <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+    <div style="font-size:24px;font-weight:200;color:#e8a820;margin-bottom:4px;">Quest Live!</div>
+    <div style="font-size:40px;font-weight:200;color:#fff;margin-bottom:4px;" id="fund-amount">$0</div>
+    <div style="font-size:15px;color:#b8c4d0;margin-bottom:20px;">Prize is live · seekers are on their way</div>
 
-async function verifyStripeSignature(req, secret) {
-  const sig = req.headers['stripe-signature'];
-  const buf = await buffer(req);
-  const payload = buf.toString('utf8');
+    <!-- Quest ID card -->
+    <div id="fund-id-card" style="background:rgba(232,168,32,.05);border:1.5px solid rgba(232,168,32,.3);border-radius:14px;padding:16px 14px;margin-bottom:12px;">
+      <div style="font-size:11px;letter-spacing:2px;color:rgba(232,168,32,.55);margin-bottom:8px;">QUEST ID</div>
+      <div id="fund-quest-id" style="font-size:32px;font-weight:400;color:#f5c842;letter-spacing:3px;margin-bottom:8px;">—</div>
+      <div style="height:1px;background:rgba(232,168,32,.15);margin-bottom:8px;"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:10px;">Secret code · keep this safe</div>
+      <div id="fund-code-display" style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="saveFundCard()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:#4ade80;font-size:14px;font-family:inherit;cursor:pointer;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Save card
+        </button>
+        <button onclick="copyQuestId()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#b8c4d0;font-size:14px;font-family:inherit;cursor:pointer;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy ID
+        </button>
+      </div>
+    </div>
 
-  const parts = sig.split(',').reduce((acc, part) => {
-    const [k, v] = part.split('=');
-    if (k === 't') acc.timestamp = v;
-    if (k === 'v1') acc.signatures.push(v);
-    return acc;
-  }, { timestamp: '', signatures: [] });
+    <!-- View quest link -->
+    <div id="fund-quest-link" style="margin-bottom:14px;">
+      <a id="fund-quest-anchor" href="#" style="display:block;padding:14px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#b8c4d0;font-size:16px;text-decoration:none;">View quest →</a>
+    </div>
 
-  const signedPayload = `${parts.timestamp}.${payload}`;
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(secret);
-  const msgData = encoder.encode(signedPayload);
+    <button onclick="closeFundModal()" style="width:100%;padding:14px;border:none;border-radius:13px;font-size:18px;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;">Let the hunt begin! →</button>
+  </div>
+</div>
 
-  const key = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig2 = await crypto.subtle.sign('HMAC', key, msgData);
-  const expectedSig = Array.from(new Uint8Array(sig2)).map(b => b.toString(16).padStart(2,'0')).join('');
+<div class="page">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:12px;" class="el" data-d="0">
+    <a href="javascript:void(0)" onclick="goBack()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <div id="q-status-label" style="font-size:17px;font-weight:400;color:#fff;text-align:center;">ACTIVE QUEST</div>
+    <div id="q-save-btn" style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="toggleSaveQuest()"><svg id="q-save-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+  </div>
 
-  if (!parts.signatures.includes(expectedSig)) throw new Error('Invalid signature');
+  <div style="padding:14px 18px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin-bottom:10px;" class="el" data-d="50">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+      <div>
+        <div style="font-size:17px;letter-spacing:2px;color:rgba(74,222,128,.5);margin-bottom:3px;">PRIZE</div>
+        <div id="q-prize" style="font-size:44px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">$0</div>
+      </div>
+      <div style="text-align:right;">
+        <div id="q-location" style="font-size:17px;color:rgba(255,255,255,.5);">Loading…</div>
+        <div id="q-pirate-style" style="font-size:17px;color:#b8c4d0;margin-top:2px;">—</div>
+        <div style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;"><div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div><div style="font-size:17px;color:#4ade80;">LIVE</div></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div id="q-end-label" style="font-size:17px;color:#b8c4d0;">—</div>
+      <div style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;">
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-h" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">HRS</div></div>
+        <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-m" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">MIN</div></div>
+        <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
+        <div style="padding:4px 8px;text-align:center;"><div id="cd-s" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">SEC</div></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div id="q-master-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:17px;color:#0a0800;font-weight:500;flex-shrink:0;">?</div>
+      <div style="font-size:17px;color:rgba(255,255,255,.5);">by <span id="q-master-name" style="color:#fff;">—</span></div>
+      <div id="q-follow-btn" style="width:22px;height:22px;border-radius:50%;background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" onclick="followQuestMaster()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div id="q-master-stats" style="font-size:17px;color:rgba(255,255,255,.25);">—</div>
+    </div>
+  </div>
 
-  const tolerance = 300;
-  if (Math.abs(Date.now() / 1000 - parseInt(parts.timestamp)) > tolerance) throw new Error('Timestamp too old');
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-bottom:10px;" class="el" data-d="150">
+    <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;background:#0a0f1a;">
+      <img id="q-static-map" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transition:transform .8s ease;"/>
+      <div id="q-map-leaflet" style="position:absolute;inset:0;border-radius:inherit;display:none;"></div>
+      <div id="q-map-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(10,8,26,.95),transparent);z-index:10;">
+        <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
+        <div id="q-map-zoom-label" style="font-size:17px;color:#b8c4d0;">Locked</div>
+      </div>
+    </div>
+    <div id="q-photo-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;" onclick="openPhotoModal()">
+      <div id="q-photo-base" style="position:absolute;inset:0;background:linear-gradient(160deg,#0f2a1a,#1a3a2a,#2d5a3d,#1e4a2e,#3a6b4a);"></div>
+      <img id="q-photo-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"/>
+      <div id="q-photo-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(13,11,24,.9),transparent);z-index:10;">
+        <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;">PHOTO</div>
+        <div id="q-photo-dots" style="display:flex;gap:3px;margin-top:3px;"></div>
+      </div>
+    </div>
+    <div style="background:#0d0b18;padding:16px 14px;cursor:pointer;border-top:1px solid rgba(255,255,255,.06);" onclick="document.getElementById('q-clues-section').scrollIntoView({behavior:'smooth'})">
+      <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.65)" stroke-width="1.5" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;margin-bottom:3px;">CLUES</div>
+      <div style="font-size:17px;color:rgba(232,168,32,.7);"><span id="q-unlocked">0</span> of <span id="q-total-clues">0</span> solved</div>
+      <div id="q-clue-bars" style="display:flex;gap:3px;margin-top:6px;"></div>
+    </div>
+    <div style="background:#0d0b18;padding:16px 14px;cursor:pointer;border-top:1px solid rgba(255,255,255,.06);" onclick="shareQuest()">
+      <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.65)" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+      <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;">SHARE</div>
+      <div style="font-size:17px;color:rgba(96,165,250,.55);margin-top:3px;">Invite friends</div>
+    </div>
+  </div>
 
-  return JSON.parse(payload);
+  <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
+    <div style="font-size:22px;">🏆</div>
+    <div style="flex:1;"><div style="font-size:17px;color:#4ade80;font-weight:400;">Found it? Claim your prize</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Enter the 6-digit code to win</div></div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <div id="q-analytics-bar" style="display:none;background:rgba(232,168,32,.04);border:1px solid rgba(232,168,32,.12);border-radius:13px;padding:12px 16px;margin-bottom:10px;" class="el" data-d="250">
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(232,168,32,.5);margin-bottom:10px;">👑 QUEST MASTER ANALYTICS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
+      <div><div id="qa-seekers" style="font-size:22px;font-weight:200;color:#e8a820;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Seekers</div></div>
+      <div><div id="qa-clues-unlocked" style="font-size:22px;font-weight:200;color:#4ade80;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Clues out</div></div>
+      <div><div id="qa-time-left" style="font-size:22px;font-weight:200;color:#60a5fa;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Time left</div></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:10px;" class="el" data-d="300">
+    <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:17px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
+    <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.4);font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">GOLD TIER ↓</button>
+  </div>
+
+  <div id="q-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border:1px solid rgba(232,168,32,.1);border-radius:14px;margin-bottom:10px;">
+    <div id="q-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">👑</div><div><div style="font-size:17px;font-weight:400;color:#fff;">FinderSeek Gold</div><div style="font-size:17px;color:rgba(232,168,32,.55);">$3.99/mo · 30-day free trial</div></div></div>
+        <button onclick="toggleGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:17px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
+        <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px;">
+          <div style="font-size:17px;letter-spacing:1.5px;color:#4ade80;margin-bottom:6px;">SEEKER</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Finder clue alerts</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>50ft precision map</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>City quest alerts</div>
+        </div>
+        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;">
+          <div style="font-size:17px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">QUEST MASTER</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Quest analytics</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>3 pinned quests</div>
+          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Edit AI clues</div>
+        </div>
+      </div>
+      <button onclick="sessionStorage.setItem('fs_gold_return','quest:'+(currentHunt?currentHunt.id:'')); window.location.href='gold.html';" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">Upgrade to Gold →</button>
+    </div>
+  </div>
+
+  <div id="q-clues-section" style="margin-bottom:10px;" class="el" data-d="350">
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
+    <div id="q-clues-container"><div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">Loading clues…</div></div>
+  </div>
+
+  <div id="q-claim-section" class="el" data-d="400">
+    <div style="font-size:17px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLAIM PRIZE <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div></div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(74,222,128,.15);border-radius:16px;padding:22px 18px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:10px;">🔐</div>
+      <div style="font-size:22px;font-weight:200;color:#fff;margin-bottom:6px;">Found It?</div>
+      <div style="font-size:17px;color:#b8c4d0;line-height:1.6;margin-bottom:18px;">Enter the 6-digit code from the hiding spot</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;">
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d1" oninput="cN(this,'d2')" onkeydown="cP(event,this,'')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d2" oninput="cN(this,'d3')" onkeydown="cP(event,this,'d1')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d3" oninput="cN(this,'d4')" onkeydown="cP(event,this,'d2')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d4" oninput="cN(this,'d5')" onkeydown="cP(event,this,'d3')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d5" oninput="cN(this,'d6')" onkeydown="cP(event,this,'d4')"/>
+        <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
+      </div>
+      <button id="btn-claim" style="width:100%;padding:15px;border:none;border-radius:13px;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;box-shadow:0 4px 20px rgba(34,197,94,.3);" onclick="claimPrize()">Claim Prize →</button>
+    </div>
+  </div>
+  <div id="q-pin-btn" style="margin-top:10px;text-align:center;"></div>
+  <div id="q-next-clue-time" style="display:none;"></div>
+</div>
+
+<div class="hb-backdrop" id="hb-backdrop"></div>
+<div class="hb-drawer" id="hb-drawer">
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:12px;" id="hb-signin-section" onclick="closeHamburger();window.location.href='profile.html';">
+    <div style="flex:1;"><div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div><div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div></div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:10px;" id="hb-profile-section" onclick="closeHamburger();window.location.href='profile.html';">
+    <div style="flex:1;min-width:0;"><div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;" id="hb-drawer-sub">—</div></div>
+    <div id="hb-drawer-avatar" style="width:36px;height:36px;border-radius:50%;background:#1a1300;border:1px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;">
+    <a class="hb-nav-item" href="index.html" onclick="closeHamburger();"><span class="hb-nav-label">Home</span></a>
+    <a class="hb-nav-item active" href="index.html" onclick="closeHamburger();"><span class="hb-nav-label">Browse Quests</span></a>
+    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();"><span class="hb-nav-label" style="color:#e8a820;">Gold</span></a>
+    <a class="hb-nav-item" href="how-it-works.html" onclick="closeHamburger();"><span class="hb-nav-label">How It Works</span></a>
+    <a class="hb-nav-item" href="terms.html" onclick="closeHamburger();"><span class="hb-nav-label">Terms of Service</span></a>
+  </div>
+  <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:25px;color:rgba(255,255,255,.18);text-align:center;flex-shrink:0;">FinderSeek · v1.0</div>
+</div>
+
+<script>
+function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
+function cP(e,el,prev){if(e.key==='Backspace'){if(!el.value&&prev){document.getElementById(prev).focus();}else if(el.value){el.value='';e.preventDefault();if(prev)document.getElementById(prev).focus();}}}
+const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY_SECRET='fs-notify-2026';
+let currentHunt=null,currentClues=[],totalSecs=0;
+function getQuestId(){return new URLSearchParams(window.location.search).get('id');}
+function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}return '';}
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._toastT);window._toastT=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';},4000);}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fmtTimeRemaining(ms){if(ms<=0)return'00:00';var m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+function goBack(){if(window.speechSynthesis)window.speechSynthesis.cancel();var b=new URLSearchParams(window.location.search).get('back');if(b==='map')window.location.href='index.html#openmap';else history.length>1?history.back():location.href='index.html';}
+function openPhotoModal(){var sc=_solvedCount,tot=(currentClues||[]).length;if(sc===0){showToast('Solve clues to reveal the photo','');return;}showToast(sc>=tot?'Photo fully revealed!':'Keep solving — '+Math.round((sc/Math.max(1,tot))*100)+'% revealed','');}
+function shareQuest(){var url=window.location.href;if(navigator.share)navigator.share({title:'FinderSeek Quest',text:'Join this quest!',url:url});else navigator.clipboard.writeText(url).then(function(){showToast('Link copied!','success');});}
+var _questSaved=false;
+function toggleSaveQuest(){_questSaved=!_questSaved;var icon=document.getElementById('q-save-icon');if(icon)icon.setAttribute('fill',_questSaved?'#e8a820':'none');showToast(_questSaved?'Quest saved':'Quest unsaved',_questSaved?'success':'');}
+var _following=false;
+function followQuestMaster(){_following=!_following;var btn=document.getElementById('q-follow-btn');if(btn){btn.style.background=_following?'rgba(96,165,250,.3)':'rgba(96,165,250,.15)';btn.innerHTML=_following?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';}showToast(_following?'Following '+(currentHunt&&currentHunt._pirate&&currentHunt._pirate.username||'Quest Master'):'Unfollowed',_following?'success':'');}
+var _goldModalOpen=false;
+function renderTierButtons(isGold){var fb=document.getElementById('q-free-tier-btn'),gb=document.getElementById('q-gold-tier-btn');if(!fb||!gb)return;if(isGold){fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.2);font-size:17px;font-family:inherit;animation:none;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(201,137,12,.2);border:2px solid #e8a820;color:#f5c842;font-size:17px;font-family:inherit;animation:goldTierPulse 7s ease-in-out infinite;cursor:default;';gb.innerHTML='GOLD TIER<br><span style="font-size:13px;color:#4ade80;">You are Gold</span>';gb.onclick=null;}else{fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:17px;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:17px;font-family:inherit;animation:none;cursor:pointer;';gb.onclick=toggleGoldModal;gb.innerHTML='GOLD TIER';}  }
+function toggleGoldModal(){_goldModalOpen=!_goldModalOpen;var m=document.getElementById('q-gold-modal'),inner=document.getElementById('q-gold-modal-inner');m.style.maxHeight=_goldModalOpen?'520px':'0';inner.style.opacity=_goldModalOpen?'1':'0';inner.style.transform=_goldModalOpen?'translateY(0)':'translateY(-12px)';}
+
+// ── VOICE NARRATION ──────────────────────────────────────────
+var _voiceSpeaking = false;
+var _voiceClueNum = null;
+
+var PERSONA_VOICE = {
+  pirate:      { rate: 0.82, pitch: 0.78, preferMale: true,  lang: 'en-US' },
+  mysterious:  { rate: 0.72, pitch: 0.65, preferMale: false, lang: 'en-US' },
+  detective:   { rate: 0.95, pitch: 0.88, preferMale: true,  lang: 'en-US' },
+  wizard:      { rate: 0.78, pitch: 0.60, preferMale: true,  lang: 'en-US' },
+  ghost:       { rate: 0.68, pitch: 0.55, preferMale: false, lang: 'en-US' },
+  adventurer:  { rate: 1.00, pitch: 1.00, preferMale: true,  lang: 'en-US' },
+  default:     { rate: 0.88, pitch: 0.82, preferMale: false, lang: 'en-US' }
+};
+
+function getPersonaVoiceSettings() {
+  var persona = ((currentHunt && currentHunt.persona) || 'default').toLowerCase();
+  return PERSONA_VOICE[persona] || PERSONA_VOICE.default;
 }
 
-async function sbPatch(path, body) {
-  const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${path}`, {
-    method: 'PATCH',
-    headers: {
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify(body)
+function pickVoice(settings) {
+  var voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+  var lang = settings.lang || 'en-US';
+  // Filter to English voices
+  var eng = voices.filter(function(v) { return v.lang.indexOf('en') === 0; });
+  if (eng.length === 0) eng = voices;
+  // Prefer gender match
+  var genderKeywords = settings.preferMale
+    ? ['male','man','guy','daniel','alex','fred','ralph','bruce','aaron','tom','david','james','mark','ryan','oliver']
+    : ['female','woman','samantha','victoria','karen','moira','fiona','tessa','veena','alice','zoe','kate','emily','susan'];
+  var genMatch = eng.filter(function(v) {
+    var n = v.name.toLowerCase();
+    return genderKeywords.some(function(k) { return n.indexOf(k) >= 0; });
   });
-  if (!r.ok) throw new Error(`Supabase patch failed: ${await r.text()}`);
+  // Prefer local/premium voices over network
+  var local = (genMatch.length ? genMatch : eng).filter(function(v) { return v.localService; });
+  if (local.length) return local[0];
+  return (genMatch.length ? genMatch : eng)[0];
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+function speakClue(clueNum, text) {
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device', ''); return; }
+  // If already speaking this clue, stop it
+  if (_voiceSpeaking && _voiceClueNum === clueNum) {
+    stopVoice();
+    return;
+  }
+  // Stop any current speech
+  stopVoice(true);
 
-  let event;
-  try {
-    event = await verifyStripeSignature(req, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch(e) {
-    console.error('[webhook] sig error:', e.message);
-    return res.status(400).json({ error: e.message });
+  var settings = getPersonaVoiceSettings();
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.rate = settings.rate;
+  utt.pitch = settings.pitch;
+  utt.lang = settings.lang;
+  // Voice selection — may need to wait for voices to load
+  var voice = pickVoice(settings);
+  if (voice) utt.voice = voice;
+
+  utt.onstart = function() {
+    _voiceSpeaking = true;
+    _voiceClueNum = clueNum;
+    updateSpeakerBtn(clueNum, true);
+  };
+  utt.onend = utt.onerror = function() {
+    _voiceSpeaking = false;
+    _voiceClueNum = null;
+    updateSpeakerBtn(clueNum, false);
+  };
+  window.speechSynthesis.speak(utt);
+}
+
+function stopVoice(silent) {
+  window.speechSynthesis.cancel();
+  var prev = _voiceClueNum;
+  _voiceSpeaking = false;
+  _voiceClueNum = null;
+  if (prev && !silent) updateSpeakerBtn(prev, false);
+}
+
+function updateSpeakerBtn(clueNum, speaking) {
+  var btn = document.getElementById('voice-btn-' + clueNum);
+  if (!btn) return;
+  if (speaking) {
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+    btn.style.background = 'rgba(74,222,128,.2)';
+    btn.style.borderColor = 'rgba(74,222,128,.5)';
+    btn.style.color = '#4ade80';
+  } else {
+    btn.innerHTML = SPEAKER_SVG;
+    btn.style.background = 'rgba(255,255,255,.05)';
+    btn.style.borderColor = 'rgba(255,255,255,.12)';
+    btn.style.color = '#b8c4d0';
+  }
+}
+
+var SPEAKER_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+
+// ── ATTEMPT TRACKING ─────────────────────────────────────────
+var COOLDOWN_MS=[0,15*60*1000,60*60*1000,24*60*60*1000];
+var COOLDOWN_LABELS=['','15 minutes','1 hour','24 hours'];
+var _attemptCache={},_solvedCount=0;
+async function loadAttempts(){
+  if(!currentHunt)return;var token=getToken();if(!token)return;
+  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var user=await ur.json();if(!user||!user.id)return;var r=await fetch(SB+'/rest/v1/clue_attempts?hunt_id=eq.'+currentHunt.id+'&seeker_id=eq.'+user.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var rows=await r.json();if(Array.isArray(rows))rows.forEach(function(row){_attemptCache[row.clue_number]=row;});}catch(e){console.warn('loadAttempts:',e);}
+}
+async function submitAnswer(clueNumber,userAnswer,correctAnswer){
+  var btn=document.getElementById('qa-submit-'+clueNumber);if(btn){btn.disabled=true;btn.textContent='Checking...';}
+  var attempt=_attemptCache[clueNumber]||{wrong_count:0,cooldown_level:0,hints_unlocked:0};
+  if(attempt.cooldown_until&&new Date(attempt.cooldown_until)>new Date()){var rem=Math.ceil((new Date(attempt.cooldown_until)-new Date())/60000);showToast('Still in cooldown — '+rem+' min remaining','error');if(btn){btn.disabled=false;btn.textContent='Submit';}return;}
+  var norm=(userAnswer||'').trim().toLowerCase(),corr=(correctAnswer||'').trim().toLowerCase();
+  var isCorrect=norm===corr||(norm.length>1&&corr.includes(norm))||(corr.length>1&&norm.includes(corr));
+  if(isCorrect){
+    showToast('Correct! Unlocking next clue...','success');var inp=document.getElementById('qa-input-'+clueNumber);if(inp)inp.value='';
+    await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0});await unlockNextClue(clueNumber);renderHunt();renderClues();
+  }else{
+    var nw=(attempt.wrong_count||0)+1;showToast(["Arrr, that's not it!","Wrong, ye scallywag!","Nay! Try again!"][Math.floor(Math.random()*3)],'error');
+    var upd={wrong_count:nw};if(nw>=3){var nl=Math.min((attempt.cooldown_level||0)+1,3);upd={wrong_count:0,cooldown_until:new Date(Date.now()+COOLDOWN_MS[nl]).toISOString(),cooldown_level:nl,hints_unlocked:nl};showToast('Too many wrong answers! Rest for '+COOLDOWN_LABELS[nl],'error');}
+    await upsertAttempt(clueNumber,upd);_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},upd);renderClues();
+  }
+  if(btn){btn.disabled=false;btn.textContent='Submit';}
+}
+async function upsertAttempt(clueNumber,updates){
+  var token=getToken();if(!token||!currentHunt)return;
+  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var user=await ur.json();if(!user||!user.id)return;var ex=_attemptCache[clueNumber];if(ex&&ex.id){await fetch(SB+'/rest/v1/clue_attempts?id=eq.'+ex.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(Object.assign({updated_at:new Date().toISOString()},updates))});}else{var r=await fetch(SB+'/rest/v1/clue_attempts',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(Object.assign({hunt_id:currentHunt.id,clue_number:clueNumber,seeker_id:user.id},updates))});var rows=await r.json();if(rows&&rows[0])_attemptCache[clueNumber]=rows[0];}}catch(e){console.warn('upsertAttempt:',e);}
+}
+async function unlockNextClue(solvedNum){
+  var next=currentClues.find(function(c){return c.clue_number===solvedNum+1;});if(!next)return;var token=getToken();
+  try{await fetch(SB+'/rest/v1/clues?id=eq.'+next.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({reveal_at:new Date().toISOString()}));var r=await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+currentHunt.id+'&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}});currentClues=await r.json();}catch(e){console.warn('unlockNextClue:',e);}
+}
+function getCooldownRemaining(cu){if(!cu)return null;var rem=new Date(cu)-new Date();if(rem<=0)return null;return rem>3600000?Math.ceil(rem/3600000)+'h remaining':Math.ceil(rem/60000)+' min remaining';}
+function getHintText(level){if(level<=0)return'';if(level===1)return'Hint: Look more carefully at what the riddle describes.';if(level===2)return'Hint: The answer is something you can count or observe at the location.';return'Hint: Re-read carefully — the answer is directly observable when you are there.';}
+function wireQaButtons(){document.querySelectorAll('[id^="qa-submit-"]').forEach(function(btn){var num=parseInt(btn.id.replace('qa-submit-',''));var clue=currentClues.find(function(c){return c.clue_number===num;});if(!clue)return;btn.onclick=function(){var inp=document.getElementById('qa-input-'+num);if(inp)submitAnswer(num,inp.value,clue.clue_answer||'');};var inp=document.getElementById('qa-input-'+num);if(inp)inp.onkeydown=function(e){if(e.key==='Enter')submitAnswer(num,this.value,clue.clue_answer||'');};});}
+
+// ── MAP + BLUR ─────────────────────────────────────────────────
+var ZOOM_LEVELS=[11,13,15,16,17,18],ZOOM_LABELS=['City view','Neighborhood','Streets','Block level','Paths','Ground level'],BLUR_PX=[20,16,12,8,4,0];
+var _questMap=null;
+function initQuestMap(lat,lng,solved,total){
+  var zIdx=Math.min(solved,ZOOM_LEVELS.length-1),mapEl=document.getElementById('q-map-leaflet');if(!mapEl)return;mapEl.style.display='block';
+  _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:ZOOM_LEVELS[zIdx],disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});
+  new google.maps.Marker({position:{lat:lat,lng:lng},map:_questMap,icon:{path:google.maps.SymbolPath.CIRCLE,scale:7,fillColor:'#e8a820',fillOpacity:1,strokeColor:'#fff',strokeWeight:2}});
+  var lbl=document.getElementById('q-map-zoom-label');if(lbl)lbl.textContent=ZOOM_LABELS[zIdx];
+}
+function updatePhotoBlur(solved,total){
+  var idx=Math.min(solved,BLUR_PX.length-1),px=BLUR_PX[idx],pct=total>0?solved/total:0;
+  function applyBlur(el){if(!el)return;if(px===0){el.style.backdropFilter='none';el.style.webkitBackdropFilter='none';el.style.background='transparent';}else{el.style.backdropFilter='blur('+px+'px)';el.style.webkitBackdropFilter='blur('+px+'px)';el.style.background='rgba(13,11,24,'+(0.1+px*0.015)+')';}};
+  applyBlur(document.getElementById('q-photo-blur'));applyBlur(document.getElementById('q-map-blur'));
+  var smi=document.getElementById('q-static-map');if(smi){smi.style.transform='scale('+(1+pct*0.8)+')';smi.style.transformOrigin='center center';}
+  var lbl=document.getElementById('q-map-zoom-label');if(lbl)lbl.textContent=ZOOM_LABELS[Math.min(solved,ZOOM_LABELS.length-1)];
+  var dotsEl=document.getElementById('q-photo-dots');if(!dotsEl)return;var dots='';for(var i=0;i<total;i++)dots+='<div style="width:5px;height:5px;border-radius:50%;background:'+(i<solved?'#4ade80':'rgba(255,255,255,.15)')+'"></div>';dotsEl.innerHTML=dots;
+}
+
+// ── CONFETTI ─────────────────────────────────────────────────
+function fireConfetti(){if(typeof confetti==='undefined')return;var colors=['#e8a820','#f5c842','#c9890c','#4ade80','#22c55e','#ffffff'];confetti({particleCount:120,spread:90,origin:{y:0.6},colors:colors});setTimeout(function(){confetti({particleCount:60,angle:60,spread:60,origin:{x:0,y:0.7},colors:colors});confetti({particleCount:60,angle:120,spread:60,origin:{x:1,y:0.7},colors:colors});},250);}
+function showWinCelebration(amount){var amt=typeof amount==='number'?amount.toFixed(2):amount;document.getElementById('win-amount').textContent='$'+amt;document.getElementById('win-backdrop').style.display='block';document.getElementById('win-modal').style.display='flex';setTimeout(function(){document.getElementById('win-backdrop').style.opacity='1';document.getElementById('win-inner').style.transform='scale(1)';document.getElementById('win-inner').style.opacity='1';},10);fireConfetti();}
+function closeWinModal(){document.getElementById('win-inner').style.transform='scale(0.9)';document.getElementById('win-inner').style.opacity='0';document.getElementById('win-backdrop').style.opacity='0';setTimeout(function(){document.getElementById('win-modal').style.display='none';document.getElementById('win-backdrop').style.display='none';},400);}
+function showFundedCelebration(prizeValueCents){
+  var dollars=Math.max(1,Math.round((prizeValueCents||0)/100));
+  document.getElementById('fund-amount').textContent='$'+dollars;
+
+  // Populate quest ID
+  var qid=(currentHunt&&currentHunt.quest_id)||'—';
+  var qidEl=document.getElementById('fund-quest-id');
+  if(qidEl)qidEl.textContent=qid;
+
+  // Populate code display
+  var codeEl=document.getElementById('fund-code-display');
+  if(codeEl&&currentHunt&&currentHunt.finder_code){
+    var code=currentHunt.finder_code;
+    codeEl.innerHTML=code.split('').map(function(d){
+      return '<div style="width:34px;height:40px;border-radius:8px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;color:#f5c842;">'+d+'</div>';
+    }).join('');
   }
 
-  const obj = event.data.object;
-  const userId = obj.metadata?.userId || obj.subscription_details?.metadata?.userId;
+  // Set view quest link
+  var anchor=document.getElementById('fund-quest-anchor');
+  if(anchor&&currentHunt){
+    var label=qid!=='—'?'View Quest '+qid+' →':'View your quest →';
+    anchor.textContent=label;
+    anchor.href='quest.html?id='+currentHunt.id;
+  }
 
-  try {
-    switch (event.type) {
+  document.getElementById('fund-backdrop').style.display='block';
+  document.getElementById('fund-modal').style.display='flex';
+  setTimeout(function(){
+    document.getElementById('fund-backdrop').style.opacity='1';
+    document.getElementById('fund-inner').style.transform='scale(1)';
+    document.getElementById('fund-inner').style.opacity='1';
+  },10);
+  fireConfetti();
+}
 
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated': {
-        if (!userId) break;
-        const isActive = ['active', 'trialing'].includes(obj.status);
-        const expiresAt = obj.current_period_end
-          ? new Date(obj.current_period_end * 1000).toISOString()
-          : null;
-        await sbPatch(`profiles?id=eq.${userId}`, {
-          is_pro: isActive,
-          pro_since: isActive ? new Date().toISOString() : null,
-          pro_expires: expiresAt,
-          stripe_customer_id: obj.customer,
-          stripe_subscription_id: obj.id,
-        });
-        console.log(`[webhook] ${event.type} → user ${userId} is_pro=${isActive}`);
+function copyQuestId(){
+  var qid=(currentHunt&&currentHunt.quest_id)||'';
+  if(!qid)return;
+  navigator.clipboard.writeText(qid).then(function(){showToast('Quest ID copied: '+qid,'success');}).catch(function(){showToast(qid,'success');});
+}
 
-        // Send welcome email only on new subscription creation when active/trialing
-        if (event.type === 'customer.subscription.created' && isActive) {
-          try {
-            const sbUrl = process.env.SUPABASE_URL;
-            const sbKey = process.env.SUPABASE_SERVICE_KEY;
-            const pr = await fetch(`${sbUrl}/rest/v1/profiles?id=eq.${userId}&select=email,username`, {
-              headers: { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}` }
-            });
-            const pd = await pr.json();
-            const profile = pd && pd[0];
-            if (profile?.email) {
-              const isTrial = obj.status === 'trialing';
-              const trialEnd = obj.trial_end ? new Date(obj.trial_end * 1000).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : null;
-              const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head><body style="background:#06050a;margin:0;padding:0;font-family:'Helvetica Neue',Arial,sans-serif;">
-<div style="max-width:560px;margin:0 auto;background:#0e0c14;border:1px solid rgba(201,137,12,.2);border-radius:16px;overflow:hidden;">
-  <div style="background:linear-gradient(135deg,#1a1628,#0e0c14);padding:32px 36px 24px;border-bottom:1px solid rgba(255,255,255,.06);">
-    <div style="font-size:22px;font-weight:800;color:#f5ead8;letter-spacing:1px;">Finder<em style="font-style:italic;color:#c9890c;">Seek</em></div>
-  </div>
-  <div style="padding:28px 36px 32px;">
-    <h1 style="font-size:26px;font-weight:800;color:#f5ead8;margin:0 0 10px;">👑 Welcome to Gold${profile.username ? ', ' + profile.username : ''}!</h1>
-    <p style="font-size:15px;color:#c8b48a;line-height:1.7;margin:0 0 16px;">${isTrial ? `Your 30-day free trial is now active. You won't be charged until <strong style="color:#f5ead8;">${trialEnd}</strong>.` : 'Your Gold membership is now active.'}</p>
-    <p style="font-size:15px;color:#c8b48a;line-height:1.7;margin:0 0 20px;">Here's what you now have access to:</p>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
-      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#4ade80;font-size:14px;">⚡ Instant finder clue alerts</td></tr>
-      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#4ade80;font-size:14px;">🗺️ 50ft precision map radius</td></tr>
-      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#4ade80;font-size:14px;">🔔 City quest alerts</td></tr>
-      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#e8a820;font-size:14px;">📊 Quest analytics</td></tr>
-      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#e8a820;font-size:14px;">📌 3 pinned quests</td></tr>
-      <tr><td style="padding:8px 0;color:#e8a820;font-size:14px;">✏️ Edit AI clues</td></tr>
-    </table>
-    <a href="https://finderseek.com" style="display:block;text-align:center;background:linear-gradient(135deg,#92400e,#f59e0b);color:#0a0500;text-decoration:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;">Start Finding Treasure →</a>
-    <p style="font-size:13px;color:rgba(255,255,255,.3);margin-top:20px;text-align:center;">$3.99/mo · Cancel anytime from your profile · 🔒 Powered by Stripe</p>
-  </div>
-</div></body></html>`;
-              await fetch('https://api.resend.com/emails', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  from: 'FinderSeek <notifications@finderseek.com>',
-                  to: profile.email,
-                  subject: isTrial ? '👑 Your Gold trial has started — welcome!' : '👑 Welcome to FinderSeek Gold!',
-                  html
-                })
-              });
-              console.log(`[webhook] welcome email sent to ${profile.email}`);
-            }
-          } catch(emailErr) {
-            console.error('[webhook] welcome email error (non-fatal):', emailErr.message);
-          }
-        }
-        break;
+function saveFundCard(){
+  var qid=(currentHunt&&currentHunt.quest_id)||'PENDING';
+  var code=(currentHunt&&currentHunt.finder_code)||'------';
+  var prize='$'+Math.round((currentHunt&&currentHunt.prize_value||0)/100);
+
+  var canvas=document.createElement('canvas');
+  canvas.width=800;canvas.height=460;
+  var ctx=canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle='#0d0b18';ctx.fillRect(0,0,800,460);
+  // Gold border
+  ctx.strokeStyle='#e8a820';ctx.lineWidth=3;ctx.strokeRect(16,16,768,428);
+  // Header gradient bar
+  var grad=ctx.createLinearGradient(60,0,740,0);
+  grad.addColorStop(0,'#c9890c');grad.addColorStop(0.5,'#f5c842');grad.addColorStop(1,'#c9890c');
+  ctx.fillStyle=grad;ctx.fillRect(60,48,680,3);
+  // Brand
+  ctx.fillStyle='#e8a820';ctx.font='bold 30px sans-serif';ctx.textAlign='center';
+  ctx.fillText('FinderSeek',400,88);
+  // Quest ID
+  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='14px sans-serif';
+  ctx.fillText('QUEST ID',400,120);
+  ctx.fillStyle='#f5c842';ctx.font='bold 42px sans-serif';
+  ctx.fillText(qid,400,170);
+  // Code label
+  ctx.fillStyle='rgba(255,255,255,0.35)';ctx.font='14px sans-serif';
+  ctx.fillText('SECRET CODE',400,210);
+  // Code boxes
+  var startX=400-(6*78)/2+39;
+  for(var i=0;i<6;i++){
+    var x=startX+i*78;
+    ctx.fillStyle='rgba(232,168,32,0.1)';
+    ctx.strokeStyle='rgba(232,168,32,0.45)';ctx.lineWidth=2;
+    _roundRectCtx(ctx,x-28,225,56,68,8);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#f5c842';ctx.font='bold 44px sans-serif';ctx.textAlign='center';
+    ctx.fillText(code[i]||'?',x,278);
+  }
+  // Prize
+  ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='16px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Prize: '+prize,400,322);
+  // Divider
+  ctx.fillStyle='rgba(232,168,32,0.15)';ctx.fillRect(60,345,680,1);
+  // Footer
+  ctx.fillStyle='rgba(255,255,255,0.18)';ctx.font='13px sans-serif';
+  ctx.fillText('Write code on paper · hide with treasure · winner enters to claim prize',400,375);
+  ctx.fillText('finderseek.com · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),400,405);
+
+  canvas.toBlob(function(blob){
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');a.href=url;
+    a.download='FinderSeek-'+qid+'.png';
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);URL.revokeObjectURL(url);
+    showToast('Quest card saved!','success');
+  },'image/png');
+}
+
+function _roundRectCtx(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function closeFundModal(){document.getElementById('fund-inner').style.transform='scale(0.9)';document.getElementById('fund-inner').style.opacity='0';document.getElementById('fund-backdrop').style.opacity='0';setTimeout(function(){document.getElementById('fund-modal').style.display='none';document.getElementById('fund-backdrop').style.display='none';},400);}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.el').forEach(function(el){setTimeout(function(){el.classList.add('show');},parseInt(el.getAttribute('data-d'))||0);});
+  loadQuest();checkUserGoldStatus();
+});
+async function checkUserGoldStatus(){
+  var token=getToken();if(!token)return;
+  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!ur.ok)return;var user=await ur.json();if(!user||!user.id)return;var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=is_pro,pro_expires',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var pd=await pr.json();var profile=pd&&pd[0];var isGold=profile&&profile.is_pro&&(!profile.pro_expires||new Date(profile.pro_expires)>new Date());renderTierButtons(isGold);if(isGold&&currentHunt&&currentHunt.pirate_id===user.id)loadQuestAnalytics(token);}catch(e){}
+}
+async function loadQuestAnalytics(token){
+  try{var now=new Date(),unlockedCount=(currentClues||[]).filter(function(c){return new Date(c.reveal_at)<=now;}).length;var timeLeft='---';if(currentHunt.ends_at){var diff=new Date(currentHunt.ends_at)-now;if(diff>0){var h=Math.floor(diff/3600000),d=Math.floor(h/24);timeLeft=d>0?d+'d':h>0?h+'h':Math.floor(diff/60000)+'m';}else timeLeft='Ended';}var r=await fetch(SB+'/rest/v1/find_reports?hunt_id=eq.'+currentHunt.id+'&select=user_id',{headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}});var reports=await r.json();var seekerCount=new Set((reports||[]).map(function(x){return x.user_id;})).size;document.getElementById('qa-seekers').textContent=seekerCount||'0';document.getElementById('qa-clues-unlocked').textContent=unlockedCount+'/'+(currentClues||[]).length;document.getElementById('qa-time-left').textContent=timeLeft;document.getElementById('q-analytics-bar').style.display='block';}catch(e){}
+}
+async function loadQuest(){
+  var id=getQuestId();if(!id){showToast('No quest specified','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
+  try{
+    var results=await Promise.all([fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}}),fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}})]);
+    var huntData=await results[0].json(),cluesData=await results[1].json();
+    if(!huntData||huntData.length===0){showToast('Quest not found','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
+    currentHunt=huntData[0];currentClues=cluesData||[];
+    if(currentHunt.pirate_id){try{var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}});var pd=await pr.json();if(pd&&pd[0])currentHunt._pirate=pd[0];}catch(e){}}
+    renderHunt();await loadAttempts();renderClues();startTimer();checkUserGoldStatus();
+    // Instant expiry trigger
+    try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch('/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
+    // Increment quests_joined for seekers (non-creator, once per session)
+    try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
+    try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
+    try{var pending=JSON.parse(sessionStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6){for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken())setTimeout(function(){showToast('Signed in! Tap CLAIM PRIZE to finish.','success');},500);}}catch(e){}
+    try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch('/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
+  }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
+}
+function renderHunt(){
+  var h=currentHunt;
+  document.getElementById('q-prize').textContent='$'+Math.round((h.prize_value||0)/100);
+  document.getElementById('q-location').textContent=h.city||h.neighborhood||'Unknown location';
+  var styleEl=document.getElementById('q-pirate-style');if(styleEl)styleEl.textContent=(currentClues.length||'?')+' clues · '+(h.persona||'Pirate')+' style';
+  document.getElementById('q-status-label').textContent=(h.status||'active').toUpperCase()+' QUEST';
+  if(h.ends_at){var endDate=new Date(h.ends_at),today=new Date(),sameDay=endDate.toDateString()===today.toDateString();document.getElementById('q-end-label').textContent=sameDay?'Expires today at '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Expires '+endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+  var now=new Date(),unlocked=currentClues.filter(function(c){return new Date(c.reveal_at)<=now;}).length;
+  _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;
+  var bars='';for(var i=0;i<currentClues.length;i++)bars+='<div style="width:18px;height:4px;border-radius:2px;background:'+(i<unlocked?'#4ade80':'rgba(255,255,255,.08)')+'"></div>';
+  document.getElementById('q-clue-bars').innerHTML=bars;
+  var nameEl=document.getElementById('q-master-name');if(nameEl&&h._pirate)nameEl.textContent=h._pirate.username||'Anonymous';
+  var statsEl=document.getElementById('q-master-stats');if(statsEl&&h._pirate){var qc=h._pirate.quests_created||0,fc=h._pirate.followers_count||0;statsEl.textContent=qc+' quest'+(qc!==1?'s':'')+' · '+fc+' follower'+(fc!==1?'s':'');}
+  if(h.lat&&h.lng)setTimeout(function(){initQuestMap(h.lat,h.lng,unlocked,currentClues.length);},100);
+  updatePhotoBlur(unlocked,currentClues.length);
+  if(h.photo_url){var img=document.getElementById('q-photo-img');if(img){img.src=h.photo_url;img.style.display='block';}}
+  if(h.static_map_url){var smi=document.getElementById('q-static-map');if(smi){smi.src=h.static_map_url;smi.style.display='block';}}
+  var pinEl=document.getElementById('q-pin-btn');
+  try{var token=getToken();if(token&&h.pirate_id){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id===h.pirate_id){var pinned=h.is_pinned;pinEl.innerHTML='<button onclick="togglePin()" style="display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.15)':'rgba(255,255,255,.04)')+';border:1px solid '+(pinned?'rgba(201,137,12,.4)':'rgba(255,255,255,.1)')+';border-radius:20px;padding:7px 16px;font-size:17px;color:'+(pinned?'#e8a820':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;">'+(pinned?'Pinned':'Pin quest')+'</button>';}}).catch(function(){});}}catch(e){}
+  var nextClue=currentClues.find(function(c){return new Date(c.reveal_at)>now;});var t=document.getElementById('q-next-clue-time');if(t&&nextClue)t.textContent=fmtTimeRemaining(new Date(nextClue.reveal_at)-now);
+}
+async function togglePin(){
+  var token=getToken();if(!token||!currentHunt)return;var newVal=!currentHunt.is_pinned;
+  try{var r=await fetch(SB+'/rest/v1/hunts?id=eq.'+currentHunt.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({is_pinned:newVal})});if(r.ok){currentHunt.is_pinned=newVal;renderHunt();showToast(newVal?'Quest pinned':'Quest unpinned','success');}else showToast('Could not update pin','error');}catch(e){showToast('Error: '+e.message,'error');}
+}
+function renderClues(){
+  var container=document.getElementById('q-clues-container'),now=new Date();
+  if(currentClues.length===0){container.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">No clues yet for this quest.</div>';return;}
+  var html=currentClues.map(function(c,idx){
+    var revealAt=new Date(c.reveal_at),revealed=revealAt<=now;
+    var dateLabel=c.day_label||'Day '+Math.ceil((idx+1)/Math.max(1,Math.ceil(currentClues.length/3)));
+    var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
+    var titleSuffix=isFinal?' — Final Clue':' — '+dateLabel;
+    var mapInfo=null,photoUrl=null;
+    if(c.is_photo&&c.photo_url){if(c.photo_url.indexOf('map:')===0){mapInfo={radiusFt:parseInt(c.photo_url.split(':')[1])};}else{photoUrl=c.photo_url;mapInfo={radiusFt:100};}}
+    if(revealed){
+      var mapLabel='',mapBlock='';
+      if(mapInfo&&currentHunt.lat&&currentHunt.lng){var label=mapInfo.radiusFt>=1000?(Math.round(mapInfo.radiusFt/528)/10)+' mile radius':mapInfo.radiusFt+' ft radius';mapLabel='<div style="font-size:18px;color:#e8a820;margin:10px 0 6px;">📍 '+label+'</div>';mapBlock='<div id="clue-map-'+c.id+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+mapInfo.radiusFt+'" style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-top:8px;border:1px solid rgba(232,168,32,.25);"></div>';}
+      var photoBlock=photoUrl?'<img src="'+photoUrl+'" style="width:100%;border-radius:12px;margin-top:10px;border:1px solid rgba(232,168,32,.25);" alt="Hiding spot"/>':'';
+      var attempt=_attemptCache[c.clue_number]||{};
+      var cr=getCooldownRemaining(attempt.cooldown_until),ht=getHintText(attempt.hints_unlocked||0),wc=attempt.wrong_count||0;
+      var qaBlock='';
+      if(c.clue_question&&!isFinal){
+        if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
+        else{qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;"><div style="font-size:17px;color:#b8c4d0;margin-bottom:10px;">'+escapeHtml(c.clue_question)+'</div>'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<div style="display:flex;gap:8px;"><input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div></div>';}
       }
-
-      case 'customer.subscription.deleted': {
-        if (!userId) break;
-        await sbPatch(`profiles?id=eq.${userId}`, {
-          is_pro: false,
-          pro_expires: new Date().toISOString(),
-        });
-        console.log(`[webhook] subscription.deleted → user ${userId} downgraded`);
-
-        // Send cancellation confirmation email
-        try {
-          const sbUrl = process.env.SUPABASE_URL;
-          const sbKey = process.env.SUPABASE_SERVICE_KEY;
-          const pr = await fetch(`${sbUrl}/rest/v1/profiles?id=eq.${userId}&select=email,username`, {
-            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}` }
-          });
-          const pd = await pr.json();
-          const profile = pd && pd[0];
-          if (profile?.email) {
-            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head><body style="background:#06050a;margin:0;padding:0;font-family:'Helvetica Neue',Arial,sans-serif;">
-<div style="max-width:560px;margin:0 auto;background:#0e0c14;border:1px solid rgba(148,163,184,.15);border-radius:16px;overflow:hidden;">
-  <div style="background:linear-gradient(135deg,#1a1628,#0e0c14);padding:32px 36px 24px;border-bottom:1px solid rgba(255,255,255,.06);">
-    <div style="font-size:22px;font-weight:800;color:#f5ead8;letter-spacing:1px;">Finder<em style="font-style:italic;color:#c9890c;">Seek</em></div>
-  </div>
-  <div style="padding:28px 36px 32px;">
-    <h1 style="font-size:22px;font-weight:800;color:#f5ead8;margin:0 0 10px;">Gold membership cancelled</h1>
-    <p style="font-size:15px;color:#c8b48a;line-height:1.7;margin:0 0 16px;">Hi${profile.username ? ' ' + profile.username : ''}, your FinderSeek Gold membership has been cancelled. You'll revert to the free tier at the end of your current billing period.</p>
-    <p style="font-size:15px;color:#c8b48a;line-height:1.7;margin:0 0 24px;">You can always resubscribe from the Gold page whenever you're ready.</p>
-    <a href="https://finderseek.com/gold.html" style="display:block;text-align:center;background:rgba(255,255,255,.06);color:#f5ead8;text-decoration:none;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px;font-size:15px;">Resubscribe to Gold →</a>
-  </div>
-</div></body></html>`;
-            await fetch('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                from: 'FinderSeek <notifications@finderseek.com>',
-                to: profile.email,
-                subject: 'Your FinderSeek Gold membership has been cancelled',
-                html
-              })
-            });
-          }
-        } catch(emailErr) {
-          console.error('[webhook] cancellation email error (non-fatal):', emailErr.message);
-        }
-        break;
-      }
-
-      case 'invoice.payment_failed': {
-        console.log(`[webhook] payment_failed for customer ${obj.customer}`);
-        break;
-      }
-
-      // ── ESCROW: Prize payment from Pirate ─────────────────────
-      case 'payment_intent.succeeded': {
-        const type = obj.metadata?.type;
-        const huntId = obj.metadata?.huntId;
-        if (type !== 'escrow' || !huntId) break;
-
-        const prizeAmount = parseInt(obj.metadata?.prizeAmount || 0);
-        const stripePaymentId = obj.id;
-
-        // Mark quest escrow as funded — hunt can now go active
-        await sbPatch(`hunts?id=eq.${huntId}`, {
-          escrow_status: 'funded',
-          escrow_amount: prizeAmount * 100,
-          stripe_payment_intent: stripePaymentId,
-          status: 'active',
-        });
-
-        console.log(`[webhook] escrow funded → hunt ${huntId} prize $${prizeAmount}`);
-
-        // Generate quest ID (TXA-0001 format) using state from hunt
-        try {
-          const huntRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/hunts?id=eq.${huntId}&select=state_code,quest_id`, {
-            headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
-          });
-          const huntData = await huntRes.json();
-          const hunt = huntData && huntData[0];
-          if (hunt && !hunt.quest_id) {
-            const stateCode = (hunt.state_code || 'US').toUpperCase().slice(0,2);
-            const idRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/rpc/generate_quest_id`, {
-              method: 'POST',
-              headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ p_state: stateCode })
-            });
-            const questId = await idRes.json();
-            if (questId) {
-              await sbPatch(`hunts?id=eq.${huntId}`, { quest_id: questId });
-              console.log(`[webhook] quest ID assigned: ${questId} for hunt ${huntId}`);
-            }
-          }
-        } catch (qidErr) {
-          console.error('[webhook] quest ID generation error (non-fatal):', qidErr.message);
-        }
-
-        // Notify the creator (+ city seekers, followers).
-        // We AWAIT this rather than fire-and-forget because Vercel
-        // serverless functions may terminate background promises
-        // after `return res.status(200)`. Stripe gives us 30 seconds
-        // to respond, so a few hundred ms for notify is safe.
-        // Wrapped in try/catch so a notify failure never causes us
-        // to return non-200 to Stripe (would trigger retry + double-flip).
-        try {
-          const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
-          if (notifySecret) {
-            const notifyRes = await fetch(`https://www.finderseek.com/api/notify`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-finderseek-secret': notifySecret,
-              },
-              body: JSON.stringify({ event: 'hunt_approved', huntId }),
-            });
-            const notifyBody = await notifyRes.text();
-            console.log(`[webhook] notify response ${notifyRes.status}: ${notifyBody.slice(0, 200)}`);
-          } else {
-            console.warn('[webhook] NOTIFY_SECRET not set — skipping creator email');
-          }
-        } catch (notifyErr) {
-          console.error('[webhook] notify error (non-fatal):', notifyErr.message);
-        }
-
-        break;
-      }
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">'+c.clue_number+'</div><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+titleSuffix+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div></div>';
+    }else{
+      var diffMs=revealAt-now,dropsIn=diffMs>3600000?Math.round(diffMs/3600000)+'h':Math.round(diffMs/60000)+' min';
+      return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">'+c.clue_number+'</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #'+c.clue_number+titleSuffix+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">This clue has not been revealed yet.</div><div style="font-size:17px;color:var(--yellow);margin-top:6px;font-weight:500;">Drops in '+dropsIn+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>':'')+'</div></div></div></div>';
     }
-
-    return res.status(200).json({ received: true });
-  } catch(e) {
-    console.error('[webhook] handler error:', e);
-    return res.status(500).json({ error: e.message });
-  }
+  }).join('');
+  container.innerHTML=html;
+  wireQaButtons();
+  setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18;var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
 }
+function startTimer(){
+  if(!currentHunt||!currentHunt.ends_at)return;var endsAt=new Date(currentHunt.ends_at);
+  function tick(){var now=new Date(),diff=endsAt-now;if(diff<=0){['cd-h','cd-m','cd-s'].forEach(function(id){document.getElementById(id).textContent='00';});return;}totalSecs=Math.floor(diff/1000);document.getElementById('cd-h').textContent=String(Math.floor(totalSecs/3600)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');document.getElementById('cd-s').textContent=String(totalSecs%60).padStart(2,'0');var nextClue=currentClues.find(function(c){return new Date(c.reveal_at)>now;});if(nextClue&&(new Date(nextClue.reveal_at)-now)<=1000)setTimeout(function(){renderHunt();renderClues();},1100);}
+  tick();setInterval(tick,1000);
+}
+async function claimPrize(){
+  var btn=document.getElementById('btn-claim');if(!currentHunt)return;
+  var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
+  if(code.length!==6){showToast('Enter all 6 digits','error');return;}
+  if(code!==currentHunt.finder_code){showToast('Wrong code — keep searching!','error');btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);return;}
+  try{sessionStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
+  var token=getToken();if(!token){showToast('Prize unlocked! Sign in to receive it.','success');setTimeout(function(){window.location.href='profile.html?redirect='+encodeURIComponent('quest.html?id='+currentHunt.id);},1200);return;}
+  btn.disabled=true;btn.textContent='Verifying...';
+  try{
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
+    btn.textContent='Sending prize...';
+    var tr=await fetch('/api/transfer-prize',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id,winnerId:user.id})});
+    var trd=await tr.json();
+    if(trd.needs_onboarding){showToast('You won! Setting up payout...','success');setTimeout(function(){window.location.href='profile.html?claim='+currentHunt.id;},1500);return;}
+    if(trd.success){btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}showWinCelebration(trd.amount);}
+    else throw new Error(trd.error||trd.message||'Transfer failed');
+  }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize';}
+}
+</script>
+<script>
+if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+(function(){
+  var _open=false;
+  function init(){var bd=document.getElementById('hb-backdrop'),dr=document.getElementById('hb-drawer');if(!bd||!dr)return;bd.addEventListener('click',function(){toggle(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});loadProfile();}
+  function toggle(open){_open=open!==undefined?open:!_open;var bd=document.getElementById('hb-backdrop'),dr=document.getElementById('hb-drawer');if(bd)bd.classList.toggle('open',_open);if(dr)dr.classList.toggle('open',_open);document.body.style.overflow=_open?'hidden':'';}
+  window.closeHamburger=function(){toggle(false);};
+  window.openHamburger=function(){
+    var t=document.getElementById('toast');
+    if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
+    clearTimeout(window._toastT);
+    toggle(true);
+  };
+  function loadProfile(){
+    var token='';try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token){token=s.access_token;break;}}}if(!token)token=localStorage.getItem('fs_token')||'';}catch(e){}
+    var si=document.getElementById('hb-signin-section'),sp=document.getElementById('hb-profile-section');
+    if(!token){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}
+    fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/user',{headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}}).then(function(r){return r.ok?r.json():null;}).then(function(u){if(!u||!u.id){if(si)si.style.display='flex';if(sp)sp.style.display='none';return;}fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/profiles?id=eq.'+u.id+'&select=username,is_pro',{headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(pd){var p=pd&&pd[0];var uname=(p&&p.username)||(u.email?u.email.split('@')[0]:'User');var isGold=p&&p.is_pro;var dn=document.getElementById('hb-drawer-name');if(dn)dn.textContent=uname;var ds=document.getElementById('hb-drawer-sub');if(ds)ds.textContent=isGold?'Gold Member':'Free Tier';if(si)si.style.display='none';if(sp)sp.style.display='flex';}).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});}).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</body>
+</html>
