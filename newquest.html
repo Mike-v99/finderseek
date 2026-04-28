@@ -304,7 +304,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 1 of 5</span></div>
+    <div style="font-size:28px;font-weight:500;color:#e8a820;text-align:left;padding-left:4px;">1 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -318,16 +318,34 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 14px 8px;">
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:20px;"><div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div></div>
-    <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:13px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:6px;">STEP 1</div>
-      <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:6px;">Hide your treasure</div>
-      <div style="font-size:15px;color:rgba(255,255,255,.4);line-height:1.6;">Generate a secret code, hide it with your treasure,<br>then take a photo of the spot.</div>
+  <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow:hidden;">
+
+    <!-- Progress dots -->
+    <div style="display:flex;gap:7px;justify-content:center;">
+      <div style="width:20px;height:6px;border-radius:3px;background:#e8a820;"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+      <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 18px;margin-bottom:14px;">
-      <div style="font-size:13px;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:14px;">SECRET CODE</div>
-      <div class="code-wrap" style="margin-bottom:16px;">
+
+    <!-- Heading + inline steps -->
+    <div style="text-align:center;">
+      <div style="font-size:26px;font-weight:500;color:#fff;margin-bottom:9px;">Hide the Treasure</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;">
+        <span style="font-size:13px;color:#e8a820;font-weight:500;">Generate PIN</span>
+        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
+        <span style="font-size:13px;color:rgba(255,255,255,.45);">Write on paper</span>
+        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
+        <span style="font-size:13px;color:rgba(255,255,255,.45);">Put in envelope</span>
+        <span style="color:rgba(255,255,255,.2);font-size:13px;">·</span>
+        <span style="font-size:13px;color:#4ade80;font-weight:500;">Hide it!</span>
+      </div>
+    </div>
+
+    <!-- PIN section -->
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
+      <div class="code-wrap" style="margin-bottom:12px;">
         <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
         <div id="c2" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
         <div id="c3" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
@@ -336,43 +354,46 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button onclick="genCode()" id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
+        <button onclick="genCode()" id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Generate Code
+          Generate PIN
         </button>
-        <button id="save-code-btn" onclick="saveCodeToPhotos()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:12px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:15px;font-family:inherit;cursor:pointer;">
+        <button id="save-code-btn" onclick="saveCodeToPhotos()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:15px;font-family:inherit;cursor:pointer;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Save Copy
+          Save copy
         </button>
       </div>
-      <div style="font-size:12px;color:rgba(255,255,255,.25);text-align:center;margin-top:10px;line-height:1.5;">Write this on paper and hide it with your treasure.<br>The winner enters it to claim the prize.</div>
     </div>
-    <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 18px;opacity:.35;pointer-events:none;transition:opacity .3s;">
-      <div style="font-size:13px;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:14px;">PHOTO AT THE HIDING SPOT</div>
-      <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.15);border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
-        <div style="width:48px;height:48px;border-radius:50%;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
+
+    <!-- Photo section -->
+    <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.35;pointer-events:none;transition:opacity .3s;">
+      <div style="font-size:13px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:10px;letter-spacing:.3px;">Capture the Hiding Spot</div>
+      <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
+        <div style="width:42px;height:42px;border-radius:50%;background:rgba(232,168,32,.1);border:1.5px solid rgba(232,168,32,.22);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
         </div>
-        <div style="font-size:16px;color:#fff;font-weight:400;margin-bottom:4px;">Take or choose photo</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.35);">Blurs until seekers solve clues · reveals the spot</div>
+        <div style="font-size:15px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.28);">Camera or library</div>
       </div>
-      <div id="photo-preview-s1" style="display:none;border-radius:12px;overflow:hidden;">
-        <img id="hs-photo-img" style="width:100%;max-height:200px;object-fit:cover;display:block;"/>
-        <button onclick="document.getElementById('hs-photo-input').click()" style="width:100%;padding:10px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:14px;font-family:inherit;cursor:pointer;">Change photo</button>
+      <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;">
+        <img id="hs-photo-img" style="width:100%;max-height:160px;object-fit:cover;display:block;"/>
+        <button onclick="document.getElementById('hs-photo-input').click()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:13px;font-family:inherit;cursor:pointer;">Change photo</button>
       </div>
     </div>
-    <input type="file" id="hs-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handleHsPhoto(this)"/>
-    <div style="height:12px;"></div>
+
+    <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
   </div>
+
   <div class="step-footer">
     <button onclick="goStep(2)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;pointer-events:none;">Next →</button>
   </div>
 </div>
 
+
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="goStep(1)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 2 of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -419,7 +440,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="goStep(2)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 3 of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">3</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -465,7 +486,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step4" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="goStep(3)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 4 of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">4</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -508,7 +529,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step5" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(4)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 5 of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">5</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
