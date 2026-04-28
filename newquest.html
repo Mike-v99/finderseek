@@ -2726,8 +2726,7 @@ function modalReverseGeocode(lat, lng) {
 }
 
 function confirmMapLocation() {
-  showToast('Confirming location...', 'success');
-  console.log('confirmMapLocation called', _modalLat, _modalLng, _modalMap);
+  console.log('confirmMapLocation called', _modalLat, _modalLng);
   // Get coords — from stored values or directly from map center
   if (_modalMap && (_modalLat === null || _modalLng === null)) {
     var c = _modalMap.getCenter();
@@ -2758,23 +2757,22 @@ function confirmMapLocation() {
   var addr = (searchEl && searchEl.value) || (_modalLat.toFixed(5) + ', ' + _modalLng.toFixed(5));
   selectedAddress = addr;
   var displayName = selectedPlaceName || addr.split(',')[0] || addr;
-  document.getElementById('location-btn-title').textContent = '📍 ' + displayName;
-  document.getElementById('location-btn-sub').textContent = addr;
-  document.getElementById('location-btn-sub').style.color = '#4ade80';
+  var locTitle = document.getElementById('location-btn-title');
+  var locSub = document.getElementById('location-btn-sub');
+  if (locTitle) locTitle.textContent = '📍 ' + displayName;
+  if (locSub) { locSub.textContent = addr; locSub.style.color = '#4ade80'; }
   var ms = document.getElementById('map-search');
   if (ms) ms.value = selectedPlaceName ? (selectedPlaceName + ', ' + addr) : addr;
   if (typeof saveFormState === 'function') saveFormState();
-  // Update step 3 button to show location confirmed
+  // Update hs-modal location button label
   var btnLabel = document.getElementById('hs-details-btn-label');
   var btnSub = document.getElementById('hs-details-btn-sub');
   if (btnLabel) { btnLabel.innerHTML = 'Set Location <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>'; btnLabel.style.color = '#fff'; }
   if (btnSub) { btnSub.textContent = '✓ ' + (selectedPlaceName || addr.split(',')[0] || 'Location set'); btnSub.style.color = '#4ade80'; }
   closeMapModal();
   showToast('📍 Location saved', 'success');
-  // Update Google Maps link with exact coordinates
   var gmLink = document.getElementById('gmaps-link');
   if (gmLink) gmLink.href = 'https://www.google.com/maps?q=' + selectedLat + ',' + selectedLng;
-  // If hs modal is on location screen, re-render to show thumbnail
   if (document.getElementById('hs-modal-overlay').classList.contains('open') && _hsCurrent === 0) { renderHsModal(); }
 }
 
