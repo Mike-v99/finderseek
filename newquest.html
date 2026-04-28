@@ -2570,7 +2570,7 @@ async function submitPayment(){
     var dr=document.getElementById('hb-drawer');
     if(bd)bd.classList.toggle('open',_open);
     if(dr)dr.classList.toggle('open',_open);
-    if(_open){document.body.style.overflow='hidden';document.body.style.touchAction='none';}
+    if(_open){document.body.style.overflow='hidden';}
     else{document.body.style.overflow='';document.body.style.touchAction='';}
   }
   window.closeHamburger=function(){toggle(false);};
@@ -2974,6 +2974,9 @@ function closeHsModal() {
 
 function hsModalBgClose(e) { if (e.target === document.getElementById('hs-modal-overlay')) closeHsModal(); }
 
+
+  saveFormState();
+}
 function saveHsPanel() {
   if (_hsCurrent === 0) {
     var el = document.getElementById('hs-loc-input');
@@ -3108,14 +3111,11 @@ function renderHsModal() {
 
     var mapsLinkHtml = '';
     panel.innerHTML = mapPickerHtml + mapsLinkHtml +
-      '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:10px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '') + '</div>' +
-      '<textarea class="hs-ta" id="hs-loc-input" rows="1" placeholder="e.g. Kroger on Loop 336, Conroe">' + (_hsData.location||'') + '</textarea>' +
+            '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:10px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '') + '</div>' +
+      '<textarea class="hs-ta" id="hs-loc-input" rows="1" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80">' + (_hsData.location||'') + '</textarea>' +
       '<div style="height:1px;background:rgba(255,255,255,.08);margin:16px 0;"></div>' +
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
-        '<div style="width:4px;height:26px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div>' +
-        '<div style="font-size:20px;color:#fff;font-weight:400;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400;"> — optional</span>') + '</div>' +
-      '</div>' +
-      '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="e.g. North entrance by the pharmacy&#10;East lot near the big oak tree">' + (_hsData.startingPoint||'') + '</textarea>';
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:26px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:20px;color:#fff;font-weight:400;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400;"> — optional</span>') + '</div></div></div>' +
+      '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="e.g. North entrance by the pharmacy&#10;East lot near the big oak tree" maxlength="120">' + (_hsData.startingPoint||'') + '</textarea>';
 
     setTimeout(function() {
       var pickBtn = document.getElementById('hs-map-pick-btn');
@@ -3158,13 +3158,14 @@ function renderHsModal() {
     var fieldsPointer = actionObj ? 'auto' : 'none';
     var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
       '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
-      '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
+      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Hint / keyword</div>' +
+      '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '" maxlength="100">' + (cl2.hint||'') + '</textarea>' +
       (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
         '<div style="margin-top:10px;">' +
-          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
+          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-top:10px;margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
           '<div class="hs-qa">' +
-            '<div style="flex:3;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
-            '<div style="flex:1;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
+            '<div style="flex:3;position:relative;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" maxlength="80" value="' + (cl2.question||'') + '"/></div>' +
+            '<div style="flex:1;position:relative;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" maxlength="30" value="' + (cl2.answer||'') + '"/></div>' +
           '</div>' +
           '<div class="hs-hint" style="margin-top:6px;">AI writes the riddle · you set Q&A</div>' +
         '</div>'
@@ -3489,6 +3490,10 @@ function handleHsPhoto(input) {
           <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
           </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+          <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+          <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
         </div>
       </div>
     </div>
