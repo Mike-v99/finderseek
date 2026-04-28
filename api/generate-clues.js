@@ -41,7 +41,29 @@ export default async function handler(req, res) {
     if (parts.length === 1) return parts[0];
     return '';
   }
-  const resolvedCity = city || extractCityFromAddress(searchAddress) || extractCityFromAddress(description) || '';
+  let resolvedCity = city || extractCityFromAddress(searchAddress) || extractCityFromAddress(description) || '';
+  let resolvedStreet = '';
+
+  // ── Server-side geocoding fallback — use coordinates if city/address missing ─
+  if ((!resolvedCity || !searchAddress) && lat && lng) {
+    try {
+      const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI'}`;
+      const geoRes = await fetch(geoUrl);
+      const geoData = await geoRes.json();
+      if (geoData.results && geoData.results[0]) {
+        const components = geoData.results[0].address_components;
+        const fullAddr = geoData.results[0].formatted_address;
+        // Extract city from address_components (more reliable than string parsing)
+        const cityComp = components.find(c => c.types.includes('locality'));
+        const routeComp = components.find(c => c.types.includes('route'));
+        const streetNumComp = components.find(c => c.types.includes('street_number'));
+        if (!resolvedCity && cityComp) resolvedCity = cityComp.long_name;
+        if (routeComp) resolvedStreet = (streetNumComp ? streetNumComp.long_name + ' ' : '') + routeComp.long_name;
+        if (!searchAddress) searchAddress = fullAddr.replace(/, USA$/, '');
+        console.log('[generate-clues] Geocoded from coords:', { resolvedCity, resolvedStreet, fullAddr });
+      }
+    } catch(e) { console.warn('[generate-clues] Server geocoding failed:', e.message); }
+  }
 
   // ── Resolve place name ───────────────────────────────────────
   let resolvedPlaceName = placeName || null;
@@ -81,16 +103,18 @@ export default async function handler(req, res) {
   const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} style. EXACTLY two sentences — no more.
 The EXACT location is: "${specificLocation}${!specificLocation.includes(resolvedCity || '') ? cityContext : ''}"
 Place name: "${resolvedPlaceName || locationText}"
-Street/address: "${searchAddress ? searchAddress.replace(/, USA$/, '') : ''}"
+Street/address: "${resolvedStreet || (searchAddress ? searchAddress.replace(/, USA$/, '') : '')}"
 City: "${resolvedCity}"
 
-RULES — all required:
-1. EXACTLY two sentences. Not one. Not three. Two.
+RULES — all required, no exceptions:
+1. EXACTLY two sentences.
 2. The place name "${resolvedPlaceName || locationText}" MUST appear word-for-word.
-3. The city "${resolvedCity || 'the city'}" MUST be named explicitly.
-4. A street name or road from the address MUST be included.
+3. You MUST include the city name "${resolvedCity}" — write it explicitly, do not skip it.
+4. You MUST include the street "${resolvedStreet || 'road'}" — write it explicitly, do not skip it.
 5. Written in ${persona || 'pirate'} persona voice.
-6. End with a short call to action in persona voice telling the seeker to go to this location and begin the hunt (e.g. pirate: "Make haste to these shores and let the quest begin, ye brave soul!", grandma: "Head on over, dearie, and let the adventure begin!", hillbilly: "Git yourself on down there and let the huntin' begin, y'all!").
+6. End sentence two with a call to action in persona voice telling the seeker to go here and begin the hunt.
+
+Example format: "[Persona riddle with place name, street, city]. [Call to action in persona voice]!"
 
 Return ONLY the two-sentence riddle, no explanation.`;
 
@@ -129,10 +153,18 @@ Return ONLY the two-sentence riddle, no explanation.`;
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
     console.log('[generate-clues] RAW RIDDLE:', location_riddle);
 
-    // Enforce two sentences max — truncate if Claude went long
+    // Enforce two sentences max
     const sentences = location_riddle.match(/[^.!?]+[.!?]+/g) || [];
-    if (sentences.length > 2) {
-      location_riddle = sentences.slice(0, 2).join(' ').trim();
+    if (sentences.length > 2) location_riddle = sentences.slice(0, 2).join(' ').trim();
+
+    // Hard inject city and street if Claude skipped them
+    const riddleLower = location_riddle.toLowerCase();
+    const missingCity = resolvedCity && !riddleLower.includes(resolvedCity.toLowerCase());
+    const missingStreet = resolvedStreet && !riddleLower.includes(resolvedStreet.toLowerCase().split(' ').pop());
+    if (missingCity || missingStreet) {
+      const prefix = `[${resolvedPlaceName || ''}${resolvedStreet ? ' on ' + resolvedStreet : ''}${resolvedCity ? ', ' + resolvedCity : ''}] `;
+      location_riddle = prefix + location_riddle;
+      console.log('[generate-clues] Injected missing location info into riddle');
     }
 
     // Validate place name in riddle
