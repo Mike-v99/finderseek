@@ -829,6 +829,8 @@ function speakPersonaSample(){
 }
 
 function selPersona(el) {
+  console.log('selPersona called:', el.dataset.persona);
+  showToast('Persona: ' + el.dataset.persona, 'success');
   document.querySelectorAll('.persona-card').forEach(function(c){
     c.style.background = '#0d0b18';
     var n = c.querySelector('.persona-name');
@@ -2930,6 +2932,8 @@ var HS_ACTIONS = [
 ];
 
 function openHsModalFromStep() {
+  console.log('openHsModalFromStep called, currentStep:', currentStep);
+  showToast('Opening location...', 'success');
   // Save current step state then open hs-modal directly (skips old step 4)
   saveFormState();
   openHsModal();
