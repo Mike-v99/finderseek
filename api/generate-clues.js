@@ -35,17 +35,18 @@ export default async function handler(req, res) {
   // ── Resolve city — extract from address if not explicitly passed ─
   function extractCityFromAddress(addr) {
     if (!addr) return '';
-    addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/g, '').trim();
-    const parts = addr.split(',').map(s => s.trim()).filter(Boolean);
+    // Only parse if it looks like a real address (has comma-separated parts with state-like segment)
+    const cleaned = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/g, '').trim();
+    const parts = cleaned.split(',').map(s => s.trim()).filter(Boolean);
     if (parts.length >= 2) return parts[parts.length - 2];
-    if (parts.length === 1) return parts[0];
-    return '';
+    return ''; // don't return single-part strings — likely a description not an address
   }
-  let resolvedCity = city || extractCityFromAddress(searchAddress) || extractCityFromAddress(description) || '';
+  let resolvedCity = city || extractCityFromAddress(searchAddress) || '';
   let resolvedStreet = '';
+  let resolvedSearchAddress = searchAddress || '';
 
   // ── Server-side geocoding fallback — use coordinates if city/address missing ─
-  if ((!resolvedCity || !searchAddress) && lat && lng) {
+  if ((!resolvedCity || !resolvedSearchAddress) && lat && lng) {
     try {
       const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI'}`;
       const geoRes = await fetch(geoUrl);
@@ -59,8 +60,8 @@ export default async function handler(req, res) {
         const streetNumComp = components.find(c => c.types.includes('street_number'));
         if (!resolvedCity && cityComp) resolvedCity = cityComp.long_name;
         if (routeComp) resolvedStreet = (streetNumComp ? streetNumComp.long_name + ' ' : '') + routeComp.long_name;
-        if (!searchAddress) searchAddress = fullAddr.replace(/, USA$/, '');
-        console.log('[generate-clues] Geocoded from coords:', { resolvedCity, resolvedStreet, fullAddr });
+        if (!resolvedSearchAddress) resolvedSearchAddress = fullAddr.replace(/, USA$/, '');
+        console.log('[generate-clues] Geocoded from coords:', { resolvedCity, resolvedStreet, resolvedSearchAddress });
       }
     } catch(e) { console.warn('[generate-clues] Server geocoding failed:', e.message); }
   }
@@ -119,7 +120,7 @@ Return ONLY the 2 sentences, nothing else.`;
     const pos = parseInt(singleClue.position, 10) || 1;
     const clueHint = clues[pos - 1] || {};
     const isFinal = pos === totalClues;
-    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, resolvedCity, startingPoint);
+    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, resolvedSearchAddress, resolvedCity, startingPoint);
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
