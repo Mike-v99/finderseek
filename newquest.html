@@ -701,13 +701,7 @@ function goStep(n) {
   if (n === 4 || n === 5) {
     updateMiniSummary();
   }
-  if (n === 4) {
-    setTimeout(function(){
-      if (_mapReady && _map) { _map.invalidateSize(); return; }
-      if (selectedLat && selectedLng) { initMap(selectedLat, selectedLng, 15); }
-      else { goToMyLocation(); }
-    }, 200);
-  }
+
 }
 
 function selClue(n, el) {
@@ -1243,7 +1237,7 @@ function startTheQuest() {
   if (!validateQuestForm()) return;
   // Save full form state then proceed to payment
   saveFormState();
-  createQuest(false);
+  createQuest();
 }
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
@@ -1510,14 +1504,14 @@ async function createQuest(){
   const duration = weekendSelected ? 36 : ((selectedDur || 2) * 24);
   const clueCount = selectedClue || 5;
   const persona = document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate';
-  const hidingSpot = document.getElementById('hiding-spot').value.trim();
+  const hidingSpot = (_hsData && _hsData.location && _hsData.location.trim()) ? _hsData.location.trim() : (document.getElementById('hiding-spot').value.trim());
   const searchAddress = document.getElementById('map-search').value.trim();
   const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).textContent).join('');
   const liveMode = document.querySelector('.golive-opt.selected')?.dataset.live || 'now';
 
   // ── 3. Validation ─────────────────────────────────────────
   if (prize < 5 || prize > 100) return showToast('Please select a prize amount', 'error');
-  if (!hidingSpot || hidingSpot.length < 10) return showToast('Hiding Spot — Add More Details', 'error');
+  // hidingSpot comes from _hsData.location — validated at form validation step
   if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
   if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
 
@@ -1580,36 +1574,35 @@ async function createQuest(){
 
 
 
-    // Signed-in user: show email gate for anon only on Create Quest (non-preview)
-    if (!currentUser) {
-      aiOverlay && (aiOverlay.style.display = 'none');
-      btn.disabled = false; previewBtn.disabled = false;
-      btn.textContent = '+   CREATE QUEST →';
+    // Auth already verified at function entry
 
-      showEmailGate();
-      return;
-    }
-
-    // ── 5b. Upload photo (if provided) ─────────────────────
+    // ── 5b. Upload photo from step 1 (_hsPhotoDataUrl) ─────────────
     let photoUrl = null;
-    if (photoFile) {
+    if (window._hsPhotoDataUrl) {
       btn.textContent = '⏳ Uploading photo...';
       try {
-        const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase();
-        const path = `hunt-photos/${currentUser.id}-${Date.now()}.${ext}`;
-        const up = await fetch(SB+'/storage/v1/object/finderseeek-assets/'+path, {
+        // Convert base64 data URL to blob
+        var dataUrl = window._hsPhotoDataUrl;
+        var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+        var bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        var photoBlob = new Blob([u8arr], {type: mime});
+        var ext = mime.split('/')[1] || 'jpg';
+        var path = 'hunt-photos/' + currentUser.id + '-' + Date.now() + '.' + ext;
+        var up = await fetch(SB+'/storage/v1/object/finderseeek-assets/'+path, {
           method: 'POST',
           headers: {
             'apikey': KEY,
             'Authorization': 'Bearer '+freshToken,
-            'Content-Type': photoFile.type
+            'Content-Type': mime
           },
-          body: photoFile
+          body: photoBlob
         });
         if (up.ok) {
           photoUrl = SB+'/storage/v1/object/public/finderseeek-assets/'+path;
+          console.log('[photo] uploaded:', photoUrl);
         } else {
-          const errTxt = await up.text();
+          var errTxt = await up.text();
           console.error('Photo upload failed:', up.status, errTxt);
           showToast('Photo upload failed — continuing without photo', 'error');
         }
@@ -1851,13 +1844,14 @@ async function createQuest(){
     // Quest is now persisted to Supabase. We don't need the sessionStorage
     // form draft anymore. Clearing here prevents the next quest creation
     // from restoring stale fields (PIN, prize, location) from this one.
-    clearFormState();
     await openPaymentModal({
       userId: currentUser.id,
       email: currentUser.email,
       huntId: huntId,
       prize: prize,
     });
+    // Clear form state only after payment modal opens successfully
+    clearFormState();
     // Button re-enable; user now interacts with modal
     btn.disabled = false;
     previewBtn.disabled = false;

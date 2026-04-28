@@ -1172,13 +1172,33 @@ function handleUrlRedirects(){
   // Quest was successfully funded — payment complete!
   if (params.get('quest') === 'funded') {
     var fundedId = params.get('id');
-    // Clear any leftover pending quest (we inserted it already)
     try { localStorage.removeItem('fs_pending_quest'); } catch(e){}
     showToast('🎉 Quest funded! Your treasure hunt is live.', 'success');
     window.history.replaceState({}, '', 'profile.html');
-    // Auto-redirect to the quest detail page after a moment
+    // Poll briefly for quest_id (webhook may not have fired yet), then redirect
     if (fundedId) {
-      setTimeout(function(){ window.location.href = 'quest.html?id=' + fundedId; }, 2500);
+      var _pollAttempts = 0;
+      var _pollFn = function() {
+        _pollAttempts++;
+        var token = (function(){
+          var t=localStorage.getItem('fs_token'); if(t)return t;
+          try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}
+          return '';
+        })();
+        fetch('https://qeiuycuasjkopxfkmggp.supabase.co/rest/v1/hunts?id=eq.'+fundedId+'&select=quest_id', {
+          headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk','Authorization':'Bearer '+(token||'')}}
+        ).then(function(r){return r.json();}).then(function(d){
+          var hasId = d && d[0] && d[0].quest_id;
+          if (hasId || _pollAttempts >= 6) {
+            window.location.href = 'quest.html?id=' + fundedId + '&funded=1';
+          } else {
+            setTimeout(_pollFn, 1200);
+          }
+        }).catch(function(){
+          window.location.href = 'quest.html?id=' + fundedId + '&funded=1';
+        });
+      };
+      setTimeout(_pollFn, 1500);
     }
   }
 
