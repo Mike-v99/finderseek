@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -72,84 +71,84 @@ body::after {
 /* HERO */
 .hero { text-align: center; padding: 16px 20px 16px; }
 .logo {
-font-family: ‘Noto Sans Display’, sans-serif; font-weight: 400;
-font-size: clamp(36px, 10vw, 48px);
-line-height: 1.1;
-margin-bottom: 0;
-text-align: left;
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 400;
+  font-size: clamp(36px, 10vw, 48px);
+  line-height: 1.1;
+  margin-bottom: 0;
+  text-align: left;
 }
 .logo-finder {
-background: linear-gradient(90deg, var(–gold2), var(–gold3), var(–gold));
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
+  background: linear-gradient(90deg, var(--gold2), var(--gold3), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.logo-seek { color: var(–cream); }
+.logo-seek { color: var(--cream); }
 .tagline { font-size: 17px; color: rgba(255,255,255,.5); }
 .free-badge {
-display: inline-block;
-margin-top: 14px;
-font-size: 17px;
-letter-spacing: 2px;
-color: var(–teal);
-letter-spacing: 2px;
-border: 1px solid rgba(45,212,191,.4);
-border-radius: 20px;
-padding: 6px 18px;
-background: rgba(45,212,191,.08);
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: var(--teal);
+  letter-spacing: 2px;
+  border: 1px solid rgba(45,212,191,.4);
+  border-radius: 20px;
+  padding: 6px 18px;
+  background: rgba(45,212,191,.08);
 }
 
 /* CTA BUTTONS */
 .cta-row { display: flex; gap: 10px; margin: 24px 0 0; padding: 0 4px; }
 .btn-cta {
-flex: 1;
-aspect-ratio: 1;
-border-radius: 18px;
-text-align: center;
-cursor: pointer;
-transition: transform .2s, box-shadow .2s;
-text-decoration: none;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 10px;
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 .btn-cta:active { transform: scale(.97); }
 .btn-find {
-border: 2px solid var(–gold2);
-background: linear-gradient(180deg, rgba(232,168,32,.1) 0%, rgba(232,168,32,.02) 100%);
-box-shadow: 0 0 28px rgba(232,168,32,.1);
+  border: 2px solid var(--gold2);
+  background: linear-gradient(180deg, rgba(232,168,32,.1) 0%, rgba(232,168,32,.02) 100%);
+  box-shadow: 0 0 28px rgba(232,168,32,.1);
 }
 .btn-hide {
-border: 2px solid var(–blue);
-background: linear-gradient(180deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.02) 100%);
-box-shadow: 0 0 28px rgba(59,130,246,.1);
+  border: 2px solid var(--blue);
+  background: linear-gradient(180deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.02) 100%);
+  box-shadow: 0 0 28px rgba(59,130,246,.1);
 }
 .btn-cta-icon { font-size: 34px; display: block; line-height: 1; }
 .btn-cta-label { font-size: 17px; font-weight: 400; letter-spacing: 1px; white-space: nowrap; }
-.btn-find .btn-cta-label { color: var(–yellow); animation: glowPulseG 3s ease-in-out infinite; }
+.btn-find .btn-cta-label { color: var(--yellow); animation: glowPulseG 3s ease-in-out infinite; }
 .btn-hide .btn-cta-label { color: #fff; animation: glowPulseB 3s ease-in-out infinite .5s; }
 @keyframes glowPulseG { 0%,100% { text-shadow: 0 0 8px rgba(251,191,36,.4); } 50% { text-shadow: 0 0 20px rgba(251,191,36,.8), 0 0 40px rgba(251,191,36,.3); } }
 @keyframes glowPulseB { 0%,100% { text-shadow: 0 0 8px rgba(96,165,250,.4); } 50% { text-shadow: 0 0 20px rgba(96,165,250,.8), 0 0 40px rgba(96,165,250,.3); } }
 
 /* STATS STRIP */
 .stats-wrap {
-margin-top: 22px;
-padding: 2px;
-border-radius: 16px;
-background: linear-gradient(135deg, var(–gold), var(–gold3), #a8781a, var(–gold2), var(–gold));
+  margin-top: 22px;
+  padding: 2px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold), var(--gold3), #a8781a, var(--gold2), var(--gold));
 }
 .stats-inner {
-display: flex;
-background: var(–ink);
-border-radius: 14px;
-overflow: hidden;
+  display: flex;
+  background: var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
 }
 .stat {
-flex: 1;
-text-align: center;
-padding: 14px 4px;
+  flex: 1;
+  text-align: center;
+  padding: 14px 4px;
 }
 .stat + .stat { border-left: 1px solid rgba(255,255,255,.07); }
 .stat-num { font-size: 20px; font-weight: 400; display: block; }
@@ -158,59 +157,59 @@ padding: 14px 4px;
 /* SEARCH */
 .search-row { display: flex; gap: 10px; align-items: center; margin: 18px 16px 18px; }
 .search-wrap {
-flex: 1;
-position: relative;
-background: rgba(255,255,255,.05);
-border: 1.5px solid rgba(200,200,215,.4);
-border-radius: 14px;
-overflow: hidden;
-backdrop-filter: blur(16px);
--webkit-backdrop-filter: blur(16px);
+  flex: 1;
+  position: relative;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(200,200,215,.4);
+  border-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 .search-wrap::before {
-content: ‘’;
-position: absolute;
-top: 0;
-left: 15%;
-right: 15%;
-height: 1px;
-background: linear-gradient(90deg, transparent, rgba(220,220,230,.25), transparent);
-pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(220,220,230,.25), transparent);
+  pointer-events: none;
 }
 .search-input {
-width: 100%;
-background: transparent;
-border: none;
-padding: 14px 16px 14px 42px;
-font-size: 18px;
-color: var(–cream);
-outline: none;
-font-family: ‘Noto Sans Display’, sans-serif; font-weight: 400;
--webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 14px 16px 14px 42px;
+  font-size: 18px;
+  color: var(--cream);
+  outline: none;
+  font-family: 'Noto Sans Display', sans-serif; font-weight: 400;
+  -webkit-appearance: none;
 }
 .search-input::placeholder { color: rgba(255,255,255,.5); }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #b8c4d0; z-index: 2; pointer-events: none; }
 .btn-livemap {
-background: linear-gradient(135deg, #b91c1c, var(–red));
-color: #ffffff;
-border: none;
-border-radius: 14px;
-padding: 14px 16px;
-font-size: 17px;
-font-weight: 400;
-font-family: ‘Noto Sans Display’, sans-serif;
-display: flex;
-align-items: center;
-gap: 6px;
-cursor: pointer;
-white-space: nowrap;
-box-shadow: 0 4px 16px rgba(239,68,68,.25);
+  background: linear-gradient(135deg, #b91c1c, var(--red));
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 17px;
+  font-weight: 400;
+  font-family: 'Noto Sans Display', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(239,68,68,.25);
 }
 .pulse-dot {
-width: 6px; height: 6px;
-border-radius: 50%;
-background: #fff;
-animation: pulse 2s infinite;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
 }
 @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(.85); } }
 
@@ -241,72 +240,72 @@ animation: pulse 2s infinite;
 /* SECTIONS */
 .sections { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
 .section {
-border-radius: 16px;
-overflow: hidden;
-cursor: pointer;
-transition: transform .15s;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s;
 }
 .section:active { transform: scale(.98); }
 .section-active { border: 1.5px solid rgba(34,197,94,.3); }
 .section-scheduled { border: 1.5px solid rgba(251,191,36,.2); }
 .section-completed { border: 1.5px solid rgba(148,163,184,.15); }
 .section-accent {
-height: 2px;
+  height: 2px;
 }
-.section-active .section-accent { background: linear-gradient(90deg, var(–green-dark), var(–green), transparent); }
-.section-scheduled .section-accent { background: linear-gradient(90deg, var(–yellow), #f59e0b, transparent); }
-.section-completed .section-accent { background: linear-gradient(90deg, var(–gray), var(–gray-dark), transparent); }
+.section-active .section-accent { background: linear-gradient(90deg, var(--green-dark), var(--green), transparent); }
+.section-scheduled .section-accent { background: linear-gradient(90deg, var(--yellow), #f59e0b, transparent); }
+.section-completed .section-accent { background: linear-gradient(90deg, var(--gray), var(--gray-dark), transparent); }
 .section-body {
-padding: 14px 16px;
-display: flex;
-align-items: center;
-justify-content: space-between;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .section-left { display: flex; align-items: center; gap: 12px; }
 .num-circle {
-width: 40px; height: 40px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 18px;
-font-weight: 400;
-flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 400;
+  flex-shrink: 0;
 }
 .section-active .num-circle {
-border: 2px solid var(–green);
-color: var(–green);
-box-shadow: 0 0 0 4px rgba(74,222,128,.12), 0 0 12px rgba(74,222,128,.2);
+  border: 2px solid var(--green);
+  color: var(--green);
+  box-shadow: 0 0 0 4px rgba(74,222,128,.12), 0 0 12px rgba(74,222,128,.2);
 }
 .section-scheduled .num-circle {
-border: 2px solid var(–yellow);
-color: var(–yellow);
-box-shadow: 0 0 0 4px rgba(251,191,36,.12), 0 0 12px rgba(251,191,36,.2);
+  border: 2px solid var(--yellow);
+  color: var(--yellow);
+  box-shadow: 0 0 0 4px rgba(251,191,36,.12), 0 0 12px rgba(251,191,36,.2);
 }
 .section-completed .num-circle {
-border: 2px solid var(–gray);
-color: var(–gray);
-box-shadow: 0 0 0 4px rgba(148,163,184,.08), 0 0 12px rgba(148,163,184,.15);
+  border: 2px solid var(--gray);
+  color: var(--gray);
+  box-shadow: 0 0 0 4px rgba(148,163,184,.08), 0 0 12px rgba(148,163,184,.15);
 }
 .section-title { font-size: 17px; font-weight: 500; letter-spacing: 2px; }
 .section-active .section-title {
-background: linear-gradient(135deg, var(–green), var(–green-dark));
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .section-scheduled .section-title {
-background: linear-gradient(135deg, var(–blue-light), var(–blue-pale));
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
+  background: linear-gradient(135deg, var(--blue-light), var(--blue-pale));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.section-completed .section-title { color: var(–red-light); }
-.section-prize { font-size: 18px; font-weight: 400; color: var(–green); }
+.section-completed .section-title { color: var(--red-light); }
+.section-prize { font-size: 18px; font-weight: 400; color: var(--green); }
 .section-chevron { color: inherit; font-size: 17px; margin-left: 8px; transition: transform .25s; }
-.section-active .section-chevron { color: var(–green); }
-.section-scheduled .section-chevron { color: var(–yellow); }
-.section-completed .section-chevron { color: var(–gray); }
+.section-active .section-chevron { color: var(--green); }
+.section-scheduled .section-chevron { color: var(--yellow); }
+.section-completed .section-chevron { color: var(--gray); }
 .section.open .section-chevron { transform: rotate(180deg); }
 
 /* Quest list (expanded inside section) */
@@ -319,13 +318,13 @@ background-clip: text;
 .quest-row-title { font-size: 17px; color: #ffffff; font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .quest-row-meta { font-size: 17px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
 .quest-row-meta .dot { width: 3px; height: 3px; background: #c8c8c8; border-radius: 50%; }
-.quest-row-prize { font-size: 17px; font-weight: 400; color: var(–green); flex-shrink: 0; }
-.section-scheduled .quest-row-prize { color: var(–yellow); }
-.section-completed .quest-row-prize { color: var(–gray); opacity: .7; }
-.quest-empty { padding: 20px 16px; text-align: center; color: var(–muted); font-size: 17px; font-style: italic; }
-.quest-loading { padding: 16px; text-align: center; color: var(–muted); font-size: 17px; }
-.quest-loading::after { content: ‘⋯’; animation: dots 1.4s infinite; margin-left: 4px; }
-@keyframes dots { 0%, 20% { content: ‘⋯’; } 40% { content: ‘⋯⋯’; } 60% { content: ‘⋯⋯⋯’; } }
+.quest-row-prize { font-size: 17px; font-weight: 400; color: var(--green); flex-shrink: 0; }
+.section-scheduled .quest-row-prize { color: var(--yellow); }
+.section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
+.quest-empty { padding: 20px 16px; text-align: center; color: var(--muted); font-size: 17px; font-style: italic; }
+.quest-loading { padding: 16px; text-align: center; color: var(--muted); font-size: 17px; }
+.quest-loading::after { content: '⋯'; animation: dots 1.4s infinite; margin-left: 4px; }
+@keyframes dots { 0%, 20% { content: '⋯'; } 40% { content: '⋯⋯'; } 60% { content: '⋯⋯⋯'; } }
 .quest-row-pinned { background: rgba(201,137,12,.06); border-top: 1px solid rgba(201,137,12,.2); }
 .quest-row-pinned:hover { background: rgba(201,137,12,.1); }
 .pin-badge { display:inline-flex; align-items:center; gap:4px; font-size:17px; font-weight:500; color:#e8a820; background:rgba(201,137,12,.15); border:1px solid rgba(201,137,12,.3); border-radius:6px; padding:2px 7px; margin-bottom:4px; letter-spacing:.3px; }
@@ -333,6 +332,13 @@ background-clip: text;
 
 /* BOTTOM NAV */
 /* bottom-nav removed */
+
+
+
+
+
+
+
 
 .el { opacity: 0; transform: translateY(20px); transition: opacity .6s cubic-bezier(0.22,1,0.36,1), transform .6s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
 .el.from-left { transform: translateX(-24px) translateY(0); }
@@ -342,25 +348,27 @@ background-clip: text;
 
 /* Gold burst canvas overlay */
 .burst-canvas {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: 20;
-pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
 }
 
 /* Safe area padding for notch phones */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
-/* bottom-nav removed */
-.page { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
-.hero { padding-top: 16px; }
+  /* bottom-nav removed */
+  .page { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+  .hero { padding-top: 16px; }
 }
 
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
+
+
 
 /* ── HAMBURGER NAV v2 ─────────────────────────────────────── */
 @keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
@@ -386,7 +394,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .pq-btn-cont{padding:7px 12px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .pq-btn-clear{padding:12px 14px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:10px;color:#f87171;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;}
 </style>
-
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
@@ -410,7 +417,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="page">
 
   <!-- PENDING QUEST BANNER -->
-
   <div id="pq-banner">
     <div class="pq-row">
       <div class="pq-icon">
@@ -428,72 +434,67 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- HERO -->
-
   <div class="hero" style="position:relative;">
     <div id="hero-halo" style="position:absolute;top:-90px;left:50%;transform:translateX(-50%) scale(0.2);width:min(460px,100vw);height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(232,168,32,.32) 0%,rgba(232,168,32,.11) 32%,rgba(232,168,32,.03) 58%,transparent 78%);border-radius:50%;opacity:0;pointer-events:none;z-index:0;will-change:transform,opacity;"></div>
 
-```
-<!-- Top bar: logo left, auth right -->
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:25;">
-  <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
-    <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
-  </div>
-  <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
-    <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
-      <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-      <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8a820;font-weight:500;">
-        <svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <!-- Top bar: logo left, auth right -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:25;">
+      <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
+        <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
+      </div>
+      <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+        <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+          <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+          <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8a820;font-weight:500;">
+            <svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+          <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+          <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
+        </div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
-      <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-      <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
-    </div>
-  </div>
-</div>
 
-<div class="tagline el" data-d="300">Hidden Treasure. Real Adventure.</div>
-<div class="el" data-d="375" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
+    <div class="tagline el" data-d="300">Hidden Treasure. Real Adventure.</div>
+    <div class="el" data-d="375" style="text-align:center;"><span class="free-badge">FREE TO PLAY</span></div>
 
-<!-- CTA BUTTONS -->
-<div class="cta-row">
-  <a class="btn-cta btn-find el from-left" data-d="475" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
-    <span class="btn-cta-icon">🔍</span>
-    <span class="btn-cta-label">FIND TREASURE</span>
-  </a>
-  <a class="btn-cta btn-hide el from-right" data-d="475" href="newquest.html?from=app">
-    <span class="btn-cta-icon" style="color:#d0e4f0;">+</span>
-    <span class="btn-cta-label">START QUEST</span>
-  </a>
-</div>
+    <!-- CTA BUTTONS -->
+    <div class="cta-row">
+      <a class="btn-cta btn-find el from-left" data-d="475" href="#quest-sections" onclick="event.preventDefault();document.getElementById('quest-sections').scrollIntoView({behavior:'smooth',block:'start'});">
+        <span class="btn-cta-icon">🔍</span>
+        <span class="btn-cta-label">FIND TREASURE</span>
+      </a>
+      <a class="btn-cta btn-hide el from-right" data-d="475" href="newquest.html?from=app">
+        <span class="btn-cta-icon" style="color:#d0e4f0;">+</span>
+        <span class="btn-cta-label">START QUEST</span>
+      </a>
+    </div>
 
-<!-- STATS STRIP -->
-<div class="stats-wrap el from-scale" data-d="575">
-  <div class="stats-inner">
-    <div class="stat">
-      <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
-      <span class="stat-lbl">HIDDEN</span>
+    <!-- STATS STRIP -->
+    <div class="stats-wrap el from-scale" data-d="575">
+      <div class="stats-inner">
+        <div class="stat">
+          <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
+          <span class="stat-lbl">HIDDEN</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:#2dd4bf;">3</span>
+          <span class="stat-lbl">ACTIVE</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:#4ade80;">12</span>
+          <span class="stat-lbl">SEEKERS</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:#fff;">5</span>
+          <span class="stat-lbl">CITIES</span>
+        </div>
+      </div>
     </div>
-    <div class="stat">
-      <span class="stat-num" style="color:#2dd4bf;">3</span>
-      <span class="stat-lbl">ACTIVE</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num" style="color:#4ade80;">12</span>
-      <span class="stat-lbl">SEEKERS</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num" style="color:#fff;">5</span>
-      <span class="stat-lbl">CITIES</span>
-    </div>
-  </div>
-</div>
-```
-
   </div>
 
   <!-- SEARCH -->
-
   <div class="search-row el from-right" data-d="675" id="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
@@ -503,7 +504,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- LIVE MAP MODAL -->
-
   <div id="map-modal-backdrop" onclick="closeLiveMap()"></div>
   <div id="map-modal">
     <div id="map-modal-inner">
@@ -541,49 +541,48 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-```
-<div class="section section-scheduled el from-right" data-d="825" id="sec-scheduled" onclick="this.classList.toggle('open')">
-  <div class="section-accent"></div>
-  <div class="section-body">
-    <div class="section-left">
-      <div class="num-circle" id="count-scheduled">0</div>
-      <div class="section-title">SCHEDULED</div>
+    <div class="section section-scheduled el from-right" data-d="825" id="sec-scheduled" onclick="this.classList.toggle('open')">
+      <div class="section-accent"></div>
+      <div class="section-body">
+        <div class="section-left">
+          <div class="num-circle" id="count-scheduled">0</div>
+          <div class="section-title">SCHEDULED</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <span class="section-prize" id="prize-scheduled">$0</span>
+          <span class="section-chevron">▾</span>
+        </div>
+      </div>
+      <div class="quest-list" id="list-scheduled" onclick="event.stopPropagation();">
+        <div class="quest-loading">Loading quests</div>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;">
-      <span class="section-prize" id="prize-scheduled">$0</span>
-      <span class="section-chevron">▾</span>
-    </div>
-  </div>
-  <div class="quest-list" id="list-scheduled" onclick="event.stopPropagation();">
-    <div class="quest-loading">Loading quests</div>
-  </div>
-</div>
 
-<div class="section section-completed el from-left" data-d="900" id="sec-completed" onclick="this.classList.toggle('open')">
-  <div class="section-accent"></div>
-  <div class="section-body">
-    <div class="section-left">
-      <div class="num-circle" id="count-completed">0</div>
-      <div class="section-title">COMPLETED</div>
+    <div class="section section-completed el from-left" data-d="900" id="sec-completed" onclick="this.classList.toggle('open')">
+      <div class="section-accent"></div>
+      <div class="section-body">
+        <div class="section-left">
+          <div class="num-circle" id="count-completed">0</div>
+          <div class="section-title">COMPLETED</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <span class="section-prize" id="prize-completed">$0</span>
+          <span class="section-chevron">▾</span>
+        </div>
+      </div>
+      <div class="quest-list" id="list-completed" onclick="event.stopPropagation();">
+        <div class="quest-loading">Loading quests</div>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;">
-      <span class="section-prize" id="prize-completed">$0</span>
-      <span class="section-chevron">▾</span>
-    </div>
-  </div>
-  <div class="quest-list" id="list-completed" onclick="event.stopPropagation();">
-    <div class="quest-loading">Loading quests</div>
-  </div>
-</div>
-```
-
   </div>
 
 </div>
+
 
 </div>
 
 <!-- BOTTOM NAV -->
+
 
 <script>
 // ── OAuth callback catch (Google/Apple may redirect here) ──
@@ -962,7 +961,6 @@ function filterQuests(query) {
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI"></script>
-
 <script>
 var liveMap = null;
 var liveMapInitialized = false;
@@ -1295,7 +1293,6 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <!-- HAMBURGER DRAWER v2 -->
-
 <div class="hb-backdrop" id="hb-backdrop"></div>
 <div class="hb-drawer" id="hb-drawer">
   <!-- signin section -->
@@ -1387,41 +1384,42 @@ if ('serviceWorker' in navigator) {
 
 // ── PENDING QUEST BANNER ─────────────────────────────────────
 function checkPendingQuest() {
-var pending = localStorage.getItem(‘fs_pending_quest’);
-var formState = localStorage.getItem(‘fs_newquest_form’);
-if (!pending && !formState) return;
-var sub = document.getElementById(‘pq-sub’);
-if (formState) {
-try {
-var s = JSON.parse(formState);
-var parts = [];
-if (s.prize) parts.push(’$’ + s.prize + ’ prize’);
-if (s.hidingSpot) parts.push(’”’ + s.hidingSpot.substring(0,32) + (s.hidingSpot.length>32?’…’ : ‘”’));
-if (parts.length && sub) sub.textContent = parts.join(’ · ’);
-} catch(e){}
-}
-var banner = document.getElementById(‘pq-banner’);
-if (banner) banner.classList.add(‘show’);
+  var pending = localStorage.getItem('fs_pending_quest');
+  var formState = localStorage.getItem('fs_newquest_form');
+  if (!pending && !formState) return;
+  var sub = document.getElementById('pq-sub');
+  if (formState) {
+    try {
+      var s = JSON.parse(formState);
+      var parts = [];
+      if (s.prize) parts.push('$' + s.prize + ' prize');
+      if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,32) + (s.hidingSpot.length>32?'...' : '"'));
+      if (parts.length && sub) sub.textContent = parts.join(' · ');
+    } catch(e){}
+  }
+  var banner = document.getElementById('pq-banner');
+  if (banner) banner.classList.add('show');
 }
 
 function continuePendingQuest() {
-var banner = document.getElementById(‘pq-banner’);
-if (banner) banner.classList.remove(‘show’);
-window.location.href = ‘newquest.html?from=app’;
+  var banner = document.getElementById('pq-banner');
+  if (banner) banner.classList.remove('show');
+  window.location.href = 'newquest.html?from=app';
 }
 
 function clearPendingQuest() {
-localStorage.removeItem(‘fs_pending_quest’);
-localStorage.removeItem(‘fs_newquest_form’);
-var banner = document.getElementById(‘pq-banner’);
-if (banner) banner.classList.remove(‘show’);
+  localStorage.removeItem('fs_pending_quest');
+  localStorage.removeItem('fs_newquest_form');
+  var banner = document.getElementById('pq-banner');
+  if (banner) banner.classList.remove('show');
 }
 
-document.addEventListener(‘DOMContentLoaded’, function() {
-checkPendingQuest();
+document.addEventListener('DOMContentLoaded', function() {
+  checkPendingQuest();
 });
 
 </script>
+
 
 </div>
 </body>
