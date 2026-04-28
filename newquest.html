@@ -2930,9 +2930,12 @@ var HS_ACTIONS = [
   { id:'turn',  emoji:'🔄', label:'Turn around' },
 ];
 
+var _mapOpenedFromStep = false;
+
 function openHsModalFromStep() {
   // Save current step state then open hs-modal directly (skips old step 4)
   saveFormState();
+  _mapOpenedFromStep = false;
   openHsModal();
 }
 
@@ -3111,7 +3114,7 @@ function renderHsModal() {
 
     setTimeout(function() {
       var pickBtn = document.getElementById('hs-map-pick-btn');
-      if (pickBtn) pickBtn.addEventListener('click', function() { openMapModal(); });
+      if (pickBtn) pickBtn.addEventListener('click', function() { _mapOpenedFromStep = false; openMapModal(); });
     }, 0);
   } else {
     var cl2 = _hsData.clues[cur-1] || {};
@@ -3434,8 +3437,9 @@ function handleHsPhoto(input) {
 <div class="map-modal-overlay" id="map-modal-overlay">
   <!-- Topbar with back + full-width search + location -->
   <div class="map-modal-topbar" style="position:relative;">
-    <button onclick="closeMapModal()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <button onclick="closeMapModal()" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;flex-shrink:0;white-space:nowrap;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span style="font-size:14px;color:rgba(255,255,255,.7);">Back</span>
     </button>
     <div style="flex:1;position:relative;">
       <div style="display:flex;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:0 12px;height:42px;gap:8px;">
