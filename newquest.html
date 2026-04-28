@@ -1772,6 +1772,7 @@ async function createQuest(){
           searchAddress: selectedAddress || (selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress),
           placeName: selectedPlaceName || '',
           hsData: _hsData,
+          startingPoint: _hsData.startingPoint || '',
         })
       });
       clueData = await clueRes.json();
@@ -1988,7 +1989,7 @@ function clearFormState() {
     localStorage.removeItem('fs_newquest_abandon');
     selectedLat = null; selectedLng = null; selectedPlaceName = null;
     window._staticMapUrl = null; window._hsPhotoDataUrl = null;
-    _hsData = { location: '', clues: [] }; locationConfirmed = false;
+    _hsData = { location: '', startingPoint: '', clues: [] }; locationConfirmed = false;
     // Reset step1 UI
     ['c1','c2','c3','c4','c5','c6'].forEach(function(id){ var el=document.getElementById(id); if(el)el.textContent=''; });
     var saveBtn=document.getElementById('save-code-btn'); if(saveBtn)saveBtn.style.display='none';
@@ -2913,7 +2914,7 @@ document.addEventListener('click', function(e) {
 
 
 // ── HIDING SPOT DETAILS MODAL ────────────────────────────────
-var _hsData = { location: '', clues: [] };
+var _hsData = { location: '', startingPoint: '', clues: [] };
 var _hsCurrent = 0; // 0 = location, 1..N = clue index
 var _hsClueCount = 4;
 
@@ -2977,6 +2978,8 @@ function saveHsPanel() {
   if (_hsCurrent === 0) {
     var el = document.getElementById('hs-loc-input');
     if (el) _hsData.location = el.value;
+    var sp = document.getElementById('hs-start-input');
+    if (sp) _hsData.startingPoint = sp.value;
   } else {
     var idx = _hsCurrent - 1;
     var h = document.getElementById('hs-hint-cur');
@@ -3106,10 +3109,13 @@ function renderHsModal() {
     var mapsLinkHtml = '';
     panel.innerHTML = mapPickerHtml + mapsLinkHtml +
       '<div style="margin-bottom:8px;">' +
-        '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;">Exact location details' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>' : '') + '</div>' +
+        '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;">Exact Location + Starting Point' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>' : '') + '</div>' +
       '</div>' +
-      '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105..." style="margin-top:10px;">' + (_hsData.location||'') + '</textarea>' +
-      '<div style="margin-top:12px;padding:12px 16px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:10px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.6;">📍 Specific location, street names, neighborhood, etc.</div>';
+      '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe&#10;Jones Park on Main St" style="margin-top:10px;">' + (_hsData.location||'') + '</textarea>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.3);margin:6px 0 10px;padding-left:2px;">Where seekers navigate to</div>' +
+      '<div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:8px;">Starting Point <span style="font-size:13px;color:rgba(255,255,255,.35);font-weight:400;">(optional)</span></div>' +
+      '<textarea class="hs-ta" id="hs-start-input" rows="2" placeholder="e.g. North entrance near the pharmacy&#10;East parking lot by the big oak tree&#10;Front door facing Main Street">' + (_hsData.startingPoint||'') + '</textarea>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.3);margin-top:6px;padding-left:2px;">Guides seekers to the exact spot once they arrive</div>';
 
     setTimeout(function() {
       var pickBtn = document.getElementById('hs-map-pick-btn');
@@ -3398,6 +3404,7 @@ function hsSetAction(actionId) {
 function buildHsText() {
   var parts = [];
   if (_hsData.location) parts.push('Location: ' + _hsData.location);
+  if (_hsData.startingPoint) parts.push('Starting point: ' + _hsData.startingPoint);
   _hsData.clues.forEach(function(cl, i) {
     if (cl.hint) {
       var action = HS_ACTIONS.find(function(a){ return a.id === cl.action; });
