@@ -58,17 +58,20 @@ export default async function handler(req, res) {
   } else if (searchAddress && !resolvedPlaceName) {
     specificLocation = searchAddress.replace(/, USA$/, '');
   }
-  const locationRiddlePrompt = `Write a short rhyming location riddle in ${persona || 'pirate'} style.
+  const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} style. EXACTLY two sentences — no more.
 The EXACT location is: "${specificLocation}${!specificLocation.includes(city || '') ? cityContext : ''}"
 Place name: "${resolvedPlaceName || locationText}"
-Street/address context: "${searchAddress ? searchAddress.replace(/, USA$/, '') : ''}"
+Street/address: "${searchAddress ? searchAddress.replace(/, USA$/, '') : ''}"
 City: "${city || ''}"
 
-IMPORTANT: The riddle must include enough detail to distinguish this specific location from others with the same name in the area (e.g. mention the street name, cross street, or neighborhood if there are multiple of the same store/park in the city).
-The word "${resolvedPlaceName || locationText}" MUST appear literally in the riddle.
-${city ? `Naturally weave in the city "${city}" to orient the seeker geographically.` : ''}
-The riddle guides the seeker to this general area — unlocked by GPS.
-Return ONLY the riddle text, no JSON, no explanation.`;
+RULES — all required:
+1. EXACTLY two sentences. Not one. Not three. Two.
+2. The place name "${resolvedPlaceName || locationText}" MUST appear word-for-word.
+3. The city "${city || 'the city'}" MUST be named explicitly.
+4. A street name or road from the address MUST be included.
+5. Written in ${persona || 'pirate'} persona voice.
+
+Return ONLY the two-sentence riddle, no explanation.`;
 
   // ── Build per-clue prompts using hsData ──────────────────────
   const clues = (hsData && hsData.clues) || [];
@@ -103,6 +106,12 @@ Return ONLY the riddle text, no JSON, no explanation.`;
     });
     const lrData = await lrRes.json();
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
+
+    // Enforce two sentences max — truncate if Claude went long
+    const sentences = location_riddle.match(/[^.!?]+[.!?]+/g) || [];
+    if (sentences.length > 2) {
+      location_riddle = sentences.slice(0, 2).join(' ').trim();
+    }
 
     // Validate place name in riddle
     if (resolvedPlaceName) {
