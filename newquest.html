@@ -3393,21 +3393,9 @@ function handleHsPhoto(input) {
     var preview = document.getElementById('photo-preview-s1');
     if (placeholder) placeholder.style.display = 'none';
     if (preview) preview.style.display = 'block';
-    // Legacy preview (hidden)
-    document.getElementById('hs-photo-preview') && (document.getElementById('hs-photo-preview').style.display = 'block');
-    document.getElementById('hs-photo-label').textContent = '✓ Photo added';
-    document.getElementById('hs-photo-label').style.color = '#4ade80';
-    // Update photo button title with checkmark
-    var photoBtn = document.getElementById('hs-photo-btn');
-    if (photoBtn) {
-      var titleEl = photoBtn.querySelector('div[style*="font-size:18px"]');
-      if (titleEl) titleEl.innerHTML = 'Add Photo <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>';
-      photoBtn.style.borderColor = 'rgba(74,222,128,.35)';
-      photoBtn.style.background = 'rgba(74,222,128,.04)';
-    }
     // Store for upload
     window._hsPhotoDataUrl = e.target.result;
-    // Enable Next on step1 if code is also generated
+    // Enable Next if code is also generated
     checkStep1Complete();
   };
   reader.readAsDataURL(file);
