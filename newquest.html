@@ -809,6 +809,7 @@ function speakPersonaSample(){
   if(!text)return;
   var utt=new SpeechSynthesisUtterance(text.textContent);
   utt.lang='en-US';
+  utt.rate=0.9;
   // Pick best local English voice
   var voices=window.speechSynthesis.getVoices();
   var eng=voices.filter(function(v){return v.lang.indexOf('en')===0;});
