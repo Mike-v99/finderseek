@@ -23,6 +23,13 @@ export default async function handler(req, res) {
 
   if (!clueCount) return res.status(400).json({ error: 'Missing clueCount' });
 
+  console.log('[generate-clues] INPUT:', JSON.stringify({
+    city, searchAddress, placeName, neighborhood,
+    description: description?.substring(0,80),
+    hsDataLocation: hsData?.location?.substring(0,80),
+    lat, lng
+  }));
+
   const styleHint = PERSONA_STYLES[persona] || PERSONA_STYLES.pirate;
 
   // ── Resolve city — extract from address if not explicitly passed ─
@@ -69,6 +76,8 @@ export default async function handler(req, res) {
   } else if (searchAddress && !resolvedPlaceName) {
     specificLocation = searchAddress.replace(/, USA$/, '');
   }
+  console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedPlaceName, specificLocation, searchAddress }));
+
   const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} style. EXACTLY two sentences — no more.
 The EXACT location is: "${specificLocation}${!specificLocation.includes(resolvedCity || '') ? cityContext : ''}"
 Place name: "${resolvedPlaceName || locationText}"
@@ -81,6 +90,7 @@ RULES — all required:
 3. The city "${resolvedCity || 'the city'}" MUST be named explicitly.
 4. A street name or road from the address MUST be included.
 5. Written in ${persona || 'pirate'} persona voice.
+6. End with a short call to action in persona voice telling the seeker to go to this location and begin the hunt (e.g. pirate: "Make haste to these shores and let the quest begin, ye brave soul!", grandma: "Head on over, dearie, and let the adventure begin!", hillbilly: "Git yourself on down there and let the huntin' begin, y'all!").
 
 Return ONLY the two-sentence riddle, no explanation.`;
 
@@ -117,6 +127,7 @@ Return ONLY the two-sentence riddle, no explanation.`;
     });
     const lrData = await lrRes.json();
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
+    console.log('[generate-clues] RAW RIDDLE:', location_riddle);
 
     // Enforce two sentences max — truncate if Claude went long
     const sentences = location_riddle.match(/[^.!?]+[.!?]+/g) || [];
