@@ -3109,13 +3109,13 @@ function renderHsModal() {
     var mapsLinkHtml = '';
     panel.innerHTML = mapPickerHtml + mapsLinkHtml +
       '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:10px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '') + '</div>' +
-      '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe&#10;Jones Park on Main St">' + (_hsData.location||'') + '</textarea>' +
+      '<textarea class="hs-ta" id="hs-loc-input" rows="1" placeholder="e.g. Kroger on Loop 336, Conroe">' + (_hsData.location||'') + '</textarea>' +
       '<div style="height:1px;background:rgba(255,255,255,.08);margin:16px 0;"></div>' +
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
         '<div style="width:4px;height:26px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div>' +
         '<div style="font-size:20px;color:#fff;font-weight:400;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400;"> — optional</span>') + '</div>' +
       '</div>' +
-      '<textarea class="hs-ta" id="hs-start-input" rows="2" placeholder="e.g. North entrance near the pharmacy&#10;East parking lot by the big oak tree&#10;Front door facing Main Street">' + (_hsData.startingPoint||'') + '</textarea>';
+      '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="e.g. North entrance by the pharmacy&#10;East lot near the big oak tree">' + (_hsData.startingPoint||'') + '</textarea>';
 
     setTimeout(function() {
       var pickBtn = document.getElementById('hs-map-pick-btn');
