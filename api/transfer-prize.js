@@ -79,8 +79,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4. Calculate prize amount (exclude our 10% fee)
-    const prizeAmountCents = Math.round(hunt.prize_amount * 100);
+    // 4. Calculate prize amount — prize_value is stored in cents already
+    const prizeAmountCents = hunt.prize_value || 0;
+    if (prizeAmountCents <= 0) return res.status(400).json({ error: 'Invalid prize amount' });
 
     // 5. Create the transfer
     const transfer = await stripe.transfers.create({
@@ -91,7 +92,7 @@ export default async function handler(req, res) {
       metadata: {
         hunt_id: huntId,
         winner_id: winnerId,
-        prize_amount: hunt.prize_amount,
+        prize_amount_cents: prizeAmountCents,
       },
     });
 
@@ -118,7 +119,8 @@ export default async function handler(req, res) {
       console.error('[Transfer] Stats update failed (non-fatal):', rpcErr);
     }
 
-    console.log(`[Transfer] Prize $${hunt.prize_amount} sent to ${winner.username} (${transfer.id})`);
+    console.log(`[Transfer] Prize $${(prizeAmountCents/100).toFixed(2)} sent to ${winner.username} (${transfer.id})`);
+
 
     // Notify pirate + winner. AWAIT so Vercel doesn't kill the background
     // promise after the function returns. Wrapped in try/catch — money
@@ -147,8 +149,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       transferId: transfer.id,
-      amount: hunt.prize_amount,
-      message: `$${hunt.prize_amount} sent to winner!`,
+      amount: (prizeAmountCents / 100).toFixed(2),
+      message: `$${(prizeAmountCents/100).toFixed(2)} sent to winner!`,
     });
 
   } catch (err) {
