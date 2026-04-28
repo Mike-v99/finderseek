@@ -86,37 +86,26 @@ export default async function handler(req, res) {
 
   console.log('[generate-clues] placeName:', placeName, '| resolvedPlaceName:', resolvedPlaceName, '| hasHsData:', !!hsData);
 
-  // ── Build location riddle prompt ─────────────────────────────
-  const locationText = (hsData && hsData.location) || description || searchAddress || '';
-  const cityContext = resolvedCity ? ` in ${resolvedCity}` : '';
-  // Build a specific location string combining place name + street address for disambiguation
-  // e.g. "Kroger at 2115 N Loop 336 W, Conroe, TX" rather than just "Kroger"
-  let specificLocation = resolvedPlaceName || locationText;
-  if (searchAddress && resolvedPlaceName && !searchAddress.toLowerCase().includes(resolvedPlaceName.toLowerCase())) {
-    // Address doesn't already contain the place name — combine them
-    specificLocation = resolvedPlaceName + ', ' + searchAddress.replace(/, USA$/, '');
-  } else if (searchAddress && !resolvedPlaceName) {
-    specificLocation = searchAddress.replace(/, USA$/, '');
+  // ── Build one clean location string ──────────────────────────
+  const locationText = (hsData && hsData.location) || description || '';
+  // Build: "Kroger, 341 S Loop 336 W, Conroe" — each piece mentioned once
+  let cleanLocation = resolvedPlaceName || locationText;
+  if (resolvedStreet && !cleanLocation.toLowerCase().includes(resolvedStreet.toLowerCase().split(' ').slice(-1)[0])) {
+    cleanLocation += ', ' + resolvedStreet;
   }
-  console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedPlaceName, specificLocation, searchAddress }));
+  if (resolvedCity && !cleanLocation.toLowerCase().includes(resolvedCity.toLowerCase())) {
+    cleanLocation += ', ' + resolvedCity;
+  }
+  console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedStreet, resolvedPlaceName, cleanLocation }));
 
-  const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} style. EXACTLY two sentences — no more.
-The EXACT location is: "${specificLocation}${!specificLocation.includes(resolvedCity || '') ? cityContext : ''}"
-Place name: "${resolvedPlaceName || locationText}"
-Street/address: "${resolvedStreet || (searchAddress ? searchAddress.replace(/, USA$/, '') : '')}"
-City: "${resolvedCity}"
+  const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} persona. EXACTLY two sentences.
 
-RULES — all required, no exceptions:
-1. EXACTLY two sentences.
-2. The place name "${resolvedPlaceName || locationText}" MUST appear word-for-word.
-3. You MUST include the city name "${resolvedCity}" — write it explicitly, do not skip it.
-4. You MUST include the street "${resolvedStreet || 'road'}" — write it explicitly, do not skip it.
-5. Written in ${persona || 'pirate'} persona voice.
-6. End sentence two with a call to action in persona voice telling the seeker to go here and begin the hunt.
+Location to reference: "${cleanLocation}"
 
-Example format: "[Persona riddle with place name, street, city]. [Call to action in persona voice]!"
+Sentence 1: In ${persona || 'pirate'} voice, write a fun riddle that names the place, the street, and the city — each mentioned exactly ONCE, no repetition.
+Sentence 2: A short call to action in ${persona || 'pirate'} voice telling the seeker to head there and start the hunt.
 
-Return ONLY the two-sentence riddle, no explanation.`;
+Return ONLY the two sentences, nothing else.`;
 
   // ── Build per-clue prompts using hsData ──────────────────────
   const clues = (hsData && hsData.clues) || [];
