@@ -423,7 +423,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </div>
       <div class="pq-text">
-        <div class="pq-text-title">Unfinished quest</div>
+        <div class="pq-text-title" id="pq-title">Unfinished quest</div>
         <div class="pq-text-sub" id="pq-sub">Your details are saved — tap to continue</div>
       </div>
       <div class="pq-btns">
@@ -1392,15 +1392,28 @@ if ('serviceWorker' in navigator) {
 function checkPendingQuest() {
   var pending = localStorage.getItem('fs_pending_quest');
   var formState = localStorage.getItem('fs_newquest_form');
-  if (!pending && !formState) return;
+  var abandon = localStorage.getItem('fs_newquest_abandon');
+  if (!pending && !formState && !abandon) return;
+
   var sub = document.getElementById('pq-sub');
+  var title = document.getElementById('pq-title');
+
   if (formState) {
     try {
       var s = JSON.parse(formState);
-      var parts = [];
-      if (s.prize) parts.push('$' + s.prize + ' prize');
-      if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,32) + (s.hidingSpot.length>32?'...' : '"'));
-      if (parts.length && sub) sub.textContent = parts.join(' · ');
+      // Show abandon banner if they left mid-creation
+      if (abandon) {
+        if (title) title.textContent = 'Unfinished quest';
+        var parts = [];
+        if (s.prize) parts.push('$' + s.prize + ' prize');
+        if (s.pin && s.pin.length === 6) parts.push('PIN saved');
+        if (parts.length && sub) sub.textContent = parts.join(' · ');
+      } else {
+        var parts = [];
+        if (s.prize) parts.push('$' + s.prize + ' prize');
+        if (s.hidingSpot) parts.push('"' + s.hidingSpot.substring(0,32) + (s.hidingSpot.length>32?'...' : '"'));
+        if (parts.length && sub) sub.textContent = parts.join(' · ');
+      }
     } catch(e){}
   }
   var banner = document.getElementById('pq-banner');
@@ -1416,6 +1429,7 @@ function continuePendingQuest() {
 function clearPendingQuest() {
   localStorage.removeItem('fs_pending_quest');
   localStorage.removeItem('fs_newquest_form');
+  localStorage.removeItem('fs_newquest_abandon');
   var banner = document.getElementById('pq-banner');
   if (banner) banner.classList.remove('show');
 }

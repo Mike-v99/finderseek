@@ -366,7 +366,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
 
     <!-- Photo section -->
-    <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.35;pointer-events:none;transition:opacity .3s;">
+    <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
       <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:10px;">Capture the Hiding Spot</div>
       <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
         <div style="width:42px;height:42px;border-radius:50%;background:rgba(232,168,32,.1);border:1.5px solid rgba(232,168,32,.22);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;">
@@ -1930,6 +1930,11 @@ function restoreFormState() {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
         var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
       });
+      // Re-show save button and unlock photo section
+      var saveBtn = document.getElementById('save-code-btn');
+      if (saveBtn) saveBtn.style.display = 'inline-flex';
+      var photoSec = document.getElementById('photo-section-s1');
+      if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
     }
     if (s.liveMode) {
       document.querySelectorAll('.golive-opt').forEach(function(el){ el.classList.remove('selected'); });
@@ -1946,9 +1951,40 @@ function restoreFormState() {
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
 
-function clearFormState() { try { localStorage.removeItem(FORM_KEY); localStorage.removeItem('fs_pending_quest'); selectedLat = null; selectedLng = null; selectedPlaceName = null; window._staticMapUrl = null; _hsData = { location: '', clues: [] }; locationConfirmed = false; } catch(e){} }
+function clearFormState() {
+  try {
+    localStorage.removeItem(FORM_KEY);
+    localStorage.removeItem('fs_pending_quest');
+    localStorage.removeItem('fs_newquest_abandon');
+    selectedLat = null; selectedLng = null; selectedPlaceName = null;
+    window._staticMapUrl = null; window._hsPhotoDataUrl = null;
+    _hsData = { location: '', clues: [] }; locationConfirmed = false;
+    // Reset step1 UI
+    ['c1','c2','c3','c4','c5','c6'].forEach(function(id){ var el=document.getElementById(id); if(el)el.textContent=''; });
+    var saveBtn=document.getElementById('save-code-btn'); if(saveBtn)saveBtn.style.display='none';
+    var photoSec=document.getElementById('photo-section-s1'); if(photoSec){photoSec.style.opacity='.15';photoSec.style.pointerEvents='none';}
+    var placeholder=document.getElementById('photo-placeholder-s1'); if(placeholder)placeholder.style.display='block';
+    var preview=document.getElementById('photo-preview-s1'); if(preview)preview.style.display='none';
+    var nextBtn=document.getElementById('step1-next-btn'); if(nextBtn){nextBtn.style.opacity='.4';nextBtn.style.pointerEvents='none';}
+  } catch(e){}
+}
 
 document.addEventListener('DOMContentLoaded',function(){
+  // Clear abandon flag — they've returned to the page
+  try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
+
+  // Save state + set abandon flag when user navigates away mid-flow
+  window.addEventListener('beforeunload', function() {
+    var pin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+      var el=document.getElementById(id); return el?el.textContent:'';
+    }).join('');
+    // Only set abandon flag if they have meaningful data (at least the PIN)
+    if (pin.length === 6 && pin.indexOf('') === -1) {
+      saveFormState();
+      try { localStorage.setItem('fs_newquest_abandon', '1'); } catch(e){}
+    }
+  });
+
 
   // Redirect to home if opened directly (not from within the app)
   // Use URL parameter — reliable on iOS PWA, survives any JS timing issues
