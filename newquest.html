@@ -730,10 +730,8 @@ function goStep(n) {
     if (codeDigits.some(function(d){ return !d || d === ''; })) { showToast('Generate and save your secret code first', 'error'); return; }
     if (!window._hsPhotoDataUrl) { showToast('Take a photo of the hiding spot first', 'error'); return; }
   }
-  // Validate step 4: need location before proceeding to schedule
-  if (currentStep === 4 && n === 5) {
-    if (!selectedLat || !selectedLng) { showToast('Please set the hiding spot location first', 'error'); return; }
-  }
+  // Step 4 → 5: soft validation only, validateQuestForm catches at submit
+  // Location isn't required to preview the schedule step
   document.getElementById('step' + currentStep).style.display = 'none';
   // Stop any persona preview speech when leaving step 3
   if(currentStep===3&&window.speechSynthesis){window.speechSynthesis.cancel();window._personaSpeaking=false;}
@@ -1351,12 +1349,10 @@ function showToast(msg, type){
 // ============================================================
 function validateQuestForm(){
   const prize = selectedPrizeVal || 0;
-  const hidingSpot = document.getElementById('hiding-spot').value.trim();
-  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).textContent).join('');
+  const code = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; }).join('');
   if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
-  if (!hidingSpot || hidingSpot.length < 10) { showToast('Hiding Spot — Add More Details', 'error'); return false; }
-  if (!selectedLat || !selectedLng) { showToast('Please select a location on the map', 'error'); return false; }
-  if (code.length < 6) { showToast('Please enter a 6-digit secret code', 'error'); return false; }
+  if (code.length < 6 || code.replace(/\s/g,'').length < 6) { showToast('Generate your 6-digit secret code first', 'error'); return false; }
+  if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location first', 'error'); return false; }
   return true;
 }
 
@@ -1525,8 +1521,13 @@ async function createQuest(){
 
   if (!validateQuestForm()) return;
 
+  // Check auth immediately — don't run expensive ops for anonymous users
   if (!currentUser) {
     await loadCurrentUser();
+  }
+  if (!currentUser) {
+    showEmailGate();
+    return;
   }
 
   // ── 1b. Get fresh token ─────────────────────────────────────
@@ -2454,6 +2455,9 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
 function closePaymentModal(){
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
+  // Restore body scroll — payment modal and hs-modal both lock it
+  document.body.style.overflow = '';
+  document.body.style.touchAction = '';
 }
 
 async function submitPayment(){
