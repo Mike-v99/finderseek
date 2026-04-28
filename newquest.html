@@ -2625,7 +2625,9 @@ function openMapModal() {
   footer.style.display = 'flex';
   footer.style.zIndex = '30000';
   document.body.style.overflow = 'hidden';
-  document.body.style.touchAction = '';  // clear any stale lock
+  document.body.style.touchAction = '';
+  var hsOverlay = document.getElementById('hs-modal-overlay');
+  if (hsOverlay) hsOverlay.style.pointerEvents = 'none';
   // Wire confirm button via JS — more reliable than inline onclick
   var confirmBtn = document.getElementById('map-modal-confirm');
   if (confirmBtn) {
@@ -2681,6 +2683,8 @@ function closeMapModal() {
   document.body.style.overflow = '';
   document.body.style.touchAction = '';
   document.getElementById('map-predictions').classList.remove('show');
+  var hsOv = document.getElementById('hs-modal-overlay');
+  if (hsOv) hsOv.style.pointerEvents = '';
 }
 
 function initModalMap(lat, lng) {
@@ -3481,10 +3485,6 @@ function handleHsPhoto(input) {
 </div>
 
 <!-- Footer OUTSIDE the overlay — completely clear of Google Maps iframe -->
-<div id="map-modal-footer-outer" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:30000;padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);gap:8px;">
-  <button id="map-modal-sat" onclick="toggleModalSatellite()" style="padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;">🛰️ Satellite</button>
-  <button id="map-modal-confirm" style="flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:30001;">Confirm Location</button>
-</div>
 
 <!-- HIDING SPOT DETAILS MODAL -->
 <div class="hs-modal-overlay" id="hs-modal-overlay" onclick="hsModalBgClose(event)">
@@ -3517,6 +3517,11 @@ function handleHsPhoto(input) {
     <!-- Nav -->
     <div class="hs-nav" id="hs-nav"></div>
   </div>
+</div>
+
+<div id="map-modal-footer-outer" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:30000;padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);gap:8px;">
+  <button id="map-modal-sat" onclick="toggleModalSatellite()" style="padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;">🛰️ Satellite</button>
+  <button id="map-modal-confirm" style="flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:30001;">Confirm Location</button>
 </div>
 </body>
 </html>
