@@ -63,6 +63,12 @@ export default async function handler(req, res) {
         try {
           const refundAmount = hunt.prize_value || 0;
           console.log(`[expire] refunding hunt ${huntId}: ${refundAmount} cents`);
+          // Safety cap
+          if (refundAmount > 11000) {
+            console.error(`[expire] BLOCKED: refundAmount=${refundAmount} exceeds $110 cap for hunt ${huntId}`);
+            result.refundError = 'Amount exceeds safety cap';
+            break;
+          }
           const refundParams = new URLSearchParams({
             'payment_intent': hunt.stripe_payment_intent,
             'reason': 'requested_by_customer',
@@ -187,6 +193,12 @@ export default async function handler(req, res) {
         try {
           const refundAmount = hunt.prize_value || 0; // prize_value is in cents, excludes the 10% fee
           console.log(`[cron] attempting refund for hunt ${hunt.id}: prize_value=${refundAmount} cents, pi=${hunt.stripe_payment_intent}`);
+          // Safety cap
+          if (refundAmount > 11000) {
+            console.error(`[cron] BLOCKED: refundAmount=${refundAmount} exceeds $110 cap for hunt ${hunt.id}`);
+            results.push(`refund_blocked_cap:${hunt.id}`);
+            continue;
+          }
           const refundParams = new URLSearchParams({
               'payment_intent': hunt.stripe_payment_intent,
               'reason': 'requested_by_customer',

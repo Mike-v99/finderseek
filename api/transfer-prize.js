@@ -81,7 +81,37 @@ export default async function handler(req, res) {
 
     // 4. Calculate prize amount — prize_value is stored in cents already
     const prizeAmountCents = hunt.prize_value || 0;
-    if (prizeAmountCents <= 0) return res.status(400).json({ error: 'Invalid prize amount' });
+
+    // ── SAFETY GUARDS — multiple layers to prevent wrong transfer amount ──
+    // Guard 1: must be positive
+    if (prizeAmountCents <= 0) {
+      console.error(`[Transfer] BLOCKED: invalid prize_value=${prizeAmountCents} for hunt ${huntId}`);
+      return res.status(400).json({ error: 'Invalid prize amount' });
+    }
+    // Guard 2: hard cap — FinderSeek max prize is $100 = 10000 cents
+    // If this ever exceeds $110 (11000 cents) something is very wrong
+    const MAX_PRIZE_CENTS = 11000; // $110 absolute ceiling
+    if (prizeAmountCents > MAX_PRIZE_CENTS) {
+      console.error(`[Transfer] BLOCKED: prize_value=${prizeAmountCents} cents exceeds max ${MAX_PRIZE_CENTS} for hunt ${huntId}. Possible unit error (dollars sent instead of cents, or multiplied twice).`);
+      return res.status(400).json({ error: `Transfer blocked: amount ${prizeAmountCents} cents exceeds safety limit. Manual review required.` });
+    }
+    // Guard 3: cross-check against escrow_amount if available
+    if (hunt.escrow_amount && Math.abs(hunt.escrow_amount - prizeAmountCents) > 1100) {
+      // escrow_amount includes the 10% fee so allow up to 10% + $1 difference
+      const diff = Math.abs(hunt.escrow_amount - prizeAmountCents);
+      const tenPct = Math.round(hunt.escrow_amount * 0.12); // 12% tolerance
+      if (diff > tenPct) {
+        console.error(`[Transfer] BLOCKED: prize_value=${prizeAmountCents} doesn't match escrow_amount=${hunt.escrow_amount} for hunt ${huntId}`);
+        return res.status(400).json({ error: 'Transfer blocked: prize amount mismatch. Manual review required.' });
+      }
+    }
+    // Guard 4: sanity check — must be a round cent amount matching a valid prize tier
+    const VALID_PRIZE_CENTS = [1000, 2000, 3000, 5000, 7500, 10000]; // $10,$20,$30,$50,$75,$100
+    if (!VALID_PRIZE_CENTS.includes(prizeAmountCents)) {
+      console.warn(`[Transfer] WARNING: prize_value=${prizeAmountCents} not a standard prize tier. Proceeding but flagging.`);
+      // Don't block — allow non-standard amounts but log it
+    }
+    console.log(`[Transfer] Safety checks passed: $${(prizeAmountCents/100).toFixed(2)} for hunt ${huntId}`);
 
     // 5. Create the transfer
     const transfer = await stripe.transfers.create({
