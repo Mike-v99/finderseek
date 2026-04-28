@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -26,24 +25,24 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(–dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
 /* Page header */
 .page-header{text-align:center;margin-bottom:24px;position:relative;}
-.page-title{font-family:‘Noto Sans Display’,sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
-.page-sub{font-size:18px;color:var(–dim);margin-top:12px;line-height:1.8;}
+.page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-sub{font-size:18px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
 .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;flex-shrink:0;}
-.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(–blue-light);}
+.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
 .step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#b8c4d0;}
-.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(–gold2);}
+.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
 .step-num-red{background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.4);color:#e8a820;}
-.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(–purple);}
-.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(–green);}
+.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
+.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
 .step-icon{font-size:22px;}
 .step-title{font-size:18px;font-weight:400;color:#ffffff;}
 .step-body{padding:18px;}
@@ -52,112 +51,119 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:18px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(–cream);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
 .finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:‘Noto Sans Display’,sans-serif;font-weight:400;font-size:28px;color:var(–blue-light);}
-input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(–blue-light) var(–pct,50%),rgba(147,197,253,.15) var(–pct,50%));}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(–blue-light),#93c5fd);border:3px solid var(–ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
-.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(–muted);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:28px;color:var(--blue-light);}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(--muted);}
 
 /* Persona grid */
 .persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.persona-card.selected{border-color:var(–gold2);background:rgba(201,137,12,.08);}
+.persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
 .persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
 .persona-name{font-size:18px;font-weight:400;color:#ffffff;}
-.persona-desc{font-size:18px;color:var(–muted);margin-top:4px;line-height:1.4;}
-.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(–gold2);display:none;}
+.persona-desc{font-size:18px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(--gold2);display:none;}
 /* persona-check removed - new design uses background tint */
 
 /* Photo drop */
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;transition:all .2s;color:var(–cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:18px;font-weight:400;}
-.photo-or{font-size:18px;color:var(–muted);}
+.photo-or{font-size:18px;color:var(--muted);}
 
 /* Map */
 .map-box{width:100%;height:260px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(203,213,225,.1);overflow:hidden;margin-bottom:6px;position:relative;z-index:2;}
 .map-search-wrap{position:relative;margin-bottom:10px;}
-.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#b8c4d0;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .map-search-input:focus{border-color:rgba(203,213,225,.4);}
 .map-search-input::placeholder{color:rgba(203,213,225,.35);}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;}
-.map-coords span{color:var(–gold);}
+.map-coords span{color:var(--gold);}
 .search-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.25);border-radius:12px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:10000;display:none;backdrop-filter:blur(16px);}
 .search-dropdown.show{display:block;}
 .search-result{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
 .search-result:hover,.search-result.active{background:rgba(201,137,12,.1);}
 .search-result:last-child{border-bottom:none;}
 .search-result-icon{font-size:18px;flex-shrink:0;}
-.search-result-main{font-size:18px;color:var(–cream);font-weight:400;}
-.search-result-sub{font-size:18px;color:var(–muted);margin-top:2px;}
-.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#b8c4d0;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
+.search-result-main{font-size:18px;color:var(--cream);font-weight:400;}
+.search-result-sub{font-size:18px;color:var(--muted);margin-top:2px;}
+.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
 .my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.35);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(–dim);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
-.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(–cream);}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
+.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
 .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.pay-opt.selected{border-color:var(–purple);background:rgba(139,92,246,.08);}
+.pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
 .pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
 .pay-opt-name{font-size:18px;font-weight:400;color:#ffffff;}
-.pay-opt-tag{font-size:18px;color:var(–muted);margin-top:4px;}
+.pay-opt-tag{font-size:18px;color:var(--muted);margin-top:4px;}
 
 /* Go live options */
 .golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
-.golive-opt.selected{border-color:var(–green);background:rgba(34,197,94,.08);}
+.golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
 .golive-icon{font-size:28px;margin-bottom:6px;}
 .golive-name{font-size:18px;font-weight:400;color:#ffffff;}
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
-.warning-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–red),#f97316);border-radius:18px 18px 0 0;}
+.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
 .warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .warning-item{display:flex;align-items:center;gap:8px;font-size:18px;color:#ffffff;}
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:18px;color:#ffffff;}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08);}
-.submit-note{font-size:18px;color:var(–muted);text-align:center;margin-top:10px;line-height:1.5;}
+.submit-note{font-size:18px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
 /* bottom-nav removed */
 body.kb-up /* bottom-nav removed */
+
+
+
+
+
+
+
 
 .el.show{opacity:1;transform:translateY(0);}
 
 @supports(padding-bottom:env(safe-area-inset-bottom)){/* bottom-nav removed */.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
 
 /* Toast & loader */
-.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(–cream);font-size:18px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(--cream);font-size:18px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
 .toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
 .btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
 
 /* Step pages */
-.step-page{position:relative;z-index:1;background:var(–ink);max-width:480px;margin:0 auto;width:100%;}
+.step-page{position:relative;z-index:1;background:var(--ink);max-width:480px;margin:0 auto;width:100%;}
 /* Hide bottom nav on step pages — each step has its own Next button */
 /* bottom-nav removed */
 @keyframes wq-glow-anim{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0);}50%{box-shadow:0 0 18px 3px rgba(232,168,32,.18);}}
@@ -168,7 +174,6 @@ body.kb-up /* bottom-nav removed */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 </style>
-
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
@@ -291,19 +296,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs-nav-back{flex:1;padding:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;text-align:center;font-size:18px;color:#b8c4d0;cursor:pointer;font-family:inherit;}
 .hs-nav-next{flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;text-align:center;font-size:18px;color:#fff;cursor:pointer;font-family:inherit;font-weight:400;}
 </style>
-
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
 
 <!-- STEP PAGES -->
-
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <!-- Topbar -->
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 1 of 4</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
         <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
@@ -326,48 +329,45 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<!-- Prize hero -->
-<div style="text-align:center;padding:16px 0 28px;position:relative;">
-  <div style="font-size:15px;letter-spacing:2px;color:#b8c4d0;margin-bottom:12px;">PRIZE AMOUNT</div>
-  <!-- Glow ring behind number -->
-  <div style="position:relative;display:inline-block;">
-    <div style="position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.18),transparent 70%);pointer-events:none;"></div>
-    <div id="prize-display" style="font-size:96px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;line-height:1;position:relative;">$25</div>
-  </div>
-  <div style="font-size:15px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP AMOUNT BELOW TO CHANGE</div>
-</div>
+    <!-- Prize hero -->
+    <div style="text-align:center;padding:16px 0 28px;position:relative;">
+      <div style="font-size:15px;letter-spacing:2px;color:#b8c4d0;margin-bottom:12px;">PRIZE AMOUNT</div>
+      <!-- Glow ring behind number -->
+      <div style="position:relative;display:inline-block;">
+        <div style="position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.18),transparent 70%);pointer-events:none;"></div>
+        <div id="prize-display" style="font-size:96px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;line-height:1;position:relative;">$25</div>
+      </div>
+      <div style="font-size:15px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP AMOUNT BELOW TO CHANGE</div>
+    </div>
 
-<!-- Prize chips 2x3 -->
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;" id="prize-grid">
-  <div class="prize-chip" onclick="selPrize(5,this)" data-val="5" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$5</div>
-  <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
-  <div class="prize-chip active" onclick="selPrize(25,this)" data-val="25" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$25</div>
-  <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
-  <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
-  <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
-</div>
+    <!-- Prize chips 2x3 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;" id="prize-grid">
+      <div class="prize-chip" onclick="selPrize(5,this)" data-val="5" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$5</div>
+      <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
+      <div class="prize-chip active" onclick="selPrize(25,this)" data-val="25" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$25</div>
+      <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
+      <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
+      <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
+    </div>
 
-<div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
+    <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
 
-<!-- Clues -->
-<div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
-<div style="display:flex;gap:10px;">
-  <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:28px;font-weight:200;color:#fff;">4</div>
-    <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Quick</div>
-  </div>
-  <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:18px 4px;text-align:center;cursor:pointer;">
-    <div style="font-size:28px;font-weight:200;color:#60a5fa;">5</div>
-    <div style="font-size:20px;color:#60a5fa;margin-top:4px;">Standard</div>
-  </div>
-  <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
-    <div style="font-size:28px;font-weight:200;color:#fff;">6</div>
-    <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Adventure</div>
-  </div>
-</div>
-```
-
+    <!-- Clues -->
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
+    <div style="display:flex;gap:10px;">
+      <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
+        <div style="font-size:28px;font-weight:200;color:#fff;">4</div>
+        <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Quick</div>
+      </div>
+      <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:18px 4px;text-align:center;cursor:pointer;">
+        <div style="font-size:28px;font-weight:200;color:#60a5fa;">5</div>
+        <div style="font-size:20px;color:#60a5fa;margin-top:4px;">Standard</div>
+      </div>
+      <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:18px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);">
+        <div style="font-size:28px;font-weight:200;color:#fff;">6</div>
+        <div style="font-size:20px;color:#fff;opacity:.5;margin-top:4px;">Adventure</div>
+      </div>
+    </div>
   </div>
   <!-- Fixed bottom button -->
   <div class="step-footer">
@@ -376,12 +376,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- STEP 2: Clue Style -->
-
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(1)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 2 of 4</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
         <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
@@ -402,52 +401,49 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;">CLUE STYLE</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;">CLUE STYLE</div>
 
-<!-- Segmented block grid -->
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
-  <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);">
-    <div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div>
-  </div>
-  <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Poetic</div>
-  </div>
-  <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Insults</div>
-  </div>
-  <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Sarcastic</div>
-  </div>
-  <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Hillbilly</div>
-  </div>
-  <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">5 Yr Old</div>
-  </div>
-  <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Grandma</div>
-  </div>
-  <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Surfer</div>
-  </div>
-  <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
-    <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Detective</div>
-  </div>
-</div>
+    <!-- Segmented block grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+      <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);">
+        <div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div>
+      </div>
+      <div class="persona-card" data-persona="poetic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Poetic</div>
+      </div>
+      <div class="persona-card" data-persona="insults" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Insults</div>
+      </div>
+      <div class="persona-card" data-persona="sarcastic" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Sarcastic</div>
+      </div>
+      <div class="persona-card" data-persona="hillbilly" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Hillbilly</div>
+      </div>
+      <div class="persona-card" data-persona="kid" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">5 Yr Old</div>
+      </div>
+      <div class="persona-card" data-persona="grandma" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Grandma</div>
+      </div>
+      <div class="persona-card" data-persona="surfer" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Surfer</div>
+      </div>
+      <div class="persona-card" data-persona="investigator" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:#0d0b18;">
+        <div class="persona-name" style="font-size:20px;font-weight:400;color:#b8c4d0;">Detective</div>
+      </div>
+    </div>
 
-<!-- Preview card with top accent bar -->
-<div id="persona-preview" style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07);">
-  <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
-  <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
-    <div id="preview-label" style="font-size:15px;letter-spacing:1.5px;color:#b8c4d0;margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
-    <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:400;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
-  </div>
-</div>
-<!-- Keep preview-emoji for JS compat, hidden -->
-<div id="preview-emoji" style="display:none;">🏴‍☠️</div>
-```
-
+    <!-- Preview card with top accent bar -->
+    <div id="persona-preview" style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07);">
+      <div style="height:2px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842);"></div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,.03);">
+        <div id="preview-label" style="font-size:15px;letter-spacing:1.5px;color:#b8c4d0;margin-bottom:10px;">PIRATE · SAMPLE CLUE</div>
+        <div id="preview-text" style="font-size:20px;color:#fff;line-height:1.85;font-weight:400;font-family:'Noto Sans Display',sans-serif;">"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."</div>
+      </div>
+    </div>
+    <!-- Keep preview-emoji for JS compat, hidden -->
+    <div id="preview-emoji" style="display:none;">🏴‍☠️</div>
   </div>
   <div class="step-footer">
     <button onclick="goStep(3)" class="step-next-btn">Next →</button>
@@ -455,12 +451,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- STEP 3: Hiding Spot + Code -->
-
 <div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(2)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 3 of 4</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
         <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
@@ -481,61 +476,58 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-```
-<div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
-<div style="font-size:15px;color:#b8c4d0;margin-bottom:10px;">Write this code on paper and hide it at your spot. The winner enters it to claim the prize.</div>
-<div class="code-wrap" style="margin-bottom:10px;">
-  <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-  <div id="c2" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-  <div id="c3" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-  <div id="c4" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-  <div id="c5" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-  <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
-</div>
-<div style="text-align:center;margin-bottom:16px;">
-  <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-    Generate New Code
-  </button>
-</div>
-
-<div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
-
-<!-- Map coords hidden fields kept for form compat -->
-<div id="map-coords" style="display:none;"></div>
-<input type="hidden" id="map-search" value=""/>
-<input type="hidden" id="location-btn-title" value=""/>
-<input type="hidden" id="location-btn-sub" value=""/>
-
-<div style="font-size:17px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT DETAILS</div>
-<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
-  <!-- Clue Details button -->
-  <button id="hs-details-btn" onclick="openHsModal()" style="width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;background:rgba(232,168,32,.05);border:1.5px solid rgba(232,168,32,.25);border-radius:12px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;text-align:left;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    <div style="flex:1;min-width:0;">
-      <div id="hs-details-btn-label" style="font-size:18px;color:#fff;font-weight:400;line-height:1.2;">Set Location</div>
-      <div id="hs-details-btn-sub" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Clue hints · Q&amp;A · Map</div>
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:8px;">HIDE SECRET PIN</div>
+    <div style="font-size:15px;color:#b8c4d0;margin-bottom:10px;">Write this code on paper and hide it at your spot. The winner enters it to claim the prize.</div>
+    <div class="code-wrap" style="margin-bottom:10px;">
+      <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c2" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c3" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c4" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c5" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
+      <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
     </div>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.5)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-  <!-- Add Photo button -->
-  <button id="hs-photo-btn" onclick="document.getElementById('hs-photo-input').click()" style="width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;text-align:left;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b8c4d0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:18px;color:#fff;font-weight:400;line-height:1.2;">Add Photo</div>
-      <div id="hs-photo-label" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Camera or library</div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <button onclick="genCode()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Generate New Code
+      </button>
     </div>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-</div>
-<input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
-<div id="hs-photo-preview" style="display:none;margin-bottom:8px;border-radius:10px;overflow:hidden;max-height:120px;"><img id="hs-photo-img" style="width:100%;object-fit:cover;max-height:120px;" /></div>
 
-<!-- hidden fields for backward compat -->
-<textarea id="hiding-spot" style="display:none;"></textarea>
-<div style="height:12px;"></div>
-```
+    <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:14px;"></div>
 
+    <!-- Map coords hidden fields kept for form compat -->
+    <div id="map-coords" style="display:none;"></div>
+    <input type="hidden" id="map-search" value=""/>
+    <input type="hidden" id="location-btn-title" value=""/>
+    <input type="hidden" id="location-btn-sub" value=""/>
+
+    <div style="font-size:17px;font-weight:400;color:#fff;margin-bottom:10px;">HIDING SPOT DETAILS</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+      <!-- Clue Details button -->
+      <button id="hs-details-btn" onclick="openHsModal()" style="width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;background:rgba(232,168,32,.05);border:1.5px solid rgba(232,168,32,.25);border-radius:12px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;text-align:left;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <div style="flex:1;min-width:0;">
+          <div id="hs-details-btn-label" style="font-size:18px;color:#fff;font-weight:400;line-height:1.2;">Set Location</div>
+          <div id="hs-details-btn-sub" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Clue hints · Q&amp;A · Map</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.5)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Add Photo button -->
+      <button id="hs-photo-btn" onclick="document.getElementById('hs-photo-input').click()" style="width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;text-align:left;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b8c4d0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:18px;color:#fff;font-weight:400;line-height:1.2;">Add Photo</div>
+          <div id="hs-photo-label" style="font-size:13px;color:#b8c4d0;margin-top:2px;">Camera or library</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
+    <div id="hs-photo-preview" style="display:none;margin-bottom:8px;border-radius:10px;overflow:hidden;max-height:120px;"><img id="hs-photo-img" style="width:100%;object-fit:cover;max-height:120px;" /></div>
+
+    <!-- hidden fields for backward compat -->
+    <textarea id="hiding-spot" style="display:none;"></textarea>
+    <div style="height:12px;"></div>
   </div>
   <div class="step-footer">
     <button onclick="goStep(4)" class="step-next-btn">Next →</button>
@@ -543,12 +535,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- STEP 4: When to Quest -->
-
 <div id="step4" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(3)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">New Quest <span style="color:#b8c4d0;font-size:14px;">· 4 of 4</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
         <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
@@ -570,76 +561,73 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:18px;height:6px;border-radius:3px;background:#e8a820;"></div>
     </div>
 
-```
-<!-- Mini summary from steps 1-3 -->
-<div id="mini-summary" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:14px;">
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:15px;color:#b8c4d0;">Prize</div>
-    <div id="ms-prize" style="font-size:15px;color:#4ade80;font-weight:400;">$25</div>
-  </div>
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:15px;color:#b8c4d0;">Clues</div>
-    <div id="ms-clues" style="font-size:15px;color:#b8c4d0;">5 · Standard</div>
-  </div>
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:15px;color:#b8c4d0;">Style</div>
-    <div id="ms-style" style="font-size:15px;color:#b8c4d0;">Pirate</div>
-  </div>
-  <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:15px;color:#b8c4d0;">Location</div>
-    <div id="ms-location" style="font-size:15px;color:#b8c4d0;max-width:160px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
-  </div>
-</div>
-
-<div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">SCHEDULE QUEST</div>
-
-<!-- 2x2 preset grid -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-  <div class="preset-btn" data-preset="montue" onclick="selPreset('montue',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
-  </div>
-  <div class="preset-btn" data-preset="wedfri" onclick="selPreset('wedfri',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
-  </div>
-  <div class="preset-btn" data-preset="weekend" onclick="selPreset('weekend',this)" style="border-radius:14px;border:1.5px solid rgba(45,212,191,.3);background:rgba(45,212,191,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:#2dd4bf;">Weekend</div>
-  </div>
-  <div class="preset-btn" data-preset="custom" onclick="selPreset('custom',this)" style="border-radius:14px;border:1.5px solid rgba(167,139,250,.3);background:rgba(167,139,250,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:#a78bfa;">Custom</div>
-  </div>
-</div>
-
-<!-- Info bar — updates based on selection -->
-<div id="preset-infobar" style="border-radius:14px;padding:20px 20px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-  <div id="preset-info-main" style="font-size:20px;color:#fff;margin-bottom:6px;line-height:1.4;">Select a window above</div>
-  <div id="preset-info-sub" style="font-size:17px;color:#b8c4d0;line-height:1.5;">Your quest will run during this window</div>
-</div>
-
-<!-- Custom date picker — hidden until custom selected -->
-<div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px 18px;margin-bottom:8px;">
-  <div style="font-size:15px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:12px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-    <div style="flex:1;">
-      <div style="font-size:15px;color:#b8c4d0;margin-bottom:6px;">START DATE</div>
-      <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+    <!-- Mini summary from steps 1-3 -->
+    <div id="mini-summary" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:14px;">
+      <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:15px;color:#b8c4d0;">Prize</div>
+        <div id="ms-prize" style="font-size:15px;color:#4ade80;font-weight:400;">$25</div>
+      </div>
+      <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:15px;color:#b8c4d0;">Clues</div>
+        <div id="ms-clues" style="font-size:15px;color:#b8c4d0;">5 · Standard</div>
+      </div>
+      <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:15px;color:#b8c4d0;">Style</div>
+        <div id="ms-style" style="font-size:15px;color:#b8c4d0;">Pirate</div>
+      </div>
+      <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:15px;color:#b8c4d0;">Location</div>
+        <div id="ms-location" style="font-size:15px;color:#b8c4d0;max-width:160px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
+      </div>
     </div>
-    <div style="color:#b8c4d0;font-size:18px;margin-top:18px;">→</div>
-    <div style="flex:1;">
-      <div style="font-size:15px;color:#b8c4d0;margin-bottom:6px;">END DATE</div>
-      <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+
+    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">SCHEDULE QUEST</div>
+
+    <!-- 2x2 preset grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div class="preset-btn" data-preset="montue" onclick="selPreset('montue',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
+      </div>
+      <div class="preset-btn" data-preset="wedfri" onclick="selPreset('wedfri',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
+      </div>
+      <div class="preset-btn" data-preset="weekend" onclick="selPreset('weekend',this)" style="border-radius:14px;border:1.5px solid rgba(45,212,191,.3);background:rgba(45,212,191,.05);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:25px;font-weight:400;color:#2dd4bf;">Weekend</div>
+      </div>
+      <div class="preset-btn" data-preset="custom" onclick="selPreset('custom',this)" style="border-radius:14px;border:1.5px solid rgba(167,139,250,.3);background:rgba(167,139,250,.05);padding:22px 10px;cursor:pointer;text-align:center;">
+        <div style="font-size:25px;font-weight:400;color:#a78bfa;">Custom</div>
+      </div>
     </div>
-  </div>
-  <div id="custom-date-msg" style="font-size:15px;color:rgba(167,139,250,.7);line-height:1.5;"></div>
-</div>
 
-<!-- Hidden compat fields -->
-<input type="hidden" id="dur-slider" value="48"/>
-<input type="hidden" id="clue-slider" value="5"/>
-<input type="hidden" id="quest-start-date" value=""/>
-<input type="hidden" id="quest-end-date" value=""/>
-<div style="height:8px;"></div>
-```
+    <!-- Info bar — updates based on selection -->
+    <div id="preset-infobar" style="border-radius:14px;padding:20px 20px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="preset-info-main" style="font-size:20px;color:#fff;margin-bottom:6px;line-height:1.4;">Select a window above</div>
+      <div id="preset-info-sub" style="font-size:17px;color:#b8c4d0;line-height:1.5;">Your quest will run during this window</div>
+    </div>
 
+    <!-- Custom date picker — hidden until custom selected -->
+    <div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px 18px;margin-bottom:8px;">
+      <div style="font-size:15px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:12px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <div style="flex:1;">
+          <div style="font-size:15px;color:#b8c4d0;margin-bottom:6px;">START DATE</div>
+          <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+        </div>
+        <div style="color:#b8c4d0;font-size:18px;margin-top:18px;">→</div>
+        <div style="flex:1;">
+          <div style="font-size:15px;color:#b8c4d0;margin-bottom:6px;">END DATE</div>
+          <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
+        </div>
+      </div>
+      <div id="custom-date-msg" style="font-size:15px;color:rgba(167,139,250,.7);line-height:1.5;"></div>
+    </div>
+
+    <!-- Hidden compat fields -->
+    <input type="hidden" id="dur-slider" value="48"/>
+    <input type="hidden" id="clue-slider" value="5"/>
+    <input type="hidden" id="quest-start-date" value=""/>
+    <input type="hidden" id="quest-end-date" value=""/>
+    <div style="height:8px;"></div>
   </div>
   <div class="step-footer">
     <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">Schedule Quest →</button>
@@ -648,13 +636,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- TOAST -->
-
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
-
 <!-- AI Clue Generation Loading Overlay -->
-
 <div id="ai-loading" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;">
   <div id="ai-spinner" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(232,168,32,.15);border-top-color:#e8a820;animation:aiSpin 1s linear infinite;margin-bottom:24px;"></div>
   <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:8px;">AI Clues Generating</div>
@@ -671,55 +656,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 
 <!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
-
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
 <div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-end;justify-content:center;padding:0;pointer-events:none;">
   <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.1);border-bottom:none;border-radius:24px 24px 0 0;max-width:480px;width:100%;padding:28px 22px 36px;box-shadow:0 -20px 60px rgba(0,0,0,.8);pointer-events:auto;transform:translateY(100%);opacity:0;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .35s ease;position:relative;">
 
-```
-<!-- Drag handle -->
-<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 22px;"></div>
+    <!-- Drag handle -->
+    <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 22px;"></div>
 
-<!-- Icon + heading -->
-<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;">
-  <div style="width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);margin-bottom:14px;">
-    <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
-    <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
-  </div>
-  <div style="font-size:23px;color:#fff;font-weight:400;margin-bottom:5px;">Almost there</div>
-  <div style="font-size:16px;color:#b8c4d0;line-height:1.5;text-align:center;padding:0 8px;">Sign in to schedule your quest and get notified when someone wins.</div>
-</div>
+    <!-- Icon + heading -->
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;">
+      <div style="width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#e8a820,#92400e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(201,137,12,.3);margin-bottom:14px;">
+        <div style="font-size:15px;color:#fff;font-weight:400;line-height:1;">Finder</div>
+        <div style="font-size:15px;color:#fff;font-weight:200;line-height:1;margin-top:2px;">Seek</div>
+      </div>
+      <div style="font-size:23px;color:#fff;font-weight:400;margin-bottom:5px;">Almost there</div>
+      <div style="font-size:16px;color:#b8c4d0;line-height:1.5;text-align:center;padding:0 8px;">Sign in to schedule your quest and get notified when someone wins.</div>
+    </div>
 
-<div id="eg-error" style="font-size:15px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
+    <div id="eg-error" style="font-size:15px;color:#f87171;margin-bottom:10px;min-height:0;text-align:center;"></div>
 
-<!-- Apple Sign In — primary -->
-<button onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:#fff;border:none;border-radius:14px;font-size:18px;font-weight:500;color:#000;cursor:pointer;font-family:inherit;margin-bottom:10px;">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-  Sign in with Apple
-</button>
+    <!-- Apple Sign In — primary -->
+    <button onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:#fff;border:none;border-radius:14px;font-size:18px;font-weight:500;color:#000;cursor:pointer;font-family:inherit;margin-bottom:10px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      Sign in with Apple
+    </button>
 
-<!-- Google Sign In — secondary -->
-<button onclick="signUpFromGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-size:18px;font-weight:400;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:16px;">
-  <svg width="19" height="19" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-  Sign in with Google
-</button>
+    <!-- Google Sign In — secondary -->
+    <button onclick="signUpFromGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-size:18px;font-weight:400;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:16px;">
+      <svg width="19" height="19" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Sign in with Google
+    </button>
 
-<!-- Divider -->
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-  <span style="font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;">OR</span>
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-</div>
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      <span style="font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;">OR</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
 
-<!-- Email fallback -->
-<input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
-  style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
-<button id="eg-continue-btn" onclick="submitEmailGate()"
-  style="width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:14px;">Continue with Email →</button>
+    <!-- Email fallback -->
+    <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
+      style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
+    <button id="eg-continue-btn" onclick="submitEmailGate()"
+      style="width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:14px;">Continue with Email →</button>
 
-<div style="font-size:13px;color:rgba(184,196,208,.4);text-align:center;line-height:1.5;">🔒 Used only for quest notifications and payment receipt.</div>
-```
-
+    <div style="font-size:13px;color:rgba(184,196,208,.4);text-align:center;line-height:1.5;">🔒 Used only for quest notifications and payment receipt.</div>
   </div>
 </div>
 
@@ -2168,7 +2149,6 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
-
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -2176,9 +2156,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-
 <!-- ====== PAYMENT MODAL ====== -->
-
 <div class="pm-backdrop" id="pm-backdrop" onclick="closePaymentModal()"></div>
 <div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
   <div class="pm-handle"></div>
@@ -2321,7 +2299,6 @@ async function submitPayment(){
 </script>
 
 <!-- HAMBURGER DRAWER -->
-
 <div class="hb-backdrop" id="hb-backdrop"></div>
 <div class="hb-drawer" id="hb-drawer">
   <!-- signin section -->
@@ -2402,6 +2379,13 @@ async function submitPayment(){
     else{document.body.style.overflow='';document.body.style.touchAction='';}
   }
   window.closeHamburger=function(){toggle(false);};
+  window.openHamburger=function(){
+    // Dismiss any visible toast so it doesn't block the drawer
+    var t=document.getElementById('toast');
+    if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
+    clearTimeout(window._toastT);
+    toggle(true);
+  };
   async function loadProfile(){
     var SB='https://qeiuycuasjkopxfkmggp.supabase.co';
     var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
@@ -2937,144 +2921,135 @@ function renderHsModal() {
         '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.25);border-radius:20px;padding:4px 12px;font-size:15px;color:#e8a820;">🚗 Seekers will navigate here</div>' +
       '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="3" placeholder="e.g. Krogers on Loop 336, Conroe TX&#10;Memorial Park near the fountain&#10;Walmart on Highway 105...">' + (_hsData.location||'') + '</textarea>' +
+      '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
 
-```
-  '<div style="margin-top:8px;padding:10px 13px;background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.15);border-radius:9px;font-size:15px;color:rgba(232,168,32,.7);line-height:1.5;">📍 Specific location, street names, neighborhood, etc.</div>';
+    setTimeout(function() {
+      var pickBtn = document.getElementById('hs-map-pick-btn');
+      if (pickBtn) pickBtn.addEventListener('click', function() { openMapModal(); });
+    }, 0);
+  } else {
+    var cl2 = _hsData.clues[cur-1] || {};
+    var isFinal2 = cur === total;
+    var hintPhs = ['Light poles on the left facing the store','Walk towards the pharmacy','Entrance — something used for chimneys','Behind the brick pillar at the entrance','Base of the oak tree near the exit','Under the green bench by the cart return'];
+    var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
+    var aPhs = ['4','2','brick','black','oak','green'];
+    var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
+    var selAction = cl2.action || '';
+    var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
 
-setTimeout(function() {
-  var pickBtn = document.getElementById('hs-map-pick-btn');
-  if (pickBtn) pickBtn.addEventListener('click', function() { openMapModal(); });
-}, 0);
-```
-
-} else {
-var cl2 = _hsData.clues[cur-1] || {};
-var isFinal2 = cur === total;
-var hintPhs = [‘Light poles on the left facing the store’,‘Walk towards the pharmacy’,‘Entrance — something used for chimneys’,‘Behind the brick pillar at the entrance’,‘Base of the oak tree near the exit’,‘Under the green bench by the cart return’];
-var qPhs = [‘How many light poles?’,‘How many drive through lanes?’,‘What is used for chimneys?’,‘What color is the mat?’,‘What type of tree?’,‘What color is the bench?’];
-var aPhs = [‘4’,‘2’,‘brick’,‘black’,‘oak’,‘green’];
-var ph = hintPhs[cur-1] || ‘Specific landmark or feature here’;
-var selAction = cl2.action || ‘’;
-var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
-
-```
-// Pick Action button
-var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-  '<div style="flex:1;position:relative;">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;">' +
-      '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
-      (actionObj ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' : '') +
-    '</div>' +
-    '<select id="hs-action-sel" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;">' +
-      '<option value="">Pick Action...</option>' +
-      HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
-    '</select>' +
-  '</div>' +
-  '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
-    '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
-    '<div style="font-size:26px;color:#e8a820;font-weight:500;line-height:1;">' + cur + (isFinal2 ? '★' : '') + '</div>' +
-  '</div>' +
-'</div>';
-
-// Fields — shown fully if action picked, dimmed if not
-var hintDone = (cl2.hint||'').trim().length > 0;
-var qDone    = (cl2.question||'').trim().length > 0;
-var aDone    = (cl2.answer||'').trim().length > 0;
-var CK = '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>';
-var fieldsOpacity = actionObj ? '1' : '0.3';
-var fieldsPointer = actionObj ? 'auto' : 'none';
-var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
-  '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
-  '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
-  (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
-    '<div style="margin-top:10px;">' +
-      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
-      '<div class="hs-qa">' +
-        '<div style="flex:3;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
-        '<div style="flex:1;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
+    // Pick Action button
+    var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
+      '<div style="flex:1;position:relative;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;">' +
+          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
+          (actionObj ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' : '') +
+        '</div>' +
+        '<select id="hs-action-sel" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;">' +
+          '<option value="">Pick Action...</option>' +
+          HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
+        '</select>' +
       '</div>' +
-      '<div class="hs-hint" style="margin-top:6px;">AI writes the riddle · you set Q&A</div>' +
-    '</div>'
-  ) +
-'</div>';
+      '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
+        '<div style="font-size:26px;color:#e8a820;font-weight:500;line-height:1;">' + cur + (isFinal2 ? '★' : '') + '</div>' +
+      '</div>' +
+    '</div>';
 
-panel.innerHTML = actionPickHtml + fieldsHtml;
+    // Fields — shown fully if action picked, dimmed if not
+    var hintDone = (cl2.hint||'').trim().length > 0;
+    var qDone    = (cl2.question||'').trim().length > 0;
+    var aDone    = (cl2.answer||'').trim().length > 0;
+    var CK = '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>';
+    var fieldsOpacity = actionObj ? '1' : '0.3';
+    var fieldsPointer = actionObj ? 'auto' : 'none';
+    var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
+      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
+      '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '">' + (cl2.hint||'') + '</textarea>' +
+      (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
+        '<div style="margin-top:10px;">' +
+          '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
+          '<div class="hs-qa">' +
+            '<div style="flex:3;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" value="' + (cl2.question||'') + '"/></div>' +
+            '<div style="flex:1;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" value="' + (cl2.answer||'') + '"/></div>' +
+          '</div>' +
+          '<div class="hs-hint" style="margin-top:6px;">AI writes the riddle · you set Q&A</div>' +
+        '</div>'
+      ) +
+    '</div>';
 
-// Wire overlay select
-setTimeout(function() {
-  var sel = document.getElementById('hs-action-sel');
-  if (sel) {
-    sel.addEventListener('change', function() {
-      if (this.value) hsSetAction(this.value);
-    });
+    panel.innerHTML = actionPickHtml + fieldsHtml;
+
+    // Wire overlay select
+    setTimeout(function() {
+      var sel = document.getElementById('hs-action-sel');
+      if (sel) {
+        sel.addEventListener('change', function() {
+          if (this.value) hsSetAction(this.value);
+        });
+      }
+    }, 0);
   }
-}, 0);
-```
 
+  // ── Nav ───────────────────────────────────────────────────
+  var nav = document.getElementById('hs-nav');
+  var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||'').trim() && cl.action && (isFin || ((cl.question||'').trim() && (cl.answer||'').trim())); });
+  if (cur === total) {
+    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+      '<button class="hs-nav-next" onclick="hsGenerateAndPreview()">' + (allDone ? 'Generate Clues ✨' : 'Generate Clues ✨') + '</button>';
+  } else if (cur === 0) {
+    nav.innerHTML = '<div style="flex:1;"></div><button class="hs-nav-next" onclick="hsGoTo(1)">Next Clue →</button>';
+  } else {
+    nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+      '<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')">Next Clue →</button>';
+  }
 }
 
-// ── Nav ───────────────────────────────────────────────────
-var nav = document.getElementById(‘hs-nav’);
-var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||’’).trim() && cl.action && (isFin || ((cl.question||’’).trim() && (cl.answer||’’).trim())); });
-if (cur === total) {
-nav.innerHTML = ‘<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>’ +
-‘<button class="hs-nav-next" onclick="hsGenerateAndPreview()">’ + (allDone ? ‘Generate Clues ✨’ : ‘Generate Clues ✨’) + ‘</button>’;
-} else if (cur === 0) {
-nav.innerHTML = ‘<div style="flex:1;"></div><button class="hs-nav-next" onclick="hsGoTo(1)">Next Clue →</button>’;
-} else {
-nav.innerHTML = ‘<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>’ +
-‘<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')">Next Clue →</button>’;
-}
-}
 
 // ── Generate clues from hsData then show inline preview ───────
 var _generatedClues = null;
 var _generatedLocationRiddle = null;
 
 async function hsGenerateAndPreview() {
-saveHsPanel();
-var sheet = document.querySelector(’.hs-modal-sheet’);
-if (!sheet) return;
-var origHTML = sheet.innerHTML;
+  saveHsPanel();
+  var sheet = document.querySelector('.hs-modal-sheet');
+  if (!sheet) return;
+  var origHTML = sheet.innerHTML;
 
-sheet.innerHTML = ‘<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">’ +
-‘<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>’ +
-‘<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues…</div>’ +
-‘<div style="font-size:15px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>’ +
-‘</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>’;
+  sheet.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">' +
+    '<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>' +
+    '<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues...</div>' +
+    '<div style="font-size:15px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>' +
+    '</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>';
 
-try {
-var searchAddress = (document.getElementById(“map-search”) && document.getElementById(“map-search”).value) || “”;
-var persona = “pirate”;
-try { var fs2 = JSON.parse(localStorage.getItem(“fs_newquest_form”)||”{}”); if (fs2.persona) persona = fs2.persona; } catch(e2){}
+  try {
+    var searchAddress = (document.getElementById("map-search") && document.getElementById("map-search").value) || "";
+    var persona = "pirate";
+    try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
 
-```
-var resp = await fetch("/api/generate-clues", {
-  method: "POST",
-  headers: {"Content-Type": "application/json"},
-  body: JSON.stringify({
-    description: _hsData.location || searchAddress,
-    clueCount: _hsClueCount,
-    lat: selectedLat, lng: selectedLng,
-    persona: persona,
-    placeName: selectedPlaceName || "",
-    searchAddress: searchAddress,
-    hsData: _hsData
-  })
-});
-var data = await resp.json();
-if (!resp.ok) throw new Error(data.error || "Generation failed");
-_generatedClues = data.clues || [];
-_generatedLocationRiddle = data.location_riddle || "";
-sheet.innerHTML = origHTML;
-hsShowPreview();
-```
-
-} catch(err) {
-sheet.innerHTML = origHTML;
-showToast(“Generation failed: “ + err.message, “error”);
-renderHsModal();
-}
+    var resp = await fetch("/api/generate-clues", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        description: _hsData.location || searchAddress,
+        clueCount: _hsClueCount,
+        lat: selectedLat, lng: selectedLng,
+        persona: persona,
+        placeName: selectedPlaceName || "",
+        searchAddress: searchAddress,
+        hsData: _hsData
+      })
+    });
+    var data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "Generation failed");
+    _generatedClues = data.clues || [];
+    _generatedLocationRiddle = data.location_riddle || "";
+    sheet.innerHTML = origHTML;
+    hsShowPreview();
+  } catch(err) {
+    sheet.innerHTML = origHTML;
+    showToast("Generation failed: " + err.message, "error");
+    renderHsModal();
+  }
 }
 
 // ── PREVIEW VOICE ────────────────────────────────────────────
@@ -3082,196 +3057,195 @@ var _pvSpeaking = false;
 var _pvKey = null;
 
 var PREVIEW_PERSONA_VOICE = {
-pirate:       { rate: 0.82, pitch: 0.78, preferMale: true  },
-poetic:       { rate: 0.75, pitch: 0.90, preferMale: false },
-insults:      { rate: 1.05, pitch: 0.85, preferMale: true  },
-sarcastic:    { rate: 1.00, pitch: 1.05, preferMale: false },
-hillbilly:    { rate: 0.88, pitch: 0.92, preferMale: true  },
-kid:          { rate: 1.10, pitch: 1.30, preferMale: false },
-grandma:      { rate: 0.72, pitch: 1.05, preferMale: false },
-surfer:       { rate: 0.95, pitch: 1.00, preferMale: true  },
-investigator: { rate: 0.90, pitch: 0.80, preferMale: true  },
-mysterious:   { rate: 0.72, pitch: 0.65, preferMale: false },
-detective:    { rate: 0.95, pitch: 0.88, preferMale: true  },
-wizard:       { rate: 0.78, pitch: 0.60, preferMale: true  },
-default:      { rate: 0.88, pitch: 0.82, preferMale: false }
+  pirate:       { rate: 0.82, pitch: 0.78, preferMale: true  },
+  poetic:       { rate: 0.75, pitch: 0.90, preferMale: false },
+  insults:      { rate: 1.05, pitch: 0.85, preferMale: true  },
+  sarcastic:    { rate: 1.00, pitch: 1.05, preferMale: false },
+  hillbilly:    { rate: 0.88, pitch: 0.92, preferMale: true  },
+  kid:          { rate: 1.10, pitch: 1.30, preferMale: false },
+  grandma:      { rate: 0.72, pitch: 1.05, preferMale: false },
+  surfer:       { rate: 0.95, pitch: 1.00, preferMale: true  },
+  investigator: { rate: 0.90, pitch: 0.80, preferMale: true  },
+  mysterious:   { rate: 0.72, pitch: 0.65, preferMale: false },
+  detective:    { rate: 0.95, pitch: 0.88, preferMale: true  },
+  wizard:       { rate: 0.78, pitch: 0.60, preferMale: true  },
+  default:      { rate: 0.88, pitch: 0.82, preferMale: false }
 };
 
 function pvGetSettings() {
-var p = (document.querySelector(’.persona-card.selected’)||{}).dataset;
-var persona = (p && p.persona) || ‘default’;
-return PREVIEW_PERSONA_VOICE[persona] || PREVIEW_PERSONA_VOICE.default;
+  var p = (document.querySelector('.persona-card.selected')||{}).dataset;
+  var persona = (p && p.persona) || 'default';
+  return PREVIEW_PERSONA_VOICE[persona] || PREVIEW_PERSONA_VOICE.default;
 }
 
 function pvPickVoice(settings) {
-var voices = window.speechSynthesis.getVoices();
-if (!voices || !voices.length) return null;
-var eng = voices.filter(function(v){ return v.lang.indexOf(‘en’)===0; });
-if (!eng.length) eng = voices;
-var gk = settings.preferMale
-? [‘male’,‘man’,‘daniel’,‘alex’,‘fred’,‘ralph’,‘aaron’,‘tom’,‘david’,‘james’,‘mark’,‘ryan’,‘oliver’]
-: [‘female’,‘woman’,‘samantha’,‘victoria’,‘karen’,‘moira’,‘fiona’,‘tessa’,‘alice’,‘zoe’,‘kate’,‘emily’,‘susan’];
-var match = eng.filter(function(v){ var n=v.name.toLowerCase(); return gk.some(function(k){ return n.indexOf(k)>=0; }); });
-var pool = match.length ? match : eng;
-var local = pool.filter(function(v){ return v.localService; });
-return local.length ? local[0] : pool[0];
+  var voices = window.speechSynthesis.getVoices();
+  if (!voices || !voices.length) return null;
+  var eng = voices.filter(function(v){ return v.lang.indexOf('en')===0; });
+  if (!eng.length) eng = voices;
+  var gk = settings.preferMale
+    ? ['male','man','daniel','alex','fred','ralph','aaron','tom','david','james','mark','ryan','oliver']
+    : ['female','woman','samantha','victoria','karen','moira','fiona','tessa','alice','zoe','kate','emily','susan'];
+  var match = eng.filter(function(v){ var n=v.name.toLowerCase(); return gk.some(function(k){ return n.indexOf(k)>=0; }); });
+  var pool = match.length ? match : eng;
+  var local = pool.filter(function(v){ return v.localService; });
+  return local.length ? local[0] : pool[0];
 }
 
 function pvSpeak(key, text) {
-if (!window.speechSynthesis) { showToast(‘Voice not supported on this device’,’’); return; }
-if (_pvSpeaking && _pvKey === key) { pvStop(); return; }
-pvStop(true);
-var settings = pvGetSettings();
-var utt = new SpeechSynthesisUtterance(text);
-utt.rate = settings.rate;
-utt.pitch = settings.pitch;
-utt.lang = ‘en-US’;
-var voice = pvPickVoice(settings);
-if (voice) utt.voice = voice;
-utt.onstart = function(){ _pvSpeaking=true; _pvKey=key; pvUpdateBtn(key,true); };
-utt.onend = utt.onerror = function(){ _pvSpeaking=false; _pvKey=null; pvUpdateBtn(key,false); };
-window.speechSynthesis.speak(utt);
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device',''); return; }
+  if (_pvSpeaking && _pvKey === key) { pvStop(); return; }
+  pvStop(true);
+  var settings = pvGetSettings();
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.rate = settings.rate;
+  utt.pitch = settings.pitch;
+  utt.lang = 'en-US';
+  var voice = pvPickVoice(settings);
+  if (voice) utt.voice = voice;
+  utt.onstart = function(){ _pvSpeaking=true; _pvKey=key; pvUpdateBtn(key,true); };
+  utt.onend = utt.onerror = function(){ _pvSpeaking=false; _pvKey=null; pvUpdateBtn(key,false); };
+  window.speechSynthesis.speak(utt);
 }
 
 function pvStop(silent) {
-window.speechSynthesis.cancel();
-var prev=_pvKey; _pvSpeaking=false; _pvKey=null;
-if(prev&&!silent) pvUpdateBtn(prev,false);
+  window.speechSynthesis.cancel();
+  var prev=_pvKey; _pvSpeaking=false; _pvKey=null;
+  if(prev&&!silent) pvUpdateBtn(prev,false);
 }
 
-var PV_SPEAKER_SVG = ‘<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>’;
-var PV_PAUSE_SVG  = ‘<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>’;
+var PV_SPEAKER_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+var PV_PAUSE_SVG  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
 function pvUpdateBtn(key, speaking) {
-var btn = document.getElementById(‘pv-voice-’+key);
-if (!btn) return;
-btn.innerHTML = speaking ? PV_PAUSE_SVG : PV_SPEAKER_SVG;
-btn.style.background = speaking ? ‘rgba(74,222,128,.2)’ : ‘rgba(255,255,255,.06)’;
-btn.style.borderColor = speaking ? ‘rgba(74,222,128,.5)’ : ‘rgba(255,255,255,.12)’;
-btn.style.color = speaking ? ‘#4ade80’ : ‘#b8c4d0’;
+  var btn = document.getElementById('pv-voice-'+key);
+  if (!btn) return;
+  btn.innerHTML = speaking ? PV_PAUSE_SVG : PV_SPEAKER_SVG;
+  btn.style.background = speaking ? 'rgba(74,222,128,.2)' : 'rgba(255,255,255,.06)';
+  btn.style.borderColor = speaking ? 'rgba(74,222,128,.5)' : 'rgba(255,255,255,.12)';
+  btn.style.color = speaking ? '#4ade80' : '#b8c4d0';
 }
 
 function pvBtn(key, text) {
-var safe = text.replace(/’/g, “\’”).replace(/\n/g, ’ ‘);
-return ‘<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">’+PV_SPEAKER_SVG+’</button>’;
+  var safe = text.replace(/'/g, "\\'").replace(/\n/g, ' ');
+  return '<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+PV_SPEAKER_SVG+'</button>';
 }
 
 function hsShowPreview() {
-if (window.speechSynthesis) window.speechSynthesis.cancel();
-var sheet = document.querySelector(”.hs-modal-sheet”);
-if (!sheet) return;
-var html = ‘<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">’ +
-‘<div style="font-size:20px;color:#fff;">Quest Preview</div>’ +
-‘<div style="font-size:13px;color:#b8c4d0;">Seeker view</div></div>’ +
-‘<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">’;
-if (_generatedLocationRiddle) {
-html += ‘<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">’ +
-‘<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">’ +
-‘<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>’ +
-pvBtn(‘loc’, _generatedLocationRiddle) +
-‘</div>’ +
-‘<div style="font-size:17px;color:#fff;line-height:1.6;">’ + _generatedLocationRiddle + “</div></div>”;
-}
-(_generatedClues || []).forEach(function(clue, i) {
-var isFinal = i === _hsClueCount - 1;
-var label = isFinal ? “Final Clue” : “Clue “ + (i+1);
-var key = ‘clue’ + i;
-html += ‘<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">’ +
-‘<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">’ +
-‘<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">’ + label + “</div>” +
-pvBtn(key, clue.text || ‘’) +
-‘</div>’ +
-‘<div style=“font-size:17px;color:#fff;line-height:1.6;margin-bottom:’ + (clue.question && !isFinal ? “10px” : “0”) + ‘;”>’ + (clue.text || “”) + “</div>” +
-(clue.question && !isFinal ? ‘<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">’ + clue.question + “</div>” : “”) +
-(clue.answer && !isFinal ? ‘<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">’ + clue.answer + “</span></div>” : “”) +
-“</div>”;
-});
-html += “</div>” +
-‘<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">’ +
-‘<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:17px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>’ +
-‘<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;">Confirm & Save →</button>’ +
-“</div>”;
-sheet.innerHTML = html;
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  var sheet = document.querySelector(".hs-modal-sheet");
+  if (!sheet) return;
+  var html = '<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
+    '<div style="font-size:20px;color:#fff;">Quest Preview</div>' +
+    '<div style="font-size:13px;color:#b8c4d0;">Seeker view</div></div>' +
+    '<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">';
+  if (_generatedLocationRiddle) {
+    html += '<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+        '<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>' +
+        pvBtn('loc', _generatedLocationRiddle) +
+      '</div>' +
+      '<div style="font-size:17px;color:#fff;line-height:1.6;">' + _generatedLocationRiddle + "</div></div>";
+  }
+  (_generatedClues || []).forEach(function(clue, i) {
+    var isFinal = i === _hsClueCount - 1;
+    var label = isFinal ? "Final Clue" : "Clue " + (i+1);
+    var key = 'clue' + i;
+    html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+        '<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">' + label + "</div>" +
+        pvBtn(key, clue.text || '') +
+      '</div>' +
+      '<div style="font-size:17px;color:#fff;line-height:1.6;margin-bottom:' + (clue.question && !isFinal ? "10px" : "0") + ';">' + (clue.text || "") + "</div>" +
+      (clue.question && !isFinal ? '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">' + clue.question + "</div>" : "") +
+      (clue.answer && !isFinal ? '<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">' + clue.answer + "</span></div>" : "") +
+      "</div>";
+  });
+  html += "</div>" +
+    '<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">' +
+    '<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:17px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>' +
+    '<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;">Confirm &amp; Save →</button>' +
+    "</div>";
+  sheet.innerHTML = html;
 }
 
 function hsEditFromPreview() {
-if (window.speechSynthesis) window.speechSynthesis.cancel();
-_hsCurrent = _hsClueCount;
-var sheet = document.querySelector(”.hs-modal-sheet”);
-sheet.innerHTML =
-‘<div class="hs-modal-header"><div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>’ +
-‘<button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button></div>’ +
-‘<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>’ +
-‘<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>’ +
-‘<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>’ +
-‘<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>’ +
-‘<div class="hs-nav" id="hs-nav"></div>’;
-renderHsModal();
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  _hsCurrent = _hsClueCount;
+  var sheet = document.querySelector(".hs-modal-sheet");
+  sheet.innerHTML =
+    '<div class="hs-modal-header"><div style="font-size:20px;color:#fff;font-weight:400;">Hiding Spot Details</div>' +
+    '<button onclick="closeHsModal()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#b8c4d0;font-size:17px;padding:8px 16px;font-family:inherit;cursor:pointer;">Done</button></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>' +
+    '<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>' +
+    '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
+    '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
+    '<div class="hs-nav" id="hs-nav"></div>';
+  renderHsModal();
 }
 
 function hsConfirmClues() {
-if (window.speechSynthesis) window.speechSynthesis.cancel();
-if (_generatedClues) {
-_generatedClues.forEach(function(cl, i) {
-if (_hsData.clues[i]) {
-_hsData.clues[i].generatedText = cl.text || “”;
-_hsData.clues[i].generatedQuestion = cl.question || “”;
-_hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || “”;
-}
-});
-}
-_hsData.locationRiddle = _generatedLocationRiddle || “”;
-closeHsModal();
-showToast(“✓ Clues saved!”, “success”);
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (_generatedClues) {
+    _generatedClues.forEach(function(cl, i) {
+      if (_hsData.clues[i]) {
+        _hsData.clues[i].generatedText = cl.text || "";
+        _hsData.clues[i].generatedQuestion = cl.question || "";
+        _hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || "";
+      }
+    });
+  }
+  _hsData.locationRiddle = _generatedLocationRiddle || "";
+  closeHsModal();
+  showToast("✓ Clues saved!", "success");
 }
 
 function hsSetAction(actionId) {
-var idx = _hsCurrent - 1;
-if (idx < 0) return;
-if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:’’, question:’’, answer:’’, action:’’ };
-_hsData.clues[idx].action = actionId;
-renderHsModal(); // re-render so button updates and fields appear
+  var idx = _hsCurrent - 1;
+  if (idx < 0) return;
+  if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
+  _hsData.clues[idx].action = actionId;
+  renderHsModal(); // re-render so button updates and fields appear
 }
 
 function buildHsText() {
-var parts = [];
-if (_hsData.location) parts.push(‘Location: ’ + _hsData.location);
-_hsData.clues.forEach(function(cl, i) {
-if (cl.hint) {
-var action = HS_ACTIONS.find(function(a){ return a.id === cl.action; });
-parts.push(‘Clue ’ + (i+1) + ’ [’ + (action ? action.label : ‘Walk towards’) + ‘]: ’ + cl.hint);
-}
-});
-return parts.join(’\n’);
+  var parts = [];
+  if (_hsData.location) parts.push('Location: ' + _hsData.location);
+  _hsData.clues.forEach(function(cl, i) {
+    if (cl.hint) {
+      var action = HS_ACTIONS.find(function(a){ return a.id === cl.action; });
+      parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + ']: ' + cl.hint);
+    }
+  });
+  return parts.join('\n');
 }
 // Photo handler
 function handleHsPhoto(input) {
-if (!input.files || !input.files[0]) return;
-var file = input.files[0];
-var reader = new FileReader();
-reader.onload = function(e) {
-document.getElementById(‘hs-photo-img’).src = e.target.result;
-document.getElementById(‘hs-photo-preview’).style.display = ‘block’;
-document.getElementById(‘hs-photo-label’).textContent = ‘✓ Photo added’;
-document.getElementById(‘hs-photo-label’).style.color = ‘#4ade80’;
-// Update photo button title with checkmark
-var photoBtn = document.getElementById(‘hs-photo-btn’);
-if (photoBtn) {
-var titleEl = photoBtn.querySelector(‘div[style*=“font-size:18px”]’);
-if (titleEl) titleEl.innerHTML = ‘Add Photo <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>’;
-photoBtn.style.borderColor = ‘rgba(74,222,128,.35)’;
-photoBtn.style.background = ‘rgba(74,222,128,.04)’;
-}
-// Store for upload
-window._hsPhotoDataUrl = e.target.result;
-};
-reader.readAsDataURL(file);
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('hs-photo-img').src = e.target.result;
+    document.getElementById('hs-photo-preview').style.display = 'block';
+    document.getElementById('hs-photo-label').textContent = '✓ Photo added';
+    document.getElementById('hs-photo-label').style.color = '#4ade80';
+    // Update photo button title with checkmark
+    var photoBtn = document.getElementById('hs-photo-btn');
+    if (photoBtn) {
+      var titleEl = photoBtn.querySelector('div[style*="font-size:18px"]');
+      if (titleEl) titleEl.innerHTML = 'Add Photo <span style="color:#4ade80;font-size:15px;font-weight:500;">✓</span>';
+      photoBtn.style.borderColor = 'rgba(74,222,128,.35)';
+      photoBtn.style.background = 'rgba(74,222,128,.04)';
+    }
+    // Store for upload
+    window._hsPhotoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 </script>
 
 <!-- FULL SCREEN MAP MODAL -->
-
 <div class="map-modal-overlay" id="map-modal-overlay">
   <!-- Topbar with back + full-width search + location -->
   <div class="map-modal-topbar" style="position:relative;">
@@ -3296,7 +3270,6 @@ reader.readAsDataURL(file);
   </div>
 
   <!-- Map fills remaining space — padded at bottom so footer doesn't overlap -->
-
   <div class="map-modal-map" style="padding-bottom:calc(72px + env(safe-area-inset-bottom,16px));">
     <div id="map-modal-container"></div>
     <div class="map-center-pin" id="map-center-pin">📍</div>
@@ -3307,14 +3280,12 @@ reader.readAsDataURL(file);
 </div>
 
 <!-- Footer OUTSIDE the overlay — completely clear of Google Maps iframe -->
-
 <div id="map-modal-footer-outer" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:30000;padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);gap:8px;">
   <button id="map-modal-sat" onclick="toggleModalSatellite()" style="padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;">🛰️ Satellite</button>
   <button id="map-modal-confirm" onclick="confirmMapLocation()" style="flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;">Confirm Location</button>
 </div>
 
 <!-- HIDING SPOT DETAILS MODAL -->
-
 <div class="hs-modal-overlay" id="hs-modal-overlay" onclick="hsModalBgClose(event)">
   <div class="hs-modal-sheet">
     <div class="hs-modal-header">

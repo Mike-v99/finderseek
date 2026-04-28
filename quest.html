@@ -543,6 +543,12 @@ if('serviceWorker'in navigator){window.addEventListener('load',function(){naviga
   function init(){var bd=document.getElementById('hb-backdrop'),dr=document.getElementById('hb-drawer');if(!bd||!dr)return;bd.addEventListener('click',function(){toggle(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});loadProfile();}
   function toggle(open){_open=open!==undefined?open:!_open;var bd=document.getElementById('hb-backdrop'),dr=document.getElementById('hb-drawer');if(bd)bd.classList.toggle('open',_open);if(dr)dr.classList.toggle('open',_open);document.body.style.overflow=_open?'hidden':'';}
   window.closeHamburger=function(){toggle(false);};
+  window.openHamburger=function(){
+    var t=document.getElementById('toast');
+    if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
+    clearTimeout(window._toastT);
+    toggle(true);
+  };
   function loadProfile(){
     var token='';try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token){token=s.access_token;break;}}}if(!token)token=localStorage.getItem('fs_token')||'';}catch(e){}
     var si=document.getElementById('hb-signin-section'),sp=document.getElementById('hb-profile-section');

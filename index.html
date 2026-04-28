@@ -442,7 +442,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="logo el from-scale" data-d="150" style="margin-bottom:0;">
         <span class="logo-finder">Finder</span><span class="logo-seek">Seek</span>
       </div>
-      <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+      <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openHamburger();">
         <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
           <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8a820;font-weight:500;">
@@ -1379,6 +1379,12 @@ if ('serviceWorker' in navigator) {
     }
   }
   window.closeHamburger=function(){toggle(false);};
+  window.openHamburger=function(){
+    var t=document.getElementById('toast');
+    if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
+    clearTimeout(window._toastT);
+    toggle(true);
+  };
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
 
