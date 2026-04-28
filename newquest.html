@@ -2726,6 +2726,7 @@ function modalReverseGeocode(lat, lng) {
 }
 
 function confirmMapLocation() {
+  showToast('Confirming location...', 'success');
   console.log('confirmMapLocation called', _modalLat, _modalLng, _modalMap);
   // Get coords — from stored values or directly from map center
   if (_modalMap && (_modalLat === null || _modalLng === null)) {
@@ -2886,27 +2887,7 @@ function modalSelectPrediction(idx) {
   });
 }
 
-// Wire map modal buttons with touchend for iOS reliability
-(function() {
-  function addTapListener(id, fn) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    var tapped = false;
-    el.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!tapped) { tapped = true; fn(); setTimeout(function(){ tapped = false; }, 300); }
-    }, { passive: false });
-    el.addEventListener('click', function(e) {
-      e.stopPropagation();
-      fn();
-    });
-  }
-  document.addEventListener('DOMContentLoaded', function() {
-    addTapListener('map-modal-confirm', confirmMapLocation);
-    addTapListener('map-modal-sat', toggleModalSatellite);
-  });
-})();
+// Map modal buttons wired via inline onclick
 
 // Close predictions when tapping outside
 document.addEventListener('click', function(e) {
@@ -3471,7 +3452,7 @@ function handleHsPhoto(input) {
   <!-- Confirm footer — INSIDE overlay, no z-index battles -->
   <div id="map-modal-footer-outer" style="padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-shrink:0;">
     <button id="map-modal-sat" onclick="toggleModalSatellite()" style="padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🛰️ Satellite</button>
-    <button id="map-modal-confirm" onclick="confirmMapLocation()" style="flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">✓ Confirm Location</button>
+    <button id="map-modal-confirm" onclick="confirmMapLocation()" style="flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;">✓ Confirm Location</button>
   </div>
 </div>
 
