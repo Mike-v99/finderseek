@@ -98,14 +98,17 @@ export default async function handler(req, res) {
   }
   console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedStreet, resolvedPlaceName, cleanLocation }));
 
-  const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} persona. EXACTLY two sentences.
+  const locationRiddlePrompt = `Write a 2-sentence location clue in ${persona || 'pirate'} persona voice.
 
-Location to reference: "${cleanLocation}"
+Location: "${cleanLocation}"
 
-Sentence 1: In ${persona || 'pirate'} voice, write a fun riddle that names the place, the street, and the city — each mentioned exactly ONCE, no repetition.
-Sentence 2: A short call to action in ${persona || 'pirate'} voice telling the seeker to head there and start the hunt.
+Sentence 1: Name the place, street, and city ONCE each. No repeating any detail.
+Sentence 2: A call to action — go there, start the hunt. Do NOT repeat the place name, street, or city.
 
-Return ONLY the two sentences, nothing else.`;
+Bad example (repeats address twice): "Head to Kroger on Loop 336 in Conroe where folks shop! Go on down to Kroger on Loop 336 and let the hunt begin!"
+Good example: "Arrr, seek ye Kroger on Loop 336 West in Conroe, where landlubbers stock their holds! Make haste to those shores and let the quest begin, ye brave soul!"
+
+Return ONLY the 2 sentences, nothing else.`;
 
   // ── Build per-clue prompts using hsData ──────────────────────
   const clues = (hsData && hsData.clues) || [];
@@ -136,7 +139,7 @@ Return ONLY the two sentences, nothing else.`;
     const lrRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 200, messages: [{ role: 'user', content: locationRiddlePrompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 120, messages: [{ role: 'user', content: locationRiddlePrompt }] })
     });
     const lrData = await lrRes.json();
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
