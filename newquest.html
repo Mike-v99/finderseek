@@ -2614,6 +2614,7 @@ async function submitPayment(){
 // ── FULL SCREEN MAP MODAL ────────────────────────────────────
 var _modalMap = null, _modalMapReady = false, _modalSatellite = false;
 var _modalLat = null, _modalLng = null, _modalMoveTimer = null;
+var _modalGeocodedAddress = null; // full address from reverse geocode
 var _modalPredictions = [], _modalSearchTimeout = null;
 var _modalAutocomplete = null;
 
@@ -2635,6 +2636,7 @@ function openMapModal() {
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
   document.body.style.touchAction = '';
+  _modalGeocodedAddress = null; // reset for fresh geocode
 
   // Clear search bar
   var searchEl = document.getElementById('map-modal-search');
@@ -2726,6 +2728,7 @@ function modalReverseGeocode(lat, lng) {
       var addr = results[0].formatted_address;
       // Strip ZIP code and country for cleaner display
       addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '');
+      _modalGeocodedAddress = results[0].formatted_address; // keep full version with ZIP for city parsing
       if (searchEl) { searchEl.value = addr; searchEl.placeholder = 'Search park, address, landmark...'; }
       toggleModalSearchClear(addr);
       document.getElementById('map-modal-address').textContent = addr;
@@ -2764,10 +2767,11 @@ function confirmMapLocation() {
     '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|' + selectedLat + ',' + selectedLng +
     '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
   console.log('Coords confirmed:', selectedLat, selectedLng);
-  // Get address from search bar (most reliable source)
+  // Use reverse-geocoded address (full, with city/state/ZIP) — not search bar which user may have edited
   var searchEl = document.getElementById('map-modal-search');
-  var addr = (searchEl && searchEl.value) || (_modalLat.toFixed(5) + ', ' + _modalLng.toFixed(5));
-  selectedAddress = addr;
+  var geocodedFull = _modalGeocodedAddress || (searchEl && searchEl.value) || (_modalLat.toFixed(5) + ', ' + _modalLng.toFixed(5));
+  var addr = geocodedFull.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '').trim();
+  selectedAddress = geocodedFull; // keep full address for city extraction
   var displayName = selectedPlaceName || addr.split(',')[0] || addr;
   var locTitle = document.getElementById('location-btn-title');
   var locSub = document.getElementById('location-btn-sub');
