@@ -424,11 +424,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
       <div class="pq-text">
         <div class="pq-text-title" id="pq-title">Unfinished quest</div>
-        <div class="pq-text-sub" id="pq-sub">Your details are saved — tap to continue</div>
+        <div class="pq-text-sub" id="pq-sub">Your details are saved</div>
       </div>
       <div class="pq-btns">
         <button class="pq-btn-cont" onclick="continuePendingQuest()">Continue →</button>
         <button class="pq-btn-clear" onclick="clearPendingQuest()" style="padding:7px 10px;font-size:13px;">Clear</button>
+        <button onclick="dismissPendingBanner()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;">✕</button>
       </div>
     </div>
   </div>
@@ -1417,7 +1418,11 @@ function checkPendingQuest() {
     } catch(e){}
   }
   var banner = document.getElementById('pq-banner');
-  if (banner) banner.classList.add('show');
+  if (banner) {
+    // Don't re-show if dismissed during this session
+    var dismissed = sessionStorage.getItem('pq_dismissed');
+    if (!dismissed) banner.classList.add('show');
+  }
 }
 
 function continuePendingQuest() {
@@ -1429,9 +1434,18 @@ function continuePendingQuest() {
 function clearPendingQuest() {
   localStorage.removeItem('fs_pending_quest');
   localStorage.removeItem('fs_newquest_form');
+  localStorage.removeItem('fs_newquest_form_photo');
   localStorage.removeItem('fs_newquest_abandon');
   var banner = document.getElementById('pq-banner');
   if (banner) banner.classList.remove('show');
+}
+
+function dismissPendingBanner() {
+  // Hide for this session only — banner repopulates on next page visit
+  var banner = document.getElementById('pq-banner');
+  if (banner) banner.classList.remove('show');
+  // Store dismissed time so we don't re-show on same page visit
+  try { sessionStorage.setItem('pq_dismissed', Date.now()); } catch(e){}
 }
 
 document.addEventListener('DOMContentLoaded', function() {
