@@ -48,10 +48,25 @@ export default async function handler(req, res) {
 
   // ── Build location riddle prompt ─────────────────────────────
   const locationText = (hsData && hsData.location) || description || searchAddress || '';
+  const cityContext = city ? ` in ${city}` : '';
+  // Build a specific location string combining place name + street address for disambiguation
+  // e.g. "Kroger at 2115 N Loop 336 W, Conroe, TX" rather than just "Kroger"
+  let specificLocation = resolvedPlaceName || locationText;
+  if (searchAddress && resolvedPlaceName && !searchAddress.toLowerCase().includes(resolvedPlaceName.toLowerCase())) {
+    // Address doesn't already contain the place name — combine them
+    specificLocation = resolvedPlaceName + ', ' + searchAddress.replace(/, USA$/, '');
+  } else if (searchAddress && !resolvedPlaceName) {
+    specificLocation = searchAddress.replace(/, USA$/, '');
+  }
   const locationRiddlePrompt = `Write a short rhyming location riddle in ${persona || 'pirate'} style.
-The location is: "${locationText}"
+The EXACT location is: "${specificLocation}${!specificLocation.includes(city || '') ? cityContext : ''}"
 Place name: "${resolvedPlaceName || locationText}"
+Street/address context: "${searchAddress ? searchAddress.replace(/, USA$/, '') : ''}"
+City: "${city || ''}"
+
+IMPORTANT: The riddle must include enough detail to distinguish this specific location from others with the same name in the area (e.g. mention the street name, cross street, or neighborhood if there are multiple of the same store/park in the city).
 The word "${resolvedPlaceName || locationText}" MUST appear literally in the riddle.
+${city ? `Naturally weave in the city "${city}" to orient the seeker geographically.` : ''}
 The riddle guides the seeker to this general area — unlocked by GPS.
 Return ONLY the riddle text, no JSON, no explanation.`;
 
