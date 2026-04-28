@@ -107,8 +107,8 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
 @keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
 .hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
 .hb-backdrop.open{opacity:1;pointer-events:auto;}
-.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
-.hb-drawer.open{transform:translateX(0);}
+.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);visibility:hidden;}
+.hb-drawer.open{transform:translateX(0);visibility:visible;}
 .hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
 .hb-nav-item:last-child{border-bottom:none;}
 .hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
@@ -141,17 +141,15 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
   <div class="benefit-grid fade2">
     <div class="benefit-col seeker">
       <div class="col-title">🔍 SEEKER</div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">Finder alerts</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">⚡ clue push notification</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">50ft map radius</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">vs 100ft for free</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">City alerts</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">New quests near you</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">Early clues</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Before free seekers</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">Tighter map zoom</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">50ft radius vs 200ft · closer to the prize</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">Faster photo reveal</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Hiding spot unblurs quicker as you solve clues</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#4ade80;line-height:1.3;">AI hints on wrong answers</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Two nudges before cooldown · you choose when to reveal</div></div></div>
     </div>
     <div class="benefit-col master">
       <div class="col-title">🏴 QUEST MASTER</div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">Quest analytics</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Live views &amp; seeker stats</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">3 pinned quests</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Keep best quests on top</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">Gold badge</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Verified on your profile</div></div></div>
-      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">Edit AI clues</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Tweak clues before live</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">OpenAI voice clues</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Natural AI voices · generated once · plays for all seekers</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">Quest analytics</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">Players joined · right vs wrong answers per clue</div></div></div>
+      <div class="benefit-item"><span class="chk">✓</span><div><div style="font-size:17px;font-weight:400;color:#e8a820;line-height:1.3;">Custom clue count</div><div style="font-size:17px;color:#ffffff;margin-top:2px;line-height:1.4;opacity:.85;">3 to 10 clues · free is limited to 4–6</div></div></div>
     </div>
   </div>
 
@@ -161,12 +159,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
     <div class="c-row"><div class="c-cell lbl">Play all quests</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
     <div class="c-row"><div class="c-cell lbl">Claim prizes</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
     <div class="c-row"><div class="c-cell lbl">Create quests</div><div class="c-cell m">✓</div><div class="c-cell r">✓</div></div>
-    <div class="c-row"><div class="c-cell lbl">Finder clue alerts</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
-    <div class="c-row"><div class="c-cell lbl">50ft precision map</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
-    <div class="c-row"><div class="c-cell lbl">Early clue access</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Map radius</div><div class="c-cell m" style="font-size:14px;opacity:.7;">200ft</div><div class="c-cell r" style="font-size:14px;">50ft</div></div>
+    <div class="c-row"><div class="c-cell lbl">Photo unblur speed</div><div class="c-cell m" style="font-size:14px;opacity:.7;">Standard</div><div class="c-cell r" style="font-size:14px;">Faster</div></div>
+    <div class="c-row"><div class="c-cell lbl">AI hints when stuck</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">OpenAI voice clues</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
     <div class="c-row"><div class="c-cell lbl">Quest analytics</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
-    <div class="c-row"><div class="c-cell lbl">Edit AI clues</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
-    <div class="c-row"><div class="c-cell lbl">Gold badge</div><div class="c-cell m" style="opacity:.2;">—</div><div class="c-cell r">✓</div></div>
+    <div class="c-row"><div class="c-cell lbl">Clue count</div><div class="c-cell m" style="font-size:14px;opacity:.7;">4–6</div><div class="c-cell r" style="font-size:14px;">3–10</div></div>
   </div>
 
   <div class="fade4" id="second-cta-wrap" style="margin-bottom:32px;">
@@ -176,11 +174,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
 
   <div class="section-label fade5">QUESTIONS</div>
   <div class="fade5">
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the finder clue alert? <span class="faq-chev">▾</span></div><div class="faq-a">Every quest has one special ⚡ finder clue hidden randomly in the sequence. It contains enough detail to go find the prize right now. Gold members get an instant push notification the moment it drops so they can move first.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does editing AI clues mean? <span class="faq-chev">▾</span></div><div class="faq-a">When you create a quest, AI writes your clues. Gold Quest Masters can edit any clue text after it's generated — tweak the wording, add local flavor, or adjust difficulty before the quest goes live.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do the AI hints work? <span class="faq-chev">▾</span></div><div class="faq-a">When you get a wrong answer on a clue, a hint button appears — you choose whether to reveal it. First hint narrows the range (e.g. "less than 10"). Second wrong answer, a second hint is available. Third wrong answer triggers a 15-minute cooldown either way. The hints are generated by AI at quest creation time, so they're always relevant to the specific answer.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the tighter map radius? <span class="faq-chev">▾</span></div><div class="faq-a">The final clues show a map circle centered on the hiding spot. Gold seekers see a 50ft radius — a tight circle that puts you right on top of the treasure. Free seekers see a 200ft radius, which is a much larger search area.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What are OpenAI voice clues? <span class="faq-chev">▾</span></div><div class="faq-a">When you create a quest as a Gold member, each clue is converted to natural-sounding AI speech using OpenAI's voice technology. The audio is generated once and stored — all seekers hear the same high-quality voice when they tap the speaker button, at no extra cost per play.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the free trial work? <span class="faq-chev">▾</span></div><div class="faq-a">Full Gold access free for 30 days. After that it's $3.99/mo. Cancel anytime before the trial ends and you won't be charged.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-chev">▾</span></div><div class="faq-a">Yes — cancel from your profile at any time. You keep Gold perks until the end of your billing period, then revert to free with no data lost.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need Gold to play? <span class="faq-chev">▾</span></div><div class="faq-a">Nope. Free gives full access to seek treasure, create quests, and claim prizes. Gold gives you a competitive edge and helps support FinderSeek.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need Gold to play? <span class="faq-chev">▾</span></div><div class="faq-a">Nope. Free gives full access to seek treasure, create quests, and claim prizes. Gold gives you sharper tools and a competitive edge.</div></div>
   </div>
 </div>
 
@@ -417,12 +416,6 @@ loadStatus();handleUrlParams();
     <div style="font-size:17px;color:rgba(255,255,255,.18);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">FinderSeek · v1.0</div>
   </div>
 </div>
-
-<script>
-
-
-
-</script>
 
 <!-- HAMBURGER DRAWER v2 -->
 <div class="hb-backdrop" id="hb-backdrop"></div>
