@@ -25,9 +25,20 @@ export default async function handler(req, res) {
 
   const styleHint = PERSONA_STYLES[persona] || PERSONA_STYLES.pirate;
 
+  // ── Resolve city — extract from address if not explicitly passed ─
+  function extractCityFromAddress(addr) {
+    if (!addr) return '';
+    addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/g, '').trim();
+    const parts = addr.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2) return parts[parts.length - 2];
+    if (parts.length === 1) return parts[0];
+    return '';
+  }
+  const resolvedCity = city || extractCityFromAddress(searchAddress) || extractCityFromAddress(description) || '';
+
   // ── Resolve place name ───────────────────────────────────────
   let resolvedPlaceName = placeName || null;
-  if (!resolvedPlaceName && (description || (hsData && hsData.location))) {
+  if (!resolvedPlaceName && (description || searchAddress || (hsData && hsData.location))) {
     const textToSearch = (hsData && hsData.location) || description || '';
     try {
       const extractRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -48,7 +59,7 @@ export default async function handler(req, res) {
 
   // ── Build location riddle prompt ─────────────────────────────
   const locationText = (hsData && hsData.location) || description || searchAddress || '';
-  const cityContext = city ? ` in ${city}` : '';
+  const cityContext = resolvedCity ? ` in ${resolvedCity}` : '';
   // Build a specific location string combining place name + street address for disambiguation
   // e.g. "Kroger at 2115 N Loop 336 W, Conroe, TX" rather than just "Kroger"
   let specificLocation = resolvedPlaceName || locationText;
@@ -59,15 +70,15 @@ export default async function handler(req, res) {
     specificLocation = searchAddress.replace(/, USA$/, '');
   }
   const locationRiddlePrompt = `Write a location riddle in ${persona || 'pirate'} style. EXACTLY two sentences — no more.
-The EXACT location is: "${specificLocation}${!specificLocation.includes(city || '') ? cityContext : ''}"
+The EXACT location is: "${specificLocation}${!specificLocation.includes(resolvedCity || '') ? cityContext : ''}"
 Place name: "${resolvedPlaceName || locationText}"
 Street/address: "${searchAddress ? searchAddress.replace(/, USA$/, '') : ''}"
-City: "${city || ''}"
+City: "${resolvedCity}"
 
 RULES — all required:
 1. EXACTLY two sentences. Not one. Not three. Two.
 2. The place name "${resolvedPlaceName || locationText}" MUST appear word-for-word.
-3. The city "${city || 'the city'}" MUST be named explicitly.
+3. The city "${resolvedCity || 'the city'}" MUST be named explicitly.
 4. A street name or road from the address MUST be included.
 5. Written in ${persona || 'pirate'} persona voice.
 
@@ -82,7 +93,7 @@ Return ONLY the two-sentence riddle, no explanation.`;
     const pos = parseInt(singleClue.position, 10) || 1;
     const clueHint = clues[pos - 1] || {};
     const isFinal = pos === totalClues;
-    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, city);
+    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, resolvedCity);
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
