@@ -1568,9 +1568,21 @@ async function createQuest(){
     const endsAt = endDateVal ? new Date(endDateVal) : new Date(startsAt.getTime() + duration * 60 * 60 * 1000);
     const status = 'draft';
 
-    // Extract city from search address
-    const parts = searchAddress.split(',').map(s => s.trim());
-    const city = parts.length >= 2 ? parts[parts.length - 2] : (parts[0] || 'Unknown');
+    // Extract city from reverse-geocoded pin address (most reliable)
+    // selectedAddress format: "123 Main St, Conroe, TX 77301, USA"
+    // searchAddress format: whatever user typed, may be empty
+    function extractCity(addr) {
+      if (!addr) return null;
+      // Remove USA and ZIP codes
+      addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '').trim();
+      var parts = addr.split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+      // City is typically second-to-last part (before state)
+      if (parts.length >= 2) return parts[parts.length - 2];
+      if (parts.length === 1) return parts[0];
+      return null;
+    }
+    var city = extractCity(selectedAddress) || extractCity(searchAddress) || 
+               extractCity(_hsData && _hsData.location) || 'Unknown';
 
 
 
@@ -1756,8 +1768,8 @@ async function createQuest(){
           lng: selectedLng,
           persona: persona,
           city: city,
-          neighborhood: selectedPlaceName || searchAddress.split(',')[0] || '',
-          searchAddress: selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress,
+          neighborhood: selectedPlaceName || (selectedAddress ? selectedAddress.split(',')[0] : '') || searchAddress.split(',')[0] || '',
+          searchAddress: selectedAddress || (selectedPlaceName ? (selectedPlaceName + ', ' + searchAddress) : searchAddress),
           placeName: selectedPlaceName || '',
           hsData: _hsData,
         })
