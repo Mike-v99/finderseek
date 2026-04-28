@@ -221,6 +221,30 @@ export default async function handler(req, res) {
 
         console.log(`[webhook] escrow funded → hunt ${huntId} prize $${prizeAmount}`);
 
+        // Generate quest ID (TXA-0001 format) using state from hunt
+        try {
+          const huntRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/hunts?id=eq.${huntId}&select=state_code,quest_id`, {
+            headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
+          });
+          const huntData = await huntRes.json();
+          const hunt = huntData && huntData[0];
+          if (hunt && !hunt.quest_id) {
+            const stateCode = (hunt.state_code || 'US').toUpperCase().slice(0,2);
+            const idRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/rpc/generate_quest_id`, {
+              method: 'POST',
+              headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ p_state: stateCode })
+            });
+            const questId = await idRes.json();
+            if (questId) {
+              await sbPatch(`hunts?id=eq.${huntId}`, { quest_id: questId });
+              console.log(`[webhook] quest ID assigned: ${questId} for hunt ${huntId}`);
+            }
+          }
+        } catch (qidErr) {
+          console.error('[webhook] quest ID generation error (non-fatal):', qidErr.message);
+        }
+
         // Notify the creator (+ city seekers, followers).
         // We AWAIT this rather than fire-and-forget because Vercel
         // serverless functions may terminate background promises
