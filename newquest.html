@@ -2959,17 +2959,11 @@ function closeHsModal() {
   saveHsPanel();
   document.getElementById('hs-modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
-  var loc = _hsData.location;
   var hs = document.getElementById('hiding-spot');
   if (hs) hs.value = buildHsText();
   if (typeof saveFormState === 'function') saveFormState();
-  // Go straight to schedule step after Done
-  document.getElementById('step' + currentStep).style.display = 'none';
-  currentStep = 5;
-  var el = document.getElementById('step5');
-  if (el) { el.style.display = 'flex'; el.scrollTop = 0; }
-  window.scrollTo(0,0);
-  updateMiniSummary();
+  // Navigate to schedule step via goStep so step visibility is managed correctly
+  goStep(5);
 }
 
 function hsModalBgClose(e) { if (e.target === document.getElementById('hs-modal-overlay')) closeHsModal(); }
