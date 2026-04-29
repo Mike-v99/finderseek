@@ -54,6 +54,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       client_secret: accountSession.client_secret,
       account_id: accountId,
+      publishable_key: process.env.STRIPE_PUBLISHABLE_KEY || '',
     });
 
   } catch (err) {
