@@ -1176,6 +1176,9 @@ async function handlePayoutBtn(){
     if (!r.ok || !d.client_secret) throw new Error(d.error || 'Failed to create session');
 
     // Mount embedded Stripe Connect component
+    if (typeof StripeConnect === 'undefined') {
+      throw new Error('Stripe Connect JS not loaded');
+    }
     var stripeConnect = StripeConnect(d.client_secret);
     stripeConnect.setAppearance({
       colorPrimary: '#e8a820',
@@ -1525,8 +1528,8 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
-<!-- Stripe Connect JS -->
-<script src="https://connect-js.stripe.com/v1.0/connect.js" async></script>
+<!-- Stripe Connect JS - load synchronously so it's ready when needed -->
+<script src="https://connect-js.stripe.com/v1.0/connect.js"></script>
 
 <!-- Payout Embedded Modal -->
 <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(6,5,10,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"></div>
