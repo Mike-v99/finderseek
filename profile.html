@@ -1137,14 +1137,15 @@ async function disconnectPayout(){
 }
 
 function openPayoutsAction(){
-  // If payout section is visible and already has Connect, scroll to it
-  var alreadyHasConnect = currentProfile && currentProfile.stripe_connect_id;
-  if (alreadyHasConnect) {
+  // Already has Stripe Connect — scroll to payout section
+  if (currentProfile && currentProfile.stripe_connect_id) {
     var section = document.getElementById('payout-section');
-    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
+    if (section && section.style.display !== 'none') {
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
   }
-  // Otherwise go straight to Stripe onboarding
+  // Go straight to Stripe onboarding
   handlePayoutBtn();
 }
 
@@ -1170,13 +1171,19 @@ function closePayoutModal(){
 }
 
 async function handlePayoutBtn(){
+  // Load user if not yet available
   if (!currentUser || !currentUser.id) {
-    showToast('Please sign in first', 'error');
-    return;
+    showToast('Loading...', 'success');
+    await loadProfile();
+    if (!currentUser || !currentUser.id) {
+      showToast('Please sign in to set up payouts', 'error');
+      return;
+    }
   }
   var btn = document.getElementById('payout-modal-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Loading...';
+  var payoutBtn = document.getElementById('payout-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
+  if (payoutBtn) { payoutBtn.disabled = true; payoutBtn.textContent = '⏳ Loading...'; }
   try {
     var r = await fetch('/api/connect-onboard', {
       method:'POST',
@@ -1189,8 +1196,10 @@ async function handlePayoutBtn(){
   } catch(e) {
     console.error('Connect onboard error', e);
     showToast('Error: '+e.message, 'error');
-    btn.disabled = false;
-    btn.textContent = 'Continue to Stripe →';
+    var btn = document.getElementById('payout-modal-btn');
+    var payoutBtn = document.getElementById('payout-btn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Continue to Stripe →'; }
+    if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
   }
 }
 
