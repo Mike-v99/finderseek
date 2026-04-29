@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -1190,7 +1190,7 @@ async function handlePayoutBtn(){
       container.innerHTML = '';
 
       var stripeInstance = window.StripeConnect.init({
-        publishableKey: d.publishable_key,
+        publishableKey: 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz',
         fetchClientSecret: function() { return Promise.resolve(d.client_secret); },
         appearance: {
           variables: {
