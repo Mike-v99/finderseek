@@ -584,7 +584,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="height:8px;"></div>
   </div>
   <div class="step-footer">
-    <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;">Schedule Quest →</button>
+    <button id="btn-preview" onclick="startTheQuest()" style="width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;opacity:.4;pointer-events:none;">Select a window →</button>
     <button id="btn-create" onclick="createQuest()" style="display:none;"></button>
   </div>
 </div>
@@ -701,6 +701,11 @@ function goStep(n) {
   window.scrollTo(0,0);
   if (n === 4 || n === 5) {
     updateMiniSummary();
+    // Re-enable schedule button if preset already chosen
+    if (n === 5 && selectedPreset) {
+      var pb = document.getElementById('btn-preview');
+      if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
+    }
   }
 
 }
@@ -1156,6 +1161,9 @@ function getPresetDates(preset) {
 
 function selPreset(preset, el) {
   selectedPreset = preset;
+  // Enable Schedule Quest button
+  var pb = document.getElementById('btn-preview');
+  if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
   // Reset all buttons
   document.querySelectorAll('.preset-btn').forEach(function(b) {
     var p = b.dataset.preset;
@@ -1267,7 +1275,7 @@ function updateCustomDates() {
 
 function startTheQuest() {
   if (!selectedPreset) {
-    showToast('Please select a quest window first', 'error');
+    showToast('Please select a schedule window above', 'error');
     return;
   }
   if (selectedPreset === 'custom') {
@@ -1277,9 +1285,7 @@ function startTheQuest() {
       return;
     }
   }
-  // Validate hiding spot and code before leaving
   if (!validateQuestForm()) return;
-  // Save full form state then proceed to payment
   saveFormState();
   createQuest();
 }
@@ -1354,7 +1360,12 @@ function validateQuestForm(){
 
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
-  try { sessionStorage.setItem('fs_magic_return', 'newquest.html'); } catch(e){}
+  try {
+    sessionStorage.setItem('fs_magic_return', 'newquest.html');
+    // Save form state so it survives the OAuth redirect
+    saveFormState();
+    sessionStorage.setItem('fs_quest_pending_auth', '1');
+  } catch(e){}
   document.getElementById('eg-backdrop').style.display = 'block';
   var modal = document.getElementById('eg-modal');
   var inner = document.getElementById('eg-inner');
@@ -1426,7 +1437,7 @@ async function submitEmailGate(){
           (signUpErr.message || '').toLowerCase().includes('user already')) {
         var { error: otpErr } = await supaClient.auth.signInWithOtp({
           email: email,
-          options: { emailRedirectTo: window.location.origin + '/profile.html' }
+          options: { emailRedirectTo: window.location.origin + '/newquest.html' }
         });
         if (otpErr) throw otpErr;
         errEl.style.color = '#4ade80';
@@ -2091,6 +2102,44 @@ document.addEventListener('DOMContentLoaded',function(){
   ['hiding-spot','map-search'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.addEventListener('input', saveFormState);
+  });
+
+  // ── Listen for OAuth sign-in return (Apple/Google redirect back) ──────────
+  // When user signs in via OAuth, Supabase redirects back to newquest.html
+  // with a session in the URL hash. We detect this and auto-resume the flow.
+  supaClient.auth.onAuthStateChange(async function(event, session) {
+    if (event === 'SIGNED_IN' && session && session.user) {
+      currentUser = session.user;
+      currentProfile = null;
+      // Close email gate if open
+      var egModal = document.getElementById('eg-modal');
+      if (egModal && egModal.style.display !== 'none') closeEmailGate();
+      // Check if we were mid-quest-creation
+      var formState = localStorage.getItem('fs_newquest_form');
+      if (formState) {
+        // Restore state first
+        restoreFormState();
+        // Small delay so DOM settles, then go straight to payment
+        setTimeout(async function() {
+          try {
+            // Make sure we're on step 5 (schedule)
+            if (currentStep !== 5) {
+              document.getElementById('step' + currentStep).style.display = 'none';
+              currentStep = 5;
+              var s5 = document.getElementById('step5');
+              if (s5) { s5.style.display = 'flex'; s5.scrollTop = 0; }
+              updateMiniSummary();
+            }
+            showToast('Signed in! Starting your quest...', 'success');
+            // Brief pause so user sees the toast then go
+            setTimeout(function() { createQuest(); }, 800);
+          } catch(e) {
+            console.error('Auto-resume error:', e);
+            showToast('Signed in! Tap Schedule Quest to continue.', 'success');
+          }
+        }, 300);
+      }
+    }
   });
 });
 
