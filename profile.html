@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -1246,24 +1246,6 @@ function closePayoutModal(){
     if (container) container.style.display = 'none';
     if (fallback) fallback.style.display = 'none';
   }, 300);
-}
-  try {
-    var r = await fetch('/api/connect-onboard', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
-      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email })
-    });
-    var d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error + (d.param ? ' (param: ' + d.param + ')' : '') || 'Failed to create onboarding link');
-    window.location.href = d.url;
-  } catch(e) {
-    console.error('Connect onboard error', e);
-    showToast('Error: '+e.message, 'error');
-    var btn = document.getElementById('payout-modal-btn');
-    var payoutBtn = document.getElementById('payout-btn');
-    if (btn) { btn.disabled = false; btn.textContent = 'Continue to Stripe →'; }
-    if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
-  }
 }
 
 // ============================================================
