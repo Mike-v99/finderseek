@@ -1139,27 +1139,6 @@ function openPayoutsAction(){
   handlePayoutBtn();
 }
 
-function showPayoutModal(){
-  document.getElementById('payout-modal-backdrop').style.display = 'block';
-  var modal = document.getElementById('payout-modal');
-  var inner = document.getElementById('payout-modal-inner');
-  modal.style.display = 'flex';
-  setTimeout(function(){
-    inner.style.transform = 'scale(1)';
-    inner.style.opacity = '1';
-  }, 10);
-}
-
-function closePayoutModal(){
-  var inner = document.getElementById('payout-modal-inner');
-  inner.style.transform = 'scale(0.9)';
-  inner.style.opacity = '0';
-  setTimeout(function(){
-    document.getElementById('payout-modal').style.display = 'none';
-    document.getElementById('payout-modal-backdrop').style.display = 'none';
-  }, 300);
-}
-
 async function handlePayoutBtn(){
   // Load user if not yet available
   if (!currentUser || !currentUser.id) {
