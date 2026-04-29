@@ -868,7 +868,7 @@ function updateSummary() {
   var personaNameEl = persona ? persona.querySelector('.persona-name') : null;
   var personaName = personaNameEl ? personaNameEl.textContent : 'Pirate';
   var personaEmoji = (PERSONA_SAMPLES[personaKey] || {emoji:'🏴‍☠️'}).emoji;
-  var location = document.getElementById('map-search').value.split(',')[0] || '—';
+  var _msEl = document.getElementById('map-search'); var location = (_msEl ? _msEl.value : '').split(',')[0] || '—';
   var dur = weekendSelected ? '36 hrs (Weekend)' : (selectedDur + (selectedDur === 1 ? ' day' : ' days'));
   var expiresEl = document.getElementById('dur-expires');
   var expires = weekendSelected ? 'Sun 9:00 PM' : (expiresEl ? expiresEl.textContent.replace('Expires ','') : '—');
@@ -1274,8 +1274,6 @@ function updateCustomDates() {
 }
 
 function startTheQuest() {
-  console.log('startTheQuest called, selectedPreset:', selectedPreset, 'selectedLat:', selectedLat, 'selectedLng:', selectedLng);
-  showToast('Checking quest...', 'success');
   if (!selectedPreset) {
     showToast('Please select a schedule window above', 'error');
     return;
@@ -1561,10 +1559,10 @@ async function createQuest(){
   const duration = weekendSelected ? 36 : ((selectedDur || 2) * 24);
   const clueCount = selectedClue || 5;
   const persona = document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate';
-  const hidingSpot = (_hsData && _hsData.location && _hsData.location.trim()) ? _hsData.location.trim() : (document.getElementById('hiding-spot').value.trim());
-  const searchAddress = document.getElementById('map-search').value.trim();
-  const code = ['c1','c2','c3','c4','c5','c6'].map(id => document.getElementById(id).textContent).join('');
-  const liveMode = document.querySelector('.golive-opt.selected')?.dataset.live || 'now';
+  const hidingSpot = (_hsData && _hsData.location && _hsData.location.trim()) ? _hsData.location.trim() : '';
+  const searchAddress = selectedAddress || ((_hsData && _hsData.location) ? _hsData.location : '') || '';
+  const code = ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.textContent:''; }).join('');
+  const liveMode = 'now';
 
   // ── 3. Validation ─────────────────────────────────────────
   if (prize < 10 || prize > 100) return showToast('Please select a prize amount', 'error');
@@ -1956,7 +1954,7 @@ function saveFormState() {
       weekendSelected: weekendSelected,
       persona: document.querySelector('.persona-card.selected')?.dataset.persona || 'pirate',
       hidingSpot: document.getElementById('hiding-spot')?.value || '',
-      searchAddress: document.getElementById('map-search')?.value || '',
+      searchAddress: (document.getElementById('map-search') || {}).value || selectedAddress || '',
       pin: ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.textContent:''; }).join(''),
       liveMode: document.querySelector('.golive-opt.selected')?.dataset.live || 'now',
       lat: selectedLat, lng: selectedLng,
