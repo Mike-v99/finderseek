@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FinderSeek · Test Console</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#080612;color:#e2e8f0;font-family:'Courier New',monospace;min-height:100vh;padding:0;}
+:root{--gold:#e8a820;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--ink:#080612;--card:#0f0d1e;--border:rgba(255,255,255,.08);}
+
+/* Login screen */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-box{background:var(--card);border:1px solid rgba(232,168,32,.2);border-radius:16px;padding:32px;max-width:360px;width:100%;text-align:center;}
+.login-title{font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;}
+.login-sub{font-size:22px;font-weight:700;color:#fff;margin-bottom:24px;}
+.pw-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:#fff;font-size:16px;font-family:inherit;margin-bottom:12px;outline:none;}
+.pw-input:focus{border-color:rgba(232,168,32,.4);}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:1px;}
+.login-err{color:var(--red);font-size:13px;margin-top:8px;display:none;}
+
+/* Main console */
+#console-screen{display:none;max-width:700px;margin:0 auto;padding:20px;}
+.console-header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.console-title{font-size:13px;letter-spacing:3px;color:var(--gold);}
+.signout-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:rgba(255,255,255,.4);font-size:12px;font-family:inherit;cursor:pointer;}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;}
+.section-title{font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:16px;}
+.row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.inp{flex:1;min-width:120px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;font-family:inherit;outline:none;}
+.inp:focus{border-color:rgba(232,168,32,.3);}
+.inp::placeholder{color:rgba(255,255,255,.25);}
+.btn{padding:9px 16px;border-radius:8px;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;letter-spacing:.5px;}
+.btn-gold{background:linear-gradient(135deg,#c9890c,#e8a820);color:#000;}
+.btn-green{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);}
+.btn-red{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--red);}
+.btn-blue{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--blue);}
+.btn-ghost{background:rgba(255,255,255,.04);border:1px solid var(--border);color:rgba(255,255,255,.6);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Log output */
+.log-wrap{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:14px;max-height:280px;overflow-y:auto;font-size:13px;line-height:1.8;}
+.log-line{display:flex;gap:8px;}
+.log-time{color:rgba(255,255,255,.25);flex-shrink:0;}
+.log-ok{color:var(--green);}
+.log-err{color:var(--red);}
+.log-info{color:var(--blue);}
+.log-warn{color:var(--gold);}
+.log-empty{color:rgba(255,255,255,.2);font-style:italic;}
+
+/* Status badge */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;}
+.badge-active{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25);}
+.badge-draft{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid var(--border);}
+.badge-expired{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.25);}
+.badge-funded{background:rgba(232,168,32,.1);color:var(--gold);border:1px solid rgba(232,168,32,.25);}
+
+.hunt-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13px;line-height:1.8;}
+.hunt-row{display:flex;justify-content:space-between;align-items:center;}
+.hunt-label{color:rgba(255,255,255,.4);}
+.hunt-val{color:#fff;font-weight:500;}
+
+.divider{height:1px;background:var(--border);margin:14px 0;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-title">FINDSERSEEK</div>
+    <div class="login-sub">Test Console</div>
+    <input class="pw-input" type="password" id="pw-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">ENTER →</button>
+    <div class="login-err" id="login-err">Invalid password</div>
+  </div>
+</div>
+
+<!-- CONSOLE -->
+<div id="console-screen">
+  <div class="console-header">
+    <div class="console-title">FINDSERSEEK · TEST CONSOLE</div>
+    <button class="signout-btn" onclick="doSignout()">Sign out</button>
+  </div>
+
+  <!-- CREATE TEST QUEST -->
+  <div class="section">
+    <div class="section-title">1 · CREATE TEST QUEST</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:12px;">Creates a funded hunt in Supabase. $1 prize, expires in 10 minutes. No Stripe payment needed.</div>
+    <div class="row">
+      <input class="inp" id="test-user-id" placeholder="Quest Master user ID (from Supabase)"/>
+      <input class="inp" id="test-prize" placeholder="Prize cents (100 = $1)" value="100"/>
+      <input class="inp" id="test-expiry-mins" placeholder="Expires in (mins)" value="10"/>
+    </div>
+    <div class="row">
+      <input class="inp" id="test-connect-id" placeholder="Stripe Connect ID (acct_...) optional"/>
+    </div>
+    <button class="btn btn-gold" onclick="createTestQuest()">Create Test Quest →</button>
+    <div id="created-hunt-id" style="margin-top:10px;font-size:13px;color:var(--gold);display:none;"></div>
+  </div>
+
+  <!-- CHECK HUNT STATUS -->
+  <div class="section">
+    <div class="section-title">2 · CHECK HUNT STATUS</div>
+    <div class="row">
+      <input class="inp" id="check-hunt-id" placeholder="Hunt UUID"/>
+      <button class="btn btn-blue" onclick="checkHunt()">Check →</button>
+    </div>
+    <div id="hunt-status-card"></div>
+  </div>
+
+  <!-- TRIGGER WINNER TRANSFER -->
+  <div class="section">
+    <div class="section-title">3 · TRIGGER WINNER TRANSFER</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:12px;">In production this fires automatically when the seeker enters the correct PIN on quest.html. This button is for testing without going through the full flow.</div>
+    <div class="row">
+      <input class="inp" id="transfer-hunt-id" placeholder="Hunt UUID"/>
+      <input class="inp" id="transfer-winner-id" placeholder="Winner user ID"/>
+    </div>
+    <button class="btn btn-green" onclick="triggerTransfer()">Fire Transfer →</button>
+  </div>
+
+  <!-- TRIGGER REFUND -->
+  <div class="section">
+    <div class="section-title">4 · TRIGGER REFUND (expiry)</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:12px;">In production this fires automatically when someone loads an expired quest page, and also runs on a daily Vercel cron. This button forces it immediately for testing.</div>
+    <div class="row">
+      <input class="inp" id="refund-hunt-id" placeholder="Hunt UUID"/>
+      <button class="btn btn-red" onclick="triggerRefund()">Fire Refund →</button>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:0;">LOG</div>
+      <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;" onclick="clearLog()">Clear</button>
+    </div>
+    <div class="log-wrap" id="log-wrap">
+      <div class="log-line"><span class="log-empty">Console output will appear here...</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+const NOTIFY = 'fs-notify-2026';
+var adminToken = null;
+
+// ── Auth ──────────────────────────────────────────────────
+async function doLogin() {
+  var pw = document.getElementById('pw-input').value;
+  if (!pw) return;
+  try {
+    var r = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({password: pw})
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Invalid');
+    adminToken = d.token;
+    sessionStorage.setItem('fs_admin_token', adminToken);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('console-screen').style.display = 'block';
+    log('Logged in', 'ok');
+  } catch(e) {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('login-err').textContent = e.message;
+  }
+}
+
+function doSignout() {
+  sessionStorage.removeItem('fs_admin_token');
+  adminToken = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('console-screen').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+
+// Auto-restore session
+(function() {
+  var t = sessionStorage.getItem('fs_admin_token');
+  if (t) {
+    adminToken = t;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('console-screen').style.display = 'block';
+  }
+})();
+
+// ── Log ───────────────────────────────────────────────────
+function log(msg, type) {
+  type = type || 'info';
+  var wrap = document.getElementById('log-wrap');
+  // Clear placeholder
+  if (wrap.querySelector('.log-empty')) wrap.innerHTML = '';
+  var line = document.createElement('div');
+  line.className = 'log-line';
+  var t = new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  line.innerHTML = '<span class="log-time">' + t + '</span><span class="log-' + type + '">' + msg + '</span>';
+  wrap.appendChild(line);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('log-wrap').innerHTML = '<div class="log-line"><span class="log-empty">Cleared.</span></div>';
+}
+
+// ── Helpers ───────────────────────────────────────────────
+function getToken() {
+  try {
+    var keys = Object.keys(localStorage);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i].indexOf('sb-') === 0 && keys[i].indexOf('-auth-token') > 0) {
+        var s = JSON.parse(localStorage.getItem(keys[i]));
+        if (s && s.access_token) return s.access_token;
+      }
+    }
+  } catch(e){}
+  return KEY;
+}
+
+// ── 1. Create Test Quest ──────────────────────────────────
+async function createTestQuest() {
+  var userId = document.getElementById('test-user-id').value.trim();
+  var prizeCents = parseInt(document.getElementById('test-prize').value) || 100;
+  var expiryMins = parseInt(document.getElementById('test-expiry-mins').value) || 10;
+  var connectId = document.getElementById('test-connect-id').value.trim();
+
+  if (!userId) { log('User ID required', 'err'); return; }
+  if (prizeCents > 11000) { log('Prize exceeds $110 safety cap', 'err'); return; }
+
+  log('Creating test quest...', 'info');
+
+  var now = new Date();
+  var expiresAt = new Date(now.getTime() + expiryMins * 60 * 1000);
+
+  // Build fake hunt
+  var hunt = {
+    title: 'TEST QUEST · $' + (prizeCents/100).toFixed(2) + ' · ' + now.toLocaleTimeString(),
+    description: 'Auto-created test quest for transfer/refund testing',
+    prize_value: prizeCents,
+    status: 'active',
+    escrow_status: 'funded',
+    escrow_amount: Math.round(prizeCents * 1.1), // with 10% fee
+    pirate_id: userId,
+    finder_code: '000000',
+    starts_at: now.toISOString(),
+    ends_at: expiresAt.toISOString(),
+    lat: 30.2913,
+    lng: -95.4758,
+    state_code: 'TX',
+    stripe_payment_intent: 'pi_test_' + Math.random().toString(36).slice(2,10),
+    hiding_spot: 'Test location · Conroe TX',
+  };
+
+  // If connect ID provided, find the winner's profile
+  if (connectId) {
+    hunt._test_connect_id = connectId;
+  }
+
+  try {
+    var r = await fetch(SB + '/rest/v1/hunts', {
+      method: 'POST',
+      headers: {
+        'apikey': KEY,
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(hunt)
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(JSON.stringify(d));
+    var created = Array.isArray(d) ? d[0] : d;
+    var huntId = created.id;
+
+    log('✓ Hunt created: ' + huntId, 'ok');
+    log('  Prize: $' + (prizeCents/100).toFixed(2) + ' · Expires: ' + expiresAt.toLocaleTimeString(), 'info');
+    log('  Status: active · Escrow: funded', 'info');
+
+    // Show hunt ID prominently
+    var el = document.getElementById('created-hunt-id');
+    el.style.display = 'block';
+    el.innerHTML = '✓ Hunt ID: <strong>' + huntId + '</strong> · Expires at ' + expiresAt.toLocaleTimeString() +
+      '<br><span style="color:rgba(255,255,255,.4);font-size:12px;">Copy this ID into the fields below to test transfer and refund</span>';
+
+    // Pre-fill other sections
+    document.getElementById('check-hunt-id').value = huntId;
+    document.getElementById('transfer-hunt-id').value = huntId;
+    document.getElementById('refund-hunt-id').value = huntId;
+
+  } catch(e) {
+    log('✗ Create failed: ' + e.message, 'err');
+  }
+}
+
+// ── 2. Check Hunt Status ──────────────────────────────────
+async function checkHunt() {
+  var huntId = document.getElementById('check-hunt-id').value.trim();
+  if (!huntId) { log('Hunt ID required', 'err'); return; }
+
+  log('Checking hunt ' + huntId + '...', 'info');
+  try {
+    var r = await fetch(SB + '/rest/v1/hunts?id=eq.' + huntId + '&select=id,title,status,escrow_status,prize_value,escrow_amount,starts_at,ends_at,quest_id,pirate_id,stripe_payment_intent', {
+      headers: {'apikey': KEY, 'Authorization': 'Bearer ' + getToken()}
+    });
+    var d = await r.json();
+    if (!r.ok || !d[0]) throw new Error('Not found');
+    var h = d[0];
+
+    var now = new Date();
+    var expired = h.ends_at && new Date(h.ends_at) < now;
+    var statusClass = h.status === 'active' ? 'active' : h.status === 'expired' ? 'expired' : 'draft';
+    var escrowClass = h.escrow_status === 'funded' ? 'funded' : h.escrow_status === 'refunded' ? 'expired' : 'draft';
+
+    document.getElementById('hunt-status-card').innerHTML =
+      '<div class="hunt-card">' +
+        '<div class="hunt-row"><span class="hunt-label">Title</span><span class="hunt-val">' + (h.title||'—').slice(0,40) + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">Status</span><span class="badge badge-' + statusClass + '">' + (h.status||'—') + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">Escrow</span><span class="badge badge-' + escrowClass + '">' + (h.escrow_status||'—') + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">Prize</span><span class="hunt-val">$' + ((h.prize_value||0)/100).toFixed(2) + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">Quest ID</span><span class="hunt-val">' + (h.quest_id||'not yet assigned') + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">Expires</span><span class="hunt-val" style="color:' + (expired ? '#f87171' : '#4ade80') + '">' + (h.ends_at ? new Date(h.ends_at).toLocaleTimeString() : '—') + (expired ? ' · EXPIRED' : '') + '</span></div>' +
+        '<div class="hunt-row"><span class="hunt-label">PI</span><span class="hunt-val" style="font-size:11px;">' + (h.stripe_payment_intent||'—').slice(0,30) + '</span></div>' +
+      '</div>';
+
+    log('✓ Hunt found · status: ' + h.status + ' · escrow: ' + h.escrow_status, 'ok');
+  } catch(e) {
+    log('✗ Check failed: ' + e.message, 'err');
+    document.getElementById('hunt-status-card').innerHTML = '';
+  }
+}
+
+// ── 3. Trigger Transfer ───────────────────────────────────
+async function triggerTransfer() {
+  var huntId = document.getElementById('transfer-hunt-id').value.trim();
+  var winnerId = document.getElementById('transfer-winner-id').value.trim();
+  if (!huntId || !winnerId) { log('Hunt ID and Winner ID required', 'err'); return; }
+
+  log('Firing transfer · hunt: ' + huntId.slice(0,8) + '... · winner: ' + winnerId.slice(0,8) + '...', 'warn');
+
+  try {
+    var r = await fetch('/api/transfer-prize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-finderseek-secret': NOTIFY
+      },
+      body: JSON.stringify({ huntId, winnerId })
+    });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error || JSON.stringify(d));
+    log('✓ Transfer complete: ' + JSON.stringify(d), 'ok');
+  } catch(e) {
+    log('✗ Transfer failed: ' + e.message, 'err');
+  }
+}
+
+// ── 4. Trigger Refund ─────────────────────────────────────
+async function triggerRefund() {
+  var huntId = document.getElementById('refund-hunt-id').value.trim();
+  if (!huntId) { log('Hunt ID required', 'err'); return; }
+
+  log('Firing refund for hunt ' + huntId.slice(0,8) + '...', 'warn');
+
+  try {
+    // First expire the hunt
+    var r1 = await fetch(SB + '/rest/v1/hunts?id=eq.' + huntId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': KEY,
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: 'expired', ends_at: new Date(Date.now() - 1000).toISOString() })
+    });
+    if (!r1.ok) throw new Error('Could not expire hunt');
+    log('Hunt marked expired', 'info');
+
+    // Now trigger the cron/refund endpoint
+    var r2 = await fetch('/api/cron-activate-hunts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-finderseek-secret': NOTIFY
+      },
+      body: JSON.stringify({ huntId, action: 'expire' })
+    });
+    var d = await r2.json();
+    if (!r2.ok) throw new Error(d.error || JSON.stringify(d));
+    log('✓ Refund triggered: ' + JSON.stringify(d), 'ok');
+  } catch(e) {
+    log('✗ Refund failed: ' + e.message, 'err');
+  }
+}
+
+// ── Keyboard shortcut ────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+    doLogin();
+  }
+});
+</script>
+</body>
+</html>
