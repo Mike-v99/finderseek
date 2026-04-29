@@ -35,20 +35,12 @@ const { data: profile } = await supabase
 let accountId = profile?.stripe_connect_id;
 
 if (!accountId) {
-  // Create new Express account — individual, not business
+  // Create new Express account — individual payout recipient
   const account = await stripe.accounts.create({
     type: 'express',
     email: email,
-    business_type: 'individual',
     capabilities: {
       transfers: { requested: true },
-    },
-    settings: {
-      payouts: {
-        schedule: {
-          interval: 'manual',
-        },
-      },
     },
     metadata: {
       finderseek_user_id: userId,
@@ -63,12 +55,15 @@ if (!accountId) {
     .eq('id', userId);
 }
 
-// Create onboarding link
+// Create onboarding link — request only what's needed for transfers
 const accountLink = await stripe.accountLinks.create({
   account: accountId,
   refresh_url: `${process.env.APP_URL}/profile.html?connect=refresh`,
   return_url: `${process.env.APP_URL}/profile.html?connect=complete`,
   type: 'account_onboarding',
+  collection_options: {
+    fields: 'eventually_due',
+  },
 });
 
 return res.status(200).json({
