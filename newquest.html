@@ -1298,6 +1298,30 @@ let currentProfile = null;
 
 // Initialize Supabase JS client (handles PKCE flow, session storage, token refresh)
 const supaClient = window.supabase.createClient(SB, KEY);
+// ── Auto-refresh token — uses Supabase session refresh automatically ──────
+async function getFreshToken() {
+  try {
+    // getSession() auto-refreshes expired access tokens using the refresh token
+    const { data: { session } } = await supaClient.auth.getSession();
+    if (session && session.access_token) {
+      // Update stored token so getToken() stays in sync
+      try { localStorage.setItem('fs_token', session.access_token); } catch(e){}
+      return session.access_token;
+    }
+  } catch(e) { console.warn('Session refresh failed:', e); }
+  return getToken(); // fallback to stored token
+}
+
+// Auto-refresh on page load — silently keeps session alive
+(async function() {
+  try {
+    const { data: { session } } = await supaClient.auth.getSession();
+    if (session && session.access_token) {
+      try { localStorage.setItem('fs_token', session.access_token); } catch(e){}
+    }
+  } catch(e) {}
+})();
+
 
 function getToken(){
   var t = localStorage.getItem('fs_token');
@@ -2105,8 +2129,6 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 
   // ── Listen for OAuth sign-in return (Apple/Google redirect back) ──────────
-  // When user signs in via OAuth, Supabase redirects back to newquest.html
-  // with a session in the URL hash. We detect this and auto-resume the flow.
   supaClient.auth.onAuthStateChange(async function(event, session) {
     if (event === 'SIGNED_IN' && session && session.user) {
       currentUser = session.user;
@@ -2114,15 +2136,16 @@ document.addEventListener('DOMContentLoaded',function(){
       // Close email gate if open
       var egModal = document.getElementById('eg-modal');
       if (egModal && egModal.style.display !== 'none') closeEmailGate();
-      // Check if we were mid-quest-creation
+      // Only auto-resume if this is a fresh OAuth return (not a regular page load)
+      // Check for the pending auth flag we set in showEmailGate
+      var pendingAuth = sessionStorage.getItem('fs_quest_pending_auth');
+      if (!pendingAuth) return; // regular page load with existing session — do nothing
+      sessionStorage.removeItem('fs_quest_pending_auth');
       var formState = localStorage.getItem('fs_newquest_form');
       if (formState) {
-        // Restore state first
         restoreFormState();
-        // Small delay so DOM settles, then go straight to payment
         setTimeout(async function() {
           try {
-            // Make sure we're on step 5 (schedule)
             if (currentStep !== 5) {
               document.getElementById('step' + currentStep).style.display = 'none';
               currentStep = 5;
@@ -2131,7 +2154,6 @@ document.addEventListener('DOMContentLoaded',function(){
               updateMiniSummary();
             }
             showToast('Signed in! Starting your quest...', 'success');
-            // Brief pause so user sees the toast then go
             setTimeout(function() { createQuest(); }, 800);
           } catch(e) {
             console.error('Auto-resume error:', e);

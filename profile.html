@@ -377,6 +377,30 @@ const NOTIFY_SECRET = 'fs-notify-2026';
 
 // Initialize Supabase client (handles PKCE flow, session storage, token refresh)
 const supaClient = window.supabase.createClient(SB, KEY);
+// ── Auto-refresh token — uses Supabase session refresh automatically ──────
+async function getFreshToken() {
+  try {
+    // getSession() auto-refreshes expired access tokens using the refresh token
+    const { data: { session } } = await supaClient.auth.getSession();
+    if (session && session.access_token) {
+      // Update stored token so getToken() stays in sync
+      try { localStorage.setItem('fs_token', session.access_token); } catch(e){}
+      return session.access_token;
+    }
+  } catch(e) { console.warn('Session refresh failed:', e); }
+  return getToken(); // fallback to stored token
+}
+
+// Auto-refresh on page load — silently keeps session alive
+(async function() {
+  try {
+    const { data: { session } } = await supaClient.auth.getSession();
+    if (session && session.access_token) {
+      try { localStorage.setItem('fs_token', session.access_token); } catch(e){}
+    }
+  } catch(e) {}
+})();
+
 
 let currentUser = null;
 let currentProfile = null;
