@@ -286,7 +286,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
         <div id="payout-pill" style="display:none;align-items:center;gap:4px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:20px;padding:3px 9px;font-size:13px;color:#4ade80;flex-shrink:0;">✓ Active</div>
       </div>
-      <button id="payout-btn" onclick="showPayoutModal()" style="display:none;width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Set Up Payouts</button>
+      <button id="payout-btn" onclick="handlePayoutBtn()" style="display:none;width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Set Up Payouts →</button>
       <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:12px;padding:12px;border:1px solid rgba(99,91,255,.3);border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:rgba(99,91,255,.12);color:#fff;align-items:center;justify-content:center;gap:8px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Manage in Stripe
@@ -1137,12 +1137,15 @@ async function disconnectPayout(){
 }
 
 function openPayoutsAction(){
-  var section = document.getElementById('payout-section');
-  if (section && section.style.display !== 'none') {
-    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } else {
-    showPayoutModal();
+  // If payout section is visible and already has Connect, scroll to it
+  var alreadyHasConnect = currentProfile && currentProfile.stripe_connect_id;
+  if (alreadyHasConnect) {
+    var section = document.getElementById('payout-section');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
   }
+  // Otherwise go straight to Stripe onboarding
+  handlePayoutBtn();
 }
 
 function showPayoutModal(){
@@ -1167,6 +1170,10 @@ function closePayoutModal(){
 }
 
 async function handlePayoutBtn(){
+  if (!currentUser || !currentUser.id) {
+    showToast('Please sign in first', 'error');
+    return;
+  }
   var btn = document.getElementById('payout-modal-btn');
   btn.disabled = true;
   btn.textContent = '⏳ Loading...';
