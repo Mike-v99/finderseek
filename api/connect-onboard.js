@@ -55,15 +55,14 @@ if (!accountId) {
     .eq('id', userId);
 }
 
-// Create onboarding link — request only what's needed for transfers
+const appUrl = process.env.APP_URL || 'https://finderseek.com';
+
+// Create onboarding link
 const accountLink = await stripe.accountLinks.create({
   account: accountId,
-  refresh_url: `${process.env.APP_URL}/profile.html?connect=refresh`,
-  return_url: `${process.env.APP_URL}/profile.html?connect=complete`,
+  refresh_url: `${appUrl}/profile.html?connect=refresh`,
+  return_url: `${appUrl}/profile.html?connect=complete`,
   type: 'account_onboarding',
-  collection_options: {
-    fields: 'eventually_due',
-  },
 });
 
 return res.status(200).json({
