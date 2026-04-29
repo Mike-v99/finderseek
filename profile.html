@@ -1170,10 +1170,104 @@ async function handlePayoutBtn(){
       return;
     }
   }
-  var btn = document.getElementById('payout-modal-btn');
+
   var payoutBtn = document.getElementById('payout-btn');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
   if (payoutBtn) { payoutBtn.disabled = true; payoutBtn.textContent = '⏳ Loading...'; }
+
+  // Show modal with loading state
+  var backdrop = document.getElementById('payout-modal-backdrop');
+  var modal = document.getElementById('payout-modal');
+  var inner = document.getElementById('payout-modal-inner');
+  backdrop.style.display = 'block';
+  modal.style.display = 'flex';
+  setTimeout(function(){ inner.style.transform = 'scale(1)'; inner.style.opacity = '1'; }, 10);
+
+  try {
+    var token = getToken();
+    // Get client secret for embedded component
+    var r = await fetch('/api/create-connect-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-finderseek-secret': NOTIFY_SECRET
+      },
+      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.client_secret) throw new Error(d.error || 'Failed to create session');
+
+    // Mount embedded Stripe Connect component
+    var stripeConnect = StripeConnect(d.client_secret);
+    stripeConnect.setAppearance({
+      colorPrimary: '#e8a820',
+      colorBackground: '#0f0d1e',
+      colorText: '#ffffff',
+      colorDanger: '#f87171',
+      fontFamily: 'Noto Sans Display, sans-serif',
+      borderRadius: '10px',
+    });
+
+    var container = document.getElementById('stripe-connect-container');
+    var loading = document.getElementById('payout-modal-loading');
+    loading.style.display = 'none';
+    container.style.display = 'block';
+
+    var onboardingComponent = stripeConnect.create('account-onboarding');
+    onboardingComponent.setOnExit(function() {
+      // User completed or dismissed onboarding
+      closePayoutModal();
+      loadConnectStatus(); // refresh status
+      showToast('Payout account updated!', 'success');
+    });
+    onboardingComponent.mount('#stripe-connect-container');
+
+    if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
+
+  } catch(e) {
+    console.error('Connect embedded error:', e.message);
+    // Fall back to redirect method
+    document.getElementById('payout-modal-loading').style.display = 'none';
+    document.getElementById('payout-modal-fallback').style.display = 'block';
+    if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
+  }
+}
+
+// Fallback: redirect to Stripe hosted onboarding
+async function handlePayoutBtnRedirect(){
+  var btn = document.getElementById('payout-modal-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
+  try {
+    var r = await fetch('/api/connect-onboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Failed');
+    window.location.href = d.url;
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Continue to Stripe →'; }
+  }
+}
+
+function closePayoutModal(){
+  var backdrop = document.getElementById('payout-modal-backdrop');
+  var modal = document.getElementById('payout-modal');
+  var inner = document.getElementById('payout-modal-inner');
+  if (inner) { inner.style.transform = 'scale(0.95)'; inner.style.opacity = '0'; }
+  setTimeout(function(){
+    if (modal) modal.style.display = 'none';
+    if (backdrop) backdrop.style.display = 'none';
+    // Reset for next open
+    var loading = document.getElementById('payout-modal-loading');
+    var container = document.getElementById('stripe-connect-container');
+    var fallback = document.getElementById('payout-modal-fallback');
+    if (loading) { loading.style.display = 'block'; container.innerHTML = ''; }
+    if (container) container.style.display = 'none';
+    if (fallback) fallback.style.display = 'none';
+  }, 300);
+}
   try {
     var r = await fetch('/api/connect-onboard', {
       method:'POST',
@@ -1469,5 +1563,36 @@ if ('serviceWorker' in navigator) {
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
 </script>
+
+<!-- Stripe Connect JS -->
+<script src="https://connect-js.stripe.com/v1.0/connect.js" async></script>
+
+<!-- Payout Embedded Modal -->
+<div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(6,5,10,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"></div>
+<div id="payout-modal" style="display:none;position:fixed;inset:0;z-index:10001;align-items:center;justify-content:center;padding:16px;">
+  <div id="payout-modal-inner" style="background:#0f0d1e;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.95);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1),opacity .3s;">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div>
+        <div style="font-size:18px;font-weight:500;color:#fff;">Set Up Payouts</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:2px;">Secure · Powered by Stripe</div>
+      </div>
+      <button onclick="closePayoutModal()" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+    </div>
+    <!-- Loading state -->
+    <div id="payout-modal-loading" style="padding:40px;text-align:center;">
+      <div style="width:32px;height:32px;border:2px solid rgba(255,255,255,.1);border-top-color:#e8a820;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
+      <div style="font-size:15px;color:rgba(255,255,255,.5);">Connecting to Stripe...</div>
+    </div>
+    <!-- Stripe embedded component mounts here -->
+    <div id="stripe-connect-container" style="padding:0 4px 4px;display:none;"></div>
+    <!-- Fallback button if embedded fails -->
+    <div id="payout-modal-fallback" style="display:none;padding:20px;">
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:12px;text-align:center;">Unable to load embedded form. Continue on Stripe's page instead:</div>
+      <button id="payout-modal-btn" onclick="handlePayoutBtnRedirect()" style="width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Continue to Stripe →</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
