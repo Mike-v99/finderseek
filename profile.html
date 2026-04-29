@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -87,7 +87,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
-  <script src="https://connect-js.stripe.com/v1.0/connect.js"></script>
+  <script src="https://connect-js.stripe.com/v1.0/connect.js" async></script>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -1178,37 +1178,51 @@ async function handlePayoutBtn(){
     if (!r.ok || !d.client_secret) throw new Error(d.error || 'Failed to create session');
 
     // Mount embedded Stripe Connect component
-    if (typeof loadConnectAndInitialize === 'undefined') {
-      throw new Error('Stripe Connect JS not loaded');
-    }
     var container = document.getElementById('stripe-connect-container');
     var loading = document.getElementById('payout-modal-loading');
-    loading.style.display = 'none';
-    container.style.display = 'block';
-    container.innerHTML = '';
 
-    var stripeConnect = loadConnectAndInitialize({
-      publishableKey: d.publishable_key,
-      fetchClientSecret: async function() { return d.client_secret; },
-      appearance: {
-        overlays: 'dialog',
-        variables: {
-          colorPrimary: '#e8a820',
-          colorBackground: '#0f0d1e',
-          colorText: '#ffffff',
-          colorDanger: '#f87171',
-          fontFamily: 'Noto Sans Display, sans-serif',
-          borderRadius: '10px',
+    function mountStripeConnect() {
+      if (typeof window.StripeConnect === 'undefined' || typeof window.StripeConnect.init === 'undefined') {
+        throw new Error('Stripe Connect JS not loaded');
+      }
+      loading.style.display = 'none';
+      container.style.display = 'block';
+      container.innerHTML = '';
+
+      var stripeInstance = window.StripeConnect.init({
+        publishableKey: d.publishable_key,
+        fetchClientSecret: function() { return Promise.resolve(d.client_secret); },
+        appearance: {
+          variables: {
+            colorPrimary: '#e8a820',
+            colorBackground: '#0f0d1e',
+            colorText: '#ffffff',
+            colorDanger: '#f87171',
+            borderRadius: '10px',
+          },
         },
-      },
-    });
-    var onboardingComponent = stripeConnect.create('account-onboarding');
-    onboardingComponent.setOnExit(function() {
-      closePayoutModal();
-      loadConnectStatus();
-      showToast('Payout account updated!', 'success');
-    });
-    container.appendChild(onboardingComponent);
+      });
+
+      var onboardingComponent = stripeInstance.create('account-onboarding');
+      onboardingComponent.setOnExit(function() {
+        closePayoutModal();
+        loadConnectStatus();
+        showToast('Payout account updated!', 'success');
+      });
+      container.appendChild(onboardingComponent);
+    }
+
+    // StripeConnect loads async — wait for onLoad or call directly if already ready
+    if (window.StripeConnect && window.StripeConnect.init) {
+      mountStripeConnect();
+    } else {
+      window.StripeConnect = window.StripeConnect || {};
+      var prevOnLoad = window.StripeConnect.onLoad;
+      window.StripeConnect.onLoad = function() {
+        if (prevOnLoad) prevOnLoad();
+        mountStripeConnect();
+      };
+    }
 
     if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
 
