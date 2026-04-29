@@ -76,6 +76,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
@@ -86,6 +87,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <link rel="apple-touch-startup-image" href="/splash-2556x1179.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-2532x1170.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
+  <script src="https://connect-js.stripe.com/v1.0/connect.js"></script>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -1176,32 +1178,37 @@ async function handlePayoutBtn(){
     if (!r.ok || !d.client_secret) throw new Error(d.error || 'Failed to create session');
 
     // Mount embedded Stripe Connect component
-    if (typeof StripeConnect === 'undefined') {
+    if (typeof loadConnectAndInitialize === 'undefined') {
       throw new Error('Stripe Connect JS not loaded');
     }
-    var stripeConnect = StripeConnect(d.client_secret);
-    stripeConnect.setAppearance({
-      colorPrimary: '#e8a820',
-      colorBackground: '#0f0d1e',
-      colorText: '#ffffff',
-      colorDanger: '#f87171',
-      fontFamily: 'Noto Sans Display, sans-serif',
-      borderRadius: '10px',
-    });
-
     var container = document.getElementById('stripe-connect-container');
     var loading = document.getElementById('payout-modal-loading');
     loading.style.display = 'none';
     container.style.display = 'block';
+    container.innerHTML = '';
 
+    var stripeConnect = loadConnectAndInitialize({
+      publishableKey: d.publishable_key,
+      fetchClientSecret: async function() { return d.client_secret; },
+      appearance: {
+        overlays: 'dialog',
+        variables: {
+          colorPrimary: '#e8a820',
+          colorBackground: '#0f0d1e',
+          colorText: '#ffffff',
+          colorDanger: '#f87171',
+          fontFamily: 'Noto Sans Display, sans-serif',
+          borderRadius: '10px',
+        },
+      },
+    });
     var onboardingComponent = stripeConnect.create('account-onboarding');
     onboardingComponent.setOnExit(function() {
-      // User completed or dismissed onboarding
       closePayoutModal();
-      loadConnectStatus(); // refresh status
+      loadConnectStatus();
       showToast('Payout account updated!', 'success');
     });
-    onboardingComponent.mount('#stripe-connect-container');
+    container.appendChild(onboardingComponent);
 
     if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
 
@@ -1529,7 +1536,6 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <!-- Stripe Connect JS - load synchronously so it's ready when needed -->
-<script src="https://connect-js.stripe.com/v1.0/connect.js"></script>
 
 <!-- Payout Embedded Modal -->
 <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(6,5,10,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"></div>
