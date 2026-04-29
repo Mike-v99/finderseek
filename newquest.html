@@ -1274,6 +1274,8 @@ function updateCustomDates() {
 }
 
 function startTheQuest() {
+  console.log('startTheQuest called, selectedPreset:', selectedPreset, 'selectedLat:', selectedLat, 'selectedLng:', selectedLng);
+  showToast('Checking quest...', 'success');
   if (!selectedPreset) {
     showToast('Please select a schedule window above', 'error');
     return;
