@@ -246,7 +246,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-size:22px;line-height:1;">👑</div>
         <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Gold</div>
       </div>
-      <div id="p-payout-btn" onclick="openPayoutsAction()" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div id="p-payout-btn" onclick="document.getElementById('payout-section').scrollIntoView({behavior:'smooth',block:'center'})" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="font-size:22px;line-height:1;">💳</div>
         <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Payout</div>
       </div>
@@ -278,33 +278,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- ── PAYOUT SECTION ─────────────────────────────────── -->
-  <div id="payout-section" class="el" style="display:none;margin:8px 12px 0;">
-    <div id="payout-box" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;">
-      <div id="payout-content" style="display:flex;align-items:center;gap:12px;">
-        <div style="font-size:28px;flex-shrink:0;">💳</div>
-        <div style="flex:1;">
-          <div id="payout-title" style="font-size:25px;color:#fff;margin-bottom:3px;line-height:1.2;">Loading…</div>
-          <div id="payout-sub" style="font-size:13px;color:#b8c4d0;">—</div>
+  <div id="payout-section" class="el" style="margin:8px 12px 0;">
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="font-size:28px;flex-shrink:0;">💸</div>
+        <div>
+          <div style="font-size:18px;color:#fff;font-weight:400;">Prize Payouts</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.4);margin-top:2px;">PayPal or Venmo</div>
         </div>
-        <div id="payout-pill" style="display:none;align-items:center;gap:4px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:20px;padding:3px 9px;font-size:13px;color:#4ade80;flex-shrink:0;">✓ Active</div>
       </div>
-
-      <!-- Trust messaging — only shown when not yet set up -->
-      <div id="payout-trust-msg" style="display:none;margin-top:14px;padding:13px;background:rgba(99,91,255,.05);border:1px solid rgba(99,91,255,.15);border-radius:11px;">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
-          <span style="font-size:13px;color:rgba(255,255,255,.35);letter-spacing:.8px;">SECURED BY</span>
-          <div style="background:#635bff;border-radius:5px;padding:4px 10px;display:flex;align-items:center;"><span style="font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.5px;">stripe</span></div>
-        </div>
-        <div style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:0;">FinderSeek partners with Stripe to help you receive payments and keep your personal bank details secure. Your banking information is never stored by FinderSeek.</div>
-      </div>
-
-      <button id="payout-btn" onclick="handlePayoutBtn()" style="display:none;width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Set Up Payouts →</button>
-      <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:12px;padding:12px;border:1px solid rgba(99,91,255,.3);border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:rgba(99,91,255,.12);color:#fff;align-items:center;justify-content:center;gap:8px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Manage in Stripe
-      </button>
-      <div id="payout-disconnect-wrap" style="display:none;text-align:center;margin-top:10px;">
-        <a href="javascript:void(0)" onclick="confirmDisconnect()" style="font-size:13px;color:#b8c4d0;text-decoration:underline;">Disconnect payout account</a>
+      <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:12px;">When you win a quest, you'll be asked for your PayPal email or Venmo phone number to receive your prize. No setup needed — prizes are sent within 24 hours of claiming.</div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;padding:10px;background:rgba(0,112,243,.08);border:1px solid rgba(0,112,243,.2);border-radius:10px;text-align:center;font-size:14px;color:rgba(255,255,255,.6);">🅿 PayPal</div>
+        <div style="flex:1;padding:10px;background:rgba(0,136,204,.08);border:1px solid rgba(0,136,204,.2);border-radius:10px;text-align:center;font-size:14px;color:rgba(255,255,255,.6);">💙 Venmo</div>
       </div>
     </div>
   </div>

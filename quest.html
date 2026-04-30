@@ -101,13 +101,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- WIN MODAL -->
 <div id="win-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;"></div>
-<div id="win-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:24px;">
-  <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:340px;width:100%;padding:28px 24px;text-align:center;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;">
-    <div style="font-size:48px;margin-bottom:12px;">🏆</div>
-    <div style="font-size:28px;font-weight:200;color:#4ade80;margin-bottom:6px;">You Found It!</div>
-    <div style="font-size:44px;font-weight:200;color:#fff;margin-bottom:6px;" id="win-amount">$0</div>
-    <div style="font-size:17px;color:#b8c4d0;margin-bottom:20px;">is being sent to your account</div>
-    <button onclick="closeWinModal()" style="width:100%;padding:14px;border:none;border-radius:13px;font-size:18px;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;">Awesome! →</button>
+<div id="win-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:16px;">
+  <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;max-height:90vh;overflow-y:auto;">
+    
+    <!-- Step 1: Celebration -->
+    <div id="win-step-1">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:48px;margin-bottom:10px;">🏆</div>
+        <div style="font-size:26px;font-weight:200;color:#4ade80;margin-bottom:6px;">You Found It!</div>
+        <div style="font-size:48px;font-weight:200;color:#fff;margin-bottom:4px;" id="win-amount">$0</div>
+        <div style="font-size:16px;color:rgba(255,255,255,.5);">How do you want your prize?</div>
+      </div>
+      <!-- PayPal / Venmo choice -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <button onclick="selectPayoutMethod('paypal')" id="win-paypal-btn" style="width:100%;padding:14px;border-radius:12px;border:1.5px solid rgba(0,112,243,.4);background:rgba(0,112,243,.08);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+          <span style="font-size:22px;">🅿</span>
+          <span>PayPal</span>
+        </button>
+        <button onclick="selectPayoutMethod('venmo')" id="win-venmo-btn" style="width:100%;padding:14px;border-radius:12px;border:1.5px solid rgba(0,136,204,.4);background:rgba(0,136,204,.08);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+          <span style="font-size:22px;">💙</span>
+          <span>Venmo</span>
+        </button>
+      </div>
+      <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.25);">Prize sent within 24 hours</div>
+    </div>
+
+    <!-- Step 2: Enter details -->
+    <div id="win-step-2" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:48px;margin-bottom:10px;" id="win-method-icon">🅿</div>
+        <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:4px;" id="win-method-title">PayPal Email</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.4);">We'll send <span id="win-amount-2" style="color:#4ade80;font-weight:500;">$0</span> here</div>
+      </div>
+      <input id="win-payout-dest" type="text" placeholder="your@email.com" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:13px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:12px;"/>
+      <button onclick="submitPayoutRequest()" id="win-submit-btn" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:10px;">Claim My Prize →</button>
+      <button onclick="document.getElementById('win-step-2').style.display='none';document.getElementById('win-step-1').style.display='block';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
+    </div>
+
+    <!-- Step 3: Confirmed -->
+    <div id="win-step-3" style="display:none;text-align:center;">
+      <div style="font-size:52px;margin-bottom:14px;">✅</div>
+      <div style="font-size:22px;font-weight:400;color:#4ade80;margin-bottom:8px;">Prize Claimed!</div>
+      <div style="font-size:16px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:20px;" id="win-confirm-msg">Your prize will be sent within 24 hours.</div>
+      <button onclick="closeWinModal()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;">Awesome! 🎉</button>
+    </div>
+
   </div>
 </div>
 
@@ -692,18 +730,59 @@ async function claimPrize(){
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
   if(code.length!==6){showToast('Enter all 6 digits','error');return;}
   if(code!==currentHunt.finder_code){showToast('Wrong code — keep searching!','error');btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);return;}
+  // PIN correct
   try{sessionStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
   var token=getToken();if(!token){showToast('Prize unlocked! Sign in to receive it.','success');setTimeout(function(){window.location.href='profile.html?redirect='+encodeURIComponent('quest.html?id='+currentHunt.id);},1200);return;}
   btn.disabled=true;btn.textContent='Verifying...';
   try{
-    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
-    btn.textContent='Sending prize...';
-    var tr=await fetch('/api/transfer-prize',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id,winnerId:user.id})});
-    var trd=await tr.json();
-    if(trd.needs_onboarding){showToast('You won! Setting up payout...','success');setTimeout(function(){window.location.href='profile.html?claim='+currentHunt.id;},1500);return;}
-    if(trd.success){btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}showWinCelebration(trd.amount);}
-    else throw new Error(trd.error||trd.message||'Transfer failed');
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
+    btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';
+    window._winHuntId=currentHunt.id;
+    window._winUserId=user.id;
+    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
+    showWinCelebration(window._winAmount);
   }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize';}
+}
+
+var _selectedPayoutMethod=null;
+
+function selectPayoutMethod(method){
+  _selectedPayoutMethod=method;
+  var icon=method==='paypal'?'🅿':'💙';
+  var title=method==='paypal'?'PayPal Email':'Venmo Phone Number';
+  var placeholder=method==='paypal'?'your@email.com':'+1 (555) 000-0000';
+  document.getElementById('win-method-icon').textContent=icon;
+  document.getElementById('win-method-title').textContent=title;
+  document.getElementById('win-amount-2').textContent='$'+(window._winAmount||'0');
+  document.getElementById('win-payout-dest').placeholder=placeholder;
+  document.getElementById('win-payout-dest').value='';
+  document.getElementById('win-step-1').style.display='none';
+  document.getElementById('win-step-2').style.display='block';
+}
+
+async function submitPayoutRequest(){
+  var dest=document.getElementById('win-payout-dest').value.trim();
+  if(!dest){showToast('Please enter your '+((_selectedPayoutMethod==='paypal')?'PayPal email':'Venmo phone'),'error');return;}
+  var btn=document.getElementById('win-submit-btn');
+  btn.disabled=true;btn.textContent='Submitting...';
+  try{
+    var r=await fetch('/api/payout-request',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      body:JSON.stringify({huntId:window._winHuntId,winnerId:window._winUserId,method:_selectedPayoutMethod,destination:dest,amount:window._winAmount})
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Failed to submit');
+    var methodLabel=_selectedPayoutMethod==='paypal'?'PayPal':'Venmo';
+    document.getElementById('win-confirm-msg').textContent='Your $'+window._winAmount+' will be sent to your '+methodLabel+' within 24 hours. 🎉';
+    document.getElementById('win-step-2').style.display='none';
+    document.getElementById('win-step-3').style.display='block';
+    try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}
+  }catch(e){
+    showToast(e.message||'Error submitting','error');
+    btn.disabled=false;btn.textContent='Claim My Prize →';
+  }
 }
 </script>
 <script>
