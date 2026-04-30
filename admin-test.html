@@ -147,6 +147,8 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 <script>
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
+// Service role key — bypasses RLS for admin operations (this page is password protected)
+const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjg0MDA0NiwiZXhwIjoyMDg4NDE2MDQ2fQ.tLlad7pAmPD-smVI42C1a6tZN9w111aQ3WmcKY1v_qo';
 const NOTIFY = 'fs-notify-2026';
 var adminToken = null;
 
@@ -271,8 +273,8 @@ async function createTestQuest() {
     var r = await fetch(SB + '/rest/v1/hunts', {
       method: 'POST',
       headers: {
-        'apikey': KEY,
-        'Authorization': 'Bearer ' + getToken(),
+        'apikey': SERVICE_KEY,
+        'Authorization': 'Bearer ' + SERVICE_KEY,
         'Content-Type': 'application/json',
         'Prefer': 'return=representation'
       },
@@ -311,7 +313,7 @@ async function checkHunt() {
   log('Checking hunt ' + huntId + '...', 'info');
   try {
     var r = await fetch(SB + '/rest/v1/hunts?id=eq.' + huntId + '&select=id,title,status,escrow_status,prize_value,escrow_amount,starts_at,ends_at,quest_id,pirate_id,stripe_payment_intent', {
-      headers: {'apikey': KEY, 'Authorization': 'Bearer ' + getToken()}
+      headers: {'apikey': SERVICE_KEY, 'Authorization': 'Bearer ' + SERVICE_KEY}
     });
     var d = await r.json();
     if (!r.ok || !d[0]) throw new Error('Not found');
@@ -377,8 +379,8 @@ async function triggerRefund() {
     var r1 = await fetch(SB + '/rest/v1/hunts?id=eq.' + huntId, {
       method: 'PATCH',
       headers: {
-        'apikey': KEY,
-        'Authorization': 'Bearer ' + getToken(),
+        'apikey': SERVICE_KEY,
+        'Authorization': 'Bearer ' + SERVICE_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ status: 'expired', ends_at: new Date(Date.now() - 1000).toISOString() })
