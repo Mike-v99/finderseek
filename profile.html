@@ -288,6 +288,18 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
         <div id="payout-pill" style="display:none;align-items:center;gap:4px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:20px;padding:3px 9px;font-size:13px;color:#4ade80;flex-shrink:0;">✓ Active</div>
       </div>
+
+      <!-- Trust messaging — only shown when not yet set up -->
+      <div id="payout-trust-msg" style="display:none;margin-top:14px;padding:13px;background:rgba(99,91,255,.05);border:1px solid rgba(99,91,255,.15);border-radius:11px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
+          <span style="font-size:13px;color:rgba(255,255,255,.35);letter-spacing:.8px;">SECURED BY</span>
+          <div style="background:#635bff;border-radius:5px;padding:3px 9px;display:flex;align-items:center;">
+            <svg height="14" viewBox="0 0 60 24" fill="white" xmlns="http://www.w3.org/2000/svg" style="display:block;"><path d="M3.24 9.3c0-1.02.84-1.42 2.24-1.42 2 0 4.53.6 6.53 1.68V3.6C9.87 2.6 7.77 2.1 5.48 2.1 2.19 2.1 0 3.72 0 8.58c0 7.44 10.26 6.24 10.26 9.44 0 1.2-1.04 1.6-2.52 1.6-2.18 0-4.97-.92-7.18-2.14v5c2.4 1.04 4.84 1.46 7.18 1.46 3.16 0 6.24-1.3 6.24-6.16-.02-8.04-10.74-6.58-10.74-8.48zm22.16-8.54L22 1.56l-.58 2.88c-.56.12-2.98.68-3.36.78V8.8h2.8v8.84c0 3.66 2.58 5.08 6.04 5.08 1.46 0 3.16-.28 4.32-.86V17c-.78.38-4.5 1.36-4.5-1.72V8.8h4.5V4.72h-4.5L25.4.76zm11.76 4.14h4.22v17.16H37.16V4.9zm0-4.62h4.22v3.46H37.16V.28zm17.6 4.28c-.86 0-1.92.38-2.7 1.44l-.18-1.14H47.7V22.06h4.2V9.66c.5-.76 1.84-1.44 2.98-1.44.38 0 .76.08 1.14.1V4.66c-.36-.08-.88-.1-1.26-.1z"/></svg>
+          </div>
+        </div>
+        <div style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:0;">FinderSeek partners with Stripe to help you receive payments and keep your personal bank details secure. Your banking information is never stored by FinderSeek.</div>
+      </div>
+
       <button id="payout-btn" onclick="handlePayoutBtn()" style="display:none;width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Set Up Payouts →</button>
       <button id="payout-manage-btn" onclick="openStripeDashboard()" style="display:none;width:100%;margin-top:12px;padding:12px;border:1px solid rgba(99,91,255,.3);border-radius:10px;font-size:17px;font-weight:400;font-family:inherit;cursor:pointer;background:rgba(99,91,255,.12);color:#fff;align-items:center;justify-content:center;gap:8px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -1056,13 +1068,17 @@ async function loadConnectStatus(){
       title.textContent = 'No payout account';
       sub.textContent = 'Set up a payout account to receive prize money';
       btn.style.display = 'block';
-      btn.textContent = 'Set Up Payouts';
+      btn.textContent = 'Set Up Payouts →';
+      var trustMsg = document.getElementById('payout-trust-msg');
+      if (trustMsg) trustMsg.style.display = 'block';
     } else if (!d.ready) {
       title.textContent = 'Setup incomplete';
       sub.textContent = 'Verify your account to receive payouts';
       btn.style.display = 'block';
       btn.textContent = 'Complete Setup →';
       disconnectWrap.style.display = 'block';
+      var trustMsg2 = document.getElementById('payout-trust-msg');
+      if (trustMsg2) trustMsg2.style.display = 'block';
     } else {
       title.textContent = 'Payouts enabled';
       if (d.bank_last4) {
@@ -1142,58 +1158,25 @@ function openPayoutsAction(){
 }
 
 async function handlePayoutBtn(){
-  // Load user if not yet available
   if (!currentUser || !currentUser.id) {
     showToast('Loading...', 'success');
     await loadProfile();
-    if (!currentUser || !currentUser.id) {
-      showToast('Please sign in to set up payouts', 'error');
-      return;
-    }
+    if (!currentUser || !currentUser.id) { showToast('Please sign in to set up payouts', 'error'); return; }
   }
-
   var payoutBtn = document.getElementById('payout-btn');
-  if (payoutBtn) { payoutBtn.disabled = true; payoutBtn.textContent = '⏳ Loading...'; }
-
-  // Show modal with intro screen
-  var backdrop = document.getElementById('payout-modal-backdrop');
-  var modal = document.getElementById('payout-modal');
-  var inner = document.getElementById('payout-modal-inner');
-  backdrop.style.display = 'block';
-  modal.style.display = 'flex';
-  setTimeout(function(){ inner.style.transform = 'scale(1)'; inner.style.opacity = '1'; }, 10);
-  // Store d for use by startStripeOnboarding
-  window._payoutSessionData = null;
-
-  // Pre-fetch session in background while user reads the intro
+  if (payoutBtn) { payoutBtn.disabled = true; payoutBtn.textContent = '⏳ Connecting...'; }
   try {
-    var token = getToken();
-    // Get client secret for embedded component
-    var r = await fetch('/api/create-connect-session', {
+    var r = await fetch('/api/connect-onboard', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-finderseek-secret': NOTIFY_SECRET
-      },
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
     });
     var d = await r.json();
-    if (!r.ok || !d.client_secret) throw new Error(d.error || 'Failed to create session');
-
-    // Store session data — mounting happens when user taps Continue
-    window._payoutSessionData = d;
-    // Mount embedded Stripe Connect component
-    var container = document.getElementById('stripe-connect-container');
-    var loading = document.getElementById('payout-modal-loading');
-
-    // Pre-loading done — user still on intro screen
-    if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
-
+    if (!r.ok || !d.url) throw new Error(d.error || 'Failed to connect');
+    // Redirect to Stripe onboarding
+    window.location.href = d.url;
   } catch(e) {
-    console.error('Connect embedded error:', e.message);
-    // Fall back to redirect method
-    document.getElementById('payout-modal-loading').style.display = 'none';
-    document.getElementById('payout-modal-fallback').style.display = 'block';
+    showToast('Error: ' + e.message, 'error');
     if (payoutBtn) { payoutBtn.disabled = false; payoutBtn.textContent = 'Set Up Payouts →'; }
   }
 }
@@ -1586,64 +1569,69 @@ if ('serviceWorker' in navigator) {
 <!-- Payout Embedded Modal -->
 <div id="payout-modal-backdrop" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(6,5,10,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"></div>
 <div id="payout-modal" style="display:none;position:fixed;inset:0;z-index:10001;align-items:center;justify-content:center;padding:16px;">
-  <div id="payout-modal-inner" style="background:#0f0d1e;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.95);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1),opacity .3s;position:relative;">
-    <!-- Close button always visible -->
-    <button onclick="closePayoutModal()" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;z-index:1;">✕</button>
+  <div id="payout-modal-inner" style="background:#0f0d1e;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.95);opacity:0;transition:transform .3s cubic-bezier(0.22,1,0.36,1),opacity .3s;">
 
-    <!-- Trust intro screen — shown before Stripe loads -->
-    <div id="payout-modal-intro" style="padding:36px 22px 22px;">
-      <!-- Powered by Stripe -->
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px;">
-        <span style="font-size:12px;letter-spacing:1px;color:rgba(255,255,255,.3);">SECURED BY</span>
-        <div style="background:#635bff;border-radius:7px;padding:4px 10px;display:flex;align-items:center;">
-          <svg width="38" height="16" viewBox="0 0 60 25" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M3 6.5c0-1.1.9-1.5 2.3-1.5 2.1 0 4.7.6 6.8 1.7V1.6C9.9.6 7.7.1 5.3.1 2.1.1 0 1.7 0 6.7c0 7.8 10.7 6.5 10.7 9.8 0 1.3-1.1 1.7-2.6 1.7-2.3 0-5.2-.9-7.5-2.2v5.2c2.5 1.1 5.1 1.5 7.5 1.5 3.3 0 6.5-1.4 6.5-6.4C14.6 8.4 3 9.9 3 6.5zM29.2.4l-3.5.8-.6 3c-.6.1-3.1.7-3.5.8v3.6h2.9v9.2c0 3.8 2.7 5.3 6.3 5.3 1.5 0 3.3-.3 4.5-.9v-4c-.8.4-4.7 1.4-4.7-1.8V8.6h4.7V4.9h-4.7L29.2.4zM37.6 4.9h4.4V22h-4.4V4.9zm0-4.8h4.4v3.6h-4.4V.1zM55.8 4.6c-.9 0-2 .4-2.8 1.5l-.2-1.2h-4.1V22h4.4V9.9c.5-.8 1.9-1.5 3.1-1.5.4 0 .8.1 1.2.1V4.7c-.4-.1-.9-.1-1.6-.1z"/></svg>
+    <div id="payout-modal-intro" style="padding:20px 20px 24px;">
+
+      <!-- Header: Stripe logo left, X right -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;letter-spacing:1px;color:rgba(255,255,255,.3);">SECURED BY</span>
+          <div style="background:#635bff;border-radius:6px;padding:5px 12px;display:flex;align-items:center;justify-content:center;min-width:70px;">
+            <svg height="18" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+              <path fill="white" d="M3.24 9.3c0-1.02.84-1.42 2.24-1.42 2 0 4.53.6 6.53 1.68V3.6C9.87 2.6 7.77 2.1 5.48 2.1 2.19 2.1 0 3.72 0 8.58c0 7.44 10.26 6.24 10.26 9.44 0 1.2-1.04 1.6-2.52 1.6-2.18 0-4.97-.92-7.18-2.14v5c2.4 1.04 4.84 1.46 7.18 1.46 3.16 0 6.24-1.3 6.24-6.16-.02-8.04-10.74-6.58-10.74-8.48zm22.16-8.54L22 1.56l-.58 2.88c-.56.12-2.98.68-3.36.78V8.8h2.8v8.84c0 3.66 2.58 5.08 6.04 5.08 1.46 0 3.16-.28 4.32-.86V17c-.78.38-4.5 1.36-4.5-1.72V8.8h4.5V4.72h-4.5L25.4.76zm11.76 4.14h4.22v17.16H37.16V4.9zm0-4.62h4.22v3.46H37.16V.28zm17.6 4.28c-.86 0-1.92.38-2.7 1.44l-.18-1.14H47.7V22.06h4.2V9.66c.5-.76 1.84-1.44 2.98-1.44.38 0 .76.08 1.14.1V4.66c-.36-.08-.88-.1-1.26-.1z"/>
+            </svg>
+          </div>
         </div>
+        <button onclick="closePayoutModal()" style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;">✕</button>
       </div>
+
       <!-- Lock icon -->
-      <div style="width:52px;height:52px;border-radius:50%;background:rgba(99,91,255,.12);border:1px solid rgba(99,91,255,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+      <div style="width:54px;height:54px;border-radius:50%;background:rgba(99,91,255,.12);border:1px solid rgba(99,91,255,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
       <div style="font-size:21px;font-weight:500;color:#fff;text-align:center;margin-bottom:8px;">Set Up Your Payouts</div>
-      <div style="font-size:16px;color:rgba(255,255,255,.45);text-align:center;line-height:1.6;margin-bottom:20px;">Connect a bank account to receive prize money. Takes about 2 minutes.</div>
+      <div style="font-size:16px;color:rgba(255,255,255,.45);text-align:center;line-height:1.6;margin-bottom:22px;">Connect a bank account to receive prize money. Takes about 2 minutes.</div>
+
       <!-- Trust items -->
-      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:20px;">
-        <div style="display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 13px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:2px;">Bank-level security</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">FinderSeek never sees your bank details. Stripe uses 256-bit encryption.</div></div>
+          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:3px;">Bank-level security</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">FinderSeek never sees your bank details. Stripe uses 256-bit encryption.</div></div>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 13px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        <div style="display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
           </div>
-          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:2px;">Direct to your bank</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">Prize money goes straight to your account. No middleman, no delays.</div></div>
+          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:3px;">Direct to your bank</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">Prize money goes straight to your account. No middleman, no delays.</div></div>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 13px;">
-          <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div style="display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:13px 14px;">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
-          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:2px;">One-time setup</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">Set up once — every future prize transfers automatically.</div></div>
+          <div><div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:3px;">One-time setup</div><div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">Set up once — every future prize transfers automatically.</div></div>
         </div>
       </div>
-      <button onclick="startStripeOnboarding()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:10px;">Continue with Stripe →</button>
-      <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.25);line-height:1.6;">Your information is protected under Stripe's Privacy Policy.<br>FinderSeek does not store your bank details.</div>
+
+      <button onclick="startStripeOnboarding()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:12px;">Continue with Stripe →</button>
+      <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.25);line-height:1.6;">FinderSeek does not store your bank details.<br>Protected by Stripe's Privacy Policy.</div>
     </div>
 
-    <!-- Loading state — shown after tapping Continue -->
-    <div id="payout-modal-loading" style="display:none;padding:40px;text-align:center;">
+    <!-- Loading state -->
+    <div id="payout-modal-loading" style="display:none;padding:48px;text-align:center;">
       <div style="width:32px;height:32px;border:2px solid rgba(255,255,255,.1);border-top-color:#635bff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
       <div style="font-size:16px;color:rgba(255,255,255,.5);">Connecting to Stripe...</div>
     </div>
     <!-- Stripe embedded component mounts here -->
     <div id="stripe-connect-container" style="padding:0 4px 4px;display:none;"></div>
-    <!-- Fallback button if embedded fails -->
-    <div id="payout-modal-fallback" style="display:none;padding:20px;">
-      <div style="font-size:15px;color:rgba(255,255,255,.5);margin-bottom:12px;text-align:center;">Unable to load embedded form. Continue on Stripe's page instead:</div>
-      <button id="payout-modal-btn" onclick="handlePayoutBtnRedirect()" style="width:100%;padding:12px;border:none;border-radius:10px;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Continue to Stripe →</button>
+    <!-- Fallback -->
+    <div id="payout-modal-fallback" style="display:none;padding:24px;">
+      <div style="font-size:15px;color:rgba(255,255,255,.5);margin-bottom:14px;text-align:center;">Unable to load. Continue on Stripe's page:</div>
+      <button id="payout-modal-btn" onclick="handlePayoutBtnRedirect()" style="width:100%;padding:13px;border:none;border-radius:11px;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Continue to Stripe →</button>
     </div>
   </div>
 </div>
-
 </body>
 </html>
