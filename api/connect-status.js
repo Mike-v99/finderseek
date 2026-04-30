@@ -63,16 +63,23 @@ export default async function handler(req, res) {
     // STATUS (default): check readiness + bank info
     const account = await stripe.accounts.retrieve(profile.stripe_connect_id);
     const bank = account.external_accounts?.data?.find(a => a.object === 'bank_account');
+    const card = account.external_accounts?.data?.find(a => a.object === 'card');
+    const hasExternalAccount = !!(bank || card);
+
+    // Ready only if Stripe has enabled payouts AND a bank/card is attached
+    const ready = account.charges_enabled && account.payouts_enabled && hasExternalAccount;
 
     return res.status(200).json({
       connected: true,
-      ready: account.charges_enabled && account.payouts_enabled,
+      ready: ready,
       details_submitted: account.details_submitted,
       accountId: profile.stripe_connect_id,
-      bank_last4: bank?.last4 || null,
-      message: account.payouts_enabled
+      bank_last4: bank?.last4 || card?.last4 || null,
+      message: ready
         ? 'Account ready to receive payouts'
-        : 'Account setup incomplete',
+        : hasExternalAccount
+          ? 'Account verification incomplete'
+          : 'No bank account linked yet',
     });
 
   } catch (err) {
