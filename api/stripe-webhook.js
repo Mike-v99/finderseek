@@ -274,6 +274,21 @@ export default async function handler(req, res) {
 
         break;
       }
+
+      case 'account.updated': {
+        // Connected account completed onboarding or updated verification
+        const acct = event.data.object;
+        if (acct.charges_enabled && acct.payouts_enabled) {
+          // Find the profile with this stripe_connect_id and mark ready
+          const { data: profiles } = await sbFetch(
+            `profiles?stripe_connect_id=eq.${acct.id}&select=id`
+          );
+          if (profiles && profiles[0]) {
+            console.log(`[webhook] account.updated — ${acct.id} payouts_enabled for user ${profiles[0].id}`);
+          }
+        }
+        break;
+      }
     }
 
     return res.status(200).json({ received: true });
