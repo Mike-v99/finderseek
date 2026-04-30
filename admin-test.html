@@ -240,20 +240,26 @@ async function createTestQuest() {
 
   // Build fake hunt
   var hunt = {
-    title: 'TEST QUEST · $' + (prizeCents/100).toFixed(2) + ' · ' + now.toLocaleTimeString(),
+    week_label: 'TEST · $' + (prizeCents/100).toFixed(2) + ' · ' + now.toLocaleTimeString(),
+    prize_desc: '$' + (prizeCents/100).toFixed(2) + ' Cash',
     prize_value: prizeCents,
     status: 'active',
     escrow_status: 'funded',
-    escrow_amount: Math.round(prizeCents * 1.1), // with 10% fee
+    escrow_amount: Math.round(prizeCents * 1.1),
     pirate_id: userId,
+    created_by: userId,
     finder_code: '000000',
     starts_at: now.toISOString(),
     ends_at: expiresAt.toISOString(),
     lat: 30.2913,
     lng: -95.4758,
     state_code: 'TX',
+    city: 'Conroe',
     stripe_payment_intent: 'pi_test_' + Math.random().toString(36).slice(2,10),
     hiding_spot: 'Test location · Conroe TX',
+    payment_type: 'finderseek',
+    clue_persona: 'pirate',
+    clue_count: 4,
   };
 
   // If connect ID provided, find the winner's profile
