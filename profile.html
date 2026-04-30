@@ -1069,6 +1069,13 @@ async function loadConnectStatus(){
       btn.textContent = 'Set Up Payouts →';
       var trustMsg = document.getElementById('payout-trust-msg');
       if (trustMsg) trustMsg.style.display = 'block';
+    } else if (!d.ready && !d.bank_last4) {
+      title.textContent = 'Bank account needed';
+      sub.textContent = 'Add a bank account to receive prize money';
+      btn.style.display = 'block';
+      btn.textContent = 'Add Bank Account →';
+      var trustMsg3 = document.getElementById('payout-trust-msg');
+      if (trustMsg3) trustMsg3.style.display = 'block';
     } else if (!d.ready) {
       title.textContent = 'Setup incomplete';
       sub.textContent = 'Verify your account to receive payouts';
