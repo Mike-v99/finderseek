@@ -148,7 +148,7 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 // Service role key — bypasses RLS for admin operations (this page is password protected)
-const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjg0MDA0NiwiZXhwIjoyMDg4NDE2MDQ2fQ.tLlad7pAmPD-smVI42C1a6tZN9w111aQ3WmcKY1v_qo';
+const SERVICE_KEY = 'SUPABASE_SERVICE_KEY_HERE';
 const NOTIFY = 'fs-notify-2026';
 var adminToken = null;
 
@@ -288,6 +288,20 @@ async function createTestQuest() {
     log('✓ Hunt created: ' + huntId, 'ok');
     log('  Prize: $' + (prizeCents/100).toFixed(2) + ' · Expires: ' + expiresAt.toLocaleTimeString(), 'info');
     log('  Status: active · Escrow: funded', 'info');
+
+    // Insert test clues
+    var testClues = [
+      { hunt_id: huntId, clue_number: 1, text: 'Test clue 1 — head to the starting point!', question: 'What color is the sky?', answer: 'blue', reveal_at: now.toISOString() },
+      { hunt_id: huntId, clue_number: 2, text: 'Test clue 2 — you are getting closer!', question: 'What is 2 + 2?', answer: '4', reveal_at: null },
+      { hunt_id: huntId, clue_number: 3, text: 'Test clue 3 — the treasure is near!', question: 'What is the PIN?', answer: '000000', reveal_at: null, is_final: true },
+    ];
+    var clueRes = await fetch(SB + '/rest/v1/clues', {
+      method: 'POST',
+      headers: { 'apikey': SERVICE_KEY, 'Authorization': 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(testClues)
+    });
+    if (clueRes.ok) { log('  Test clues inserted: OK', 'info'); }
+    else { log('  Warning: clues insert failed (quest will still work)', 'warn'); }
 
     // Show hunt ID prominently
     var el = document.getElementById('created-hunt-id');
