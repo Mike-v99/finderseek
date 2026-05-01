@@ -975,6 +975,17 @@ async function loadQuests() {
     fetchQuests('scheduled'),
     fetchQuests('completed'),
   ]);
+  // Move expired hunts from active to completed (cron only runs daily on Hobby plan)
+  var now = new Date();
+  var stillActive = [];
+  active.forEach(function(q) {
+    if (q.ends_at && new Date(q.ends_at) < now) {
+      completed.push(q);
+    } else {
+      stillActive.push(q);
+    }
+  });
+  active = stillActive;
   _cachedQuests.active = active;
   _cachedQuests.scheduled = scheduled;
   _cachedQuests.completed = completed;
