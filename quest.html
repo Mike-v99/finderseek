@@ -6,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>FinderSeek — Quest Detail</title>
 <meta name="theme-color" content="#0d0b18"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI&loading=async"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue-light:#60a5fa;--red-light:#f87171;}
@@ -497,7 +497,7 @@ async function upsertAttempt(clueNumber,updates){
 }
 async function unlockNextClue(solvedNum){
   var next=currentClues.find(function(c){return c.clue_number===solvedNum+1;});if(!next)return;var token=getToken();
-  try{await fetch(SB+'/rest/v1/clues?id=eq.'+next.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({reveal_at:new Date().toISOString()}));var r=await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+currentHunt.id+'&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}});currentClues=await r.json();}catch(e){console.warn('unlockNextClue:',e);}
+  try{await fetch(SB+'/rest/v1/clues?id=eq.'+next.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({reveal_at:new Date().toISOString()})});var r=await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+currentHunt.id+'&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}});currentClues=await r.json();}catch(e){console.warn('unlockNextClue:',e);}
 }
 function getCooldownRemaining(cu){if(!cu)return null;var rem=new Date(cu)-new Date();if(rem<=0)return null;return rem>3600000?Math.ceil(rem/3600000)+'h remaining':Math.ceil(rem/60000)+' min remaining';}
 function getHintText(level){if(level<=0)return'';if(level===1)return'Hint: Look more carefully at what the riddle describes.';if(level===2)return'Hint: The answer is something you can count or observe at the location.';return'Hint: Re-read carefully — the answer is directly observable when you are there.';}
