@@ -69,7 +69,7 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-title">FINDSERSEEK</div>
+    <div class="login-title">FINDERSEEK</div>
     <div class="login-sub">Test Console</div>
     <input class="pw-input" type="password" id="pw-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="login-btn" onclick="doLogin()">ENTER →</button>
@@ -80,7 +80,7 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 <!-- CONSOLE -->
 <div id="console-screen">
   <div class="console-header">
-    <div class="console-title">FINDSERSEEK · TEST CONSOLE</div>
+    <div class="console-title">FINDERSEEK · TEST CONSOLE</div>
     <button class="signout-btn" onclick="doSignout()">Sign out</button>
   </div>
 
@@ -112,8 +112,8 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 
   <!-- TRIGGER WINNER TRANSFER -->
   <div class="section">
-    <div class="section-title">3 · TRIGGER WINNER TRANSFER</div>
-    <div style="font-size:13px;color:#fff;margin-bottom:12px;">In production this fires automatically when the seeker enters the correct PIN on quest.html. This button is for testing without going through the full flow.</div>
+    <div class="section-title">3 · TRIGGER PAYOUT REQUEST</div>
+    <div style="font-size:13px;color:#fff;margin-bottom:12px;">In production this fires automatically when the seeker enters the correct PIN and submits their PayPal/Venmo. This button tests the payout-request API directly.</div>
     <div class="row">
       <input class="inp" id="transfer-hunt-id" placeholder="Hunt UUID"/>
       <input class="inp" id="transfer-winner-id" placeholder="Winner user ID"/>
@@ -268,91 +268,6 @@ async function createTestQuest() {
     log('✗ Create failed: ' + e.message, 'err');
     return;
   }
-
-  // Old direct Supabase code below is no longer used
-  if (false) {
-
-  var now = new Date();
-  var expiresAt = new Date(now.getTime() + expiryMins * 60 * 1000);
-
-  // Build fake hunt
-  var hunt = {
-    week_label: 'TEST · $' + (prizeCents/100).toFixed(2) + ' · ' + now.toLocaleTimeString(),
-    prize_desc: '$' + (prizeCents/100).toFixed(2) + ' Cash',
-    prize_value: prizeCents,
-    status: 'active',
-    escrow_status: 'funded',
-    escrow_amount: Math.round(prizeCents * 1.1),
-    pirate_id: userId,
-    created_by: userId,
-    finder_code: '000000',
-    starts_at: now.toISOString(),
-    ends_at: expiresAt.toISOString(),
-    lat: 30.2913,
-    lng: -95.4758,
-    state_code: 'TX',
-    city: 'Conroe',
-    stripe_payment_intent: 'pi_test_' + Math.random().toString(36).slice(2,10),
-    hiding_spot: 'Test location · Conroe TX',
-    payment_type: 'finderseek',
-    clue_persona: 'pirate',
-    clue_count: 4,
-  };
-
-  // If connect ID provided, find the winner's profile
-  if (connectId) {
-    hunt._test_connect_id = connectId;
-  }
-
-  try {
-    var r = await fetch(SB + '/rest/v1/hunts', {
-      method: 'POST',
-      headers: {
-        'apikey': SERVICE_KEY,
-        'Authorization': 'Bearer ' + SERVICE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(hunt)
-    });
-    var d = await r.json();
-    if (!r.ok) throw new Error(JSON.stringify(d));
-    var created = Array.isArray(d) ? d[0] : d;
-    var huntId = created.id;
-
-    log('✓ Hunt created: ' + huntId, 'ok');
-    log('  Prize: $' + (prizeCents/100).toFixed(2) + ' · Expires: ' + expiresAt.toLocaleTimeString(), 'info');
-    log('  Status: active · Escrow: funded', 'info');
-
-    // Insert test clues with correct column names
-    var now2 = new Date();
-    var testClues = [
-      { hunt_id: huntId, clue_number: 1, tier: 'free', clue_text: 'Test clue 1 — head to the starting point to begin your hunt!', clue_question: 'What color is the sky?', clue_answer: 'blue', reveal_at: now2.toISOString(), is_photo: false, is_finder: false, day_label: 'Day 1', date_label: 'Test' },
-      { hunt_id: huntId, clue_number: 2, tier: 'free', clue_text: 'Test clue 2 — you are getting closer to the treasure!', clue_question: 'What is 2 + 2?', clue_answer: '4', reveal_at: null, is_photo: false, is_finder: false, day_label: 'Day 1', date_label: 'Test' },
-      { hunt_id: huntId, clue_number: 3, tier: 'free', clue_text: 'Test clue 3 — the treasure is near! Enter the PIN to claim.', clue_question: 'What number comes after 2?', clue_answer: '3', reveal_at: null, is_photo: true, photo_url: 'map:100', is_finder: false, day_label: 'Day 1', date_label: 'Test' },
-    ];
-    var clueRes = await fetch(SB + '/rest/v1/clues', {
-      method: 'POST',
-      headers: { 'apikey': SERVICE_KEY, 'Authorization': 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify(testClues)
-    });
-    if (clueRes.ok) { log('  Test clues inserted: OK', 'info'); }
-    else { log('  Warning: clues insert failed (quest will still work)', 'warn'); }
-
-    // Show hunt ID prominently
-    var el = document.getElementById('created-hunt-id');
-    el.style.display = 'block';
-    el.innerHTML = '✓ Hunt ID: <strong>' + huntId + '</strong> · Expires at ' + expiresAt.toLocaleTimeString() +
-      '<br><span style="color:#fff;font-size:12px;">Copy this ID into the fields below to test transfer and refund</span>';
-
-    // Pre-fill other sections
-    document.getElementById('check-hunt-id').value = huntId;
-    document.getElementById('transfer-hunt-id').value = huntId;
-    document.getElementById('refund-hunt-id').value = huntId;
-
-  } catch(e) {
-    log('✗ Create failed: ' + e.message, 'err');
-  }
 }
 
 // ── 2. Check Hunt Status ──────────────────────────────────
@@ -392,22 +307,22 @@ async function checkHunt() {
   }
 }
 
-// ── 3. Trigger Transfer ───────────────────────────────────
+// ── 3. Trigger Payout Request ─────────────────────────────
 async function triggerTransfer() {
   var huntId = document.getElementById('transfer-hunt-id').value.trim();
   var winnerId = document.getElementById('transfer-winner-id').value.trim();
   if (!huntId || !winnerId) { log('Hunt ID and Winner ID required', 'err'); return; }
 
-  log('Firing transfer · hunt: ' + huntId.slice(0,8) + '... · winner: ' + winnerId.slice(0,8) + '...', 'warn');
+  log('Firing payout request · hunt: ' + huntId.slice(0,8) + '... · winner: ' + winnerId.slice(0,8) + '...', 'warn');
 
   try {
-    var r = await fetch('/api/transfer-prize', {
+    var r = await fetch('/api/payout-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-finderseek-secret': NOTIFY
       },
-      body: JSON.stringify({ huntId, winnerId })
+      body: JSON.stringify({ huntId, winnerId, method: 'paypal', destination: 'mike@finderseek.com' })
     });
     var d = await r.json();
     if (!r.ok) throw new Error(d.error || JSON.stringify(d));
