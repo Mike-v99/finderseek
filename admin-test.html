@@ -150,6 +150,7 @@ const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 
 const NOTIFY = 'fs-notify-2026';
 var adminToken = null;
+var adminPassword = null;
 
 // ── Auth ──────────────────────────────────────────────────
 async function doLogin() {
@@ -164,7 +165,9 @@ async function doLogin() {
     var d = await r.json();
     if (!r.ok) throw new Error(d.error || 'Invalid');
     adminToken = d.token;
+    adminPassword = pw;
     sessionStorage.setItem('fs_admin_token', adminToken);
+    sessionStorage.setItem('fs_admin_pw', pw);
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('console-screen').style.display = 'block';
     log('Logged in', 'ok');
@@ -187,6 +190,7 @@ function doSignout() {
   var t = sessionStorage.getItem('fs_admin_token');
   if (t) {
     adminToken = t;
+    adminPassword = sessionStorage.getItem('fs_admin_pw') || '';
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('console-screen').style.display = 'block';
   }
@@ -239,7 +243,7 @@ async function createTestQuest() {
     var r = await fetch('/api/admin-create-quest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: adminToken, userId, prizeCents, expiryMins })
+      body: JSON.stringify({ password: adminPassword, userId, prizeCents, expiryMins })
     });
     var d = await r.json();
     if (!r.ok) throw new Error(d.error || JSON.stringify(d));
