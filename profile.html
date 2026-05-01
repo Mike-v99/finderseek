@@ -678,13 +678,40 @@ async function gateSocial(provider){
   try {
     // Always redirect to profile after OAuth sign in
     sessionStorage.setItem('fs_magic_return', 'profile.html');
-    var { data, error } = await supaClient.auth.signInWithOAuth({
-      provider: provider,
-      options: {
-        redirectTo: window.location.origin + '/auth-callback.html'
+
+    // Detect if running inside Capacitor native app
+    var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+
+    if (isNativeApp) {
+      // Native app: use Supabase to get the OAuth URL, then open in system browser
+      // The browser will complete sign-in and redirect back via deep link
+      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: 'https://finderseek.com/auth-callback.html',
+          skipBrowserRedirect: true
+        }
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        // Open the OAuth URL in the system browser
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+          await window.Capacitor.Plugins.Browser.open({ url: data.url });
+        } else {
+          window.open(data.url, '_system');
+        }
       }
-    });
-    if (error) throw error;
+    } else {
+      // Web browser: use normal redirect flow
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: window.location.origin + '/auth-callback.html'
+        }
+      });
+      if (error) throw error;
+    }
   } catch(e) {
     document.getElementById('gate-err').textContent = e.message;
   }
@@ -1364,6 +1391,42 @@ function handleUrlRedirects(){
 // ============================================================
 //  INIT
 // ============================================================
+// Handle deep link from native app OAuth callback
+(function() {
+  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    try {
+      var App = window.Capacitor.Plugins.App;
+      if (App && App.addListener) {
+        App.addListener('appUrlOpen', async function(event) {
+          var url = event.url || '';
+          if (url.indexOf('finderseek://auth') === 0) {
+            var params = new URLSearchParams(url.split('?')[1] || '');
+            var accessToken = params.get('access_token');
+            var refreshToken = params.get('refresh_token');
+            if (accessToken) {
+              localStorage.setItem('fs_token', accessToken);
+              if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
+              // Set the session in Supabase client
+              await supaClient.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken || ''
+              });
+              // Close the browser if it's still open
+              try {
+                if (window.Capacitor.Plugins.Browser) {
+                  window.Capacitor.Plugins.Browser.close();
+                }
+              } catch(e) {}
+              // Reload the profile page to show logged-in state
+              window.location.reload();
+            }
+          }
+        });
+      }
+    } catch(e) { console.warn('Deep link listener error:', e); }
+  }
+})();
+
 // Check if returning from Google/Apple OAuth
 // Init — check for OAuth callback first, then either redirect to pending quest or load profile
 (async function(){
