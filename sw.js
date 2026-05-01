@@ -1,17 +1,7 @@
 // sw.js — FinderSeek Service Worker
-// v5: bump version to clear any cached broken sw instances
-const CACHE_NAME = 'finderseek-v8';
+// v9: HTML files no longer cached — only static assets
+const CACHE_NAME = 'finderseek-v9';
 const PRECACHE = [
-  '/',
-  '/index.html',
-  '/quest.html',
-  '/review.html',
-  '/how-it-works.html',
-  '/profile.html',
-  '/gold.html',
-  '/newquest.html',
-  '/privacy.html',
-  '/auth-callback.html',
   '/manifest.json',
   '/favicon.ico',
   '/og-image.jpg',
@@ -53,6 +43,10 @@ self.addEventListener('fetch', event => {
 
   // Skip our own /api/ endpoints — they're dynamic, never cache
   if (req.url.includes('/api/')) return;
+
+  // Never cache HTML pages — always go to network for fresh content
+  const url = new URL(req.url);
+  if (req.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/') return;
 
   event.respondWith(
     fetch(req)
