@@ -129,8 +129,8 @@ async function handleCallback() {
       } catch(e) {}
 
       // Figure out where to go back to
-      var returnTo = sessionStorage.getItem('fs_magic_return') || 'profile.html';
-      try { sessionStorage.removeItem('fs_magic_return'); } catch(e) {}
+      var returnTo = localStorage.getItem('fs_magic_return') || 'profile.html';
+      try { localStorage.removeItem('fs_magic_return'); } catch(e) {}
 
       // Clean up URL
       window.history.replaceState({}, '', '/auth-callback.html');

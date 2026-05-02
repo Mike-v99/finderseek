@@ -613,9 +613,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 
 <!-- Email Gate Modal — lets anonymous users create a quest with just an email -->
-<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
-<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-end;justify-content:center;padding:0;pointer-events:none;">
-  <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.1);border-bottom:none;border-radius:24px 24px 0 0;max-width:480px;width:100%;padding:28px 22px 36px;box-shadow:0 -20px 60px rgba(0,0,0,.8);pointer-events:auto;transform:translateY(100%);opacity:0;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .35s ease;position:relative;">
+<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:9998;opacity:0;transition:opacity .25s;" onclick="closeEmailGate()"></div>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:16px;overflow:hidden;">
+  <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.15);border-radius:24px;max-width:400px;width:100%;padding:28px 22px 32px;box-shadow:0 20px 60px rgba(0,0,0,.8);pointer-events:auto;transform:scale(0.9);opacity:0;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .35s ease;position:relative;max-height:90vh;overflow-y:auto;">
 
     <!-- Drag handle -->
     <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 22px;"></div>
@@ -1403,7 +1403,7 @@ function validateQuestForm(){
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
   try {
-    sessionStorage.setItem('fs_magic_return', 'newquest.html');
+    localStorage.setItem('fs_magic_return', 'newquest.html');
     // Save form state so it survives the OAuth redirect
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
@@ -1412,22 +1412,24 @@ function showEmailGate(){
   var modal = document.getElementById('eg-modal');
   var inner = document.getElementById('eg-inner');
   modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
   setTimeout(function(){
     document.getElementById('eg-backdrop').style.opacity = '1';
-    inner.style.transform = 'translateY(0)';
+    inner.style.transform = 'scale(1)';
     inner.style.opacity = '1';
   }, 10);
 }
 
 function closeEmailGate(){
   var inner = document.getElementById('eg-inner');
-  inner.style.transform = 'translateY(100%)';
+  inner.style.transform = 'scale(0.9)';
   inner.style.opacity = '0';
   document.getElementById('eg-backdrop').style.opacity = '0';
   setTimeout(function(){
     document.getElementById('eg-modal').style.display = 'none';
     document.getElementById('eg-backdrop').style.display = 'none';
     document.getElementById('eg-error').textContent = '';
+    document.body.style.overflow = '';
   }, 350);
 }
 
@@ -1438,7 +1440,7 @@ async function signInWithAppleGate(){
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
       try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
-      sessionStorage.setItem('fs_magic_return', 'newquest.html');
+      localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
@@ -1554,7 +1556,7 @@ async function signUpFromGate(){
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
       try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
-      sessionStorage.setItem('fs_magic_return', 'newquest.html');
+      localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: {

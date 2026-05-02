@@ -627,8 +627,8 @@ async function gateSignIn(){
   if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
   btn.disabled = true; btn.innerHTML = 'Sending...';
   try {
-    var returnTo = sessionStorage.getItem('fs_magic_return') || 'profile.html';
-    sessionStorage.setItem('fs_magic_return', 'profile.html');
+    var returnTo = localStorage.getItem('fs_magic_return') || 'profile.html';
+    localStorage.setItem('fs_magic_return', 'profile.html');
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
@@ -657,7 +657,7 @@ async function gateSignUp(){
   try {
     // Save username so we can set it after magic link login
     sessionStorage.setItem('fs_pending_username', username);
-    sessionStorage.setItem('fs_magic_return', 'profile.html');
+    localStorage.setItem('fs_magic_return', 'profile.html');
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: {
@@ -678,7 +678,7 @@ async function gateSignUp(){
 async function gateSocial(provider){
   try {
     // Always redirect to profile after OAuth sign in
-    sessionStorage.setItem('fs_magic_return', 'profile.html');
+    localStorage.setItem('fs_magic_return', 'profile.html');
 
     // Detect if running inside Capacitor native app
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
@@ -727,7 +727,7 @@ async function gateForgotPassword(){
   // Save where user was trying to go so we redirect back after login
   try {
     // Always redirect to profile after sign in
-    sessionStorage.setItem('fs_magic_return', 'profile.html');
+    localStorage.setItem('fs_magic_return', 'profile.html');
   } catch(e){}
 
   try {
@@ -769,9 +769,9 @@ async function handleOAuthCallback(){
             body: JSON.stringify({ username: pendingUsername })
           }).catch(function(){});
         }
-        var magicReturn = sessionStorage.getItem('fs_magic_return');
+        var magicReturn = localStorage.getItem('fs_magic_return');
         if (magicReturn) {
-          sessionStorage.removeItem('fs_magic_return');
+          localStorage.removeItem('fs_magic_return');
           setTimeout(function(){ window.location.href = magicReturn; }, 400);
           return true;
         }
