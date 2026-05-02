@@ -1535,5 +1535,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 </div>
+<script>
+// Prevent pull-to-refresh / overscroll in Capacitor iOS WebView
+(function() {
+  var startY = 0;
+  document.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].pageY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    var y = e.touches[0].pageY;
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // If at top of page and pulling down, prevent it
+    if (scrollTop <= 0 && y > startY) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+})();
+</script>
 </body>
 </html>
