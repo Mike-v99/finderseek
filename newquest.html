@@ -683,11 +683,15 @@ var PERSONA_SAMPLES = {
 };
 
 function goStep(n) {
-  // Validate step 1: need code + photo before proceeding
+  // Validate step 1 → 2: need code + photo before proceeding
   if (currentStep === 1 && n === 2) {
     var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
     if (codeDigits.some(function(d){ return !d || d === ''; })) { showToast('Generate and save your secret code first', 'error'); return; }
     if (!window._hsPhotoDataUrl) { showToast('Take a photo of the hiding spot first', 'error'); return; }
+  }
+  // Validate step 2 → 3: need prize selected
+  if (currentStep === 2 && n === 3) {
+    if (!selectedPrizeVal || selectedPrizeVal < 10) { showToast('Select a prize amount first', 'error'); return; }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
   // Location isn't required to preview the schedule step
@@ -3069,6 +3073,19 @@ function openHsModal() {
 
 function closeHsModal() {
   saveHsPanel();
+  
+  // Validate hiding spot data before proceeding to schedule
+  if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location on the map', 'error'); return; }
+  if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter the exact hiding spot description', 'error'); return; }
+  
+  // Validate all clues have hint text and question/answer
+  for (var i = 0; i < _hsClueCount; i++) {
+    var clue = _hsData.clues[i];
+    if (!clue || !clue.hint || clue.hint.trim() === '') { showToast('Clue ' + (i+1) + ' needs a hint description', 'error'); return; }
+    if (!clue.question || clue.question.trim() === '') { showToast('Clue ' + (i+1) + ' needs a question', 'error'); return; }
+    if (!clue.answer || clue.answer.trim() === '') { showToast('Clue ' + (i+1) + ' needs an answer', 'error'); return; }
+  }
+  
   document.getElementById('hs-modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
   var hs = document.getElementById('hiding-spot');
