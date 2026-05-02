@@ -213,84 +213,132 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- ── FLOATING HERO CARD ─────────────────────────────── -->
-  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;">
+  <div class="el" style="margin:12px 12px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;text-align:center;">
 
-    <!-- Avatar + name row -->
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-      <div style="position:relative;width:70px;height:70px;flex-shrink:0;">
+    <!-- Avatar + name centered -->
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;">
+      <div style="position:relative;width:60px;height:60px;flex-shrink:0;margin-bottom:8px;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;" id="p-ring"></div>
         <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;" id="p-avatar-wrap">
-          <svg id="p-avatar-svg" width="32" height="32" viewBox="0 0 24 24" fill="rgba(232,168,32,.7)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          <span id="p-avatar" style="display:none;font-size:22px;font-weight:400;color:#e8a820;"></span>
+          <svg id="p-avatar-svg" width="28" height="28" viewBox="0 0 24 24" fill="rgba(232,168,32,.7)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <span id="p-avatar" style="display:none;font-size:20px;font-weight:400;color:#e8a820;"></span>
         </div>
       </div>
-      <div style="flex:1;min-width:0;">
-        <div id="p-name" style="font-size:28px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:5px;">Loading…</div>
-        <div id="p-tier-label" style="display:flex;align-items:center;gap:6px;">
-          <span id="p-tier-icon" style="font-size:14px;display:none;">👑</span>
-          <span id="p-tier-text" style="font-size:17px;color:#b8c4d0;font-weight:400;">—</span>
-        </div>
+      <div id="p-name" style="font-size:22px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:3px;max-width:100%;">Loading…</div>
+      <div id="p-tier-label" style="display:flex;align-items:center;gap:6px;justify-content:center;">
+        <span id="p-tier-icon" style="font-size:14px;display:none;">👑</span>
+        <span id="p-tier-text" style="font-size:14px;color:#b8c4d0;font-weight:400;">—</span>
       </div>
     </div>
     <!-- hidden compat refs -->
     <span id="p-since" style="display:none;"></span>
     <span id="p-gold-badge" style="display:none;"></span>
 
-    <!-- Quick action icon shortcuts — 2×2 grid -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-      <div onclick="window.location.href='index.html'" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:22px;line-height:1;">🏠</div>
-        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Home</div>
+    <!-- Stats row -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;">
+      <div style="flex:1;padding:8px;text-align:center;background:rgba(255,255,255,.04);border-radius:10px;">
+        <div id="s-won" style="font-size:17px;color:#4ade80;font-weight:400;">$0</div>
+        <div style="font-size:12px;color:#b8c4d0;margin-top:2px;">Won</div>
       </div>
-      <div onclick="window.location.href='gold.html'" style="background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.18);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:22px;line-height:1;">👑</div>
-        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Gold</div>
+      <div style="flex:1;padding:8px;text-align:center;background:rgba(255,255,255,.04);border-radius:10px;">
+        <div id="s-finds" style="font-size:17px;color:#fbbf24;font-weight:400;">0</div>
+        <div style="font-size:12px;color:#b8c4d0;margin-top:2px;">Wins</div>
       </div>
-      <div id="p-payout-btn" onclick="document.getElementById('payout-section').scrollIntoView({behavior:'smooth',block:'center'})" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:22px;line-height:1;">💳</div>
-        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Payout</div>
+      <div style="flex:1;padding:8px;text-align:center;background:rgba(255,255,255,.04);border-radius:10px;">
+        <div id="s-created" style="font-size:17px;color:#60a5fa;font-weight:400;">0</div>
+        <div style="font-size:12px;color:#b8c4d0;margin-top:2px;">Created</div>
       </div>
-      <div onclick="openModal('settings-modal')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:22px;line-height:1;">⚙️</div>
-        <div style="font-size:17px;color:#b8c4d0;margin-top:5px;line-height:1.2;">Settings</div>
+    </div>
+
+    <!-- Action buttons — Find quests (green) + Start quest (blue) -->
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div onclick="window.location.href='index.html'" style="flex:1;border-radius:14px;overflow:hidden;border:1px solid rgba(74,222,128,.2);background:#0d0b18;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="height:3px;background:linear-gradient(90deg,#15803d,#4ade80);"></div>
+        <div style="padding:16px 10px;text-align:center;">
+          <div style="font-size:15px;color:#4ade80;font-weight:500;margin-bottom:2px;">Find quests</div>
+          <div style="font-size:11px;color:rgba(74,222,128,.4);">Win money</div>
+        </div>
+      </div>
+      <div onclick="window.location.href='newquest.html?from=app'" style="flex:1;border-radius:14px;overflow:hidden;border:1px solid rgba(59,130,246,.3);background:#0d0b18;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="height:3px;background:linear-gradient(90deg,#1d4ed8,#3b82f6,#60a5fa);"></div>
+        <div style="padding:16px 10px;text-align:center;">
+          <div style="font-size:15px;color:#60a5fa;font-weight:500;margin-bottom:2px;">+ Start quest</div>
+          <div style="font-size:11px;color:rgba(96,165,250,.4);">Create a hunt</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 shortcuts strip -->
+    <div style="display:flex;gap:1px;background:rgba(255,255,255,.06);border-radius:14px;overflow:hidden;">
+      <div onclick="window.location.href='index.html'" style="flex:1;padding:12px 4px;text-align:center;background:#0d0b18;border-top:2px solid rgba(255,255,255,.1);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:18px;line-height:1;">🏠</div>
+        <div style="font-size:11px;color:#b8c4d0;margin-top:4px;">Home</div>
+      </div>
+      <div onclick="window.location.href='gold.html'" style="flex:1;padding:12px 4px;text-align:center;background:#0d0b18;border-top:2px solid rgba(232,168,32,.4);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:18px;line-height:1;">👑</div>
+        <div style="font-size:11px;color:#e8a820;margin-top:4px;">Gold</div>
+      </div>
+      <div id="p-payout-btn" onclick="document.getElementById('payout-section').scrollIntoView({behavior:'smooth',block:'center'})" style="flex:1;padding:12px 4px;text-align:center;background:#0d0b18;border-top:2px solid rgba(74,222,128,.3);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:18px;line-height:1;">💳</div>
+        <div style="font-size:11px;color:#4ade80;margin-top:4px;">Payout</div>
+      </div>
+      <div onclick="openModal('settings-modal')" style="flex:1;padding:12px 4px;text-align:center;background:#0d0b18;border-top:2px solid rgba(148,163,184,.2);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="font-size:18px;line-height:1;">⚙️</div>
+        <div style="font-size:11px;color:#b8c4d0;margin-top:4px;">Settings</div>
       </div>
     </div>
   </div>
 
-  <!-- ── STATS CARD ─────────────────────────────────────── -->
-  <div class="el" style="margin:8px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;display:flex;overflow:hidden;">
-    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
-      <div id="s-won" style="font-size:17px;color:#4ade80;font-weight:400;">$0</div>
-      <div style="font-size:25px;color:#b8c4d0;margin-top:3px;line-height:1.2;">Won</div>
-    </div>
-    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
-      <div id="s-finds" style="font-size:17px;color:#fbbf24;font-weight:400;">0</div>
-      <div style="font-size:25px;color:#b8c4d0;margin-top:3px;line-height:1.2;">Wins</div>
-    </div>
-    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">
-      <div id="s-created" style="font-size:17px;color:#60a5fa;font-weight:400;">0</div>
-      <div style="font-size:25px;color:#b8c4d0;margin-top:3px;line-height:1.2;">Created</div>
-    </div>
-    <div style="flex:1;padding:12px;text-align:center;">
-      <div id="s-joined" style="font-size:17px;color:#a855f7;font-weight:400;">0</div>
-      <div style="font-size:25px;color:#b8c4d0;margin-top:3px;line-height:1.2;">Joined</div>
-    </div>
-  </div>
+  <!-- ── STATS CARD (hidden — stats now in hero) ──────────── -->
+  <!-- IDs s-won, s-finds, s-created are now in the hero card above -->
 
   <!-- ── PAYOUT SECTION ─────────────────────────────────── -->
   <div id="payout-section" class="el" style="margin:8px 12px 0;">
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-        <div style="font-size:28px;flex-shrink:0;">💸</div>
-        <div>
-          <div style="font-size:18px;color:#fff;font-weight:400;">Prize Payouts</div>
-          <div style="font-size:14px;color:rgba(255,255,255,.4);margin-top:2px;">PayPal or Venmo</div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;">
+      <div style="height:2px;background:linear-gradient(90deg,#0070ba,#00457C,#008CFF,#3D95CE);"></div>
+      <div style="padding:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.3);">PAYOUT METHOD</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <div style="flex:1;display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(0,112,186,.3);background:rgba(0,112,186,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,112,186,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.773.773 0 0 1 .763-.642h6.256c2.043 0 3.618.56 4.584 1.626.45.497.747 1.067.905 1.696.17.68.172 1.486.006 2.396l-.014.075v.66l.516.295a3.12 3.12 0 0 1 1.05.92c.332.471.533 1.05.593 1.72.062.69-.012 1.49-.224 2.377-.243 1.02-.634 1.907-1.165 2.636a5.288 5.288 0 0 1-1.67 1.591 5.98 5.98 0 0 1-2.095.79 10.975 10.975 0 0 1-2.33.233h-.557a1.68 1.68 0 0 0-1.66 1.42l-.042.225-.71 4.5-.032.163a.144.144 0 0 1-.143.123" fill="#253B80"/><path d="M19.076 8.802c-.016.098-.033.2-.053.302-.685 3.512-3.03 4.725-6.023 4.725H11.49a.742.742 0 0 0-.733.627l-.776 4.923-.22 1.394a.39.39 0 0 0 .385.452h2.708a.65.65 0 0 0 .643-.549l.027-.136.51-3.233.033-.178a.65.65 0 0 1 .643-.55h.405c2.625 0 4.681-1.066 5.284-4.148.252-1.288.122-2.363-.545-3.118a2.602 2.602 0 0 0-.747-.511" fill="#179BD7"/><path d="M18.106 8.42a5.685 5.685 0 0 0-.822-.178 10.412 10.412 0 0 0-1.657-.12h-5.02a.647.647 0 0 0-.64.549l-1.07 6.774-.03.198a.742.742 0 0 1 .732-.628H11c2.993 0 5.338-1.213 6.024-4.725.02-.104.037-.204.053-.302a3.82 3.82 0 0 0-.583-.285 5.21 5.21 0 0 0-.388-.104" fill="#222D65"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;color:#0070ba;font-weight:500;">PayPal</div>
+              <div style="font-size:11px;color:rgba(0,112,186,.5);">Email payout</div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(0,140,255,.3);background:rgba(0,140,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,140,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M2.75 5h3.203a2.18 2.18 0 0 1 2.092 1.582L9.5 12l2.09-5.418A2.18 2.18 0 0 1 13.682 5h3.068" stroke="#008CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 9.5c1.5 1.5 2 3.5 2 5.5 0 2-1 3-3 3H6c-2 0-3-1-3-3 0-2 .5-4 2-5.5" stroke="#008CFF" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;color:#008CFF;font-weight:500;">Venmo</div>
+              <div style="font-size:11px;color:rgba(0,140,255,.5);">Phone payout</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:10px;">
+          <div id="payout-status-dot" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
+          <div id="payout-status-text" style="font-size:13px;color:rgba(255,255,255,.35);">No payout method connected</div>
         </div>
       </div>
-      <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:12px;">When you win a quest, you'll be asked for your PayPal email or Venmo phone number to receive your prize. No setup needed — prizes are sent within 24 hours of claiming.</div>
-      <div style="display:flex;gap:8px;">
-        <div style="flex:1;padding:10px;background:rgba(0,112,243,.08);border:1px solid rgba(0,112,243,.2);border-radius:10px;text-align:center;font-size:14px;color:rgba(255,255,255,.6);">🅿 PayPal</div>
-        <div style="flex:1;padding:10px;background:rgba(0,136,204,.08);border:1px solid rgba(0,136,204,.2);border-radius:10px;text-align:center;font-size:14px;color:rgba(255,255,255,.6);">💙 Venmo</div>
+    </div>
+  </div>
+
+  <!-- ── MY QUEST TRACKER ─────────────────────────────────── -->
+  <div class="el" style="margin:8px 12px 0;">
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;">
+      <div style="height:2px;background:linear-gradient(90deg,#92400e,#e8a820,#f5c842);"></div>
+      <div style="padding:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.3);">MY QUEST TRACKER</div>
+        </div>
+        <div id="quest-tracker-list">
+          <div style="text-align:center;padding:20px 0;color:rgba(255,255,255,.2);font-size:14px;">No quests yet — start one or join a hunt!</div>
+        </div>
       </div>
     </div>
   </div>
@@ -546,12 +594,20 @@ async function openBillingPortal() {
 }
 
 function resumePendingQuest() {
-  window.location.href = 'review.html?preview=1';
+  var savedForm = localStorage.getItem('fs_newquest_form');
+  if (savedForm) {
+    window.location.href = 'newquest.html?from=app';
+  } else {
+    window.location.href = 'review.html?preview=1';
+  }
 }
 
 function discardPendingQuest() {
-  if (!confirm('Discard this quest? Your clues and settings will be lost.')) return;
+  if (!confirm('Discard this quest? Your progress will be lost.')) return;
   try { localStorage.removeItem('fs_pending_quest'); } catch(e){}
+  try { localStorage.removeItem('fs_newquest_form'); } catch(e){}
+  try { localStorage.removeItem('fs_newquest_form_photo'); } catch(e){}
+  try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
   var banner = document.getElementById('pending-quest-banner');
   if (banner) {
     banner.style.transition = 'opacity .3s, max-height .4s';
@@ -849,6 +905,7 @@ async function loadProfile(){
       loadJoinedQuests().catch(e => console.error('joined quests:', e)),
       loadCreatedCount().catch(e => console.error('created count:', e)),
       loadConnectStatus().catch(e => console.error('connect status:', e)),
+      loadQuestTracker().catch(e => console.error('quest tracker:', e)),
     ]);
     handleUrlRedirects();
   } catch(e) {
@@ -907,7 +964,8 @@ function renderStats(){
   document.getElementById('s-finds').textContent = p.finds_count || 0;
   document.getElementById('s-created').textContent = p.quests_created || 0;
   document.getElementById('m-created-count').textContent = p.quests_created || 0;
-  document.getElementById('s-joined').textContent = p.quests_joined || 0;
+  var joinedEl = document.getElementById('s-joined');
+  if (joinedEl) joinedEl.textContent = p.quests_joined || 0;
 }
 
 // ============================================================
@@ -948,6 +1006,88 @@ async function loadJoinedQuests(){
   } catch(e) {
     console.error('Joined quests error', e);
     container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:18px;">Unable to load quests</div>';
+  }
+}
+
+// ============================================================
+//  QUEST TRACKER (new profile card)
+// ============================================================
+async function loadQuestTracker(){
+  var token = getToken();
+  var tracker = document.getElementById('quest-tracker-list');
+  if (!tracker || !currentUser) return;
+  try {
+    // Fetch joined and created quests
+    var [joinedRes, createdRes] = await Promise.all([
+      fetch(SB+'/rest/v1/find_reports?user_id=eq.'+currentUser.id+'&select=hunt_id,hunts(id,city,neighborhood,prize_value,status,ends_at,winner_id,clue_count)&limit=5&order=created_at.desc', {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+      }),
+      fetch(SB+'/rest/v1/hunts?pirate_id=eq.'+currentUser.id+'&select=id,city,neighborhood,prize_value,status,ends_at,winner_id,clue_count&order=created_at.desc&limit=5', {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+      })
+    ]);
+    var joinedData = await joinedRes.json();
+    var createdData = await createdRes.json();
+    var joined = (joinedData || []).filter(function(x){ return x.hunts; }).map(function(x){ var h = x.hunts; h._type = 'joined'; return h; });
+    var created = (createdData || []).filter(function(h){ return h.status !== 'draft'; }).map(function(h){ h._type = 'created'; return h; });
+
+    // Merge and dedupe by id
+    var seen = {};
+    var all = [];
+    joined.concat(created).forEach(function(h){
+      if (!seen[h.id]) { seen[h.id] = true; all.push(h); }
+    });
+
+    if (all.length === 0) {
+      tracker.innerHTML = '<div style="text-align:center;padding:20px 0;color:rgba(255,255,255,.2);font-size:14px;">No quests yet — start one or join a hunt!</div>';
+      return;
+    }
+
+    tracker.innerHTML = all.slice(0, 5).map(function(h){
+      var prizeDollars = Math.round((h.prize_value || 0) / 100);
+      var isWon = h.winner_id === currentUser.id;
+      var isCreated = h._type === 'created';
+      var isActive = h.status === 'active' && (!h.ends_at || new Date(h.ends_at) > new Date());
+
+      var borderColor, bgColor, dotColor, statusText, statusColor, prizeColor;
+      if (isWon) {
+        borderColor = 'rgba(251,191,36,.12)'; bgColor = 'rgba(251,191,36,.04)';
+        dotColor = '#fbbf24'; statusText = 'Won 🏆'; statusColor = 'rgba(251,191,36,.5)'; prizeColor = '#fbbf24';
+      } else if (isCreated) {
+        borderColor = 'rgba(59,130,246,.12)'; bgColor = 'rgba(59,130,246,.04)';
+        dotColor = '#60a5fa'; statusText = 'Your quest'; statusColor = 'rgba(96,165,250,.5)'; prizeColor = '#60a5fa';
+      } else if (isActive) {
+        borderColor = 'rgba(74,222,128,.12)'; bgColor = 'rgba(74,222,128,.04)';
+        dotColor = '#4ade80'; statusText = 'Active'; statusColor = 'rgba(74,222,128,.5)'; prizeColor = '#4ade80';
+      } else {
+        borderColor = 'rgba(255,255,255,.06)'; bgColor = 'rgba(255,255,255,.02)';
+        dotColor = '#94a3b8'; statusText = 'Ended'; statusColor = 'rgba(148,163,184,.4)'; prizeColor = '#94a3b8';
+      }
+
+      var name = escapeHtml(h.neighborhood || h.city || 'Quest');
+      var sub = isActive && !isCreated ? (h.clue_count ? h.clue_count + ' clues' : '') : '';
+      if (isCreated && isActive && h.ends_at) {
+        var diff = new Date(h.ends_at) - new Date();
+        var daysLeft = Math.ceil(diff / 86400000);
+        sub = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left';
+      }
+
+      return '<div onclick="window.location.href=\'quest.html?id='+h.id+'\'" style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<div style="width:8px;height:8px;border-radius:50%;background:'+dotColor+';"></div>' +
+            '<div style="font-size:14px;color:#fff;font-weight:500;">'+name+'</div>' +
+          '</div>' +
+          '<div style="font-size:13px;color:'+prizeColor+';font-weight:500;">$'+prizeDollars+'</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="font-size:12px;color:rgba(255,255,255,.35);">'+sub+'</div>' +
+          '<div style="font-size:12px;color:'+statusColor+';">'+statusText+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    console.error('Quest tracker error', e);
   }
 }
 
@@ -1453,6 +1593,12 @@ function handleUrlRedirects(){
       } else {
         localStorage.removeItem('fs_pending_quest'); // stale — clear it
       }
+    }
+    // Also show banner if there's a saved newquest form (user was creating a quest)
+    var savedForm = localStorage.getItem('fs_newquest_form');
+    if (savedForm && getToken() && !pending) {
+      var banner = document.getElementById('pending-quest-banner');
+      if (banner) banner.style.display = 'block';
     }
   } catch(e){ try { localStorage.removeItem('fs_pending_quest'); } catch(e2){} }
   loadProfile();
