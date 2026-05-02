@@ -1251,8 +1251,11 @@ async function initLiveMap() {
     var quests = await r.json();
 
     // Filter funded only, must have coords
+    var now = new Date();
     quests = (quests || []).filter(function(q) {
       if (!q.lat || !q.lng) return false;
+      // Filter out expired hunts (cron only runs daily)
+      if (q.ends_at && new Date(q.ends_at) < now) return false;
       if (q.payment_type === 'escrow' || q.payment_type === 'finderseek') {
         return ['funded','paid','pending_payout'].includes(q.escrow_status);
       }
