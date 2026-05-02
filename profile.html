@@ -294,7 +294,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="height:2px;background:linear-gradient(90deg,#0070ba,#00457C,#008CFF,#3D95CE);"></div>
       <div style="padding:14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.3);">PAYOUT METHOD</div>
+          <div style="font-size:12px;letter-spacing:1.5px;color:rgba(184,196,208,.5);">PAYOUT METHOD</div>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;">
           <div style="flex:1;display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(0,112,186,.3);background:rgba(0,112,186,.06);">
@@ -302,7 +302,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.773.773 0 0 1 .763-.642h6.256c2.043 0 3.618.56 4.584 1.626.45.497.747 1.067.905 1.696.17.68.172 1.486.006 2.396l-.014.075v.66l.516.295a3.12 3.12 0 0 1 1.05.92c.332.471.533 1.05.593 1.72.062.69-.012 1.49-.224 2.377-.243 1.02-.634 1.907-1.165 2.636a5.288 5.288 0 0 1-1.67 1.591 5.98 5.98 0 0 1-2.095.79 10.975 10.975 0 0 1-2.33.233h-.557a1.68 1.68 0 0 0-1.66 1.42l-.042.225-.71 4.5-.032.163a.144.144 0 0 1-.143.123" fill="#253B80"/><path d="M19.076 8.802c-.016.098-.033.2-.053.302-.685 3.512-3.03 4.725-6.023 4.725H11.49a.742.742 0 0 0-.733.627l-.776 4.923-.22 1.394a.39.39 0 0 0 .385.452h2.708a.65.65 0 0 0 .643-.549l.027-.136.51-3.233.033-.178a.65.65 0 0 1 .643-.55h.405c2.625 0 4.681-1.066 5.284-4.148.252-1.288.122-2.363-.545-3.118a2.602 2.602 0 0 0-.747-.511" fill="#179BD7"/><path d="M18.106 8.42a5.685 5.685 0 0 0-.822-.178 10.412 10.412 0 0 0-1.657-.12h-5.02a.647.647 0 0 0-.64.549l-1.07 6.774-.03.198a.742.742 0 0 1 .732-.628H11c2.993 0 5.338-1.213 6.024-4.725.02-.104.037-.204.053-.302a3.82 3.82 0 0 0-.583-.285 5.21 5.21 0 0 0-.388-.104" fill="#222D65"/></svg>
             </div>
             <div>
-              <div style="font-size:14px;color:#0070ba;font-weight:500;">PayPal</div>
+              <div style="font-size:14px;color:#fff;font-weight:500;">PayPal</div>
               <div style="font-size:11px;color:rgba(0,112,186,.5);">Email payout</div>
             </div>
           </div>
@@ -311,7 +311,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M2.75 5h3.203a2.18 2.18 0 0 1 2.092 1.582L9.5 12l2.09-5.418A2.18 2.18 0 0 1 13.682 5h3.068" stroke="#008CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 9.5c1.5 1.5 2 3.5 2 5.5 0 2-1 3-3 3H6c-2 0-3-1-3-3 0-2 .5-4 2-5.5" stroke="#008CFF" stroke-width="1.8" stroke-linecap="round"/></svg>
             </div>
             <div>
-              <div style="font-size:14px;color:#008CFF;font-weight:500;">Venmo</div>
+              <div style="font-size:14px;color:#fff;font-weight:500;">Venmo</div>
               <div style="font-size:11px;color:rgba(0,140,255,.5);">Phone payout</div>
             </div>
           </div>
@@ -1612,7 +1612,7 @@ if ('serviceWorker' in navigator) {
       </div>
     </div>
     <div style="flex:1;">
-      <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+      <div style="font-size:25px;color:#fff;font-weight:400;">Sign in</div>
       <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
     </div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1741,7 +1741,7 @@ if ('serviceWorker' in navigator) {
         var dn=document.getElementById('hb-drawer-name');
         if(dn)dn.textContent=uname;
         var ds=document.getElementById('hb-drawer-sub');
-        if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
+        if(ds)ds.textContent=isGold?'👑 Gold Tier Profile':'Free Tier Profile';
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
       }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});

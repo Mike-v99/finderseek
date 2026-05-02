@@ -2725,7 +2725,7 @@ async function submitPayment(){
       </div>
     </div>
     <div style="flex:1;">
-      <div style="font-size:25px;color:rgba(255,255,255,.5);font-weight:400;">Sign in</div>
+      <div style="font-size:25px;color:#fff;font-weight:400;">Sign in</div>
       <div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div>
     </div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2823,7 +2823,7 @@ async function submitPayment(){
       var ds=document.getElementById('hb-drawer-sub');
       var avSvg=document.getElementById('hb-avatar-svg');
       if(dn)dn.textContent=uname;
-      if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
+      if(ds)ds.textContent=isGold?'👑 Gold Tier Profile':'Free Tier Profile';
       if(avSvg)avSvg.setAttribute('fill',isGold?'rgba(232,168,32,.8)':'rgba(180,190,210,.65)');
       if(si)si.style.display='none';
       if(sp)sp.style.display='flex';
