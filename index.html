@@ -514,19 +514,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div class="stats-wrap el from-scale" data-d="575">
       <div class="stats-inner">
         <div class="stat">
-          <span class="stat-num" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$247</span>
+          <span class="stat-num" id="stat-hidden" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$0</span>
           <span class="stat-lbl">HIDDEN</span>
         </div>
         <div class="stat">
-          <span class="stat-num" style="color:#2dd4bf;">3</span>
+          <span class="stat-num" id="stat-active" style="color:#2dd4bf;">0</span>
           <span class="stat-lbl">ACTIVE</span>
         </div>
         <div class="stat">
-          <span class="stat-num" style="color:#4ade80;">12</span>
+          <span class="stat-num" id="stat-seekers" style="color:#4ade80;">0</span>
           <span class="stat-lbl">SEEKERS</span>
         </div>
         <div class="stat">
-          <span class="stat-num" style="color:#fff;">5</span>
+          <span class="stat-num" id="stat-cities" style="color:#fff;">0</span>
           <span class="stat-lbl">CITIES</span>
         </div>
       </div>
@@ -992,6 +992,33 @@ async function loadQuests() {
   renderSection('active', active);
   renderSection('scheduled', scheduled);
   renderSection('completed', completed);
+
+  // Update stats strip with live data
+  var allQuests = active.concat(scheduled).concat(completed);
+  var totalHidden = allQuests.reduce(function(sum, q) { return sum + Math.round((q.prize_value || 0) / 100); }, 0);
+  var activeCount = active.length;
+  var cities = {};
+  allQuests.forEach(function(q) { if (q.city) cities[q.city] = true; });
+  var cityCount = Object.keys(cities).length;
+
+  var hiddenEl = document.getElementById('stat-hidden');
+  var activeEl = document.getElementById('stat-active');
+  var citiesEl = document.getElementById('stat-cities');
+  if (hiddenEl) hiddenEl.textContent = '$' + totalHidden;
+  if (activeEl) activeEl.textContent = activeCount;
+  if (citiesEl) citiesEl.textContent = cityCount;
+
+  // Fetch seeker count (unique users who have joined quests)
+  try {
+    var seekerRes = await fetch(SB + '/rest/v1/profiles?select=id&quests_joined=gt.0', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+    });
+    if (seekerRes.ok) {
+      var seekers = await seekerRes.json();
+      var seekerEl = document.getElementById('stat-seekers');
+      if (seekerEl) seekerEl.textContent = (seekers || []).length;
+    }
+  } catch(e) {}
 }
 
 function filterQuests(query) {
