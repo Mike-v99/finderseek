@@ -17,7 +17,7 @@
 import { verifyAdminToken } from '../lib/admin-auth.js';
 
 const RESEND_URL = 'https://api.resend.com/emails';
-const FROM = 'FinderSeek <notifications@finderseek.com>';
+const FROM = 'FinderSeek <payments@finderseek.com>';
 const SITE_URL   = 'https://finderseek.com';
 
 // ── Colours / styles used in all emails ──────────────────────────

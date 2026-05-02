@@ -135,7 +135,7 @@ export default async function handler(req, res) {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  from: 'FinderSeek <notifications@finderseek.com>',
+                  from: 'FinderSeek <payments@finderseek.com>',
                   to: profile.email,
                   subject: isTrial ? '👑 Your Gold trial has started — welcome!' : '👑 Welcome to FinderSeek Gold!',
                   html
@@ -184,7 +184,7 @@ export default async function handler(req, res) {
               method: 'POST',
               headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                from: 'FinderSeek <notifications@finderseek.com>',
+                from: 'FinderSeek <payments@finderseek.com>',
                 to: profile.email,
                 subject: 'Your FinderSeek Gold membership has been cancelled',
                 html
