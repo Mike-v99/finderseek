@@ -1433,11 +1433,34 @@ function closeEmailGate(){
 
 async function signInWithAppleGate(){
   try {
-    var { error } = await supaClient.auth.signInWithOAuth({
-      provider: 'apple',
-      options: { redirectTo: window.location.origin + '/newquest.html' }
-    });
-    if (error) throw error;
+    saveFormState();
+    sessionStorage.setItem('fs_quest_pending_auth', '1');
+    var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    if (isNativeApp) {
+      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      sessionStorage.setItem('fs_magic_return', 'newquest.html');
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: 'https://www.finderseek.com/auth-callback.html',
+          skipBrowserRedirect: true
+        }
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+          await window.Capacitor.Plugins.Browser.open({ url: data.url });
+        } else {
+          window.open(data.url, '_system');
+        }
+      }
+    } else {
+      var { error } = await supaClient.auth.signInWithOAuth({
+        provider: 'apple',
+        options: { redirectTo: window.location.origin + '/auth-callback.html' }
+      });
+      if (error) throw error;
+    }
   } catch(e) {
     document.getElementById('eg-error').textContent = e.message || 'Apple sign-in failed';
   }
@@ -1526,11 +1549,34 @@ async function submitEmailGate(){
 
 async function signUpFromGate(){
   try {
-    var { error } = await supaClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/newquest.html' }
-    });
-    if (error) throw error;
+    saveFormState();
+    sessionStorage.setItem('fs_quest_pending_auth', '1');
+    var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    if (isNativeApp) {
+      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      sessionStorage.setItem('fs_magic_return', 'newquest.html');
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: 'https://www.finderseek.com/auth-callback.html',
+          skipBrowserRedirect: true
+        }
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+          await window.Capacitor.Plugins.Browser.open({ url: data.url });
+        } else {
+          window.open(data.url, '_system');
+        }
+      }
+    } else {
+      var { error } = await supaClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/auth-callback.html' }
+      });
+      if (error) throw error;
+    }
   } catch(e) {
     document.getElementById('eg-error').textContent = e.message || 'Sign-in failed';
   }
@@ -2098,6 +2144,33 @@ function clearFormState() {
 }
 
 document.addEventListener('DOMContentLoaded',function(){
+  // ── Handle deep link from native app OAuth callback ──────
+  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    try {
+      var App = window.Capacitor.Plugins.App;
+      if (App && App.addListener) {
+        App.addListener('appUrlOpen', async function(event) {
+          var url = event.url || '';
+          if (url.indexOf('finderseek://auth') === 0) {
+            var params = new URLSearchParams(url.split('?')[1] || '');
+            var accessToken = params.get('access_token');
+            var refreshToken = params.get('refresh_token');
+            if (accessToken) {
+              localStorage.setItem('fs_token', accessToken);
+              if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
+              await supaClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+              try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
+              // Reload user and close gate
+              await loadCurrentUser();
+              closeEmailGate();
+              showToast('Signed in! Tap Schedule Quest to continue.', 'success');
+            }
+          }
+        });
+      }
+    } catch(e) { console.warn('Deep link listener error:', e); }
+  }
+
   // Clear abandon flag — they've returned to the page
   try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
 
