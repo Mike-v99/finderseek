@@ -252,6 +252,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 .step-footer{position:sticky;bottom:0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);flex-shrink:0;}
 .step-next-btn{width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:20px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.field-valid{border-color:rgba(74,222,128,.5) !important;box-shadow:0 0 0 1px rgba(74,222,128,.2) !important;}
+.field-invalid{border-color:rgba(239,68,68,.6) !important;box-shadow:0 0 0 1px rgba(239,68,68,.2) !important;animation:fieldShake .4s ease;}
+@keyframes fieldShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-4px);}40%,80%{transform:translateX(4px);}}
 
 /* ── HIDING SPOT MODAL ───────────────────────────────────── */
 @keyframes hsRingPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1);}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.05);}}
@@ -683,15 +686,25 @@ var PERSONA_SAMPLES = {
 };
 
 function goStep(n) {
-  // Validate step 1 → 2: need code + photo before proceeding
-  if (currentStep === 1 && n === 2) {
-    var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
-    if (codeDigits.some(function(d){ return !d || d === ''; })) { showToast('Generate and save your secret code first', 'error'); return; }
-    if (!window._hsPhotoDataUrl) { showToast('Take a photo of the hiding spot first', 'error'); return; }
-  }
-  // Validate step 2 → 3: need prize selected
-  if (currentStep === 2 && n === 3) {
-    if (!selectedPrizeVal || selectedPrizeVal < 10) { showToast('Select a prize amount first', 'error'); return; }
+  // ── Validate current step before moving forward ──────────
+  if (n > currentStep) {
+    if (currentStep === 1 && n === 2) {
+      var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
+      var pinOk = !codeDigits.some(function(d){ return !d || d === ''; });
+      var photoOk = !!window._hsPhotoDataUrl;
+      var pinWrap = document.querySelector('#step1 .code-wrap');
+      if (pinWrap && pinWrap.parentElement) { pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk ? 'field-valid' : 'field-invalid'); }
+      var photoSec = document.getElementById('photo-section-s1');
+      if (photoSec) { photoSec.classList.remove('field-valid','field-invalid'); photoSec.classList.add(photoOk ? 'field-valid' : 'field-invalid'); }
+      if (!pinOk) { showToast('Generate your 6-digit secret code first', 'error'); return; }
+      if (!photoOk) { showToast('Take a photo of the hiding spot', 'error'); return; }
+    }
+    if (currentStep === 2 && n === 3) {
+      var prizeOk = selectedPrizeVal && selectedPrizeVal >= 10;
+      var prizeGrid = document.getElementById('prize-grid');
+      if (prizeGrid) { prizeGrid.classList.remove('field-valid','field-invalid'); prizeGrid.classList.add(prizeOk ? 'field-valid' : 'field-invalid'); }
+      if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
+    }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
   // Location isn't required to preview the schedule step
@@ -3078,12 +3091,16 @@ function closeHsModal() {
   if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location on the map', 'error'); return; }
   if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter the exact hiding spot description', 'error'); return; }
   
-  // Validate all clues have hint text and question/answer
+  // Validate all clues have hint text, action, and question/answer
   for (var i = 0; i < _hsClueCount; i++) {
     var clue = _hsData.clues[i];
+    var isFinal = i === _hsClueCount - 1;
     if (!clue || !clue.hint || clue.hint.trim() === '') { showToast('Clue ' + (i+1) + ' needs a hint description', 'error'); return; }
-    if (!clue.question || clue.question.trim() === '') { showToast('Clue ' + (i+1) + ' needs a question', 'error'); return; }
-    if (!clue.answer || clue.answer.trim() === '') { showToast('Clue ' + (i+1) + ' needs an answer', 'error'); return; }
+    if (!clue.action) { showToast('Clue ' + (i+1) + ' needs an action selected', 'error'); return; }
+    if (!isFinal) {
+      if (!clue.question || clue.question.trim() === '') { showToast('Clue ' + (i+1) + ' needs a question', 'error'); return; }
+      if (!clue.answer || clue.answer.trim() === '') { showToast('Clue ' + (i+1) + ' needs an answer', 'error'); return; }
+    }
   }
   
   document.getElementById('hs-modal-overlay').classList.remove('open');
@@ -3118,6 +3135,20 @@ function saveHsPanel() {
 
 function hsGoTo(idx) {
   saveHsPanel();
+  // Validate current panel before moving forward
+  if (idx > _hsCurrent) {
+    if (_hsCurrent === 0) {
+      if (!selectedLat || !selectedLng || !locationConfirmed) { showToast('Set the hiding spot location on the map first', 'error'); return; }
+      if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter a description of the exact hiding spot', 'error'); return; }
+    } else {
+      var cl = _hsData.clues[_hsCurrent - 1] || {};
+      var isFinal = _hsCurrent === _hsClueCount;
+      if (!cl.hint || cl.hint.trim() === '') { showToast('Enter a hint for clue ' + _hsCurrent, 'error'); return; }
+      if (!cl.action) { showToast('Pick an action for clue ' + _hsCurrent, 'error'); return; }
+      if (!isFinal && (!cl.question || cl.question.trim() === '')) { showToast('Enter a question for clue ' + _hsCurrent, 'error'); return; }
+      if (!isFinal && (!cl.answer || cl.answer.trim() === '')) { showToast('Enter an answer for clue ' + _hsCurrent, 'error'); return; }
+    }
+  }
   _hsCurrent = idx;
   renderHsModal();
 }
