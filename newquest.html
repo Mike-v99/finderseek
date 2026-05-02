@@ -1307,6 +1307,7 @@ function startTheQuest() {
   createQuest();
 }
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
+const API_BASE = 'https://finderseek.com';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET = 'fs-notify-2026';
 
@@ -1854,7 +1855,7 @@ async function createQuest(){
       clueData = { clues: _generatedClues, location_riddle: _generatedLocationRiddle || '' };
       console.log('[createQuest] Using pre-generated clues from modal preview');
     } else {
-      const clueRes = await fetch('/api/generate-clues', {
+      const clueRes = await fetch(API_BASE + '/api/generate-clues', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -2561,7 +2562,7 @@ async function submitPayment(){
   try {
     const { userId, email, huntId, prize } = _currentPayload;
     const total = prize + Math.round(prize * 0.10 * 100) / 100;
-    const r = await fetch('/api/create-checkout', {
+    const r = await fetch(API_BASE + '/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({
@@ -3374,7 +3375,7 @@ async function hsGenerateAndPreview() {
     var persona = "pirate";
     try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
 
-    var resp = await fetch("/api/generate-clues", {
+    var resp = await fetch(API_BASE + "/api/generate-clues", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({

@@ -189,6 +189,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
 
 <script>
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const API_BASE='https://finderseek.com';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET='fs-notify-2026';
 let currentUser=null,currentProfile=null;
@@ -272,13 +273,13 @@ async function startCheckout(){
   var returnDest = sessionStorage.getItem('fs_gold_return') || 'home';
   sessionStorage.setItem('fs_gold_return_pending', returnDest);
   try{
-    var r=await fetch('/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});
+    var r=await fetch(API_BASE+'/api/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id,email:currentUser.email,username:currentProfile?.username||''})});
     var d=await r.json();
     if(!r.ok||!d.url)throw new Error(d.error||'Checkout failed');
     window.location.href=d.url;
   }catch(e){console.error('Checkout error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}
 }
-async function openBillingPortal(){var btn=document.getElementById('gold-cta');btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening portal...';try{var r=await fetch('/api/billing-portal',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Failed');window.location.href=d.url;}catch(e){console.error('Portal error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
+async function openBillingPortal(){var btn=document.getElementById('gold-cta');btn.disabled=true;var orig=btn.innerHTML;btn.innerHTML='⏳ Opening portal...';try{var r=await fetch(API_BASE+'/api/billing-portal',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({userId:currentUser.id})});var d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Failed');window.location.href=d.url;}catch(e){console.error('Portal error',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML=orig;}}
 function handleUrlParams(){
   var p=new URLSearchParams(window.location.search);
   if(p.get('upgraded')==='true'){

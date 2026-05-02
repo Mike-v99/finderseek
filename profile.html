@@ -370,6 +370,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <script>
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
+const API_BASE='https://finderseek.com';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET = 'fs-notify-2026';
 
@@ -533,7 +534,7 @@ async function openBillingPortal() {
   }
   showToast('Opening billing portal…', 'info');
   try {
-    var r = await fetch('/api/billing-portal', {
+    var r = await fetch(API_BASE+'/api/billing-portal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ userId: currentUser.id })
@@ -1061,7 +1062,7 @@ async function loadConnectStatus(){
   section.style.display = 'block';
 
   try {
-    var r = await fetch('/api/connect-status', {
+    var r = await fetch(API_BASE+'/api/connect-status', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
       body: JSON.stringify({ userId: currentUser.id })
@@ -1123,7 +1124,7 @@ async function openStripeDashboard(){
   btn.innerHTML = 'Opening…';
   btn.disabled = true;
   try {
-    var r = await fetch('/api/connect-status?action=dashboard', {
+    var r = await fetch(API_BASE+'/api/connect-status?action=dashboard', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
       body: JSON.stringify({ userId: currentUser.id })
@@ -1146,7 +1147,7 @@ function confirmDisconnect(){
 
 async function disconnectPayout(){
   try {
-    var r = await fetch('/api/connect-status?action=disconnect', {
+    var r = await fetch(API_BASE+'/api/connect-status?action=disconnect', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
       body: JSON.stringify({ userId: currentUser.id })
@@ -1184,7 +1185,7 @@ async function handlePayoutBtn(){
   var payoutBtn = document.getElementById('payout-btn');
   if (payoutBtn) { payoutBtn.disabled = true; payoutBtn.textContent = '⏳ Connecting...'; }
   try {
-    var r = await fetch('/api/connect-onboard', {
+    var r = await fetch(API_BASE+'/api/connect-onboard', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
@@ -1204,7 +1205,7 @@ async function handlePayoutBtnRedirect(){
   var btn = document.getElementById('payout-modal-btn');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
   try {
-    var r = await fetch('/api/connect-onboard', {
+    var r = await fetch(API_BASE+'/api/connect-onboard', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
       body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
