@@ -2205,6 +2205,16 @@ document.addEventListener('DOMContentLoaded',function(){
   updateExpiry();
   setWeekendDates();
 
+  // ── Require sign-in before quest creation ──────────────
+  var user = await loadCurrentUser();
+  if (!user) {
+    // Save form state before redirecting
+    saveFormState();
+    // Redirect to profile for sign-in, with return URL
+    window.location.href = 'profile.html?redirect=' + encodeURIComponent('newquest.html?from=app');
+    return;
+  }
+
   // Hide bottom nav when virtual keyboard is likely up (input focused)
   var focusEls = document.querySelectorAll('input, textarea');
   focusEls.forEach(function(el){

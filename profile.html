@@ -1418,8 +1418,14 @@ function handleUrlRedirects(){
                   window.Capacitor.Plugins.Browser.close();
                 }
               } catch(e) {}
-              // Reload the profile page to show logged-in state
-              window.location.reload();
+              // Check if there's a redirect waiting (e.g. back to newquest)
+              var urlParams = new URLSearchParams(window.location.search);
+              var redirectTo = urlParams.get('redirect');
+              if (redirectTo) {
+                window.location.href = redirectTo;
+              } else {
+                window.location.reload();
+              }
             }
           }
         });
