@@ -1439,12 +1439,12 @@ async function signInWithAppleGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      
       localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
           skipBrowserRedirect: true
         }
       });
@@ -1555,12 +1555,12 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      
       localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
           skipBrowserRedirect: true
         }
       });

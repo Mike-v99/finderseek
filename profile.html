@@ -686,11 +686,11 @@ async function gateSocial(provider){
     if (isNativeApp) {
       // Native app: use Supabase to get the OAuth URL, then open in system browser
       // The browser will complete sign-in and redirect back via deep link
-      try { localStorage.setItem('fs_from_app', '1'); } catch(e) {}
+      
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: 'https://finderseek.com/auth-callback.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
           skipBrowserRedirect: true
         }
       });

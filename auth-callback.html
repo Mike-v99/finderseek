@@ -147,16 +147,14 @@ async function handleCallback() {
       // Auto redirect
       setTimeout(function() {
         // If the user came from the native app, redirect via deep link
-        // The native app sets fs_from_app=1 before opening the browser
-        var fromApp = false;
-        try { fromApp = localStorage.getItem('fs_from_app') === '1'; } catch(e) {}
+        // Check URL param (passed through OAuth redirect) — localStorage doesn't work cross-process
+        var urlParams = new URLSearchParams(window.location.search);
+        var fromApp = urlParams.get('from_app') === '1';
         if (fromApp) {
-          try { localStorage.removeItem('fs_from_app'); } catch(e) {}
           // Deep link back to the app with tokens
           var deepLink = 'finderseek://auth?access_token=' + 
             encodeURIComponent(data.session.access_token) +
-            '&refresh_token=' + encodeURIComponent(data.session.refresh_token || '') +
-            '&return=' + encodeURIComponent(returnTo);
+            '&refresh_token=' + encodeURIComponent(data.session.refresh_token || '');
           window.location.href = deepLink;
           return;
         }
