@@ -2145,7 +2145,7 @@ function clearFormState() {
   } catch(e){}
 }
 
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded', async function(){
   // ── Handle deep link from native app OAuth callback ──────
   if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
     try {
@@ -2222,8 +2222,16 @@ document.addEventListener('DOMContentLoaded',function(){
     el.addEventListener('blur',  function(){ document.body.classList.remove('kb-up'); });
   });
 
-  // Restore form from previous session
-  restoreFormState();
+  // Restore form from previous session (only if there's saved progress)
+  var hasAbandon = localStorage.getItem('fs_newquest_abandon');
+  var hasPending = localStorage.getItem('fs_pending_quest');
+  var hasFormState = localStorage.getItem('fs_newquest_form');
+  if (hasAbandon || hasPending || hasFormState) {
+    restoreFormState();
+  } else {
+    // Fresh start — make sure no stale data from a previous quest
+    clearFormState();
+  }
 
   // Save on hiding-spot / map-search input change
   ['hiding-spot','map-search'].forEach(function(id){
