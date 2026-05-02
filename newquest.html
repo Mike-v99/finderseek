@@ -163,7 +163,7 @@ body.kb-up /* bottom-nav removed */
 .btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
 
 /* Step pages */
-.step-page{position:relative;z-index:1;background:var(--ink);max-width:480px;margin:0 auto;width:100%;}
+.step-page{position:relative;z-index:1;background:var(--ink);max-width:480px;margin:0 auto;width:100%;padding-bottom:80px;}
 /* Hide bottom nav on step pages — each step has its own Next button */
 /* bottom-nav removed */
 @keyframes wq-glow-anim{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0);}50%{box-shadow:0 0 18px 3px rgba(232,168,32,.18);}}
@@ -250,7 +250,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .map-pred-main{font-size:15px;color:#fff;font-weight:400;}
 .map-pred-sub{font-size:13px;color:#b8c4d0;margin-top:1px;}
 
-.step-footer{position:sticky;bottom:0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);flex-shrink:0;}
+.step-footer{position:fixed;bottom:0;left:0;right:0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);z-index:100;}
 .step-next-btn{width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:20px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .field-valid{border-color:rgba(74,222,128,.5) !important;box-shadow:0 0 0 1px rgba(74,222,128,.2) !important;}
 .field-invalid{border-color:rgba(239,68,68,.6) !important;box-shadow:0 0 0 1px rgba(239,68,68,.2) !important;animation:fieldShake .4s ease;}
@@ -3090,6 +3090,7 @@ function closeHsModal() {
   // Validate hiding spot data before proceeding to schedule
   if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location on the map', 'error'); return; }
   if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter the exact hiding spot description', 'error'); return; }
+  if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
   
   // Validate all clues have hint text, action, and question/answer
   for (var i = 0; i < _hsClueCount; i++) {
@@ -3140,6 +3141,7 @@ function hsGoTo(idx) {
     if (_hsCurrent === 0) {
       if (!selectedLat || !selectedLng || !locationConfirmed) { showToast('Set the hiding spot location on the map first', 'error'); return; }
       if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter a description of the exact hiding spot', 'error'); return; }
+      if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
     } else {
       var cl = _hsData.clues[_hsCurrent - 1] || {};
       var isFinal = _hsCurrent === _hsClueCount;
@@ -3265,7 +3267,7 @@ function renderHsModal() {
             '<div style="font-size:20px;color:#fff;font-weight:400;margin-bottom:10px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '') + '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="1" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80">' + (_hsData.location||'') + '</textarea>' +
       '<div style="height:1px;background:rgba(255,255,255,.08);margin:16px 0;"></div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:26px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:20px;color:#fff;font-weight:400;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400;"> — optional</span>') + '</div></div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:26px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:20px;color:#fff;font-weight:400;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:15px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:14px;color:rgba(239,68,68,.5);font-weight:400;"> — required</span>') + '</div></div></div>' +
       '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="e.g. North entrance by the pharmacy&#10;East lot near the big oak tree" maxlength="120">' + (_hsData.startingPoint||'') + '</textarea>';
 
     setTimeout(function() {
