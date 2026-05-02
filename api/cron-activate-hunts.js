@@ -14,6 +14,10 @@
 //   NOTIFY_SECRET         — shared secret for notify API
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-finderseek-secret, x-admin-token");
+  if (req.method === "OPTIONS") return res.status(200).end();
   const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
   const cronSecret   = process.env.CRON_SECRET;
 

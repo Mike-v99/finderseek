@@ -12,6 +12,11 @@ const PERSONA_STYLES = {
 };
 
 export default async function handler(req, res) {
+  // CORS — allow requests from the native app and website
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-finderseek-secret');
+  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const {
