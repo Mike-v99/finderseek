@@ -224,7 +224,7 @@ export default async function handler(req, res) {
         // Generate quest ID (TXA-0001 format) using state from hunt
         try {
           const huntRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/hunts?id=eq.${huntId}&select=state_code,quest_id`, {
-            headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
+            headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` }
           });
           const huntData = await huntRes.json();
           const hunt = huntData && huntData[0];
@@ -232,7 +232,7 @@ export default async function handler(req, res) {
             const stateCode = (hunt.state_code || 'US').toUpperCase().slice(0,2);
             const idRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/rpc/generate_quest_id`, {
               method: 'POST',
-              headers: { 'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, 'Content-Type': 'application/json' },
+              headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json' },
               body: JSON.stringify({ p_state: stateCode })
             });
             const questId = await idRes.json();
