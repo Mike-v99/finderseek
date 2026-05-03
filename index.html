@@ -913,7 +913,7 @@ async function fetchQuests(status) {
   }
   // Only return funded escrow OR honor-payment hunts (don't show unpaid drafts)
   // Plus: select specific columns we need
-  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type,is_pinned';
+  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type,is_pinned,quest_id,state_code,pirate_id';
   try {
     var r = await fetch(SB + '/rest/v1/hunts' + query + select, {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
@@ -1029,7 +1029,10 @@ function filterQuests(query) {
       ? all.filter(function(quest) {
           var loc = ((quest.neighborhood || '') + ' ' + (quest.city || '')).toLowerCase();
           var prize = String(Math.round((quest.prize_value || 0) / 100));
-          return loc.includes(q) || prize.includes(q);
+          var questId = (quest.quest_id || '').toLowerCase();
+          var state = (quest.state_code || '').toLowerCase();
+          var username = (quest._pirate_username || '').toLowerCase();
+          return loc.includes(q) || prize.includes(q) || questId.includes(q) || state.includes(q) || username.includes(q);
         })
       : all;
     renderSection(status, filtered);
