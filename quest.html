@@ -188,8 +188,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div class="page">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:12px;" class="el" data-d="0">
     <a href="javascript:void(0)" onclick="goBack()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div id="q-status-label" style="font-size:17px;font-weight:400;color:#fff;text-align:center;">ACTIVE QUEST</div>
-    <div id="q-save-btn" style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="toggleSaveQuest()"><svg id="q-save-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <div style="text-align:center;"><span id="q-status-label" style="font-size:17px;font-weight:400;color:#fff;">QUEST</span> <span id="q-quest-id" style="font-size:14px;color:rgba(232,168,32,.6);font-weight:400;"></span></div>
+    <div id="q-save-btn" style="width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="toggleSaveQuest()"><svg id="q-save-icon" width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="none"><path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg></div>
   </div>
 
   <div style="padding:14px 18px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin-bottom:10px;" class="el" data-d="50">
@@ -214,45 +214,40 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="padding:4px 8px;text-align:center;"><div id="cd-s" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">SEC</div></div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div id="q-master-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:17px;color:#0a0800;font-weight:500;flex-shrink:0;">?</div>
-      <div style="font-size:17px;color:rgba(255,255,255,.5);">by <span id="q-master-name" style="color:#fff;">—</span></div>
+    <!-- Quest Master + Follow (left) | Share (right) -->
+    <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05);">
+      <div id="q-master-avatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9890c,#e8a820);display:flex;align-items:center;justify-content:center;font-size:14px;color:#0a0800;font-weight:500;flex-shrink:0;">?</div>
+      <div style="font-size:15px;color:rgba(255,255,255,.5);">by <span id="q-master-name" style="color:#fff;">—</span></div>
       <div id="q-follow-btn" style="width:22px;height:22px;border-radius:50%;background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" onclick="followQuestMaster()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-      <div id="q-master-stats" style="font-size:17px;color:rgba(255,255,255,.25);">—</div>
+      <div style="flex:1;"></div>
+      <div onclick="shareQuest()" style="border-radius:10px;border:1px solid rgba(96,165,250,.3);background:rgba(96,165,250,.05);padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><div style="font-size:13px;color:#60a5fa;">Share</div></div>
     </div>
+    <div id="q-master-stats" style="display:none;"></div>
   </div>
 
+  <!-- Map + Photo — bigger, no clues/share grid -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-bottom:10px;" class="el" data-d="150">
-    <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;background:#0a0f1a;">
+    <div id="q-map-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:170px;background:#0a0f1a;">
       <img id="q-static-map" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transition:transform .8s ease;"/>
       <div id="q-map-leaflet" style="position:absolute;inset:0;border-radius:inherit;display:none;"></div>
       <div id="q-map-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(10,8,26,.95),transparent);z-index:10;">
-        <div style="font-size:17px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
-        <div id="q-map-zoom-label" style="font-size:17px;color:#b8c4d0;">Locked</div>
+        <div style="font-size:14px;letter-spacing:1.5px;color:rgba(255,255,255,.5);">MAP</div>
+        <div id="q-map-zoom-label" style="font-size:14px;color:#b8c4d0;">Locked</div>
       </div>
     </div>
-    <div id="q-photo-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:110px;" onclick="openPhotoModal()">
+    <div id="q-photo-cell" style="position:relative;overflow:hidden;cursor:pointer;min-height:170px;" onclick="openPhotoModal()">
       <div id="q-photo-base" style="position:absolute;inset:0;background:linear-gradient(160deg,#0f2a1a,#1a3a2a,#2d5a3d,#1e4a2e,#3a6b4a);"></div>
       <img id="q-photo-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"/>
       <div id="q-photo-blur" style="position:absolute;inset:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,11,24,.4);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:linear-gradient(0deg,rgba(13,11,24,.9),transparent);z-index:10;">
-        <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;">PHOTO</div>
+        <div style="font-size:14px;letter-spacing:1.5px;color:#b8c4d0;">PHOTO</div>
         <div id="q-photo-dots" style="display:flex;gap:3px;margin-top:3px;"></div>
       </div>
     </div>
-    <div style="background:#0d0b18;padding:16px 14px;cursor:pointer;border-top:1px solid rgba(255,255,255,.06);" onclick="document.getElementById('q-clues-section').scrollIntoView({behavior:'smooth'})">
-      <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(232,168,32,.65)" stroke-width="1.5" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
-      <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;margin-bottom:3px;">CLUES</div>
-      <div style="font-size:17px;color:rgba(232,168,32,.7);"><span id="q-unlocked">0</span> of <span id="q-total-clues">0</span> solved</div>
-      <div id="q-clue-bars" style="display:flex;gap:3px;margin-top:6px;"></div>
-    </div>
-    <div style="background:#0d0b18;padding:16px 14px;cursor:pointer;border-top:1px solid rgba(255,255,255,.06);" onclick="shareQuest()">
-      <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.65)" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
-      <div style="font-size:17px;letter-spacing:1.5px;color:#b8c4d0;">SHARE</div>
-      <div style="font-size:17px;color:rgba(96,165,250,.55);margin-top:3px;">Invite friends</div>
-    </div>
   </div>
+  <!-- hidden compat elements -->
+  <div style="display:none;"><span id="q-unlocked">0</span><span id="q-total-clues">0</span><div id="q-clue-bars"></div></div>
 
   <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
     <div style="font-size:22px;">🏆</div>
@@ -260,14 +255,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
 
-  <div id="q-analytics-bar" style="display:none;background:rgba(232,168,32,.04);border:1px solid rgba(232,168,32,.12);border-radius:13px;padding:12px 16px;margin-bottom:10px;" class="el" data-d="250">
-    <div style="font-size:17px;letter-spacing:2px;color:rgba(232,168,32,.5);margin-bottom:10px;">👑 QUEST MASTER ANALYTICS</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
-      <div><div id="qa-seekers" style="font-size:22px;font-weight:200;color:#e8a820;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Seekers</div></div>
-      <div><div id="qa-clues-unlocked" style="font-size:22px;font-weight:200;color:#4ade80;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Clues out</div></div>
-      <div><div id="qa-time-left" style="font-size:22px;font-weight:200;color:#60a5fa;">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Time left</div></div>
-    </div>
-  </div>
+  <!-- Analytics bar removed -->
 
   <div style="display:flex;gap:8px;margin-bottom:10px;" class="el" data-d="300">
     <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:17px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
@@ -363,7 +351,39 @@ function shareQuest(){var url=window.location.href;if(navigator.share)navigator.
 var _questSaved=false;
 function toggleSaveQuest(){_questSaved=!_questSaved;var icon=document.getElementById('q-save-icon');if(icon)icon.setAttribute('fill',_questSaved?'#e8a820':'none');showToast(_questSaved?'Quest saved':'Quest unsaved',_questSaved?'success':'');}
 var _following=false;
-function followQuestMaster(){_following=!_following;var btn=document.getElementById('q-follow-btn');if(btn){btn.style.background=_following?'rgba(96,165,250,.3)':'rgba(96,165,250,.15)';btn.innerHTML=_following?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';}showToast(_following?'Following '+(currentHunt&&currentHunt._pirate&&currentHunt._pirate.username||'Quest Master'):'Unfollowed',_following?'success':'');}
+async function followQuestMaster(){
+  var token=getToken();
+  if(!token){showToast('Sign in to follow','error');return;}
+  if(!currentHunt||!currentHunt.pirate_id)return;
+  try{
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var user=await ur.json();if(!user||!user.id)return;
+    _following=!_following;
+    var btn=document.getElementById('q-follow-btn');
+    if(btn){btn.style.background=_following?'rgba(96,165,250,.3)':'rgba(96,165,250,.15)';btn.innerHTML=_following?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';}
+    showToast(_following?'Following '+(currentHunt._pirate&&currentHunt._pirate.username||'Quest Master'):'Unfollowed',_following?'success':'');
+    if(_following){
+      await fetch(SB+'/rest/v1/follows',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'resolution=ignore-duplicates'},body:JSON.stringify({follower_id:user.id,pirate_id:currentHunt.pirate_id})});
+    }else{
+      await fetch(SB+'/rest/v1/follows?follower_id=eq.'+user.id+'&pirate_id=eq.'+currentHunt.pirate_id,{method:'DELETE',headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    }
+  }catch(e){console.error('Follow error',e);}
+}
+// Check follow state on load
+async function checkFollowState(){
+  var token=getToken();if(!token||!currentHunt||!currentHunt.pirate_id)return;
+  try{
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var user=await ur.json();if(!user||!user.id)return;
+    var r=await fetch(SB+'/rest/v1/follows?follower_id=eq.'+user.id+'&pirate_id=eq.'+currentHunt.pirate_id+'&select=id',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var d=await r.json();
+    if(d&&d.length>0){
+      _following=true;
+      var btn=document.getElementById('q-follow-btn');
+      if(btn){btn.style.background='rgba(96,165,250,.3)';btn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';}
+    }
+  }catch(e){}
+}
 var _goldModalOpen=false;
 function renderTierButtons(isGold){var fb=document.getElementById('q-free-tier-btn'),gb=document.getElementById('q-gold-tier-btn');if(!fb||!gb)return;if(isGold){fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.2);font-size:17px;font-family:inherit;animation:none;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(201,137,12,.2);border:2px solid #e8a820;color:#f5c842;font-size:17px;font-family:inherit;animation:goldTierPulse 7s ease-in-out infinite;cursor:default;';gb.innerHTML='GOLD TIER<br><span style="font-size:13px;color:#4ade80;">You are Gold</span>';gb.onclick=null;}else{fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:17px;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:17px;font-family:inherit;animation:none;cursor:pointer;';gb.onclick=toggleGoldModal;gb.innerHTML='GOLD TIER';}  }
 function toggleGoldModal(){_goldModalOpen=!_goldModalOpen;var m=document.getElementById('q-gold-modal'),inner=document.getElementById('q-gold-modal-inner');m.style.maxHeight=_goldModalOpen?'520px':'0';inner.style.opacity=_goldModalOpen?'1':'0';inner.style.transform=_goldModalOpen?'translateY(0)':'translateY(-12px)';}
@@ -383,7 +403,7 @@ var PERSONA_VOICE = {
 };
 
 function getPersonaVoiceSettings() {
-  var persona = ((currentHunt && currentHunt.persona) || 'default').toLowerCase();
+  var persona = ((currentHunt && (currentHunt.clue_persona || currentHunt.persona)) || 'default').toLowerCase();
   return PERSONA_VOICE[persona] || PERSONA_VOICE.default;
 }
 
@@ -653,7 +673,7 @@ async function loadQuest(){
     if(!huntData||huntData.length===0){showToast('Quest not found','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
     currentHunt=huntData[0];currentClues=cluesData||[];
     if(currentHunt.pirate_id){try{var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}});var pd=await pr.json();if(pd&&pd[0])currentHunt._pirate=pd[0];}catch(e){}}
-    renderHunt();await loadAttempts();renderClues();startTimer();checkUserGoldStatus();
+    renderHunt();await loadAttempts();renderClues();startTimer();checkUserGoldStatus();checkFollowState();
     // Instant expiry trigger
     try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
     // Increment quests_joined for seekers (non-creator, once per session)
@@ -667,9 +687,12 @@ showToast('Completing your claim...','success');setTimeout(function(){claimPrize
 function renderHunt(){
   var h=currentHunt;
   document.getElementById('q-prize').textContent='$'+Math.round((h.prize_value||0)/100);
-  document.getElementById('q-location').textContent=h.city||h.neighborhood||'Unknown location';
-  var styleEl=document.getElementById('q-pirate-style');if(styleEl)styleEl.textContent=(currentClues.length||'?')+' clues · '+(h.persona||'Pirate')+' style';
-  document.getElementById('q-status-label').textContent=(h.status||'active').toUpperCase()+' QUEST';
+  var cityState = (h.city||h.neighborhood||'Unknown');
+  if (h.state_code && h.state_code !== 'US') cityState += ', ' + h.state_code;
+  document.getElementById('q-location').textContent=cityState;
+  var styleEl=document.getElementById('q-pirate-style');if(styleEl)styleEl.textContent=(currentClues.length||'?')+' clues · '+(h.clue_persona||h.persona||'Pirate')+' style';
+  document.getElementById('q-status-label').textContent='QUEST';
+  var qidEl=document.getElementById('q-quest-id');if(qidEl&&h.quest_id)qidEl.textContent=h.quest_id;
   if(h.ends_at){var endDate=new Date(h.ends_at),today=new Date(),sameDay=endDate.toDateString()===today.toDateString();document.getElementById('q-end-label').textContent=sameDay?'Expires today at '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Expires '+endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
   var now=new Date(),unlocked=currentClues.filter(function(c){return new Date(c.reveal_at)<=now;}).length;
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;
@@ -692,33 +715,95 @@ async function togglePin(){
 function renderClues(){
   var container=document.getElementById('q-clues-container'),now=new Date();
   if(currentClues.length===0){container.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">No clues yet for this quest.</div>';return;}
-  var html=currentClues.map(function(c,idx){
-    var revealAt=new Date(c.reveal_at),revealed=revealAt<=now;
-    var dateLabel=c.day_label||'Day '+Math.ceil((idx+1)/Math.max(1,Math.ceil(currentClues.length/3)));
+
+  var html='';
+  var unlocked=0;
+
+  // ── Location Riddle + GPS verification ──────────────────
+  if(currentHunt.location_riddle){
+    var locConfirmed=window._locationConfirmed||false;
+    if(locConfirmed){
+      html+='<div style="margin-bottom:10px;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(74,222,128,.4),rgba(74,222,128,.1));"><div class="inner"><div style="height:2px;background:linear-gradient(90deg,#15803d,#4ade80);"></div><div style="padding:14px 16px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><div style="font-size:18px;color:#4ade80;">📍 Location Confirmed ✓</div><button onclick="speakClue(0,'+JSON.stringify(currentHunt.location_riddle)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:rgba(255,255,255,.5);line-height:1.65;font-style:italic;">'+escapeHtml(currentHunt.location_riddle)+'</div><div style="margin-top:10px;display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;"><div style="width:8px;height:8px;border-radius:50%;background:#4ade80;"></div><div style="font-size:13px;color:rgba(74,222,128,.7);">You\'re at the quest location — clues unlocked!</div></div></div></div></div>';
+    }else{
+      html+='<div style="margin-bottom:10px;border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(232,168,32,.4),rgba(232,168,32,.1));"><div class="inner"><div style="height:2px;background:linear-gradient(90deg,#92400e,#e8a820,#f5c842);"></div><div style="padding:14px 16px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><div style="font-size:18px;color:#e8a820;">📍 Location Riddle</div><button onclick="speakClue(0,'+JSON.stringify(currentHunt.location_riddle)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#fff;line-height:1.65;font-style:italic;margin-bottom:14px;">'+escapeHtml(currentHunt.location_riddle)+'</div><div id="gps-confirm-bar" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.25);border-radius:12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div style="flex:1;"><div style="font-size:14px;color:#fff;">At Quest Location?</div><div style="font-size:11px;color:rgba(232,168,32,.5);margin-top:2px;">Must be within 1,000 ft to start</div></div><button onclick="confirmQuestLocation()" id="gps-confirm-btn" style="padding:8px 16px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:10px;font-size:14px;color:#fff;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;">Confirm</button></div></div></div></div>';
+    }
+  }
+
+  // ── Clues ──────────────────────────────────────────────
+  var locRequired=!!currentHunt.location_riddle;
+  var locConfirmed2=window._locationConfirmed||false;
+
+  html+=currentClues.map(function(c,idx){
+    var isSolved=c._solved||false;
+    var prevSolved=idx===0?true:(currentClues[idx-1]&&currentClues[idx-1]._solved);
+    var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolved);
     var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
-    var titleSuffix=isFinal?' — Final Clue':' — '+dateLabel;
     var mapInfo=null,photoUrl=null;
     if(c.is_photo&&c.photo_url){if(c.photo_url.indexOf('map:')===0){mapInfo={radiusFt:parseInt(c.photo_url.split(':')[1])};}else{photoUrl=c.photo_url;mapInfo={radiusFt:100};}}
-    if(revealed){
+
+    if(canShow){
+      unlocked++;
       var mapLabel='',mapBlock='';
       if(mapInfo&&currentHunt.lat&&currentHunt.lng){var label=mapInfo.radiusFt>=1000?(Math.round(mapInfo.radiusFt/528)/10)+' mile radius':mapInfo.radiusFt+' ft radius';mapLabel='<div style="font-size:18px;color:#e8a820;margin:10px 0 6px;">📍 '+label+'</div>';mapBlock='<div id="clue-map-'+c.id+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+mapInfo.radiusFt+'" style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-top:8px;border:1px solid rgba(232,168,32,.25);"></div>';}
       var photoBlock=photoUrl?'<img src="'+photoUrl+'" style="width:100%;border-radius:12px;margin-top:10px;border:1px solid rgba(232,168,32,.25);" alt="Hiding spot"/>':'';
       var attempt=_attemptCache[c.clue_number]||{};
       var cr=getCooldownRemaining(attempt.cooldown_until),ht=getHintText(attempt.hints_unlocked||0),wc=attempt.wrong_count||0;
       var qaBlock='';
-      if(c.clue_question&&!isFinal){
+      if(!isFinal&&!isSolved){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
-        else{qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;"><div style="font-size:17px;color:#b8c4d0;margin-bottom:10px;">'+escapeHtml(c.clue_question)+'</div>'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<div style="display:flex;gap:8px;"><input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div></div>';}
+        else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
-      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-on">'+c.clue_number+'</div><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+titleSuffix+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div></div>';
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div>';
     }else{
-      var diffMs=revealAt-now,dropsIn=diffMs>3600000?Math.round(diffMs/3600000)+'h':Math.round(diffMs/60000)+' min';
-      return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="display:flex;gap:14px;padding:16px 18px;align-items:flex-start;"><div class="clue-num-off">'+c.clue_number+'</div><div style="flex:1;"><div style="font-size:18px;font-weight:400;color:#4ade80;margin-bottom:5px;">Clue #'+c.clue_number+titleSuffix+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">This clue has not been revealed yet.</div><div style="font-size:17px;color:var(--yellow);margin-top:6px;font-weight:500;">Drops in '+dropsIn+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>':'')+'</div></div></div></div>';
+      var lockMsg=locRequired&&!locConfirmed2?'Confirm your location to unlock clues.':'Solve the previous clue to unlock.';
+      return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="padding:16px 18px;"><div style="font-size:18px;font-weight:400;color:rgba(74,222,128,.5);margin-bottom:5px;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">'+lockMsg+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>':'')+'</div></div></div>';
     }
   }).join('');
   container.innerHTML=html;
+  _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;
   wireQaButtons();
   setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18;var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
+}
+
+// ── GPS LOCATION VERIFICATION ────────────────────────────
+window._locationConfirmed=false;
+
+function haversineDistance(lat1,lon1,lat2,lon2){
+  var R=20902231;// Earth radius in feet
+  var dLat=(lat2-lat1)*Math.PI/180;
+  var dLon=(lon2-lon1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function confirmQuestLocation(){
+  if(!currentHunt||!currentHunt.lat||!currentHunt.lng){showToast('Quest location not available','error');return;}
+  var btn=document.getElementById('gps-confirm-btn');
+  if(btn){btn.textContent='Checking...';btn.disabled=true;}
+  if(!navigator.geolocation){showToast('Location not supported on this device','error');if(btn){btn.textContent='Confirm';btn.disabled=false;}return;}
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      var dist=haversineDistance(pos.coords.latitude,pos.coords.longitude,currentHunt.lat,currentHunt.lng);
+      if(dist<=1000){
+        window._locationConfirmed=true;
+        showToast('Location confirmed! Clues unlocked.','success');
+        renderClues();
+      }else{
+        var displayDist=dist>=5280?(Math.round(dist/528)/10)+' miles':Math.round(dist)+' ft';
+        showToast('You\'re '+displayDist+' away — get within 1,000 ft','error');
+        // Update the bar to show distance
+        var bar=document.getElementById('gps-confirm-bar');
+        if(bar){
+          bar.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div style="flex:1;"><div style="font-size:14px;color:#ef4444;">'+displayDist+' away</div><div style="font-size:11px;color:rgba(239,68,68,.5);margin-top:2px;">Get within 1,000 ft to start</div></div><button onclick="confirmQuestLocation()" style="padding:8px 16px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:10px;font-size:14px;color:#fff;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;">Try Again</button>';
+        }
+      }
+    },
+    function(err){
+      showToast('Location access denied — enable in Settings','error');
+      if(btn){btn.textContent='Confirm';btn.disabled=false;}
+    },
+    {timeout:10000,enableHighAccuracy:true}
+  );
 }
 function startTimer(){
   if(!currentHunt||!currentHunt.ends_at)return;var endsAt=new Date(currentHunt.ends_at);
