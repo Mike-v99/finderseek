@@ -1702,7 +1702,7 @@ async function createQuest(){
   // ── 4. Disable buttons + show progress ────────────────────
   btn.disabled = true; previewBtn.disabled = true;
   btn.textContent = '⏳ Creating quest...';
-  previewBtn.textContent = '⏳ Generating clues...';
+  previewBtn.textContent = '⏳ Creating Quest...';
 
   try {
     // ── 5. Compute timing ───────────────────────────────────
@@ -1893,7 +1893,7 @@ async function createQuest(){
     console.log('Quest saved with ID:', huntId);
 
     // ── 7. Generate clues via Claude ─────────────────────────
-    btn.textContent = '⏳ Generating clues...';
+    btn.textContent = '⏳ Creating Quest...';
     var aiOverlay = document.getElementById('ai-loading');
     aiOverlay.style.display = 'flex';
 
