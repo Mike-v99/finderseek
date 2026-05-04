@@ -250,7 +250,7 @@ export default async function handler(req, res) {
       // 1. Email the Pirate
       if (hunt.pirate_id) {
         const [pirate] = await sbFetch(`profiles?id=eq.${hunt.pirate_id}&select=username,email,notify_hunt_live`);
-        if (pirate?.notify_hunt_live && pirate?.email) {
+        if (pirate?.email) {
           const tpl = tplHuntApproved({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
           await sendEmail(pirate.email, tpl.subject, tpl.html);
           results.push(`pirate_notified:${pirate.email}`);
@@ -318,12 +318,12 @@ export default async function handler(req, res) {
         ? await sbFetch(`profiles?id=eq.${hunt.winner_id}&select=username,email,notify_hunt_won`)
         : [null];
 
-      if (pirate?.notify_hunt_won && pirate?.email && winner) {
+      if (pirate?.email && winner) {
         const tpl = tplPrizeClaimed({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, winnerName: winner.username, huntUrl });
         await sendEmail(pirate.email, tpl.subject, tpl.html);
         results.push(`pirate_notified:${pirate.email}`);
       }
-      if (winner?.notify_hunt_won && winner?.email) {
+      if (winner?.email) {
         const isEscrow = hunt.payment_type === 'escrow';
         const tpl = tplYouWon({ username: winner.username, city: hunt.city, prize: hunt.prize_desc, huntUrl, isEscrow });
         await sendEmail(winner.email, tpl.subject, tpl.html);
