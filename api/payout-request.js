@@ -218,6 +218,18 @@ export default async function handler(req, res) {
       });
     } catch (e) { console.warn('[payout] Email failed:', e.message); }
 
+    // Trigger prize_claimed notification (emails quest master + winner)
+    try {
+      const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+      if (notifySecret) {
+        await fetch('https://www.finderseek.com/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret },
+          body: JSON.stringify({ event: 'prize_claimed', huntId })
+        });
+      }
+    } catch (e) { console.warn('[payout] Notify failed:', e.message); }
+
     return res.status(200).json({
       success: true,
       automated: paypalSuccess,
