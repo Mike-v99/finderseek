@@ -2717,6 +2717,13 @@ function closePaymentModal(){
   document.getElementById('pm-sheet').classList.remove('show');
   document.body.style.overflow = '';
   document.body.style.touchAction = '';
+  // Make sure we stay on step 5 after closing
+  if (currentStep !== 5) {
+    document.getElementById('step' + currentStep).style.display = 'none';
+    currentStep = 5;
+    var s5 = document.getElementById('step5');
+    if (s5) s5.style.display = 'flex';
+  }
 }
 </script>
 
