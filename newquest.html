@@ -361,10 +361,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Generate PIN
         </button>
-        <button id="save-code-btn" onclick="openPinCard()" style="flex:1;display:none;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:#4ade80;font-size:17px;font-family:inherit;cursor:pointer;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-          Save copy
-        </button>
+        <button id="save-code-btn" style="display:none;"></button>
       </div>
     </div>
 
@@ -2055,6 +2052,8 @@ function saveFormState() {
       selectedAddress: typeof selectedAddress !== 'undefined' ? selectedAddress : '',
       placeName: selectedPlaceName || '',
       staticMapUrl: window._staticMapUrl || '',
+      generatedClues: _generatedClues || null,
+      generatedLocationRiddle: _generatedLocationRiddle || '',
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
     // Save photo separately (too large for main state object, use own key)
@@ -2088,6 +2087,8 @@ function restoreFormState() {
       });
     }
     if (s.staticMapUrl) window._staticMapUrl = s.staticMapUrl;
+    if (s.generatedClues) _generatedClues = s.generatedClues;
+    if (s.generatedLocationRiddle) _generatedLocationRiddle = s.generatedLocationRiddle;
     if (s.pin && s.pin.length === 6) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
         var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
@@ -3431,11 +3432,11 @@ function renderHsModal() {
     var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
       '<div style="flex:1;position:relative;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;">' +
-          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : 'Pick Action ▾') + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
+          '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : (isFinal2 ? 'Final Action ▾' : 'Pick Action ▾')) + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
           (actionObj ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' : '') +
         '</div>' +
         '<select id="hs-action-sel" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;">' +
-          '<option value="">Pick Action...</option>' +
+          '<option value="">' + (isFinal2 ? 'Final Action...' : 'Pick Action...') + '</option>' +
           HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
         '</select>' +
       '</div>' +
