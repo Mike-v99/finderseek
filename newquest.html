@@ -2634,7 +2634,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
     await new Promise(function(resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo';
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo&disable-funding=credit,paylater';
       s.onload = resolve;
       s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
       document.head.appendChild(s);
