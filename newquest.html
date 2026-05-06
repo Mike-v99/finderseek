@@ -2123,7 +2123,21 @@ function restoreFormState() {
     setTimeout(function(){ checkStep1Complete(); }, 100);
     // Restore step
     if (s.step && s.step > 1) {
-      setTimeout(function(){ goStep(s.step); }, 150);
+      setTimeout(function(){
+        // Skip validation when restoring — go directly to saved step
+        document.getElementById('step' + currentStep).style.display = 'none';
+        currentStep = s.step;
+        var el = document.getElementById('step' + s.step);
+        if (el) { el.style.display = 'flex'; el.scrollTop = 0; }
+        window.scrollTo(0,0);
+        if (s.step === 5) {
+          updateMiniSummary();
+          if (selectedPreset) {
+            var pb = document.getElementById('btn-preview');
+            if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
+          }
+        }
+      }, 150);
     }
   } catch(e){ console.error('Restore form error', e); updateExpiry(); setWeekendDates(); }
 }
@@ -3688,6 +3702,8 @@ function hsConfirmClues() {
   }
   _hsData.locationRiddle = _generatedLocationRiddle || "";
   closeHsModal();
+  // Save immediately after confirming so refresh preserves everything
+  saveFormState();
   showToast("✓ Clues saved!", "success");
 }
 
