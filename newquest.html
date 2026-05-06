@@ -1310,6 +1310,7 @@ const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const API_BASE = 'https://www.finderseek.com';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET = 'fs-notify-2026';
+const PAYPAL_CLIENT_ID = 'LIVE'; // Loaded dynamically from server
 
 let currentUser = null;
 let currentProfile = null;
@@ -2577,8 +2578,8 @@ if ('serviceWorker' in navigator) {
   <div class="pm-sub">Prize is held in escrow and paid automatically when the winner claims it.</div>
   <div class="pm-breakdown" id="pm-breakdown"></div>
   <div id="pm-error"></div>
-  <button class="pm-pay-btn" id="pm-pay-btn" onclick="submitPayment()" disabled style="opacity:.5;cursor:not-allowed;">Continue to Stripe →</button>
-  <div class="pm-secure">🔒 You'll review the total on Stripe before being charged</div>
+  <div id="paypal-button-container" style="min-height:50px;"></div>
+  <div class="pm-secure">🔒 Secure payment via PayPal · Venmo · Debit or Credit Card</div>
 </div>
 
 <style>
@@ -2594,18 +2595,15 @@ if ('serviceWorker' in navigator) {
 .pm-row strong{color:#fff;font-weight:400;}
 .pm-row.total{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:6px;font-size:18px;}
 .pm-row.total strong{color:#e8a820;font-size:20px;font-weight:400;}
-#pm-stripe-element{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin-bottom:14px;min-height:48px;}
 #pm-error{color:#f87171;font-size:18px;margin-bottom:12px;min-height:18px;text-align:center;}
-.pm-pay-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:18px;font-weight:500;cursor:pointer;font-family:inherit;transition:transform .15s;}
-.pm-pay-btn:active{transform:scale(.98);}
-.pm-pay-btn:disabled{opacity:.6;cursor:not-allowed;}
 .pm-secure{text-align:center;font-size:18px;color:#fff;margin-top:12px;letter-spacing:0.5px;font-weight:400;opacity:.7;}
 .pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5ead8;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
 </style>
 
 <script>
-// ═══════ PAYMENT MODAL — Stripe Checkout redirect ═══════
+// ═══════ PAYMENT MODAL — PayPal Checkout ═══════
 let _currentHuntId = null, _currentPayload = null;
+let _paypalButtonsRendered = false;
 
 async function openPaymentModal({ userId, email, huntId, prize }) {
   _currentHuntId = huntId;
@@ -2621,60 +2619,104 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
 
   document.getElementById('pm-error').textContent = '';
 
-  // Reset button
-  var btn = document.getElementById('pm-pay-btn');
-  btn.disabled = true;
-  btn.style.opacity = '.5';
-  btn.style.cursor = 'not-allowed';
-  btn.textContent = 'Continue to Stripe →';
-
   document.getElementById('pm-backdrop').classList.add('show');
   document.getElementById('pm-sheet').classList.add('show');
 
-  // Enable button immediately — no Stripe Elements to wait for
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  btn.style.cursor = 'pointer';
+  // Load PayPal JS SDK if not loaded yet
+  if (!window.paypal) {
+    // Fetch client ID from server
+    if (PAYPAL_CLIENT_ID === 'LIVE') {
+      var cidRes = await fetch(API_BASE + '/api/paypal-client-id');
+      var cidData = await cidRes.json();
+      if (cidData.clientId) window._ppClientId = cidData.clientId;
+    }
+    var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
+    await new Promise(function(resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo';
+      s.onload = resolve;
+      s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  // Clear previous buttons
+  var container = document.getElementById('paypal-button-container');
+  container.innerHTML = '';
+
+  // Render PayPal buttons
+  window.paypal.Buttons({
+    style: {
+      layout: 'vertical',
+      color: 'gold',
+      shape: 'rect',
+      label: 'paypal',
+      height: 45,
+    },
+    createOrder: async function() {
+      var errEl = document.getElementById('pm-error');
+      errEl.textContent = '';
+      try {
+        var r = await fetch(API_BASE + '/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+          body: JSON.stringify({
+            type: 'escrow',
+            userId: _currentPayload.userId,
+            email: _currentPayload.email,
+            huntId: _currentPayload.huntId,
+            prizeAmount: _currentPayload.prize,
+            totalCents: Math.round(total * 100)
+          })
+        });
+        var d = await r.json();
+        if (!r.ok || !d.orderId) throw new Error(d.error || 'Could not create order');
+        return d.orderId;
+      } catch(e) {
+        errEl.textContent = e.message || 'Payment failed';
+        throw e;
+      }
+    },
+    onApprove: async function(data) {
+      var errEl = document.getElementById('pm-error');
+      try {
+        // Capture the payment on our server
+        var r = await fetch(API_BASE + '/api/paypal-capture', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: data.orderID, huntId: _currentPayload.huntId })
+        });
+        var d = await r.json();
+        if (!r.ok || !d.success) throw new Error(d.error || 'Capture failed');
+
+        // Success! Clear form and show confirmation
+        clearFormState();
+        closePaymentModal();
+        showToast('Quest funded! Your quest is now live.', 'success');
+
+        // Redirect to quest page
+        setTimeout(function() {
+          window.location.href = 'quest.html?id=' + _currentPayload.huntId;
+        }, 1500);
+      } catch(e) {
+        errEl.textContent = e.message || 'Payment capture failed';
+      }
+    },
+    onCancel: function() {
+      document.getElementById('pm-error').textContent = 'Payment cancelled. Try again when ready.';
+    },
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      document.getElementById('pm-error').textContent = 'Payment error. Please try again.';
+    }
+  }).render('#paypal-button-container');
 }
 
 function closePaymentModal(){
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
-  // Restore body scroll — payment modal and hs-modal both lock it
   document.body.style.overflow = '';
   document.body.style.touchAction = '';
-}
-
-async function submitPayment(){
-  const btn = document.getElementById('pm-pay-btn');
-  const errEl = document.getElementById('pm-error');
-  errEl.textContent = '';
-  btn.disabled = true;
-  btn.textContent = 'Opening Stripe...';
-
-  try {
-    const { userId, email, huntId, prize } = _currentPayload;
-    const total = prize + Math.round(prize * 0.10 * 100) / 100;
-    const r = await fetch(API_BASE + '/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-      body: JSON.stringify({
-        type: 'escrow',
-        userId,
-        email,
-        huntId,
-        prizeAmount: prize,
-        totalCents: Math.round(total * 100)
-      })
-    });
-    const d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error || 'Could not start checkout');
-    window.location.href = d.url;
-  } catch(e) {
-    errEl.textContent = e.message || 'Payment failed — please try again';
-    btn.disabled = false;
-    btn.textContent = 'Continue to Stripe →';
-  }
 }
 </script>
 
