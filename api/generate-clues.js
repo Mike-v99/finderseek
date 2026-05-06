@@ -104,17 +104,20 @@ export default async function handler(req, res) {
   }
   console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedStreet, resolvedPlaceName, cleanLocation }));
 
-  const locationRiddlePrompt = `Write a 2-sentence location clue in ${persona || 'pirate'} persona voice.
+  const startPoint = startingPoint || (hsData && hsData.startingPoint) || '';
+  const locationRiddlePrompt = `Write a 2-3 sentence location clue in ${persona || 'pirate'} persona voice.
 
 Location: "${cleanLocation}"
+${startPoint ? 'Starting point: "' + startPoint + '" — Include this starting point in the riddle so seekers know exactly where to begin when they arrive.' : ''}
 
 Sentence 1: Name the place, street, and city ONCE each. No repeating any detail.
-Sentence 2: A call to action — go there, start the hunt. Do NOT repeat the place name, street, or city.
+Sentence 2: ${startPoint ? 'Tell them to go to the starting point ("' + startPoint + '") using the persona voice.' : 'A call to action — go there, start the hunt.'} Do NOT repeat the place name, street, or city.
+${startPoint ? 'Sentence 3: A short hype line to start the quest.' : ''}
 
 Bad example (repeats address twice): "Head to Kroger on Loop 336 in Conroe where folks shop! Go on down to Kroger on Loop 336 and let the hunt begin!"
-Good example: "Arrr, seek ye Kroger on Loop 336 West in Conroe, where landlubbers stock their holds! Make haste to those shores and let the quest begin, ye brave soul!"
+Good example: "Arrr, seek ye Kroger on Loop 336 West in Conroe, where landlubbers stock their holds! Start at the north entrance by the pharmacy. Make haste and let the quest begin, ye brave soul!"
 
-Return ONLY the 2 sentences, nothing else.`;
+Return ONLY the sentences, nothing else.`;
 
   // ── Build per-clue prompts using hsData ──────────────────────
   const clues = (hsData && hsData.clues) || [];
@@ -145,7 +148,7 @@ Return ONLY the 2 sentences, nothing else.`;
     const lrRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 120, messages: [{ role: 'user', content: locationRiddlePrompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 200, messages: [{ role: 'user', content: locationRiddlePrompt }] })
     });
     const lrData = await lrRes.json();
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
@@ -153,7 +156,7 @@ Return ONLY the 2 sentences, nothing else.`;
 
     // Enforce two sentences max
     const sentences = location_riddle.match(/[^.!?]+[.!?]+/g) || [];
-    if (sentences.length > 2) location_riddle = sentences.slice(0, 2).join(' ').trim();
+    if (sentences.length > 3) location_riddle = sentences.slice(0, 3).join(' ').trim();
 
     // Hard inject city and street if Claude skipped them
     const riddleLower = location_riddle.toLowerCase();
