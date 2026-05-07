@@ -77,6 +77,12 @@ async function createEscrowOrder({ userId, email, huntId, prizeAmount, totalCent
           category: 'DIGITAL_GOODS',
         }]
       }],
+      // Digital good — don't ask the buyer for a shipping address.
+      application_context: {
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'PAY_NOW',
+        brand_name: 'FinderSeek',
+      },
     })
   });
 
