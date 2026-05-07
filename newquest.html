@@ -2096,17 +2096,16 @@ async function createQuest(){
 
     // ── 9. Open the embedded payment modal ─────────────────
     btn.textContent = '⏳ Setting up payment...';
-    // Quest is now persisted to Supabase. We don't need the sessionStorage
-    // form draft anymore. Clearing here prevents the next quest creation
-    // from restoring stale fields (PIN, prize, location) from this one.
     await openPaymentModal({
       userId: currentUser.id,
       email: currentUser.email,
       huntId: huntId,
       prize: prize,
     });
-    // Clear form state only after payment modal opens successfully
-    clearFormState();
+    // NOTE: Do NOT clear form state here. The user may close the PayPal modal
+    // and try to schedule again with different dates — clearing PIN/photo/location
+    // would force them to start over. Form state is cleared inside the PayPal
+    // onApprove handler once payment is actually captured.
     // Button re-enable; user now interacts with modal
     btn.disabled = false;
     previewBtn.disabled = false;
