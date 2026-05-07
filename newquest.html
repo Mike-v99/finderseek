@@ -2268,13 +2268,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   var hasPending = !!localStorage.getItem('fs_pending_quest');
   var hasFormState = !!localStorage.getItem('fs_newquest_form');
   var hasAbandon = !!localStorage.getItem('fs_newquest_abandon');
-  // Only stay on newquest if there's a reason to be here
   if (!fromApp && !hasStep && !hasPending && !hasFormState && !hasAbandon) {
-    window.location.replace('index.html');
-    return;
-  }
-  // If resuming the app with from=app but no saved quest data, go home
-  if (fromApp && !hasFormState && !hasPending && !hasAbandon) {
     window.location.replace('index.html');
     return;
   }
