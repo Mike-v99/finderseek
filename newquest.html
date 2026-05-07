@@ -2326,17 +2326,48 @@ document.addEventListener('DOMContentLoaded', async function(){
   // Clear abandon flag — they've returned to the page
   try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
 
-  // Save state + set abandon flag when user navigates away mid-flow
-  window.addEventListener('beforeunload', function() {
-    var pin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
-      var el=document.getElementById(id); return el?el.textContent:'';
-    }).join('');
-    // Only set abandon flag if they have meaningful data (at least the PIN)
-    if (pin.length === 6 && pin.indexOf('') === -1) {
-      saveFormState();
-      try { localStorage.setItem('fs_newquest_abandon', '1'); } catch(e){}
-    }
+  // Save state when user navigates away. iOS Safari fires 'pagehide' more
+  // reliably than 'beforeunload', so we listen on both. We also save on
+  // 'visibilitychange' (when the tab/page goes hidden) for belt-and-braces.
+  function persistOnLeave() {
+    try {
+      var pin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+        var el=document.getElementById(id); return el?el.textContent:'';
+      }).join('');
+      var hidingSpot = (document.getElementById('hiding-spot')||{}).value || '';
+      var hasPhoto = !!window._hsPhotoDataUrl;
+      var hasMeaningful = (pin.length === 6 && pin.indexOf('') === -1) || hidingSpot.length > 0 || hasPhoto;
+      if (hasMeaningful) {
+        saveFormState();
+        // Set abandon flag only if the PIN is fully filled in — that's the
+        // signal that they had a complete-enough draft to consider abandoned.
+        if (pin.length === 6 && pin.indexOf('') === -1) {
+          try { localStorage.setItem('fs_newquest_abandon', '1'); } catch(e){}
+        }
+      }
+    } catch(e){}
+  }
+  window.addEventListener('beforeunload', persistOnLeave);
+  window.addEventListener('pagehide', persistOnLeave);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') persistOnLeave();
   });
+
+  // Belt-and-braces: autosave every 2 seconds if there's any data.
+  // Mobile browsers don't always fire pagehide/beforeunload reliably,
+  // and this guarantees the latest state is persisted no matter what.
+  setInterval(function() {
+    try {
+      var pin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+        var el=document.getElementById(id); return el?el.textContent:'';
+      }).join('');
+      var hidingSpot = (document.getElementById('hiding-spot')||{}).value || '';
+      var hasPhoto = !!window._hsPhotoDataUrl;
+      if ((pin.length === 6 && pin.indexOf('') === -1) || hidingSpot.length > 0 || hasPhoto) {
+        saveFormState();
+      }
+    } catch(e){}
+  }, 2000);
 
 
   // Redirect to home if opened directly (not from within the app)
