@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<title>FinderSeek — PIN Button Test</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0d0b18;color:#f5ead8;font-family:-apple-system,sans-serif;padding:16px;min-height:100vh;}
+h1{font-size:18px;color:#e8a820;margin-bottom:14px;}
+.block{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;margin-bottom:14px;}
+.block h2{font-size:14px;color:#b8c4d0;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.code-wrap{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px;}
+.code-digit{aspect-ratio:1;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#f5c842;}
+button{display:block;width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:rgba(232,168,32,.3);touch-action:manipulation;margin-bottom:8px;}
+button:active{background:rgba(232,168,32,.15);}
+.log{background:#000;color:#0f0;font-family:'SF Mono',Menlo,monospace;font-size:12px;padding:10px;border-radius:8px;min-height:200px;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;}
+.log .err{color:#f55;}
+.log .warn{color:#fb0;}
+.log .ok{color:#4ade80;}
+.status{font-size:13px;color:#b8c4d0;margin-bottom:6px;}
+.status b{color:#e8a820;}
+</style>
+</head>
+<body>
+
+<h1>🔧 PIN Button Diagnostic</h1>
+
+<div class="block">
+  <h2>Environment</h2>
+  <div class="status" id="env-info">Loading...</div>
+</div>
+
+<div class="block">
+  <h2>Test 1: Inline onclick</h2>
+  <div class="code-wrap">
+    <div id="t1-c1" class="code-digit"></div>
+    <div id="t1-c2" class="code-digit"></div>
+    <div id="t1-c3" class="code-digit"></div>
+    <div id="t1-c4" class="code-digit"></div>
+    <div id="t1-c5" class="code-digit"></div>
+    <div id="t1-c6" class="code-digit"></div>
+  </div>
+  <button onclick="genCodeT1()">Generate PIN — onclick attribute</button>
+</div>
+
+<div class="block">
+  <h2>Test 2: addEventListener('click')</h2>
+  <div class="code-wrap">
+    <div id="t2-c1" class="code-digit"></div>
+    <div id="t2-c2" class="code-digit"></div>
+    <div id="t2-c3" class="code-digit"></div>
+    <div id="t2-c4" class="code-digit"></div>
+    <div id="t2-c5" class="code-digit"></div>
+    <div id="t2-c6" class="code-digit"></div>
+  </div>
+  <button id="t2-btn">Generate PIN — click listener</button>
+</div>
+
+<div class="block">
+  <h2>Test 3: addEventListener('touchend')</h2>
+  <div class="code-wrap">
+    <div id="t3-c1" class="code-digit"></div>
+    <div id="t3-c2" class="code-digit"></div>
+    <div id="t3-c3" class="code-digit"></div>
+    <div id="t3-c4" class="code-digit"></div>
+    <div id="t3-c5" class="code-digit"></div>
+    <div id="t3-c6" class="code-digit"></div>
+  </div>
+  <button id="t3-btn">Generate PIN — touchend listener</button>
+</div>
+
+<div class="block">
+  <h2>Test 4: pointerdown listener</h2>
+  <div class="code-wrap">
+    <div id="t4-c1" class="code-digit"></div>
+    <div id="t4-c2" class="code-digit"></div>
+    <div id="t4-c3" class="code-digit"></div>
+    <div id="t4-c4" class="code-digit"></div>
+    <div id="t4-c5" class="code-digit"></div>
+    <div id="t4-c6" class="code-digit"></div>
+  </div>
+  <button id="t4-btn">Generate PIN — pointerdown listener</button>
+</div>
+
+<div class="block">
+  <h2>Live Log</h2>
+  <div class="log" id="log">Waiting for taps...\n</div>
+  <button id="clear-log" style="margin-top:8px;">Clear log</button>
+</div>
+
+<script>
+// ───────── On-screen logger so we don't need Mac/Web Inspector ─────────
+function log(msg, type) {
+  var el = document.getElementById('log');
+  if (!el) return;
+  var t = new Date().toISOString().slice(11,23);
+  var line = '[' + t + '] ' + msg + '\n';
+  var span = document.createElement('span');
+  if (type) span.className = type;
+  span.textContent = line;
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+// ───────── Environment dump ─────────
+(function() {
+  var info = '';
+  info += 'UA: ' + navigator.userAgent + '\n';
+  info += 'Platform: ' + (navigator.platform || 'n/a') + '\n';
+  info += 'Touch: ' + ('ontouchstart' in window ? 'yes' : 'no') + '\n';
+  info += 'Pointer: ' + (window.PointerEvent ? 'yes' : 'no') + '\n';
+  info += 'readyState at script run: ' + document.readyState + '\n';
+  info += 'window.innerWidth: ' + window.innerWidth + '\n';
+  document.getElementById('env-info').innerHTML = info.replace(/\n/g, '<br>');
+  log('Page loaded. ' + navigator.userAgent.slice(0, 80), 'ok');
+})();
+
+// ───────── Global error catchers ─────────
+window.addEventListener('error', function(ev) {
+  log('JS ERROR: ' + ev.message + ' at ' + (ev.filename||'') + ':' + (ev.lineno||'?'), 'err');
+});
+window.addEventListener('unhandledrejection', function(ev) {
+  log('UNHANDLED REJECTION: ' + (ev.reason && ev.reason.message ? ev.reason.message : ev.reason), 'err');
+});
+
+// ───────── Test 1: inline onclick ─────────
+function genCodeT1() {
+  log('TEST 1 (onclick) FIRED', 'ok');
+  for (var i = 1; i <= 6; i++) {
+    var el = document.getElementById('t1-c' + i);
+    if (el) el.textContent = Math.floor(Math.random() * 10);
+  }
+}
+window.genCodeT1 = genCodeT1;
+
+// ───────── Test 2: addEventListener('click') ─────────
+(function() {
+  var btn = document.getElementById('t2-btn');
+  if (!btn) { log('TEST 2: button not found', 'err'); return; }
+  btn.addEventListener('click', function(e) {
+    log('TEST 2 (click listener) FIRED. target=' + (e.target.id||e.target.tagName), 'ok');
+    for (var i = 1; i <= 6; i++) {
+      var el = document.getElementById('t2-c' + i);
+      if (el) el.textContent = Math.floor(Math.random() * 10);
+    }
+  });
+  log('TEST 2: click listener attached');
+})();
+
+// ───────── Test 3: addEventListener('touchend') ─────────
+(function() {
+  var btn = document.getElementById('t3-btn');
+  if (!btn) { log('TEST 3: button not found', 'err'); return; }
+  btn.addEventListener('touchstart', function(e) {
+    log('TEST 3: touchstart received');
+  }, { passive: true });
+  btn.addEventListener('touchend', function(e) {
+    log('TEST 3 (touchend) FIRED. cancelable=' + e.cancelable, 'ok');
+    for (var i = 1; i <= 6; i++) {
+      var el = document.getElementById('t3-c' + i);
+      if (el) el.textContent = Math.floor(Math.random() * 10);
+    }
+  });
+  log('TEST 3: touch listeners attached');
+})();
+
+// ───────── Test 4: pointerdown ─────────
+(function() {
+  var btn = document.getElementById('t4-btn');
+  if (!btn) { log('TEST 4: button not found', 'err'); return; }
+  if (!window.PointerEvent) { log('TEST 4: PointerEvent not supported', 'warn'); return; }
+  btn.addEventListener('pointerdown', function(e) {
+    log('TEST 4 (pointerdown) FIRED. type=' + e.pointerType, 'ok');
+    for (var i = 1; i <= 6; i++) {
+      var el = document.getElementById('t4-c' + i);
+      if (el) el.textContent = Math.floor(Math.random() * 10);
+    }
+  });
+  log('TEST 4: pointerdown listener attached');
+})();
+
+// ───────── Clear log ─────────
+document.getElementById('clear-log').addEventListener('click', function() {
+  document.getElementById('log').textContent = 'Log cleared.\n';
+});
+
+log('All listeners attached. Tap each button to test.', 'ok');
+</script>
+
+</body>
+</html>
