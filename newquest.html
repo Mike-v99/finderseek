@@ -708,7 +708,7 @@ function goStep(n) {
       if (!photoOk) { showToast('Take a photo of the hiding spot', 'error'); return; }
     }
     if (currentStep === 2 && n === 3) {
-      var prizeOk = selectedPrizeVal && selectedPrizeVal >= 10;
+      var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
       var prizeGrid = document.getElementById('prize-grid');
       if (prizeGrid) { prizeGrid.classList.remove('field-valid','field-invalid'); prizeGrid.classList.add(prizeOk ? 'field-valid' : 'field-invalid'); }
       if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
