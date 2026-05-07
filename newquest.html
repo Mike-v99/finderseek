@@ -357,7 +357,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button onclick="genCode()" id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">
+        <button id="gen-code-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Generate PIN
         </button>
@@ -989,11 +989,22 @@ function genCode(){
   checkStep1Complete();
   saveFormState();
 }
-// Ensure genCode button works on touch devices
-document.addEventListener('DOMContentLoaded', function() {
-  var gb = document.getElementById('gen-code-btn');
-  if (gb) gb.addEventListener('touchend', function(e) { e.preventDefault(); genCode(); });
-});
+// Ensure genCode button works on all platforms including Capacitor WebView
+(function() {
+  function wireGenCode() {
+    var gb = document.getElementById('gen-code-btn');
+    if (!gb) return;
+    function doGen(e) { e.preventDefault(); e.stopPropagation(); genCode(); }
+    gb.addEventListener('click', doGen);
+    gb.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      gb.style.opacity = '0.7';
+      setTimeout(function() { gb.style.opacity = '1'; genCode(); }, 100);
+    }, { passive: false });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireGenCode);
+  else wireGenCode();
+})();
 
 
 function openPinCard() {
@@ -2251,13 +2262,19 @@ document.addEventListener('DOMContentLoaded', async function(){
 
 
   // Redirect to home if opened directly (not from within the app)
-  // Use URL parameter — reliable on iOS PWA, survives any JS timing issues
   var urlParams = new URLSearchParams(window.location.search);
   var fromApp = urlParams.get('from') === 'app';
   var hasStep = urlParams.get('step');
-  // Also allow if there's a pending quest (returning to finish)
   var hasPending = !!localStorage.getItem('fs_pending_quest');
-  if (!fromApp && !hasStep && !hasPending) {
+  var hasFormState = !!localStorage.getItem('fs_newquest_form');
+  var hasAbandon = !!localStorage.getItem('fs_newquest_abandon');
+  // Only stay on newquest if there's a reason to be here
+  if (!fromApp && !hasStep && !hasPending && !hasFormState && !hasAbandon) {
+    window.location.replace('index.html');
+    return;
+  }
+  // If resuming the app with from=app but no saved quest data, go home
+  if (fromApp && !hasFormState && !hasPending && !hasAbandon) {
     window.location.replace('index.html');
     return;
   }
