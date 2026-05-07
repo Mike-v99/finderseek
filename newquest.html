@@ -2169,9 +2169,13 @@ function saveFormState() {
       generatedLocationRiddle: _generatedLocationRiddle || '',
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
-    // Save photo separately (too large for main state object, use own key)
+    // Save photo together with state — they must stay in sync.
+    // If photo is set in memory, write it. If not, remove any stored photo
+    // so we never end up with orphan photo + clean state on restore.
     if (window._hsPhotoDataUrl) {
       try { localStorage.setItem(FORM_KEY + '_photo', window._hsPhotoDataUrl); } catch(e){}
+    } else {
+      try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
     }
   } catch(e){}
 }
@@ -2179,7 +2183,12 @@ function saveFormState() {
 function restoreFormState() {
   try {
     var raw = localStorage.getItem(FORM_KEY);
-    if (!raw) { updateExpiry(); setWeekendDates(); return; }
+    if (!raw) {
+      // No saved state — clear any orphan photo so we don't leak it.
+      try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
+      updateExpiry(); setWeekendDates();
+      return;
+    }
     var s = JSON.parse(raw);
     if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) selPrize(s.prize, pc); }
     if (s.clueCount) { var cb = document.querySelector('.clue-btn[data-clue="'+s.clueCount+'"]'); if (cb) selClue(s.clueCount, cb); }
@@ -2202,7 +2211,8 @@ function restoreFormState() {
     if (s.staticMapUrl) window._staticMapUrl = s.staticMapUrl;
     if (s.generatedClues) _generatedClues = s.generatedClues;
     if (s.generatedLocationRiddle) _generatedLocationRiddle = s.generatedLocationRiddle;
-    if (s.pin && s.pin.length === 6) {
+    var hasValidPin = (s.pin && s.pin.length === 6);
+    if (hasValidPin) {
       ['c1','c2','c3','c4','c5','c6'].forEach(function(id, i){
         var el = document.getElementById(id); if (el) el.textContent = s.pin[i] || '';
       });
@@ -2220,9 +2230,11 @@ function restoreFormState() {
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
     if (s.hsData) _hsData = s.hsData;
-    // Restore photo
+    // Restore photo only if there's a valid PIN — photo+PIN must travel together.
+    // If PIN is missing/invalid, the saved draft is effectively half-done; drop
+    // any orphan photo so we don't end up with a photo from a different attempt.
     var savedPhoto = localStorage.getItem(FORM_KEY + '_photo');
-    if (savedPhoto) {
+    if (savedPhoto && hasValidPin) {
       window._hsPhotoDataUrl = savedPhoto;
       var img = document.getElementById('hs-photo-img');
       if (img) img.src = savedPhoto;
@@ -2230,6 +2242,10 @@ function restoreFormState() {
       var preview = document.getElementById('photo-preview-s1');
       if (placeholder) placeholder.style.display = 'none';
       if (preview) preview.style.display = 'block';
+    } else if (savedPhoto && !hasValidPin) {
+      // orphan photo without a PIN — drop it
+      try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
+      window._hsPhotoDataUrl = null;
     }
     updateExpiry(); setWeekendDates();
     // Always re-check step1 complete state after restore
