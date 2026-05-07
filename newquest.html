@@ -982,15 +982,18 @@ function genCode(){
   for(var i=1;i<=6;i++){
     document.getElementById('c'+i).textContent=Math.floor(Math.random()*10);
   }
-  // Show save button with slide-in
   var saveBtn = document.getElementById('save-code-btn');
-  if (saveBtn) { saveBtn.style.display = 'inline-flex'; }
-  // Unlock photo section
+  if (saveBtn) { saveBtn.style.display = 'none'; } // removed save copy from step 1
   var photoSec = document.getElementById('photo-section-s1');
   if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
   checkStep1Complete();
   saveFormState();
 }
+// Ensure genCode button works on touch devices
+document.addEventListener('DOMContentLoaded', function() {
+  var gb = document.getElementById('gen-code-btn');
+  if (gb) gb.addEventListener('touchend', function(e) { e.preventDefault(); genCode(); });
+});
 
 
 function openPinCard() {
@@ -2157,7 +2160,12 @@ function restoreFormState() {
     }
     updateExpiry(); setWeekendDates();
     // Always re-check step1 complete state after restore
-    setTimeout(function(){ checkStep1Complete(); }, 100);
+    setTimeout(function(){
+      checkStep1Complete();
+      // Ensure generate PIN button is always clickable
+      var genBtn = document.getElementById('gen-code-btn');
+      if (genBtn) { genBtn.style.pointerEvents = 'auto'; genBtn.style.opacity = '1'; }
+    }, 100);
     // Restore step
     if (s.step && s.step > 1) {
       setTimeout(function(){
