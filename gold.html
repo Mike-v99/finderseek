@@ -183,7 +183,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
   </div>
 </div>
 
-<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:17px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease;max-width:90%;text-align:center;"></div>
+<div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:17px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;opacity:0;pointer-events:none;"></div>
 
 
 
@@ -196,7 +196,7 @@ let currentUser=null,currentProfile=null;
 function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var k=Object.keys(localStorage);for(var i=0;i<k.length;i++){if(k[i].indexOf('sb-')===0&&k[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(k[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}return '';}
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function toggleFaq(el){el.parentElement.classList.toggle('open');}
-function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';},4000);}
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';t.style.opacity='0';},4000);}
 async function loadStatus(){
   var token=getToken();
   if(!token)return;
