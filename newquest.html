@@ -1348,7 +1348,14 @@ let currentUser = null;
 let currentProfile = null;
 
 // Initialize Supabase JS client (handles PKCE flow, session storage, token refresh)
-const supaClient = window.supabase.createClient(SB, KEY);
+var supaClient = null;
+try {
+  if (window.supabase) {
+    supaClient = window.supabase.createClient(SB, KEY);
+  } else {
+    console.error('Supabase SDK not loaded');
+  }
+} catch(e) { console.error('Supabase init error:', e); }
 // ── Auto-refresh token — uses Supabase session refresh automatically ──────
 async function getFreshToken() {
   try {
@@ -1366,6 +1373,7 @@ async function getFreshToken() {
 // Auto-refresh on page load — silently keeps session alive
 (async function() {
   try {
+    if (!supaClient) return;
     const { data: { session } } = await supaClient.auth.getSession();
     if (session && session.access_token) {
       try { localStorage.setItem('fs_token', session.access_token); } catch(e){}
@@ -1390,6 +1398,7 @@ function getToken(){
 }
 
 async function loadCurrentUser(){
+  if (!supaClient) return null;
   try {
     // Use Supabase client — auto-refreshes tokens
     let { data: { session } } = await supaClient.auth.getSession();
