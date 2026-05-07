@@ -2837,6 +2837,73 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   document.getElementById('pm-backdrop').classList.add('show');
   document.getElementById('pm-sheet').classList.add('show');
 
+  // ── Payment success polling (fallback for broken SDK callbacks) ────────────
+  // PayPal's iOS Safari Venmo flow sometimes fails to call onApprove because
+  // the popup that does the auth can't postMessage back to the parent tab.
+  // We poll the hunt — if it's funded, we show the success UI. If it's
+  // still pending and we have a paypal_order_id, we ATTEMPT a capture
+  // ourselves (PayPal accepts capture calls for orders the user authorized).
+  _stopPaymentPoll();
+  window._paymentSuccessHandled = false;
+  window._paymentPollT = setInterval(function() {
+    if (!_paypalModalOpen) { _stopPaymentPoll(); return; }
+    if (window._paymentSuccessHandled) { _stopPaymentPoll(); return; }
+    fetch(SB + '/rest/v1/hunts?id=eq.' + huntId + '&select=escrow_status,quest_id,paypal_order_id', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
+    }).then(function(r){ return r.json(); }).then(async function(rows){
+      if (!rows || !rows[0]) return;
+      var row = rows[0];
+      // Already funded — show success
+      if (row.escrow_status === 'funded' && !window._paymentSuccessHandled) {
+        window._paymentSuccessHandled = true;
+        _stopPaymentPoll();
+        var qid = row.quest_id || '—';
+        try { clearFormState(); } catch(e){}
+        closePaymentModal();
+        showPinCardAfterPayment(huntId, qid);
+        showToast('Quest funded! Your quest is now live.', 'success');
+        return;
+      }
+      // Pending with an order id — try to capture (handles iOS Safari Venmo)
+      if (row.escrow_status === 'pending' && row.paypal_order_id && !window._captureInFlight) {
+        window._captureInFlight = true;
+        try {
+          var capR = await fetch(API_BASE + '/api/paypal-capture', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: row.paypal_order_id, huntId: huntId })
+          });
+          // We don't act on the result here — just let the next poll round
+          // detect 'funded'. PayPal will return an error if the order
+          // hasn't been authorized yet, which is fine — we'll retry.
+        } catch(e){}
+        window._captureInFlight = false;
+      }
+    }).catch(function(){});
+  }, 3000);
+  // Also re-check immediately whenever the page becomes visible again
+  // (user returning from the Venmo app, etc.)
+  if (!window._paymentVisHook) {
+    window._paymentVisHook = true;
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && _paypalModalOpen && !window._paymentSuccessHandled && _currentPayload && _currentPayload.huntId) {
+        fetch(SB + '/rest/v1/hunts?id=eq.' + _currentPayload.huntId + '&select=escrow_status,quest_id', {
+          headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
+        }).then(function(r){ return r.json(); }).then(function(rows){
+          if (rows && rows[0] && rows[0].escrow_status === 'funded' && !window._paymentSuccessHandled) {
+            window._paymentSuccessHandled = true;
+            _stopPaymentPoll();
+            var qid = rows[0].quest_id || '—';
+            try { clearFormState(); } catch(e){}
+            closePaymentModal();
+            showPinCardAfterPayment(_currentPayload.huntId, qid);
+            showToast('Quest funded! Your quest is now live.', 'success');
+          }
+        }).catch(function(){});
+      }
+    });
+  }
+
   // Load PayPal JS SDK if not loaded yet
   if (!window.paypal) {
     if (PAYPAL_CLIENT_ID === 'LIVE') {
@@ -2887,6 +2954,10 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     },
     onApprove: async function(data) {
       var errEl = document.getElementById('pm-error');
+      // If polling already handled this success, skip
+      if (window._paymentSuccessHandled) return;
+      window._paymentSuccessHandled = true;
+      _stopPaymentPoll();
       try {
         var r = await fetch(API_BASE + '/api/paypal-capture', {
           method: 'POST',
@@ -2925,8 +2996,16 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   }).render('#paypal-button-container');
 }
 
+function _stopPaymentPoll(){
+  if (window._paymentPollT) {
+    try { clearInterval(window._paymentPollT); } catch(e){}
+    window._paymentPollT = null;
+  }
+}
+
 function closePaymentModal(){
   _paypalModalOpen = false;
+  _stopPaymentPoll();
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
   document.body.style.overflow = '';
@@ -2941,6 +3020,8 @@ function closePaymentModal(){
     var s5 = document.getElementById('step5');
     if (s5) s5.style.display = 'flex';
   }
+  // Clear the success flag so the next payment attempt isn't blocked
+  setTimeout(function(){ window._paymentSuccessHandled = false; }, 500);
 }
 </script>
 
