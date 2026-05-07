@@ -1057,6 +1057,8 @@ function openLiveMap() {
   document.body.style.position = 'fixed';
   document.body.style.top = '-' + window._mapScrollY + 'px';
   document.body.style.width = '100%';
+  window._liveMapOpen = true;
+  history.pushState({ liveMap: true }, '');
   initSheetDrag();
   // Snap to peek position once snap points are calculated
   setTimeout(function() {
@@ -1180,7 +1182,18 @@ function closeLiveMap() {
   document.body.style.top = '';
   document.body.style.width = '';
   window.scrollTo(0, window._mapScrollY || 0);
+  window._liveMapOpen = false;
+  if (history.state && history.state.liveMap) {
+    history.replaceState(null, '');
+  }
 }
+
+// Handle back button — close live map instead of leaving page
+window.addEventListener('popstate', function(e) {
+  if (window._liveMapOpen) {
+    closeLiveMap();
+  }
+});
 
 async function initLiveMap() {
   // Cache for geocoded city centers — avoids repeat Nominatim calls for same city
