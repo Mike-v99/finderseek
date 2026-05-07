@@ -257,12 +257,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- Analytics bar removed -->
 
-  <div style="display:flex;gap:8px;margin-bottom:10px;" class="el" data-d="300">
+  <!-- Tier buttons + Gold modal hidden until tier system is enabled -->
+  <div style="display:none;gap:8px;margin-bottom:10px;" class="el" data-d="300">
     <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:17px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
     <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.4);font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">GOLD TIER ↓</button>
   </div>
 
-  <div id="q-gold-modal" style="overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border:1px solid rgba(232,168,32,.1);border-radius:14px;margin-bottom:10px;">
+  <div id="q-gold-modal" style="display:none;overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border:1px solid rgba(232,168,32,.1);border-radius:14px;margin-bottom:10px;">
     <div id="q-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">👑</div><div><div style="font-size:17px;font-weight:400;color:#fff;">FinderSeek Gold</div><div style="font-size:17px;color:rgba(232,168,32,.55);">$3.99/mo · 30-day free trial</div></div></div>
@@ -318,14 +319,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="flex:1;"><div style="font-size:25px;color:#fff;font-weight:400;">Sign in</div><div style="font-size:17px;color:rgba(255,255,255,.2);margin-top:2px;">to track your quests</div></div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
-  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:pointer;align-items:center;gap:10px;" id="hb-profile-section" onclick="closeHamburger();window.location.href='profile.html';">
-    <div style="flex:1;min-width:0;"><div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;" id="hb-drawer-sub">—</div></div>
+  <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:default;align-items:center;gap:10px;" id="hb-profile-section">
+    <div style="flex:1;min-width:0;"><div style="font-size:30px;color:#fff;font-weight:400;" id="hb-drawer-name">—</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;display:none;" id="hb-drawer-sub">—</div></div>
     <div id="hb-drawer-avatar" style="width:36px;height:36px;border-radius:50%;background:#1a1300;border:1px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(232,168,32,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
   </div>
   <div style="flex:1;overflow-y:auto;">
     <a class="hb-nav-item" href="index.html" onclick="closeHamburger();"><span class="hb-nav-label">Home</span></a>
     <a class="hb-nav-item active" href="index.html" onclick="closeHamburger();"><span class="hb-nav-label">Browse Quests</span></a>
-    <a class="hb-nav-item" href="gold.html" onclick="closeHamburger();"><span class="hb-nav-label" style="color:#e8a820;">Gold</span></a>
+    <a class="hb-nav-item " href="profile.html" onclick="closeHamburger();">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+      <span class="hb-nav-label" style="">Profile</span>
+    </a>
     <a class="hb-nav-item" href="how-it-works.html" onclick="closeHamburger();"><span class="hb-nav-label">How It Works</span></a>
     <a class="hb-nav-item" href="terms.html" onclick="closeHamburger();"><span class="hb-nav-label">Terms of Service</span></a>
   </div>
