@@ -825,9 +825,18 @@ function signOut(){
     method:'POST',
     headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}
   }).catch(()=>{});
+  // Auth tokens
   localStorage.removeItem('fs_token');
   localStorage.removeItem('fs_refresh');
   localStorage.removeItem('sb-qeiuycuasjkopxfkmggp-auth-token');
+  // Per-user data (clear so next sign-in doesn't see previous user's stuff)
+  localStorage.removeItem('fs_newquest_form');
+  localStorage.removeItem('fs_newquest_form_photo');
+  localStorage.removeItem('fs_pending_quest');
+  localStorage.removeItem('fs_newquest_abandon');
+  localStorage.removeItem('fs_magic_return');
+  localStorage.removeItem('fs_gold_return');
+  localStorage.removeItem('fs_last_user_id');
   sessionStorage.clear();
   window.location.href = 'index.html';
 }
@@ -854,6 +863,20 @@ async function loadProfile(){
       showGate();
       return;
     }
+
+    // Detect user change: if the last seen user id differs, the previous user's
+    // localStorage form state, photos, etc. would leak into this session.
+    // Wipe per-user data when a different user signs in on the same device.
+    try {
+      var lastUserId = localStorage.getItem('fs_last_user_id');
+      if (lastUserId && lastUserId !== currentUser.id) {
+        localStorage.removeItem('fs_newquest_form');
+        localStorage.removeItem('fs_newquest_form_photo');
+        localStorage.removeItem('fs_pending_quest');
+        localStorage.removeItem('fs_newquest_abandon');
+      }
+      localStorage.setItem('fs_last_user_id', currentUser.id);
+    } catch(e) {}
 
     // Fetch profile row
     var pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+currentUser.id+'&select=*', {

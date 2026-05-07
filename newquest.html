@@ -1454,6 +1454,21 @@ async function loadCurrentUser(){
     }
     if (!session || !session.user) return null;
     currentUser = session.user;
+    // Detect user change: if a different user signed in since last visit,
+    // wipe per-user form data so we don't leak the previous user's draft/photo.
+    try {
+      var lastUserId = localStorage.getItem('fs_last_user_id');
+      if (lastUserId && lastUserId !== session.user.id) {
+        localStorage.removeItem('fs_newquest_form');
+        localStorage.removeItem('fs_newquest_form_photo');
+        localStorage.removeItem('fs_pending_quest');
+        localStorage.removeItem('fs_newquest_abandon');
+        // Also wipe in-memory state so the form doesn't restore from a stale window
+        try { window._hsPhotoDataUrl = null; } catch(e){}
+        try { _hsData = null; } catch(e){}
+      }
+      localStorage.setItem('fs_last_user_id', session.user.id);
+    } catch(e){}
     // Load profile
     const pr = await fetch(SB+'/rest/v1/profiles?id=eq.'+session.user.id+'&select=*', {
       headers:{'apikey':KEY,'Authorization':'Bearer '+session.access_token}
