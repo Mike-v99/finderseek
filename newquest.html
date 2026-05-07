@@ -659,6 +659,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <script>
+// ── Global error capture (helps debug mobile-only issues) ──────
+window.addEventListener('error', function(ev) {
+  try { console.error('[FS:onerror]', ev.message, 'at', ev.filename + ':' + ev.lineno + ':' + ev.colno, ev.error); } catch(e){}
+});
+window.addEventListener('unhandledrejection', function(ev) {
+  try { console.error('[FS:unhandledrejection]', ev.reason); } catch(e){}
+});
 function setNav(el){document.querySelectorAll('.nav-item,.nav-center').forEach(function(n){n.classList.remove('active');});el.classList.add('active');}
 function cN(el,nxt){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&nxt)document.getElementById(nxt).focus();}
 function cP(e,el,prev){if(e.key==='Backspace'){if(!el.value&&prev){document.getElementById(prev).focus();}else if(el.value){el.value='';e.preventDefault();if(prev)document.getElementById(prev).focus();}}}
@@ -979,25 +986,59 @@ function checkStep1Complete(){
   }
 }
 function genCode(){
-  for(var i=1;i<=6;i++){
-    document.getElementById('c'+i).textContent=Math.floor(Math.random()*10);
+  try {
+    console.log('[FS] genCode called');
+    for(var i=1;i<=6;i++){
+      var el = document.getElementById('c'+i);
+      if (el) el.textContent = Math.floor(Math.random()*10);
+    }
+    var saveBtn = document.getElementById('save-code-btn');
+    if (saveBtn) { saveBtn.style.display = 'none'; } // removed save copy from step 1
+    var photoSec = document.getElementById('photo-section-s1');
+    if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
+    try { checkStep1Complete(); } catch(e){ console.warn('[FS] checkStep1Complete err', e); }
+    try { saveFormState(); } catch(e){ console.warn('[FS] saveFormState err', e); }
+  } catch(e) {
+    console.error('[FS] genCode error', e);
+    alert('PIN generation error: ' + (e && e.message ? e.message : e));
   }
-  var saveBtn = document.getElementById('save-code-btn');
-  if (saveBtn) { saveBtn.style.display = 'none'; } // removed save copy from step 1
-  var photoSec = document.getElementById('photo-section-s1');
-  if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
-  checkStep1Complete();
-  saveFormState();
 }
-// Wire genCode button
+// Make sure genCode is globally accessible (some iOS WebView contexts need this explicit)
+window.genCode = genCode;
+
+// Wire genCode button — multiple strategies for iOS / Capacitor reliability
 (function() {
   function wireGenCode() {
     var gb = document.getElementById('gen-code-btn');
-    if (!gb) return;
-    gb.onclick = function() { genCode(); };
+    if (!gb) { console.warn('[FS] gen-code-btn not found at wire time'); return; }
+    // Defensive: ensure pointer events and visibility
+    gb.style.pointerEvents = 'auto';
+    gb.style.opacity = '1';
+    // Use addEventListener (not onclick) so we don't fight with the inline handler
+    // Add both click and touchend for maximum iOS WebView compatibility
+    if (!gb._fsWired) {
+      gb.addEventListener('click', function(e){
+        console.log('[FS] gen-code-btn click');
+        try { window.genCode(); } catch(err){ console.error('[FS] genCode call err', err); }
+      });
+      // Touchend fallback — fires on iOS even if click is suppressed
+      gb.addEventListener('touchend', function(e){
+        console.log('[FS] gen-code-btn touchend');
+        try { window.genCode(); } catch(err){ console.error('[FS] genCode touchend err', err); }
+        // prevent the synthetic click from running genCode twice rapidly
+        if (e.cancelable) e.preventDefault();
+      }, { passive: false });
+      gb._fsWired = true;
+    }
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireGenCode);
-  else wireGenCode();
+  // Wire on every reasonable event so we don't miss
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wireGenCode);
+  } else {
+    wireGenCode();
+  }
+  // Re-attempt after full load in case something else re-rendered the button
+  window.addEventListener('load', wireGenCode);
 })();
 
 
@@ -2315,40 +2356,67 @@ document.addEventListener('DOMContentLoaded', async function(){
   });
 
   // ── Listen for OAuth sign-in return (Apple/Google redirect back) ──────────
-  supaClient.auth.onAuthStateChange(async function(event, session) {
-    if (event === 'SIGNED_IN' && session && session.user) {
-      currentUser = session.user;
-      currentProfile = null;
-      // Close email gate if open
-      var egModal = document.getElementById('eg-modal');
-      if (egModal && egModal.style.display !== 'none') closeEmailGate();
-      // Only auto-resume if this is a fresh OAuth return (not a regular page load)
-      // Check for the pending auth flag we set in showEmailGate
-      var pendingAuth = sessionStorage.getItem('fs_quest_pending_auth');
-      if (!pendingAuth) return; // regular page load with existing session — do nothing
-      sessionStorage.removeItem('fs_quest_pending_auth');
-      var formState = localStorage.getItem('fs_newquest_form');
-      if (formState) {
-        restoreFormState();
-        setTimeout(async function() {
-          try {
-            if (currentStep !== 5) {
-              document.getElementById('step' + currentStep).style.display = 'none';
-              currentStep = 5;
-              var s5 = document.getElementById('step5');
-              if (s5) { s5.style.display = 'flex'; s5.scrollTop = 0; }
-              updateMiniSummary();
-            }
-            showToast('Signed in! Starting your quest...', 'success');
-            setTimeout(function() { createQuest(); }, 800);
-          } catch(e) {
-            console.error('Auto-resume error:', e);
-            showToast('Signed in! Tap Schedule Quest to continue.', 'success');
+  if (supaClient && supaClient.auth && typeof supaClient.auth.onAuthStateChange === 'function') {
+    try {
+      supaClient.auth.onAuthStateChange(async function(event, session) {
+        if (event === 'SIGNED_IN' && session && session.user) {
+          currentUser = session.user;
+          currentProfile = null;
+          // Close email gate if open
+          var egModal = document.getElementById('eg-modal');
+          if (egModal && egModal.style.display !== 'none') closeEmailGate();
+          // Only auto-resume if this is a fresh OAuth return (not a regular page load)
+          // Check for the pending auth flag we set in showEmailGate
+          var pendingAuth = sessionStorage.getItem('fs_quest_pending_auth');
+          if (!pendingAuth) return; // regular page load with existing session — do nothing
+          sessionStorage.removeItem('fs_quest_pending_auth');
+          var formState = localStorage.getItem('fs_newquest_form');
+          if (formState) {
+            restoreFormState();
+            setTimeout(async function() {
+              try {
+                if (currentStep !== 5) {
+                  document.getElementById('step' + currentStep).style.display = 'none';
+                  currentStep = 5;
+                  var s5 = document.getElementById('step5');
+                  if (s5) { s5.style.display = 'flex'; s5.scrollTop = 0; }
+                  updateMiniSummary();
+                }
+                showToast('Signed in! Starting your quest...', 'success');
+                setTimeout(function() { createQuest(); }, 800);
+              } catch(e) {
+                console.error('Auto-resume error:', e);
+                showToast('Signed in! Tap Schedule Quest to continue.', 'success');
+              }
+            }, 300);
           }
-        }, 300);
+        }
+      });
+    } catch(e){ console.warn('[FS] onAuthStateChange setup err', e); }
+  } else {
+    console.warn('[FS] supaClient not ready, skipping auth state listener');
+  }
+
+  // ── Final defensive re-wire of Generate PIN button ─────
+  // Multiple iOS / Capacitor lifecycle quirks can break the original wiring.
+  // This setTimeout runs AFTER the rest of DOMContentLoaded completes, even
+  // if something above threw, ensuring the button is always responsive.
+  setTimeout(function(){
+    try {
+      var gb = document.getElementById('gen-code-btn');
+      if (gb) {
+        gb.style.pointerEvents = 'auto';
+        gb.style.opacity = '1';
+        if (!gb._fsWired) {
+          gb.addEventListener('click', function(){
+            console.log('[FS] (late) gen-code-btn click');
+            try { window.genCode && window.genCode(); } catch(err){ console.error(err); }
+          });
+          gb._fsWired = true;
+        }
       }
-    }
-  });
+    } catch(e){ console.warn('[FS] late wire err', e); }
+  }, 500);
 });
 
 // ── MAP ──────────────────────────────────────────────
