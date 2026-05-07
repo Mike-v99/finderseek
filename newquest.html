@@ -301,6 +301,108 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<!-- ═══════ DEBUG OVERLAY (remove when fixed) ═══════ -->
+<div id="fs-debug-toggle" style="position:fixed;top:env(safe-area-inset-top,0);right:0;width:48px;height:48px;background:rgba(232,168,32,.85);color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:99999;cursor:pointer;-webkit-tap-highlight-color:transparent;border-bottom-left-radius:10px;font-family:-apple-system,sans-serif;" onclick="document.getElementById('fs-debug-panel').style.display=(document.getElementById('fs-debug-panel').style.display==='none'?'block':'none')">DBG</div>
+<div id="fs-debug-panel" style="display:none;position:fixed;top:env(safe-area-inset-top,0);left:0;right:0;background:rgba(0,0,0,.95);color:#0f0;font-family:'SF Mono',Menlo,monospace;font-size:11px;padding:8px;z-index:99998;max-height:60vh;overflow-y:auto;white-space:pre-wrap;word-break:break-all;border-bottom:2px solid #e8a820;">
+  <div style="display:flex;gap:6px;margin-bottom:6px;">
+    <button onclick="document.getElementById('fs-debug-log').textContent=''" style="font-size:11px;padding:4px 8px;background:#333;color:#fff;border:none;border-radius:4px;font-family:inherit;">Clear</button>
+    <button onclick="window.fsDbgTryGenCode()" style="font-size:11px;padding:4px 8px;background:#22c55e;color:#000;border:none;border-radius:4px;font-family:inherit;font-weight:700;">Call genCode()</button>
+    <button onclick="window.fsDbgInspect()" style="font-size:11px;padding:4px 8px;background:#3b82f6;color:#fff;border:none;border-radius:4px;font-family:inherit;">Inspect</button>
+  </div>
+  <pre id="fs-debug-log" style="margin:0;color:#0f0;font-family:inherit;font-size:11px;line-height:1.4;"></pre>
+</div>
+<script>
+// On-screen debug logger. Captures console + errors + can manually invoke genCode.
+(function() {
+  var logEl = null;
+  function getLogEl() {
+    if (!logEl) logEl = document.getElementById('fs-debug-log');
+    return logEl;
+  }
+  function dbg(msg, color) {
+    try {
+      var el = getLogEl();
+      if (!el) return;
+      var t = new Date().toISOString().slice(11,23);
+      var span = document.createElement('span');
+      span.style.color = color || '#0f0';
+      span.textContent = '[' + t + '] ' + msg + '\n';
+      el.appendChild(span);
+      el.parentElement.scrollTop = el.parentElement.scrollHeight;
+    } catch(e){}
+  }
+  window.fsDbg = dbg;
+
+  // Hijack console
+  ['log','warn','error'].forEach(function(level){
+    var orig = console[level];
+    console[level] = function(){
+      var args = Array.prototype.slice.call(arguments);
+      var s = args.map(function(a){
+        if (a instanceof Error) return a.message + ' @ ' + (a.stack||'').split('\n')[1];
+        if (typeof a === 'object') { try { return JSON.stringify(a); } catch(e){ return String(a); } }
+        return String(a);
+      }).join(' ');
+      dbg(level.toUpperCase() + ': ' + s, level==='error'?'#f55':(level==='warn'?'#fb0':'#0f0'));
+      try { orig.apply(console, args); } catch(e){}
+    };
+  });
+
+  window.addEventListener('error', function(ev){
+    dbg('JS ERROR: ' + ev.message + ' @ ' + (ev.filename||'').split('/').pop() + ':' + ev.lineno + ':' + ev.colno, '#f55');
+  });
+  window.addEventListener('unhandledrejection', function(ev){
+    var r = ev.reason;
+    var s = r && r.message ? r.message : String(r);
+    dbg('UNHANDLED REJECTION: ' + s, '#f55');
+  });
+
+  // Manual test buttons
+  window.fsDbgTryGenCode = function() {
+    dbg('Manual genCode call. typeof window.genCode = ' + (typeof window.genCode), '#fb0');
+    try {
+      if (typeof window.genCode === 'function') {
+        window.genCode();
+        dbg('genCode returned without throwing.', '#4ade80');
+      } else {
+        dbg('window.genCode is NOT a function. Cannot invoke.', '#f55');
+      }
+    } catch(e) {
+      dbg('genCode threw: ' + (e && e.message ? e.message : e), '#f55');
+    }
+  };
+  window.fsDbgInspect = function() {
+    dbg('--- INSPECT ---', '#fb0');
+    var btn = document.getElementById('gen-code-btn');
+    dbg('btn exists: ' + !!btn);
+    if (btn) {
+      dbg('btn.disabled: ' + btn.disabled);
+      dbg('btn.style.pointerEvents: "' + (btn.style.pointerEvents||'(empty)') + '"');
+      dbg('btn.style.opacity: "' + (btn.style.opacity||'(empty)') + '"');
+      var cs = window.getComputedStyle(btn);
+      dbg('computed pointerEvents: ' + cs.pointerEvents);
+      dbg('computed display: ' + cs.display);
+      dbg('btn._fsWired: ' + btn._fsWired);
+      var rect = btn.getBoundingClientRect();
+      dbg('btn rect: ' + Math.round(rect.left) + ',' + Math.round(rect.top) + ' ' + Math.round(rect.width) + 'x' + Math.round(rect.height));
+      // What's on top of the center of the button?
+      var elAtPoint = document.elementFromPoint(rect.left + rect.width/2, rect.top + rect.height/2);
+      dbg('elementFromPoint(center): ' + (elAtPoint ? (elAtPoint.id || elAtPoint.tagName + '.' + (elAtPoint.className||'')) : 'null'));
+    }
+    dbg('typeof genCode: ' + (typeof genCode));
+    dbg('typeof window.genCode: ' + (typeof window.genCode));
+    dbg('typeof checkStep1Complete: ' + (typeof checkStep1Complete));
+    dbg('typeof saveFormState: ' + (typeof saveFormState));
+    dbg('window._hsData: ' + (typeof window._hsData));
+    dbg('supaClient: ' + (typeof window.supaClient));
+    dbg('--- END ---', '#fb0');
+  };
+
+  dbg('Debug overlay ready. readyState=' + document.readyState, '#4ade80');
+})();
+</script>
+<!-- ═══════ END DEBUG OVERLAY ═══════ -->
+
 <div class="status-strip" aria-hidden="true"></div>
 
 <!-- STEP PAGES -->
@@ -1017,6 +1119,10 @@ window.genCode = genCode;
     // Use addEventListener (not onclick) so we don't fight with the inline handler
     // Add both click and touchend for maximum iOS WebView compatibility
     if (!gb._fsWired) {
+      // DIAGNOSTIC: log every touchstart so we know taps are reaching the button
+      gb.addEventListener('touchstart', function(e){
+        console.log('[FS] gen-code-btn TOUCHSTART (taps are reaching button)');
+      }, { passive: true });
       gb.addEventListener('click', function(e){
         console.log('[FS] gen-code-btn click');
         try { window.genCode(); } catch(err){ console.error('[FS] genCode call err', err); }
