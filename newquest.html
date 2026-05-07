@@ -1507,7 +1507,7 @@ function validateQuestForm(){
       if (saved.pin && saved.pin.length === 6) code = saved.pin;
     } catch(e) {}
   }
-  if (prize < 10 || prize > 100) { showToast('Prize must be between $10 and $100', 'error'); return false; }
+  if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
   if (code.length < 6 || code.replace(/\s/g,'').length < 6) { showToast('Generate your 6-digit secret code first', 'error'); return false; }
   if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location first', 'error'); return false; }
   return true;
@@ -1771,7 +1771,7 @@ async function createQuest(){
   const liveMode = 'now';
 
   // ── 3. Validation ─────────────────────────────────────────
-  if (prize < 10 || prize > 100) return showToast('Please select a prize amount', 'error');
+  if (prize < 1 || prize > 100) return showToast('Please select a prize amount', 'error');
   // hidingSpot comes from _hsData.location — validated at form validation step
   if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
   if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
