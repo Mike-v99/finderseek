@@ -1077,12 +1077,34 @@ function closePinCardAndViewQuest() {
   }
 }
 
-function showPinCardAfterPayment(huntId, questId) {
+function showPinCardAfterPayment(huntId, questId, pinOverride) {
   window._fundedHuntId = huntId;
   window._fundedQuestId = questId || '—';
 
-  // Build digit display
-  var digits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent || '?'; });
+  // Build digit display. Prefer explicit pin (passed by caller before
+  // clearFormState wipes the DOM), then fall back to DOM, then localStorage.
+  var pin = '';
+  if (pinOverride && pinOverride.length === 6) {
+    pin = pinOverride;
+  } else {
+    var domPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+      var el = document.getElementById(id); return el ? el.textContent : '';
+    }).join('');
+    if (domPin.length === 6 && domPin.indexOf('') === -1) {
+      pin = domPin;
+    } else {
+      try {
+        var saved = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
+        if (saved.pin && saved.pin.length === 6) pin = saved.pin;
+      } catch(e){}
+    }
+  }
+  // If still no pin, fall back to '?' placeholders so we at least render something
+  var digits = pin.length === 6
+    ? pin.split('')
+    : ['?','?','?','?','?','?'];
+  window._fundedPin = pin || '';
+
   var container = document.getElementById('pin-card-digits');
   if (container) {
     container.innerHTML = digits.map(function(d) {
@@ -1103,8 +1125,11 @@ function showPinCardAfterPayment(huntId, questId) {
 }
 
 function saveCodeToPhotos(){
-  var digits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent || '?'; });
-  var code = digits.join('');
+  // Prefer the pin we captured at funding time (DOM may have been cleared by clearFormState)
+  var code = window._fundedPin && window._fundedPin.length === 6
+    ? window._fundedPin
+    : ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el ? (el.textContent || '?') : '?'; }).join('');
+  var digits = code.split('');
   var questId = window._fundedQuestId || '—';
   var canvas = document.createElement('canvas');
   canvas.width = 800; canvas.height = 480;
@@ -2858,9 +2883,19 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         window._paymentSuccessHandled = true;
         _stopPaymentPoll();
         var qid = row.quest_id || '—';
+        // Capture PIN before clearFormState wipes the DOM/localStorage
+        var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+          var el=document.getElementById(id); return el?el.textContent:'';
+        }).join('');
+        if (!capturedPin || capturedPin.length !== 6) {
+          try {
+            var sv = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
+            if (sv.pin && sv.pin.length === 6) capturedPin = sv.pin;
+          } catch(e){}
+        }
         try { clearFormState(); } catch(e){}
         closePaymentModal();
-        showPinCardAfterPayment(huntId, qid);
+        showPinCardAfterPayment(huntId, qid, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
         return;
       }
@@ -2894,9 +2929,19 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
             window._paymentSuccessHandled = true;
             _stopPaymentPoll();
             var qid = rows[0].quest_id || '—';
+            // Capture PIN before clearFormState wipes it
+            var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+              var el=document.getElementById(id); return el?el.textContent:'';
+            }).join('');
+            if (!capturedPin || capturedPin.length !== 6) {
+              try {
+                var sv = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
+                if (sv.pin && sv.pin.length === 6) capturedPin = sv.pin;
+              } catch(e){}
+            }
             try { clearFormState(); } catch(e){}
             closePaymentModal();
-            showPinCardAfterPayment(_currentPayload.huntId, qid);
+            showPinCardAfterPayment(_currentPayload.huntId, qid, capturedPin);
             showToast('Quest funded! Your quest is now live.', 'success');
           }
         }).catch(function(){});
@@ -2958,6 +3003,16 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       if (window._paymentSuccessHandled) return;
       window._paymentSuccessHandled = true;
       _stopPaymentPoll();
+      // Capture PIN before clearFormState wipes the DOM/localStorage
+      var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+        var el=document.getElementById(id); return el?el.textContent:'';
+      }).join('');
+      if (!capturedPin || capturedPin.length !== 6) {
+        try {
+          var sv = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
+          if (sv.pin && sv.pin.length === 6) capturedPin = sv.pin;
+        } catch(e){}
+      }
       try {
         var r = await fetch(API_BASE + '/api/paypal-capture', {
           method: 'POST',
@@ -2980,18 +3035,32 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         } catch(e) {}
 
         // Show PIN card with quest ID
-        showPinCardAfterPayment(_currentPayload.huntId, questId);
+        showPinCardAfterPayment(_currentPayload.huntId, questId, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
       } catch(e) {
-        errEl.textContent = e.message || 'Payment capture failed';
+        // Capture failed — typically a card decline. Reset state so the
+        // user can choose a different funding source and retry.
+        window._paymentSuccessHandled = false;
+        var msg = (e && e.message) || 'Payment capture failed';
+        var lower = msg.toLowerCase();
+        if (lower.indexOf('instrument_declined') !== -1 || lower.indexOf('declined') !== -1) {
+          msg = 'Your card was declined. Please choose a different payment method or card.';
+        } else if (lower.indexOf('payer_action_required') !== -1) {
+          msg = 'Your bank needs you to confirm this payment. Try again or use a different card.';
+        } else if (lower.indexOf('payee_account_restricted') !== -1) {
+          msg = 'Payment processor error. Please try again later.';
+        }
+        errEl.textContent = msg;
       }
     },
     onCancel: function() {
+      window._paymentSuccessHandled = false;
       document.getElementById('pm-error').textContent = 'Payment cancelled. Try again when ready.';
     },
     onError: function(err) {
       console.error('PayPal error:', err);
-      document.getElementById('pm-error').textContent = 'Payment error. Please try again.';
+      window._paymentSuccessHandled = false;
+      document.getElementById('pm-error').textContent = 'Payment error. Please try again or use a different card.';
     }
   }).render('#paypal-button-container');
 }
