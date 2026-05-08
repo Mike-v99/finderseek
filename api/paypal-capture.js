@@ -40,9 +40,17 @@ export default async function handler(req, res) {
     });
     const capture = await captureRes.json();
 
-    if (capture.status !== 'COMPLETED') {
+    // PayPal returns 4xx with details when capture fails (e.g., card declined).
+    // Surface the specific issue code so the client can show a useful message.
+    if (!captureRes.ok || capture.status !== 'COMPLETED') {
       console.error('[paypal-capture] Not completed:', capture);
-      return res.status(400).json({ error: 'Payment not completed', status: capture.status });
+      const issue = capture.details?.[0]?.issue || '';
+      const description = capture.details?.[0]?.description || capture.message || 'Payment not completed';
+      return res.status(400).json({
+        error: issue ? `${issue}: ${description}` : description,
+        issue,
+        status: capture.status,
+      });
     }
 
     console.log('[paypal-capture] Payment captured:', orderId, 'hunt:', huntId);
