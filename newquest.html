@@ -2863,27 +2863,34 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   document.getElementById('pm-sheet').classList.add('show');
 
   // ── Payment success polling (fallback for broken SDK callbacks) ────────────
-  // PayPal's iOS Safari Venmo flow sometimes fails to call onApprove because
-  // the popup that does the auth can't postMessage back to the parent tab.
-  // We poll the hunt — if it's funded, we show the success UI. If it's
-  // still pending and we have a paypal_order_id, we ATTEMPT a capture
-  // ourselves (PayPal accepts capture calls for orders the user authorized).
+  // PayPal's iOS Safari Venmo flow sometimes fails to call onApprove. We poll
+  // the hunt — when it becomes 'funded', show the success UI. We only check
+  // existing 'funded' status; we DO NOT auto-capture pending orders (that
+  // hammers PayPal and triggers rate limits — capture should only happen
+  // through PayPal's own callback after the user actually approves).
+  // Polling runs at 4s for ~2 minutes total, then stops.
   _stopPaymentPoll();
   window._paymentSuccessHandled = false;
-  window._paymentPollT = setInterval(function() {
+  var pollCount = 0;
+  var maxPolls = 30; // 30 polls × 4s = 2 minutes total
+  function checkFundingStatus(){
     if (!_paypalModalOpen) { _stopPaymentPoll(); return; }
     if (window._paymentSuccessHandled) { _stopPaymentPoll(); return; }
-    fetch(SB + '/rest/v1/hunts?id=eq.' + huntId + '&select=escrow_status,quest_id,paypal_order_id', {
+    if (pollCount >= maxPolls) { _stopPaymentPoll(); return; }
+    pollCount++;
+    fetch(SB + '/rest/v1/hunts?id=eq.' + huntId + '&select=escrow_status,quest_id', {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
-    }).then(function(r){ return r.json(); }).then(async function(rows){
+    }).then(function(r){
+      // Stop polling on rate-limit errors so we don't pile on
+      if (r.status === 429) { _stopPaymentPoll(); return null; }
+      return r.json();
+    }).then(function(rows){
       if (!rows || !rows[0]) return;
       var row = rows[0];
-      // Already funded — show success
       if (row.escrow_status === 'funded' && !window._paymentSuccessHandled) {
         window._paymentSuccessHandled = true;
         _stopPaymentPoll();
         var qid = row.quest_id || '—';
-        // Capture PIN before clearFormState wipes the DOM/localStorage
         var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
           var el=document.getElementById(id); return el?el.textContent:'';
         }).join('');
@@ -2897,25 +2904,10 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         closePaymentModal();
         showPinCardAfterPayment(huntId, qid, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
-        return;
-      }
-      // Pending with an order id — try to capture (handles iOS Safari Venmo)
-      if (row.escrow_status === 'pending' && row.paypal_order_id && !window._captureInFlight) {
-        window._captureInFlight = true;
-        try {
-          var capR = await fetch(API_BASE + '/api/paypal-capture', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId: row.paypal_order_id, huntId: huntId })
-          });
-          // We don't act on the result here — just let the next poll round
-          // detect 'funded'. PayPal will return an error if the order
-          // hasn't been authorized yet, which is fine — we'll retry.
-        } catch(e){}
-        window._captureInFlight = false;
       }
     }).catch(function(){});
-  }, 3000);
+  }
+  window._paymentPollT = setInterval(checkFundingStatus, 4000);
   // Also re-check immediately whenever the page becomes visible again
   // (user returning from the Venmo app, etc.)
   if (!window._paymentVisHook) {
