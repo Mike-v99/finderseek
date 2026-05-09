@@ -344,14 +344,30 @@ const API_BASE='https://www.finderseek.com';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const NOTIFY_SECRET='fs-notify-2026';
 let currentHunt=null,currentClues=[],totalSecs=0;
-function getQuestId(){return new URLSearchParams(window.location.search).get('id');}
+function getQuestId(){
+  var raw=new URLSearchParams(window.location.search).get('id');
+  if(!raw)return null;
+  // Strip whitespace, fragments, anything after a non-UUID character
+  raw=raw.trim().split('#')[0].split('?')[0];
+  // UUID pattern: 8-4-4-4-12 hex chars. If it doesn't match, return as-is —
+  // server will reject it cleanly via the !Array.isArray check downstream.
+  return raw;
+}
 function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}return '';}
 function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._toastT);window._toastT=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';t.style.opacity='0';},4000);}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function fmtTimeRemaining(ms){if(ms<=0)return'00:00';var m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
 function goBack(){if(window.speechSynthesis)window.speechSynthesis.cancel();var b=new URLSearchParams(window.location.search).get('back');if(b==='map')window.location.href='index.html#openmap';else history.length>1?history.back():location.href='index.html';}
 function openPhotoModal(){var sc=_solvedCount,tot=(currentClues||[]).length;if(sc===0){showToast('Solve clues to reveal the photo','');return;}showToast(sc>=tot?'Photo fully revealed!':'Keep solving — '+Math.round((sc/Math.max(1,tot))*100)+'% revealed','');}
-function shareQuest(){var url=window.location.href;if(navigator.share)navigator.share({title:'FinderSeek Quest',text:'Join this quest!',url:url});else navigator.clipboard.writeText(url).then(function(){showToast('Link copied!','success');});}
+function shareQuest(){
+  // Build URL fresh from hunt ID so no extra query params or fragments get
+  // shared with the link (some can confuse the receiving browser).
+  var huntId=(currentHunt&&currentHunt.id)||(new URLSearchParams(window.location.search).get('id'));
+  if(!huntId){showToast('Quest not loaded yet','error');return;}
+  var url='https://www.finderseek.com/quest.html?id='+encodeURIComponent(huntId);
+  if(navigator.share)navigator.share({title:'FinderSeek Quest',text:'Join this quest!',url:url});
+  else navigator.clipboard.writeText(url).then(function(){showToast('Link copied!','success');});
+}
 var _questSaved=false;
 function toggleSaveQuest(){_questSaved=!_questSaved;var icon=document.getElementById('q-save-icon');if(icon)icon.setAttribute('fill',_questSaved?'#e8a820':'none');showToast(_questSaved?'Quest saved':'Quest unsaved',_questSaved?'success':'');}
 var _following=false;
@@ -671,11 +687,62 @@ async function loadQuestAnalytics(token){
 }
 async function loadQuest(){
   var id=getQuestId();if(!id){showToast('No quest specified','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
+
+  // Validate stored auth token before using it. If the token is stale/expired,
+  // Supabase returns 403 on every request (including the hunt query) and the
+  // fallback to public KEY never kicks in. Try to refresh the token first
+  // using the refresh token; only wipe credentials entirely if refresh fails.
+  var token=getToken();
+  if(token){
+    try{
+      var vr=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+      if(vr.status===401||vr.status===403){
+        // Access token is bad — try refreshing using stored refresh token.
+        var refreshed=false;
+        try{
+          var refresh=localStorage.getItem('fs_refresh');
+          // Also check the Supabase-format session blob
+          if(!refresh){
+            var keys=Object.keys(localStorage);
+            for(var i=0;i<keys.length;i++){
+              if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){
+                var sess=JSON.parse(localStorage.getItem(keys[i])||'{}');
+                if(sess&&sess.refresh_token){refresh=sess.refresh_token;break;}
+              }
+            }
+          }
+          if(refresh){
+            var rr=await fetch(SB+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'apikey':KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:refresh})});
+            if(rr.ok){
+              var rd=await rr.json();
+              if(rd&&rd.access_token){
+                localStorage.setItem('fs_token',rd.access_token);
+                if(rd.refresh_token)localStorage.setItem('fs_refresh',rd.refresh_token);
+                token=rd.access_token;
+                refreshed=true;
+              }
+            }
+          }
+        }catch(e){/* refresh failed */}
+        if(!refreshed){
+          // Refresh token also bad — wipe everything and continue anonymously
+          try{localStorage.removeItem('fs_token');}catch(e){}
+          try{localStorage.removeItem('fs_refresh');}catch(e){}
+          token=null;
+        }
+      }
+    }catch(e){/* network error — leave token alone, query will retry below */}
+  }
+  var authHeader='Bearer '+(token||KEY);
+
   try{
-    var results=await Promise.all([fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}}),fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}})]);
+    var results=await Promise.all([fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select=*',{headers:{'apikey':KEY,'Authorization':authHeader}}),fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':authHeader}})]);
     var huntData=await results[0].json(),cluesData=await results[1].json();
-    if(!huntData||huntData.length===0){showToast('Quest not found','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
-    currentHunt=huntData[0];currentClues=cluesData||[];
+    // Supabase can return {error:..., message:...} instead of an array if the query
+    // fails (RLS block, auth expired, malformed id). Check for that explicitly.
+    if(!Array.isArray(huntData)){console.error('loadQuest: hunt query returned non-array',huntData);showToast('Could not load quest. Try refreshing.','error');setTimeout(function(){window.location.href='index.html';},2000);return;}
+    if(huntData.length===0||!huntData[0]||!huntData[0].id){showToast('Quest not found','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
+    currentHunt=huntData[0];currentClues=Array.isArray(cluesData)?cluesData:[];
     if(currentHunt.pirate_id){try{var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}});var pd=await pr.json();if(pd&&pd[0])currentHunt._pirate=pd[0];}catch(e){}}
     renderHunt();await loadAttempts();renderClues();startTimer();checkUserGoldStatus();checkFollowState();
     // Instant expiry trigger
