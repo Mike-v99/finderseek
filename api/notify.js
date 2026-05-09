@@ -83,8 +83,10 @@ function tplPrizeClaimed({ username, city, prize, winnerName, huntUrl }) {
         <div class="highlight-label">Prize to deliver</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <p>Head to the quest page to chat with the winner and arrange delivery.</p>
-      <a href="${huntUrl}" class="btn">Open Winner Chat →</a>
+      <p style="color:#22d3ee;"><strong>Look for a separate email titled "🚨 SEND $X →"</strong> — that email has a one-tap button to send the prize via Venmo or PayPal.</p>
+      <p>You can also check your admin panel to manage payouts.</p>
+      <a href="https://www.finderseek.com/admin.html" class="btn">Open Admin →</a>
+      <a href="${huntUrl}" class="btn" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-left:8px;">View Quest</a>
     `)
   };
 }
@@ -95,8 +97,8 @@ function tplYouWon({ username, city, prize, huntUrl, isEscrow }) {
         <div class="highlight-label" style="color:#4ade80;">💰 Payout Info</div>
         <div class="highlight-val" style="color:#4ade80;font-size:16px;">Paid within 24 hours</div>
       </div>
-      <p>Since this quest used <strong style="color:#22d3ee;">FinderSeek Escrow</strong>, your prize is guaranteed. We'll send your winnings within 24 hours.</p>
-      <p><strong style="color:#f5ead8;">Reply to this email</strong> with your preferred payout method (Zelle, Venmo, or CashApp) and we'll send your prize right away.</p>`
+      <p>Since this quest used <strong style="color:#22d3ee;">FinderSeek Escrow</strong>, your prize is guaranteed. We'll send your winnings to the PayPal or Venmo handle you submitted within 24 hours.</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.6);">Need to update your payout info? Reply to this email.</p>`
     : `<p>The Pirate has been notified. Chat with them on the quest page to arrange how you receive your prize.</p>`;
   return {
     subject: `🏆 You won ${prize} on FinderSeek in ${city}!`,
