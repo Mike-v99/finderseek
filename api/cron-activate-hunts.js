@@ -3,15 +3,69 @@
 //
 // 1. Activates scheduled quests whose starts_at has passed
 // 2. Ends active hunts whose ends_at has passed (no winner)
-// 3. Refunds escrow for expired quests with no winner
+// 3. Refunds escrow (prize amount only, keeps the 10% platform fee) for
+//    expired quests with no winner — via PayPal Captures Refund API.
 // 4. Sends notifications for expired quests
 //
 // Env vars needed:
 //   CRON_SECRET           — Vercel cron auth
 //   SUPABASE_URL          — https://...supabase.co
 //   SUPABASE_SERVICE_KEY  — service role key
-//   STRIPE_SECRET_KEY     — sk_live_... (for refunds)
+//   PAYPAL_CLIENT_ID      — live or sandbox client id
+//   PAYPAL_CLIENT_SECRET  — matching secret
+//   PAYPAL_MODE           — 'live' or 'sandbox' (defaults to 'live')
 //   NOTIFY_SECRET         — shared secret for notify API
+
+// ── PayPal helpers ────────────────────────────────────────────────────
+async function getPayPalToken() {
+  const mode = (process.env.PAYPAL_MODE || 'live').toLowerCase();
+  const base = mode === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+  const cid = process.env.PAYPAL_CLIENT_ID;
+  const csec = process.env.PAYPAL_CLIENT_SECRET;
+  if (!cid || !csec) throw new Error('PayPal credentials not configured');
+  const auth = Buffer.from(`${cid}:${csec}`).toString('base64');
+  const r = await fetch(`${base}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'grant_type=client_credentials'
+  });
+  const data = await r.json();
+  if (!data.access_token) throw new Error('PayPal auth failed: ' + JSON.stringify(data));
+  return { token: data.access_token, base };
+}
+
+// Refund a captured PayPal payment. amountUsd is a number like 1.00 (dollars).
+// Returns { ok, refundId, error }.
+async function paypalRefundCapture(captureId, amountUsd, huntId) {
+  try {
+    const { token, base } = await getPayPalToken();
+    const body = {
+      amount: { value: Number(amountUsd).toFixed(2), currency_code: 'USD' },
+      note_to_payer: 'FinderSeek quest expired with no winner — prize amount refunded',
+      invoice_id: `FS-EXPIRE-${huntId}`,
+    };
+    const r = await fetch(`${base}/v2/payments/captures/${encodeURIComponent(captureId)}/refund`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        // Idempotency guard — re-running the cron won't double-refund
+        'PayPal-Request-Id': `expire-${huntId}`
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (data.id && (data.status === 'COMPLETED' || data.status === 'PENDING')) {
+      return { ok: true, refundId: data.id, status: data.status };
+    }
+    return { ok: false, error: data?.message || data?.details?.[0]?.description || JSON.stringify(data) };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -38,7 +92,7 @@ export default async function handler(req, res) {
 
     try {
       // Fetch the specific hunt
-      const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent,status,ends_at,winner_id`, { headers: H });
+      const r = await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent,paypal_capture_id,status,ends_at,winner_id`, { headers: H });
       const rows = await r.json();
       const hunt = rows?.[0];
 
@@ -61,48 +115,41 @@ export default async function handler(req, res) {
 
       const result = { huntId, ended: true, refunded: false, notified: false };
 
-      // Refund escrow if funded
+      // Refund escrow if funded — refunds PRIZE only, keeps the 10% platform fee
       if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') &&
-          hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
-        try {
-          const refundAmount = hunt.prize_value || 0;
-          console.log(`[expire] refunding hunt ${huntId}: ${refundAmount} cents`);
-          // Safety cap
-          if (refundAmount > 11000) {
-            console.error(`[expire] BLOCKED: refundAmount=${refundAmount} exceeds $110 cap for hunt ${huntId}`);
-            result.refundError = 'Amount exceeds safety cap';
-            break;
-          }
-          const refundParams = new URLSearchParams({
-            'payment_intent': hunt.stripe_payment_intent,
-            'reason': 'requested_by_customer',
-            'metadata[type]': 'escrow_expired',
-            'metadata[huntId]': huntId,
-          });
-          if (refundAmount > 0) refundParams.set('amount', refundAmount);
-          const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: refundParams
-          });
-          const refund = await refundRes.json();
-          if (refund.id) {
+          hunt.escrow_status === 'funded' && hunt.paypal_capture_id) {
+        const refundCents = hunt.prize_value || 0; // prize_value in cents, EXCLUDES the platform fee
+        const refundDollars = refundCents / 100;
+        console.log(`[expire] refunding hunt ${huntId}: $${refundDollars.toFixed(2)} (capture ${hunt.paypal_capture_id})`);
+        // Safety cap
+        if (refundCents > 11000) {
+          console.error(`[expire] BLOCKED: refundAmount=${refundCents} exceeds $110 cap for hunt ${huntId}`);
+          result.refundError = 'Amount exceeds safety cap';
+        } else if (refundCents <= 0) {
+          result.refundError = 'Invalid prize value';
+        } else {
+          const r2 = await paypalRefundCapture(hunt.paypal_capture_id, refundDollars, huntId);
+          if (r2.ok) {
             await fetch(`${SB}/rest/v1/hunts?id=eq.${huntId}`, {
               method: 'PATCH',
               headers: { ...H, 'Prefer': 'return=minimal' },
-              body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: refund.id })
+              // We reuse stripe_refund_id column to store the PayPal refund id —
+              // saves an SQL migration. Rename later if you care.
+              body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: r2.refundId })
             });
-            console.log(`[expire] refund SUCCESS ${refund.id}`);
+            console.log(`[expire] refund SUCCESS ${r2.refundId} status=${r2.status}`);
             result.refunded = true;
-            result.refundId = refund.id;
+            result.refundId = r2.refundId;
           } else {
-            console.error(`[expire] refund FAILED:`, JSON.stringify(refund.error));
-            result.refundError = refund.error?.message;
+            console.error(`[expire] refund FAILED:`, r2.error);
+            result.refundError = r2.error;
           }
-        } catch (e) {
-          console.error(`[expire] refund error:`, e.message);
-          result.refundError = e.message;
         }
+      } else if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') &&
+                 hunt.escrow_status === 'funded' && !hunt.paypal_capture_id) {
+        // Legacy Stripe-funded quest with no PayPal capture id — log and skip
+        console.warn(`[expire] hunt ${huntId} is escrow/funded but has no paypal_capture_id (legacy Stripe quest?). Skipping refund.`);
+        result.refundError = 'Legacy Stripe payment — refund manually';
       }
 
       // Send expiry notification + email
@@ -179,7 +226,7 @@ export default async function handler(req, res) {
 
     // ── 2. Find & end expired active quests (no winner) ──────────
     const expiredRes = await fetch(
-      `${SB}/rest/v1/hunts?status=eq.active&ends_at=lte.${now}&winner_id=is.null&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent`,
+      `${SB}/rest/v1/hunts?status=eq.active&ends_at=lte.${now}&winner_id=is.null&select=id,city,prize_desc,prize_value,pirate_id,payment_type,escrow_status,stripe_payment_intent,paypal_capture_id`,
       { headers: H }
     );
     const expiredHunts = expiredRes.ok ? await expiredRes.json() : [];
@@ -193,54 +240,38 @@ export default async function handler(req, res) {
       });
 
       // ── 3. Refund escrow if funded and no winner ──────────────
-      if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && hunt.stripe_payment_intent) {
-        try {
-          const refundAmount = hunt.prize_value || 0; // prize_value is in cents, excludes the 10% fee
-          console.log(`[cron] attempting refund for hunt ${hunt.id}: prize_value=${refundAmount} cents, pi=${hunt.stripe_payment_intent}`);
-          // Safety cap
-          if (refundAmount > 11000) {
-            console.error(`[cron] BLOCKED: refundAmount=${refundAmount} exceeds $110 cap for hunt ${hunt.id}`);
-            results.push(`refund_blocked_cap:${hunt.id}`);
-            continue;
-          }
-          const refundParams = new URLSearchParams({
-              'payment_intent': hunt.stripe_payment_intent,
-              'reason': 'requested_by_customer',
-              'metadata[type]': 'escrow_expired',
-              'metadata[huntId]': hunt.id,
-            });
-          if (refundAmount > 0) refundParams.set('amount', refundAmount);
-          const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: refundParams
-          });
-          const refund = await refundRes.json();
-
-          if (refund.id) {
+      // Refund the PRIZE only (10% platform fee is non-refundable).
+      if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && hunt.paypal_capture_id) {
+        const refundCents = hunt.prize_value || 0; // cents, EXCLUDES platform fee
+        const refundDollars = refundCents / 100;
+        console.log(`[cron] attempting refund for hunt ${hunt.id}: $${refundDollars.toFixed(2)} (capture ${hunt.paypal_capture_id})`);
+        // Safety cap
+        if (refundCents > 11000) {
+          console.error(`[cron] BLOCKED: refundAmount=${refundCents} exceeds $110 cap for hunt ${hunt.id}`);
+          results.push(`refund_blocked_cap:${hunt.id}`);
+        } else if (refundCents <= 0) {
+          results.push(`refund_skipped_zero:${hunt.id}`);
+        } else {
+          const r2 = await paypalRefundCapture(hunt.paypal_capture_id, refundDollars, hunt.id);
+          if (r2.ok) {
             await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}`, {
               method: 'PATCH',
               headers: { ...H, 'Prefer': 'return=minimal' },
-              body: JSON.stringify({
-                escrow_status: 'refunded',
-                stripe_refund_id: refund.id
-              })
+              body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: r2.refundId })
             });
-            console.log(`[cron] refund SUCCESS for hunt ${hunt.id}: refund_id=${refund.id} amount=${refundAmount}`);
+            console.log(`[cron] refund SUCCESS for hunt ${hunt.id}: refund_id=${r2.refundId} amount=$${refundDollars.toFixed(2)}`);
             results.push(`refunded:${hunt.id}`);
           } else {
-            console.error(`[cron] refund FAILED for hunt ${hunt.id}:`, JSON.stringify(refund.error));
+            console.error(`[cron] refund FAILED for hunt ${hunt.id}: ${r2.error}`);
             results.push(`refund_failed:${hunt.id}`);
           }
-        } catch (e) {
-          console.error(`[cron] refund error for hunt ${hunt.id}:`, e.message);
-          results.push(`refund_error:${hunt.id}`);
         }
+      } else if ((hunt.payment_type === 'escrow' || hunt.payment_type === 'finderseek') && hunt.escrow_status === 'funded' && !hunt.paypal_capture_id) {
+        // Legacy Stripe-funded quest — log so admin can refund manually
+        console.warn(`[cron] hunt ${hunt.id} legacy Stripe quest — manual refund required (pi=${hunt.stripe_payment_intent || 'none'})`);
+        results.push(`legacy_stripe:${hunt.id}`);
       } else {
-        console.log(`[cron] hunt ${hunt.id} skipped refund: payment_type=${hunt.payment_type} escrow_status=${hunt.escrow_status} pi=${hunt.stripe_payment_intent || 'null'}`);
+        console.log(`[cron] hunt ${hunt.id} skipped refund: payment_type=${hunt.payment_type} escrow_status=${hunt.escrow_status} capture=${hunt.paypal_capture_id || 'null'}`);
       }
 
       // ── 4. Notify pirate that quest expired (awaited — Vercel kills fire-and-forget)
@@ -265,35 +296,30 @@ export default async function handler(req, res) {
     }
 
     // ── 6. Safety net: refund any ended escrow quests with no winner that missed refund ─
+    // Only handles PayPal-captured quests; legacy Stripe quests need manual handling.
     const missedRefunds = await fetch(
-      `${SB}/rest/v1/hunts?status=eq.ended&winner_id=is.null&escrow_status=eq.funded&stripe_payment_intent=not.is.null&select=id,stripe_payment_intent,payment_type,prize_value`,
+      `${SB}/rest/v1/hunts?status=eq.ended&winner_id=is.null&escrow_status=eq.funded&paypal_capture_id=not.is.null&select=id,paypal_capture_id,payment_type,prize_value`,
       { headers: H }
     );
     const missedList = missedRefunds.ok ? await missedRefunds.json() : [];
     for (const hunt of missedList) {
       try {
-        const refundAmount = hunt.prize_value || 0;
-        const refundParams = new URLSearchParams({
-          'payment_intent': hunt.stripe_payment_intent,
-          'reason': 'requested_by_customer',
-        });
-        if (refundAmount > 0) refundParams.set('amount', refundAmount);
-        const refundRes = await fetch('https://api.stripe.com/v1/refunds', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: refundParams
-        });
-        const refund = await refundRes.json();
-        if (refund.id) {
+        const refundCents = hunt.prize_value || 0;
+        const refundDollars = refundCents / 100;
+        if (refundCents <= 0 || refundCents > 11000) {
+          results.push(`late_refund_skipped:${hunt.id}`);
+          continue;
+        }
+        const r2 = await paypalRefundCapture(hunt.paypal_capture_id, refundDollars, hunt.id);
+        if (r2.ok) {
           await fetch(`${SB}/rest/v1/hunts?id=eq.${hunt.id}`, {
             method: 'PATCH',
             headers: { ...H, 'Prefer': 'return=minimal' },
-            body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: refund.id })
+            body: JSON.stringify({ escrow_status: 'refunded', stripe_refund_id: r2.refundId })
           });
           results.push(`late_refund:${hunt.id}`);
+        } else {
+          results.push(`late_refund_failed:${hunt.id}`);
         }
       } catch(e) { results.push(`late_refund_err:${hunt.id}`); }
     }
