@@ -2815,7 +2815,22 @@ if ('serviceWorker' in navigator) {
   <div id="pm-error"></div>
   <div id="paypal-button-container" style="min-height:50px;"></div>
   <div class="pm-secure">🔒 Secure payment via PayPal · Venmo · Debit or Credit Card</div>
+  <!-- Loading overlay shown after PayPal authorizes, while we capture & set up the quest -->
+  <div id="pm-processing" style="display:none;position:absolute;inset:0;background:rgba(13,11,24,.97);border-radius:24px;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;z-index:5;">
+    <div style="position:relative;width:54px;height:54px;">
+      <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(232,168,32,.15);"></div>
+      <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#e8a820;animation:pmSpin 1s linear infinite;"></div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:18px;font-weight:500;color:#fff;margin-bottom:4px;">Payment received</div>
+      <div id="pm-processing-msg" style="font-size:15px;color:rgba(255,255,255,.55);">Activating your quest...</div>
+    </div>
+  </div>
 </div>
+
+<style>
+@keyframes pmSpin { to { transform: rotate(360deg); } }
+</style>
 
 <style>
 .pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
@@ -2890,6 +2905,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       if (row.escrow_status === 'funded' && !window._paymentSuccessHandled) {
         window._paymentSuccessHandled = true;
         _stopPaymentPoll();
+        _showPaymentProcessing('Activating your quest...');
         var qid = row.quest_id || '—';
         var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
           var el=document.getElementById(id); return el?el.textContent:'';
@@ -2901,6 +2917,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
           } catch(e){}
         }
         try { clearFormState(); } catch(e){}
+        _hidePaymentProcessing();
         closePaymentModal();
         showPinCardAfterPayment(huntId, qid, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
@@ -2995,6 +3012,8 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       if (window._paymentSuccessHandled) return;
       window._paymentSuccessHandled = true;
       _stopPaymentPoll();
+      // Show the processing overlay so the user knows we're working
+      _showPaymentProcessing('Processing payment...');
       // Capture PIN before clearFormState wipes the DOM/localStorage
       var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
         var el=document.getElementById(id); return el?el.textContent:'';
@@ -3013,8 +3032,8 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         });
         var d = await r.json();
         if (!r.ok || !d.success) throw new Error(d.error || 'Capture failed');
+        _showPaymentProcessing('Activating your quest...');
         clearFormState();
-        closePaymentModal();
 
         // Fetch the quest ID that was just assigned
         var questId = '—';
@@ -3026,12 +3045,15 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
           if (qd && qd[0] && qd[0].quest_id) questId = qd[0].quest_id;
         } catch(e) {}
 
+        _hidePaymentProcessing();
+        closePaymentModal();
         // Show PIN card with quest ID
         showPinCardAfterPayment(_currentPayload.huntId, questId, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
       } catch(e) {
-        // Capture failed — typically a card decline. Reset state so the
-        // user can choose a different funding source and retry.
+        // Capture failed — hide processing overlay and surface the error.
+        _hidePaymentProcessing();
+        // Reset state so the user can choose a different funding source and retry.
         window._paymentSuccessHandled = false;
         var msg = (e && e.message) || 'Payment capture failed';
         var lower = msg.toLowerCase();
@@ -3046,11 +3068,13 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       }
     },
     onCancel: function() {
+      _hidePaymentProcessing();
       window._paymentSuccessHandled = false;
       document.getElementById('pm-error').textContent = 'Payment cancelled. Try again when ready.';
     },
     onError: function(err) {
       console.error('PayPal error:', err);
+      _hidePaymentProcessing();
       window._paymentSuccessHandled = false;
       document.getElementById('pm-error').textContent = 'Payment error. Please try again or use a different card.';
     }
@@ -3064,9 +3088,25 @@ function _stopPaymentPoll(){
   }
 }
 
+function _showPaymentProcessing(msg){
+  var el = document.getElementById('pm-processing');
+  if (!el) return;
+  el.style.display = 'flex';
+  if (msg) {
+    var m = document.getElementById('pm-processing-msg');
+    if (m) m.textContent = msg;
+  }
+}
+
+function _hidePaymentProcessing(){
+  var el = document.getElementById('pm-processing');
+  if (el) el.style.display = 'none';
+}
+
 function closePaymentModal(){
   _paypalModalOpen = false;
   _stopPaymentPoll();
+  _hidePaymentProcessing();
   document.getElementById('pm-backdrop').classList.remove('show');
   document.getElementById('pm-sheet').classList.remove('show');
   document.body.style.overflow = '';
