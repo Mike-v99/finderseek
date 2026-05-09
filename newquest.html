@@ -3625,6 +3625,14 @@ function saveHsPanel() {
     if (sp) _hsData.startingPoint = sp.value;
   } else {
     var idx = _hsCurrent - 1;
+    // Make sure the clues array is large enough — guards against state where
+    // _hsData was restored with a smaller clues array than the current
+    // _hsClueCount, which would silently throw on .hint assignment.
+    if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
+    while (_hsData.clues.length <= idx) {
+      _hsData.clues.push({ hint:'', question:'', answer:'', action:'' });
+    }
+    if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
     var h = document.getElementById('hs-hint-cur');
     var q = document.getElementById('hs-q-cur');
     var a = document.getElementById('hs-a-cur');
@@ -3637,7 +3645,13 @@ function saveHsPanel() {
 }
 
 function hsGoTo(idx) {
-  saveHsPanel();
+  try {
+    saveHsPanel();
+  } catch(e) {
+    console.error('[hsGoTo] saveHsPanel error:', e);
+    showToast('Could not save clue data. Try again or refresh.', 'error');
+    return;
+  }
   // Validate current panel before moving forward
   if (idx > _hsCurrent) {
     if (_hsCurrent === 0) {
@@ -3645,7 +3659,7 @@ function hsGoTo(idx) {
       if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter a description of the exact hiding spot', 'error'); return; }
       if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
     } else {
-      var cl = _hsData.clues[_hsCurrent - 1] || {};
+      var cl = (_hsData.clues && _hsData.clues[_hsCurrent - 1]) || {};
       var isFinal = _hsCurrent === _hsClueCount;
       if (!cl.hint || cl.hint.trim() === '') { showToast('Enter a hint for clue ' + _hsCurrent, 'error'); return; }
       if (!cl.action) { showToast('Pick an action for clue ' + _hsCurrent, 'error'); return; }
@@ -3654,7 +3668,12 @@ function hsGoTo(idx) {
     }
   }
   _hsCurrent = idx;
-  renderHsModal();
+  try {
+    renderHsModal();
+  } catch(e) {
+    console.error('[hsGoTo] renderHsModal error:', e);
+    showToast('Display error. Refresh the page.', 'error');
+  }
 }
 
 function renderHsModal() {
