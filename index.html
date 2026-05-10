@@ -6,6 +6,7 @@
 <title>FinderSeek — Home</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
@@ -1077,7 +1078,7 @@ function filterQuests(query) {
 }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI&loading=async"></script>
 <script>
 var liveMap = null;
 var liveMapInitialized = false;
@@ -1233,6 +1234,12 @@ window.addEventListener('popstate', function(e) {
 });
 
 async function initLiveMap() {
+  // Guard for async Google Maps load — retry until ready
+  if (typeof google === 'undefined' || !google.maps || !google.maps.Map) {
+    setTimeout(function(){ initLiveMap(); }, 100);
+    return;
+  }
+
   // Cache for geocoded city centers — avoids repeat Nominatim calls for same city
   var cityCache = {};
 

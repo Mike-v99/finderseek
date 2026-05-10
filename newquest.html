@@ -6,10 +6,11 @@
 <title>FinderSeek — Start Quest</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;400;700&family=Abril+Fatface&display=swap" rel="stylesheet"/>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI&libraries=places"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI&libraries=places&loading=async"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#0d0b18;--cream:#f5ead8;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--dim:#d0e4f0;--muted:#d0e4f0;--green:#4ade80;--green-dark:#22c55e;--yellow:#fbbf24;--blue:#3b82f6;--blue-light:#60a5fa;--red:#ef4444;--red-light:#f87171;--purple:#a78bfa;}
@@ -2525,6 +2526,11 @@ function clearPhoto() {
 
 
 function initMap(lat, lng) {
+  // Guard for async Google Maps load — retry until ready
+  if (typeof google === 'undefined' || !google.maps || !google.maps.Map) {
+    setTimeout(function(){ initMap(lat, lng); }, 100);
+    return;
+  }
   if (_mapReady) { flyTo(lat, lng); return; }
   var loading = document.getElementById('map-loading');
   if (loading) loading.remove();
