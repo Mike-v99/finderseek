@@ -256,6 +256,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .field-invalid{border-color:rgba(239,68,68,.6) !important;box-shadow:0 0 0 1px rgba(239,68,68,.2) !important;animation:fieldShake .4s ease;}
 @keyframes fieldShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-4px);}40%,80%{transform:translateX(4px);}}
 
+/* ── BOUNCY HIDE-STEPS (header subtext animation) ─────────────────── */
+@keyframes hsBounceUp{0%{opacity:0;transform:translateY(40px) scale(.5);}60%{opacity:1;transform:translateY(-8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes hsBounceDown{0%{opacity:0;transform:translateY(-40px) scale(.5);}60%{opacity:1;transform:translateY(8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
+.hs-step-1{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .15s;}
+.hs-step-2{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .35s;}
+.hs-step-3{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .55s;}
+.hs-step-4{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .75s;}
+
 /* ── HIDING SPOT MODAL ───────────────────────────────────── */
 @keyframes hsRingPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1);}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.05);}}
 @keyframes hsDotGlow{0%,100%{opacity:.7;}50%{opacity:1;}}
@@ -332,17 +340,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);"></div>
     </div>
 
-    <!-- Heading + inline steps -->
+    <!-- Heading + bouncy step circles -->
     <div style="text-align:center;">
-      <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:9px;">Hide the Treasure</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;">
-        <span style="font-size:17px;color:#e8a820;font-weight:500;">Generate PIN</span>
-        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
-        <span style="font-size:17px;color:rgba(255,255,255,.45);">Write on paper</span>
-        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
-        <span style="font-size:17px;color:rgba(255,255,255,.45);">Put in envelope</span>
-        <span style="color:rgba(255,255,255,.2);font-size:17px;">·</span>
-        <span style="font-size:17px;color:#4ade80;font-weight:500;">Hide it!</span>
+      <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:14px;">Hide the Treasure</div>
+      <div style="display:flex;justify-content:space-between;gap:6px;align-items:flex-start;padding:0 12px;">
+        <div class="hs-step-1" style="text-align:center;flex:1;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#e8a820;color:#fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">1</div>
+          <div style="font-size:11px;line-height:1.3;color:#fff;">Generate<br>PIN</div>
+        </div>
+        <div class="hs-step-2" style="text-align:center;flex:1;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#38bdf8;color:#fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">2</div>
+          <div style="font-size:11px;line-height:1.3;color:#fff;">Write<br>Down</div>
+        </div>
+        <div class="hs-step-3" style="text-align:center;flex:1;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#6366f1;color:#fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">3</div>
+          <div style="font-size:11px;line-height:1.3;color:#fff;">Insert in<br>Envelope</div>
+        </div>
+        <div class="hs-step-4" style="text-align:center;flex:1;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#4ade80;color:#fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">4</div>
+          <div style="font-size:11px;line-height:1.3;color:#fff;">Hiding<br>Spot</div>
+        </div>
       </div>
     </div>
 
