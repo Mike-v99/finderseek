@@ -90,14 +90,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <script src="https://connect-js.stripe.com/v1.0/connect.js" async></script>
 
 <style id="preview-shell-css">
-/* ── Pin hamburger/avatar to fixed top-right on EVERY page ──── */
-#hb-btn {
-  position: fixed !important;
-  top: max(14px, env(safe-area-inset-top, 14px)) !important;
-  right: 18px !important;
-  z-index: 200 !important;
-}
-
 /* ── iPhone-shaped device frame on desktop/wide viewports ──── */
 @media (min-width: 520px) {
   body {
@@ -130,13 +122,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     max-width: 390px !important;
     border-radius: 44px 44px 0 0 !important;
     overflow: hidden !important;
-  }
-  /* On desktop the hamburger pins to the phone frame edge instead of viewport edge.
-     The frame is 390px wide centered in viewport. So right offset = (viewportWidth - 390)/2 + 18px.
-     We use right: calc((100vw - 390px)/2 + 18px) for accurate placement. */
-  #hb-btn {
-    right: calc((100vw - 390px) / 2 + 18px) !important;
-    top: 38px !important;
   }
 }
 </style>
@@ -247,7 +232,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Toast -->
 <div id="toast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;"></div>
 
-<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 20px;position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;"><a href="index.html" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">Profile</div><div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');"><div style="position:relative;width:34px;height:34px;flex-shrink:0;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;"><svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div><div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;"><div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div></div></div></div>
+<div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;position:sticky;top:0;background:rgba(10,8,16,.95);backdrop-filter:blur(16px);z-index:100;max-width:480px;margin:0 auto;width:100%;"><a href="index.html" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><div style="font-size:17px;font-weight:400;color:#fff;text-align:center;">Profile</div><div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');"><div style="position:relative;width:34px;height:34px;flex-shrink:0;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;"><svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div><div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;"><div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div></div></div></div>
 <div class="page">
 
   <!-- Pending quest banner -->

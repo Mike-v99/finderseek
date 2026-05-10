@@ -190,137 +190,40 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <link rel="apple-touch-startup-image" href="/splash-1334x750.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
 
 <style id="preview-shell-css">
-/* ── Pin hamburger/avatar to fixed top-right on EVERY page ──── */
-#hb-btn {
-  position: fixed !important;
-  top: max(14px, env(safe-area-inset-top, 14px)) !important;
-  right: 18px !important;
-  z-index: 200 !important;
-}
-
 /* ── iPhone-shaped device frame on desktop/wide viewports ──── */
 @media (min-width: 520px) {
   body {
     background: #060510 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: flex-start !important;
-    padding: 24px 0 !important;
     min-height: 100vh !important;
     margin: 0 !important;
+    padding: 24px 0 !important;
   }
   body::before, body::after { display: none !important; }
+  /* Wrap top-level body content into a centered phone-shaped column */
+  body > * {
+    max-width: 390px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Visual phone frame on the main content container */
   .page, .step-page {
     width: 390px !important;
-    min-height: 844px !important;
     max-width: 390px !important;
+    min-height: 844px !important;
     border-radius: 44px !important;
     overflow: hidden !important;
     background: #060510 !important;
     box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 10px #1a1726, 0 0 0 11px #2a2540 !important;
-    border: none !important;
     margin: 0 auto !important;
   }
-  body::before {
-    display: block !important;
-    background: radial-gradient(ellipse at 50% 30%, rgba(30,20,60,.8), #060510) !important;
-  }
-  /* On desktop, hamburger pins to the phone frame edge */
-  #hb-btn {
-    right: calc((100vw - 390px) / 2 + 18px) !important;
-    top: 38px !important;
+  /* Sticky top bars become part of the phone */
+  body > div[style*="position:sticky"], body > div[style*="position: sticky"] {
+    width: 390px !important;
+    max-width: 390px !important;
+    border-radius: 44px 44px 0 0 !important;
+    overflow: hidden !important;
   }
 }
-
-/* ── HAMBURGER NAV ──────────────────────────────────────── */
-@keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
-.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:19000;opacity:0;pointer-events:none;transition:opacity .25s;}
-.hb-backdrop.open{opacity:1;pointer-events:auto;}
-.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:19001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
-.hb-drawer.open{transform:translateX(0);}
-.hb-nav-item{display:flex;align-items:center;gap:13px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
-.hb-nav-item.active{background:rgba(232,168,32,.05);}
-.hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
-
-/* ── FULL SCREEN MAP MODAL ─────────────────────────────── */
-.map-modal-overlay{position:fixed;inset:0;z-index:20000;display:none;flex-direction:column;background:#0a0818;height:100%;height:100dvh;overflow:hidden;}
-.map-modal-overlay.open{display:flex;}
-.map-modal-topbar{padding:10px 14px;display:flex;align-items:center;gap:10px;background:rgba(10,8,22,.97);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;padding-top:calc(10px + env(safe-area-inset-top,0px));position:relative;z-index:25000;}
-.map-modal-search-placeholder{color:rgba(255,255,255,.3);}
-.map-modal-map{flex:1;position:relative;min-height:0;}
-#map-modal-container{position:absolute;inset:0;touch-action:none;}
-.map-modal-footer{padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-shrink:0;position:relative;z-index:25000;}
-.map-modal-confirm{flex:1;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;position:relative;z-index:25001;-webkit-tap-highlight-color:transparent;}
-.map-modal-confirm:disabled{opacity:.4;cursor:not-allowed;}
-.map-modal-sat{padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap;position:relative;z-index:25001;-webkit-tap-highlight-color:transparent;}
-.map-modal-address{display:none;}
-.map-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:44px;pointer-events:none;z-index:10;filter:drop-shadow(0 4px 12px rgba(0,0,0,.9));transition:transform .1s;}
-.map-center-pin.dragging{transform:translate(-50%,-110%) scale(1.1);}
-/* Search predictions dropdown */
-.map-predictions{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.98);border:1px solid rgba(232,168,32,.2);border-radius:10px;margin-top:4px;max-height:280px;overflow-y:auto;z-index:30000;display:none;}
-.map-predictions.show{display:block;}
-.map-pred-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.map-pred-item:last-child{border-bottom:none;}
-.map-pred-item:active{background:rgba(255,255,255,.05);}
-.map-pred-main{font-size:15px;color:#fff;font-weight:400;}
-.map-pred-sub{font-size:13px;color:#b8c4d0;margin-top:1px;}
-
-.step-footer{position:fixed;bottom:0;left:0;right:0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:var(--ink);z-index:100;}
-.step-next-btn{width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:20px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.field-valid{border-color:rgba(74,222,128,.5) !important;box-shadow:0 0 0 1px rgba(74,222,128,.2) !important;}
-.field-invalid{border-color:rgba(239,68,68,.6) !important;box-shadow:0 0 0 1px rgba(239,68,68,.2) !important;animation:fieldShake .4s ease;}
-@keyframes fieldShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-4px);}40%,80%{transform:translateX(4px);}}
-
-/* ── BOUNCY HIDE-STEPS (header subtext animation) ─────────────────── */
-@keyframes hsBounceUp{0%{opacity:0;transform:translateY(40px) scale(.5);}60%{opacity:1;transform:translateY(-8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
-@keyframes hsBounceDown{0%{opacity:0;transform:translateY(-40px) scale(.5);}60%{opacity:1;transform:translateY(8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
-.hs-step-1{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .15s;}
-.hs-step-2{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .35s;}
-.hs-step-3{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .55s;}
-.hs-step-4{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .75s;}
-
-/* ── HIDING SPOT MODAL ───────────────────────────────────── */
-@keyframes hsRingPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1);}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.05);}}
-@keyframes hsDotGlow{0%,100%{opacity:.7;}50%{opacity:1;}}
-.hs-modal-overlay{position:fixed;inset:0;z-index:18000;display:none;align-items:stretch;background:#0d0b18;}
-.hs-modal-overlay.open{display:flex;}
-.hs-modal-sheet{background:#0d0b18;width:100%;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
-.hs-modal-header{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-/* Tab row */
- .hs-tabs{display:flex;gap:4px;} .hs-tabs-label{font-size:10px;color:rgba(184,196,208,.4);margin-bottom:2px;letter-spacing:1px;}
-.hs-tab{flex:1;padding:8px 4px;border-radius:8px;font-size:14px;color:#b8c4d0;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);text-align:center;cursor:pointer;transition:all .2s;}
-.hs-tab.done{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.3);color:#4ade80;}
-.hs-tab.active{background:rgba(232,168,32,.12);border-color:rgba(232,168,32,.3);color:#e8a820;}
-/* Action scroll row */
-.hs-action-row{flex-shrink:0;}
-
-.hs-action-select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:9px 14px;color:#e8a820;font-size:17px;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:170px;}
-.hs-action-wrap{position:relative;display:inline-block;}
-.hs-action.un{background:rgba(255,255,255,.0);color:rgba(255,255,255,.3);font-weight:400;}
-.hs-action-locked{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;font-size:18px;white-space:nowrap;color:#e8a820;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);margin:0 12px 8px;font-family:inherit;}
-
-/* Radar map background */
-.hs-radar-map{position:absolute;inset:0;overflow:hidden;border-radius:12px;} .hs-radar-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-.hs-radar-glow{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,168,32,.08);}
-/* Radar */
-.hs-radar-wrap{display:flex;justify-content:center;padding:0;flex-shrink:0;}
-.hs-radar{position:relative;}
-.hs-ring{position:absolute;border-radius:50%;border:1.5px solid;top:50%;left:50%;transform:translate(-50%,-50%);}
-.hs-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:hsDotGlow 1.5s ease-in-out infinite;}
-/* Single clue panel */
-.hs-panel{padding:0 12px;flex:1;overflow-y:auto;}
-.hs-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;color:#fff;font-size:20px;font-family:inherit;font-weight:400;resize:none;box-sizing:border-box;outline:none;line-height:1.5;}
-.hs-ta:focus{border-color:rgba(232,168,32,.4);}
-.hs-qa{display:flex;gap:8px;margin-top:8px;}
-.hs-inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;color:#fff;font-size:20px;font-family:inherit;font-weight:400;box-sizing:border-box;outline:none;width:100%;}
-.hs-inp:focus{border-color:rgba(232,168,32,.4);}
-.hs-qa-label{font-size:14px;color:rgba(184,196,208,.5);margin-bottom:5px;}
-.hs-hint{font-size:14px;color:rgba(184,196,208,.4);margin-top:6px;}
-.hs-hint.gold{color:rgba(232,168,32,.6);}
-/* Nav */
-.hs-nav{display:flex;gap:8px;padding:10px 12px 12px;flex-shrink:0;}
-.hs-nav-back{flex:1;padding:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;text-align:center;font-size:18px;color:#b8c4d0;cursor:pointer;font-family:inherit;}
-.hs-nav-next{flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;text-align:center;font-size:18px;color:#fff;cursor:pointer;font-family:inherit;font-weight:400;}
 </style>
 </head>
 <body>
@@ -328,7 +231,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- STEP PAGES -->
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="history.length>1?history.back():location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:28px;font-weight:500;color:#e8a820;text-align:left;padding-left:4px;">1 <span style="font-size:17px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
@@ -422,7 +325,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="goStep(1)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
@@ -473,7 +376,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1;">
     <a href="javascript:void(0)" onclick="goStep(2)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">3</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
@@ -525,7 +428,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- STEP 5: Schedule -->
 <div id="step5" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <a href="javascript:void(0)" onclick="goStep(3)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">5</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
