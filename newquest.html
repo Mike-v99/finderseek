@@ -170,6 +170,39 @@ body.kb-up /* bottom-nav removed */
 #wq-btn{animation:wq-glow-anim 3s ease-in-out infinite;}
 @keyframes questBtnPulse{0%,100%{box-shadow:0 4px 20px rgba(34,197,94,.3);}50%{box-shadow:0 4px 40px rgba(34,197,94,.55),0 0 60px rgba(34,197,94,.15);}}
 
+/* Field validation states */
+.field-valid{border-color:rgba(74,222,128,.5) !important;box-shadow:0 0 0 1px rgba(74,222,128,.2) !important;}
+.field-invalid{border-color:rgba(239,68,68,.6) !important;box-shadow:0 0 0 1px rgba(239,68,68,.2) !important;animation:fieldShake .4s ease;}
+@keyframes fieldShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-4px);}40%,80%{transform:translateX(4px);}}
+
+/* ── BOUNCY HIDE-STEPS (header subtext animation) ─────────────────── */
+@keyframes hsBounceUp{0%{opacity:0;transform:translateY(40px) scale(.5);}60%{opacity:1;transform:translateY(-8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes hsBounceDown{0%{opacity:0;transform:translateY(-40px) scale(.5);}60%{opacity:1;transform:translateY(8px) scale(1.1);}100%{opacity:1;transform:translateY(0) scale(1);}}
+.hs-step-1{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .15s;}
+.hs-step-2{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .35s;}
+.hs-step-3{animation:hsBounceUp .65s cubic-bezier(.34,1.56,.64,1) both .55s;}
+.hs-step-4{animation:hsBounceDown .65s cubic-bezier(.34,1.56,.64,1) both .75s;}
+
+/* ── HAMBURGER NAV (drawer + backdrop) ─────────────────────── */
+@keyframes hbRingShim{0%{background-position:200% center;}100%{background-position:-200% center;}}
+.hb-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .25s;}
+.hb-backdrop.open{opacity:1;pointer-events:auto;}
+.hb-drawer{position:fixed;top:0;right:0;bottom:0;width:72%;max-width:300px;background:#0c0b1a;border-left:1px solid rgba(255,255,255,.07);z-index:9001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1);padding-top:env(safe-area-inset-top,0px);}
+.hb-drawer.open{transform:translateX(0);}
+.hb-nav-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.hb-nav-item:last-child{border-bottom:none;}
+.hb-nav-label{font-size:25px;color:#fff;font-weight:400;font-family:inherit;}
+.hb-nav-item.active{background:rgba(232,168,32,.05);}
+.hb-nav-item.active .hb-nav-label{color:#e8a820;}
+
+/* ── HIDING-SPOT MODAL (full-screen picker) ────────────────── */
+@keyframes hsRingPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.05);}}
+@keyframes hsDotGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
+.hs-modal-overlay{position:fixed;inset:0;background:rgba(6,5,10,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:18000;display:none;align-items:flex-end;justify-content:center;}
+.hs-modal-overlay.open{display:flex;}
+.hs-modal-sheet{width:100%;max-width:480px;height:100dvh;background:#0c0b1a;display:flex;flex-direction:column;overflow:hidden;animation:hsSheetSlide .35s cubic-bezier(0.22,1,0.36,1);}
+@keyframes hsSheetSlide{from{transform:translateY(100%);}to{transform:translateY(0);}}
+
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
