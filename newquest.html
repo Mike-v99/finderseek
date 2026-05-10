@@ -204,6 +204,12 @@ body.kb-up /* bottom-nav removed */
 .hs-modal-sheet{width:100%;max-width:480px;height:100dvh;background:#0c0b1a;display:flex;flex-direction:column;overflow:hidden;animation:hsSheetSlide .35s cubic-bezier(0.22,1,0.36,1);}
 @keyframes hsSheetSlide{from{transform:translateY(100%);}to{transform:translateY(0);}}
 
+/* ── STEP NAVIGATION FOOTER ────────────────────────────────── */
+.step-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:sticky;bottom:0;display:flex;gap:10px;align-items:center;z-index:5;}
+.step-next-btn{flex:1;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;-webkit-tap-highlight-color:transparent;}
+.step-next-btn:active{transform:scale(.98);}
+.step-next-btn:disabled{opacity:.4;pointer-events:none;}
+
 /* ── FULL-SCREEN MAP-PICKER MODAL ──────────────────────────── */
 .map-modal-overlay{position:fixed;inset:0;background:#0c0b1a;z-index:19000;display:none;flex-direction:column;}
 .map-modal-overlay.open{display:flex;}
