@@ -203,6 +203,61 @@ body.kb-up /* bottom-nav removed */
 .hs-modal-overlay.open{display:flex;}
 .hs-modal-sheet{width:100%;max-width:480px;height:100dvh;background:#0c0b1a;display:flex;flex-direction:column;overflow:hidden;animation:hsSheetSlide .35s cubic-bezier(0.22,1,0.36,1);}
 @keyframes hsSheetSlide{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.hs-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+
+/* Tabs / dot navigation across hiding spot questions */
+.hs-tabs{display:flex;gap:6px;padding:10px 16px;justify-content:center;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.04);}
+.hs-tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;flex:1;max-width:80px;}
+.hs-tab .hs-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .2s;}
+.hs-tab.active .hs-dot{background:#e8a820;box-shadow:0 0 8px rgba(232,168,32,.6);}
+.hs-tab.done .hs-dot{background:#4ade80;}
+.hs-tab span{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.hs-tab.active span{color:#e8a820;}
+.hs-tab.done span{color:#4ade80;}
+
+/* Q&A panel for each hiding-spot step */
+.hs-panel{flex:1;overflow-y:auto;padding:18px 16px 24px;-webkit-overflow-scrolling:touch;}
+.hs-qa{display:flex;flex-direction:column;gap:14px;}
+.hs-qa h2{font-size:22px;color:#fff;font-weight:500;margin:0;line-height:1.25;}
+.hs-hint{font-size:14px;color:rgba(255,255,255,.5);line-height:1.4;margin:0 0 4px 0;}
+.hs-inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 14px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;}
+.hs-inp:focus{border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.04);}
+.hs-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;font-size:16px;color:#fff;font-family:inherit;outline:none;resize:vertical;min-height:90px;-webkit-appearance:none;appearance:none;}
+.hs-ta:focus{border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.04);}
+
+/* Action row buttons */
+.hs-action-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* Bottom nav (back / next within HS modal) */
+.hs-nav{display:flex;gap:10px;padding:14px 16px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:#0c0b1a;flex-shrink:0;}
+.hs-nav-back{padding:14px 18px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.03);color:#fff;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hs-nav-next{flex:1;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 16px rgba(201,137,12,.3);}
+.hs-nav-next:disabled{opacity:.4;pointer-events:none;}
+
+/* GPS radar (the visual circle of pulsing rings) */
+.hs-radar-wrap{position:relative;width:100%;aspect-ratio:1;max-width:280px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+.hs-radar{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at center,rgba(232,168,32,.08) 0%,transparent 70%);}
+.hs-ring{position:absolute;border:1.5px solid rgba(232,168,32,.3);border-radius:50%;animation:hsRingPulse 2.4s ease-in-out infinite;}
+.hs-radar-map{width:60%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(232,168,32,.25);overflow:hidden;position:relative;z-index:2;}
+
+/* ── PRIZE / CLUE / PRESET BUTTONS ─────────────────────────── */
+.clue-btn{padding:10px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;}
+.clue-btn.active{background:rgba(232,168,32,.15);border-color:rgba(232,168,32,.5);color:#e8a820;}
+.clue-btn.done{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:#4ade80;}
+.clue-btn.locDone{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:#4ade80;}
+
+.preset-btn{padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:14px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;}
+.preset-btn:hover,.preset-btn:active{background:rgba(255,255,255,.08);}
+.preset-btn.active{background:rgba(232,168,32,.15);border-color:#e8a820;color:#e8a820;}
+
+.prize-chip{padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;font-weight:500;}
+.prize-chip:hover,.prize-chip:active{background:rgba(255,255,255,.08);}
+.prize-chip.active{background:linear-gradient(135deg,rgba(180,83,9,.25),rgba(232,168,32,.2));border-color:#e8a820;color:#f5c842;}
+
+.test-prize-chip{padding:8px 12px;border-radius:10px;background:rgba(74,222,128,.08);border:1px dashed rgba(74,222,128,.4);color:#4ade80;font-size:13px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.test-prize-chip:hover,.test-prize-chip:active{background:rgba(74,222,128,.15);}
+
+.gold{color:#e8a820;}
 
 /* ── STEP NAVIGATION FOOTER ────────────────────────────────── */
 .step-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:sticky;bottom:0;display:flex;gap:10px;align-items:center;z-index:5;}
