@@ -115,6 +115,58 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:60vh;backgrou
 .hb-nav-item.active{background:rgba(232,168,32,.05);}
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
 </style>
+
+<style id="preview-shell-css">
+/* ── Pin hamburger/avatar to fixed top-right on EVERY page ──── */
+#hb-btn {
+  position: fixed !important;
+  top: max(14px, env(safe-area-inset-top, 14px)) !important;
+  right: 18px !important;
+  z-index: 200 !important;
+}
+
+/* ── iPhone-shaped device frame on desktop/wide viewports ──── */
+@media (min-width: 520px) {
+  body {
+    background: #060510 !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 24px 0 !important;
+  }
+  body::before, body::after { display: none !important; }
+  /* Wrap top-level body content into a centered phone-shaped column */
+  body > * {
+    max-width: 390px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Visual phone frame on the main content container */
+  .page, .step-page {
+    width: 390px !important;
+    max-width: 390px !important;
+    min-height: 844px !important;
+    border-radius: 44px !important;
+    overflow: hidden !important;
+    background: #060510 !important;
+    box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 10px #1a1726, 0 0 0 11px #2a2540 !important;
+    margin: 0 auto !important;
+  }
+  /* Sticky top bars become part of the phone */
+  body > div[style*="position:sticky"], body > div[style*="position: sticky"] {
+    width: 390px !important;
+    max-width: 390px !important;
+    border-radius: 44px 44px 0 0 !important;
+    overflow: hidden !important;
+  }
+  /* On desktop the hamburger pins to the phone frame edge instead of viewport edge.
+     The frame is 390px wide centered in viewport. So right offset = (viewportWidth - 390)/2 + 18px.
+     We use right: calc((100vw - 390px)/2 + 18px) for accurate placement. */
+  #hb-btn {
+    right: calc((100vw - 390px) / 2 + 18px) !important;
+    top: 38px !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="page">
