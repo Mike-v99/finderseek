@@ -186,10 +186,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <div class="page">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:12px;" class="el" data-d="0">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:12px;padding:0 4px;" class="el" data-d="0">
     <a href="javascript:void(0)" onclick="goBack()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
     <div style="text-align:center;"><span id="q-status-label" style="font-size:17px;font-weight:400;color:#fff;">QUEST</span> <span id="q-quest-id" style="font-size:14px;color:rgba(232,168,32,.6);font-weight:400;"></span></div>
-    <div id="q-save-btn" style="width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;" onclick="toggleSaveQuest()"><img id="q-save-icon" src="/pin-icon.png" style="width:22px;height:22px;object-fit:contain;" onerror="this.outerHTML='<svg width=16 height=16 viewBox=\'0 0 24 24\' fill=\'#ef4444\' stroke=\'none\'><path d=\'M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z\'/></svg>'"/></div>
+    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="document.getElementById('hb-backdrop').classList.add('open');document.getElementById('hb-drawer').classList.add('open');">
+      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;font-size:13px;color:#e8a820;font-weight:500;">
+          <svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
+        <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
+      </div>
+    </div>
   </div>
 
   <div style="padding:14px 18px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin-bottom:10px;" class="el" data-d="50">
@@ -199,9 +210,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div id="q-prize" style="font-size:44px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">$0</div>
       </div>
       <div style="text-align:right;">
+        <!-- LIVE + pin row at TOP -->
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:6px;">
+          <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;"><div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div><div style="font-size:13px;color:#4ade80;font-weight:500;letter-spacing:1px;">LIVE</div></div>
+          <div id="q-save-btn" style="width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;" onclick="toggleSaveQuest()"><img id="q-save-icon" src="/pin-icon.png" style="width:18px;height:18px;object-fit:contain;" onerror="this.outerHTML='<svg width=14 height=14 viewBox=\'0 0 24 24\' fill=\'#ef4444\' stroke=\'none\'><path d=\'M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z\'/></svg>'"/></div>
+        </div>
         <div id="q-location" style="font-size:17px;color:rgba(255,255,255,.5);">Loading…</div>
         <div id="q-pirate-style" style="font-size:17px;color:#b8c4d0;margin-top:2px;">—</div>
-        <div style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;"><div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div><div style="font-size:17px;color:#4ade80;">LIVE</div></div>
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -256,36 +271,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- Analytics bar removed -->
-
-  <!-- Tier buttons + Gold modal hidden until tier system is enabled -->
-  <div style="display:none;gap:8px;margin-bottom:10px;" class="el" data-d="300">
-    <button id="q-free-tier-btn" style="flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.12);border:1.5px solid #94a3b8;color:#e2e8f0;font-size:17px;font-weight:400;cursor:default;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;">FREE TIER</button>
-    <button id="q-gold-tier-btn" onclick="toggleGoldModal()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.4);font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">GOLD TIER ↓</button>
-  </div>
-
-  <div id="q-gold-modal" style="display:none;overflow:hidden;max-height:0;transition:max-height 600ms cubic-bezier(0.22,1,0.36,1);background:rgba(10,8,20,.97);border:1px solid rgba(232,168,32,.1);border-radius:14px;margin-bottom:10px;">
-    <div id="q-gold-modal-inner" style="padding:16px;opacity:0;transform:translateY(-12px);transition:opacity 400ms 200ms ease-out,transform 400ms 200ms cubic-bezier(0.22,1,0.36,1);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">👑</div><div><div style="font-size:17px;font-weight:400;color:#fff;">FinderSeek Gold</div><div style="font-size:17px;color:rgba(232,168,32,.55);">$3.99/mo · 30-day free trial</div></div></div>
-        <button onclick="toggleGoldModal()" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.4);font-size:17px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;">✕</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;">
-        <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:10px;">
-          <div style="font-size:17px;letter-spacing:1.5px;color:#4ade80;margin-bottom:6px;">SEEKER</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Finder clue alerts</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>50ft precision map</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>City quest alerts</div>
-        </div>
-        <div style="background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.12);border-radius:10px;padding:10px;">
-          <div style="font-size:17px;letter-spacing:1.5px;color:#e8a820;margin-bottom:6px;">QUEST MASTER</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Quest analytics</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>3 pinned quests</div>
-          <div style="font-size:17px;color:#fff;padding:4px 0;display:flex;align-items:center;gap:6px;"><span style="color:#4ade80;">✓</span>Edit AI clues</div>
-        </div>
-      </div>
-      <button onclick="sessionStorage.setItem('fs_gold_return','quest:'+(currentHunt?currentHunt.id:'')); window.location.href='gold.html';" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#92400e,#d97706,#f59e0b);border:none;color:#0a0500;font-size:17px;font-weight:400;cursor:pointer;font-family:inherit;">Upgrade to Gold →</button>
-    </div>
-  </div>
 
   <div id="q-clues-section" style="margin-bottom:10px;" class="el" data-d="350">
     <div style="font-size:28px;letter-spacing:2px;color:rgba(184,196,208,.5);margin-bottom:12px;display:flex;align-items:center;gap:10px;">CLUES <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);"></div><div style="font-size:15px;color:rgba(232,168,32,.6);letter-spacing:0;" id="q-solved-label">0 of 0 solved</div></div>
@@ -404,9 +389,6 @@ async function checkFollowState(){
     }
   }catch(e){}
 }
-var _goldModalOpen=false;
-function renderTierButtons(isGold){var fb=document.getElementById('q-free-tier-btn'),gb=document.getElementById('q-gold-tier-btn');if(!fb||!gb)return;if(isGold){fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.2);font-size:17px;font-family:inherit;animation:none;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(201,137,12,.2);border:2px solid #e8a820;color:#f5c842;font-size:17px;font-family:inherit;animation:goldTierPulse 7s ease-in-out infinite;cursor:default;';gb.innerHTML='GOLD TIER<br><span style="font-size:13px;color:#4ade80;">You are Gold</span>';gb.onclick=null;}else{fb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(148,163,184,.15);border:2px solid #94a3b8;color:#e2e8f0;font-size:17px;font-family:inherit;animation:silverTierPulse 7s ease-in-out infinite;cursor:default;';fb.innerHTML='FREE TIER';gb.style.cssText='flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(232,168,32,.2);color:rgba(232,168,32,.35);font-size:17px;font-family:inherit;animation:none;cursor:pointer;';gb.onclick=toggleGoldModal;gb.innerHTML='GOLD TIER';}  }
-function toggleGoldModal(){_goldModalOpen=!_goldModalOpen;var m=document.getElementById('q-gold-modal'),inner=document.getElementById('q-gold-modal-inner');m.style.maxHeight=_goldModalOpen?'520px':'0';inner.style.opacity=_goldModalOpen?'1':'0';inner.style.transform=_goldModalOpen?'translateY(0)':'translateY(-12px)';}
 
 // ── VOICE NARRATION ──────────────────────────────────────────
 var _voiceSpeaking = false;
@@ -680,7 +662,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 async function checkUserGoldStatus(){
   var token=getToken();if(!token)return;
-  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!ur.ok)return;var user=await ur.json();if(!user||!user.id)return;var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=is_pro,pro_expires',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var pd=await pr.json();var profile=pd&&pd[0];var isGold=profile&&profile.is_pro&&(!profile.pro_expires||new Date(profile.pro_expires)>new Date());renderTierButtons(isGold);if(isGold&&currentHunt&&currentHunt.pirate_id===user.id)loadQuestAnalytics(token);}catch(e){}
+  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});if(!ur.ok)return;var user=await ur.json();if(!user||!user.id)return;var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+user.id+'&select=is_pro,pro_expires',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var pd=await pr.json();var profile=pd&&pd[0];var isGold=profile&&profile.is_pro&&(!profile.pro_expires||new Date(profile.pro_expires)>new Date());if(isGold&&currentHunt&&currentHunt.pirate_id===user.id)loadQuestAnalytics(token);}catch(e){}
 }
 async function loadQuestAnalytics(token){
   try{var now=new Date(),unlockedCount=(currentClues||[]).filter(function(c){return new Date(c.reveal_at)<=now;}).length;var timeLeft='---';if(currentHunt.ends_at){var diff=new Date(currentHunt.ends_at)-now;if(diff>0){var h=Math.floor(diff/3600000),d=Math.floor(h/24);timeLeft=d>0?d+'d':h>0?h+'h':Math.floor(diff/60000)+'m';}else timeLeft='Ended';}var r=await fetch(SB+'/rest/v1/find_reports?hunt_id=eq.'+currentHunt.id+'&select=user_id',{headers:{'apikey':KEY,'Authorization':'Bearer '+(token||KEY)}});var reports=await r.json();var seekerCount=new Set((reports||[]).map(function(x){return x.user_id;})).size;document.getElementById('qa-seekers').textContent=seekerCount||'0';document.getElementById('qa-clues-unlocked').textContent=unlockedCount+'/'+(currentClues||[]).length;document.getElementById('qa-time-left').textContent=timeLeft;document.getElementById('q-analytics-bar').style.display='block';}catch(e){}
