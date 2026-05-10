@@ -197,7 +197,7 @@ body.kb-up /* bottom-nav removed */
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
 
 /* ── HIDING-SPOT MODAL (full-screen picker) ────────────────── */
-@keyframes hsRingPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.05);}}
+@keyframes hsRingPulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}}
 @keyframes hsDotGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
 .hs-modal-overlay{position:fixed;inset:0;background:rgba(6,5,10,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:18000;display:none;align-items:flex-end;justify-content:center;}
 .hs-modal-overlay.open{display:flex;}
@@ -236,9 +236,12 @@ body.kb-up /* bottom-nav removed */
 .hs-nav-next:disabled{opacity:.4;pointer-events:none;}
 
 /* GPS radar (the visual circle of pulsing rings) */
-.hs-radar-wrap{position:relative;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.hs-radar{position:relative !important;width:200px !important;height:200px !important;max-width:100% !important;max-height:200px !important;aspect-ratio:auto !important;display:flex !important;align-items:center;justify-content:center;background:#0a0810;border-radius:50% !important;overflow:hidden !important;flex-shrink:0;border:1px solid rgba(232,168,32,.15);margin:0 auto;}
-.hs-radar-map{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;border-radius:50% !important;overflow:hidden !important;}
+/* --hs-radar-size is the single source of truth for radar dimensions.
+   JS reads this same value so rings always fit inside the circle. */
+:root{--hs-radar-size:200px;}
+.hs-radar-wrap{position:relative;width:100%;display:flex;align-items:center;justify-content:center;padding:8px 0;overflow:visible;}
+.hs-radar{position:relative;width:var(--hs-radar-size);height:var(--hs-radar-size);max-width:100%;display:flex;align-items:center;justify-content:center;background:#0a0810;border-radius:50%;overflow:hidden;flex-shrink:0;border:1px solid rgba(232,168,32,.15);margin:0 auto;box-sizing:border-box;}
+.hs-radar-map{position:absolute;inset:0;border-radius:50%;overflow:hidden;}
 .hs-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-style:solid;border-width:1.5px;border-radius:50%;pointer-events:none;box-sizing:border-box;}
 .hs-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:hsDotGlow 1.5s ease-in-out infinite;pointer-events:none;}
 
@@ -3818,7 +3821,15 @@ function renderHsModal() {
   // ── Radar with map background ────────────────────────────
   var radarWrap = document.getElementById('hs-radar-wrap');
   var rings = total + 1;
-  var maxR = 180, minR = 22;
+  // Read radar size from CSS variable so rings always fit inside the circle.
+  // Fallback to 200 if the variable isn't set yet (first paint).
+  var radarSize = 200;
+  try {
+    var rs = getComputedStyle(document.documentElement).getPropertyValue('--hs-radar-size');
+    if (rs) radarSize = parseInt(rs, 10) || 200;
+  } catch(e) {}
+  // Outermost ring is 90% of radar diameter so its glow stays inside the clip mask.
+  var maxR = Math.round(radarSize * 0.9), minR = 22;
   var step = (maxR - minR) / (rings - 1 || 1);
   var allDoneRadar = cur >= rings;
   var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
@@ -3845,7 +3856,7 @@ function renderHsModal() {
     radarMapContent = '';
   }
 
-  var radarHtml = '<div class="hs-radar" style="width:100%;aspect-ratio:1 / 1;max-height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
+  var radarHtml = '<div class="hs-radar">' +
     '<div class="hs-radar-map">' + radarMapContent + '</div>';
 
   // Active ring glow halo
@@ -4156,7 +4167,7 @@ function hsEditFromPreview() {
   sheet.innerHTML =
     '<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style=\"font-size:16px;color:rgba(255,255,255,.25);font-weight:400;\">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
     '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>' +
-    '<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>' +
+    '<div style="padding:10px 12px 0;flex-shrink:0;"><div class="hs-radar-wrap" id="hs-radar-wrap"></div></div>' +
     '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
     '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
     '<div class="hs-nav" id="hs-nav"></div>';
@@ -4288,8 +4299,8 @@ function handleHsPhoto(input) {
       <div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div>
     </div>
     <!-- Radar full width -->
-    <div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;">
-      <div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div>
+    <div style="padding:10px 12px 0;flex-shrink:0;">
+      <div class="hs-radar-wrap" id="hs-radar-wrap"></div>
     </div>
     <!-- Action below radar -->
     <div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>
