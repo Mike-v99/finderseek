@@ -398,7 +398,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#0a0810"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FinderSeek"/>
 <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png"/>
@@ -461,20 +460,33 @@ body{padding-top:env(safe-area-inset-top,0px);}
           var expiry = session.expires_at ? session.expires_at * 1000 : 0;
           var needsRefresh = !expiry || Date.now() > expiry - 300000; // 5 min buffer
           if (needsRefresh) {
-            fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/token?grant_type=refresh_token', {
-              method: 'POST',
-              headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk', 'Content-Type': 'application/json' },
-              body: JSON.stringify({ refresh_token: session.refresh_token })
-            }).then(function(r){ return r.json(); }).then(function(data){
-              if (data.access_token) {
-                // Update stored session
-                session.access_token = data.access_token;
-                session.refresh_token = data.refresh_token || session.refresh_token;
-                session.expires_at = data.expires_at || session.expires_at;
-                localStorage.setItem(keys[i], JSON.stringify(session));
-                localStorage.setItem('fs_token', data.access_token);
-              }
-            }).catch(function(){});
+            (function(storageKey){
+              fetch('https://qeiuycuasjkopxfkmggp.supabase.co/auth/v1/token?grant_type=refresh_token', {
+                method: 'POST',
+                headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refresh_token: session.refresh_token })
+              }).then(function(r){
+                // 400/401/403 → refresh token is dead. Wipe stored creds so the rest of
+                // the page can fall back to anonymous instead of retrying with bad tokens.
+                if (r.status === 400 || r.status === 401 || r.status === 403) {
+                  try{localStorage.removeItem(storageKey);}catch(e){}
+                  try{localStorage.removeItem('fs_token');}catch(e){}
+                  try{localStorage.removeItem('fs_refresh');}catch(e){}
+                  return null;
+                }
+                return r.json();
+              }).then(function(data){
+                if (data && data.access_token) {
+                  // Update stored session
+                  session.access_token = data.access_token;
+                  session.refresh_token = data.refresh_token || session.refresh_token;
+                  session.expires_at = data.expires_at || session.expires_at;
+                  localStorage.setItem(storageKey, JSON.stringify(session));
+                  localStorage.setItem('fs_token', data.access_token);
+                  if (data.refresh_token) localStorage.setItem('fs_refresh', data.refresh_token);
+                }
+              }).catch(function(){});
+            })(keys[i]);
           } else {
             // Token still valid — just sync fs_token
             if (session.access_token) localStorage.setItem('fs_token', session.access_token);
@@ -800,6 +812,11 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadHeroAuth() {
+  // Brief wait so the page-load IIFE refresh either succeeds or wipes stale tokens.
+  // Without this, we race the IIFE and call /auth/v1/user with a known-bad token,
+  // generating a 403 in the console even though the IIFE will soon fix things.
+  await new Promise(function(r){ setTimeout(r, 300); });
+
   // Update hamburger avatar with auth state
   var avatarInner = document.getElementById('hb-avatar-inner');
   var avatarSvg = document.getElementById('hb-avatar-svg');
