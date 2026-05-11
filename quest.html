@@ -785,7 +785,6 @@ async function loadQuest(){
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
     try{var pending=JSON.parse(sessionStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6){for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Auto-submit — they already entered the PIN, don't make them do it again
 showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}catch(e){}
-    try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
