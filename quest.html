@@ -271,12 +271,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
       <div id="q-end-label" style="font-size:17px;color:#b8c4d0;">—</div>
-      <div style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;">
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-h" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">HRS</div></div>
-        <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-m" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">MIN</div></div>
-        <div style="width:1px;height:26px;background:rgba(255,255,255,.07);"></div>
-        <div style="padding:4px 8px;text-align:center;"><div id="cd-s" style="font-size:17px;color:#fff;font-family:'DM Mono',monospace,sans-serif;line-height:1;">--</div><div style="font-size:17px;color:#b8c4d0;letter-spacing:1px;">SEC</div></div>
+      <div style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;display:none;">
+        <div id="q-end-countdown" style="padding:4px 10px;text-align:center;font-size:15px;color:#b8c4d0;" id="q-end-countdown"></div>
       </div>
     </div>
     <!-- Quest Master + Follow (left) | Share (right) -->
@@ -345,7 +341,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div id="q-pin-btn" style="margin-top:10px;text-align:center;"></div>
-  <div id="q-next-clue-time" style="display:none;"></div>
 </div>
 
 <div class="hb-backdrop" id="hb-backdrop"></div>
@@ -392,7 +387,6 @@ function getQuestId(){
 function getToken(){var t=localStorage.getItem('fs_token');if(t)return t;try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token)return s.access_token;}}}catch(e){}return '';}
 function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';if(type==='error')t.style.borderColor='rgba(239,68,68,.5)';else if(type==='success')t.style.borderColor='rgba(74,222,128,.5)';else t.style.borderColor='rgba(201,137,12,.3)';clearTimeout(window._toastT);window._toastT=setTimeout(function(){t.style.transform='translateX(-50%) translateY(-120%)';t.style.opacity='0';},4000);}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function fmtTimeRemaining(ms){if(ms<=0)return'00:00';var m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
 function goBack(){if(window.speechSynthesis)window.speechSynthesis.cancel();var b=new URLSearchParams(window.location.search).get('back');if(b==='map')window.location.href='index.html#openmap';else history.length>1?history.back():location.href='index.html';}
 function openPhotoModal(){var sc=_solvedCount,tot=(currentClues||[]).length;if(sc===0){showToast('Solve clues to reveal the photo','');return;}showToast(sc>=tot?'Photo fully revealed!':'Keep solving — '+Math.round((sc/Math.max(1,tot))*100)+'% revealed','');}
 function shareQuest(){
@@ -816,8 +810,7 @@ function renderHunt(){
   if(h.static_map_url){var smi=document.getElementById('q-static-map');if(smi){smi.src=h.static_map_url;smi.style.display='block';}}
   var pinEl=document.getElementById('q-pin-btn');
   try{var token=getToken();if(token&&h.pirate_id){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id===h.pirate_id){var pinned=h.is_pinned;pinEl.innerHTML='<button onclick="togglePin()" style="display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.15)':'rgba(255,255,255,.04)')+';border:1px solid '+(pinned?'rgba(201,137,12,.4)':'rgba(255,255,255,.1)')+';border-radius:20px;padding:7px 16px;font-size:17px;color:'+(pinned?'#e8a820':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;">'+(pinned?'Pinned':'Pin quest')+'</button>';}}).catch(function(){});}}catch(e){}
-  var nextClue=currentClues.find(function(c){return new Date(c.reveal_at)>now;});var t=document.getElementById('q-next-clue-time');if(t&&nextClue)t.textContent=fmtTimeRemaining(new Date(nextClue.reveal_at)-now);
-}
+  }
 async function togglePin(){
   var token=getToken();if(!token||!currentHunt)return;var newVal=!currentHunt.is_pinned;
   try{var r=await fetch(SB+'/rest/v1/hunts?id=eq.'+currentHunt.id,{method:'PATCH',headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({is_pinned:newVal})});if(r.ok){currentHunt.is_pinned=newVal;renderHunt();showToast(newVal?'Quest pinned':'Quest unpinned','success');}else showToast('Could not update pin','error');}catch(e){showToast('Error: '+e.message,'error');}
@@ -848,11 +841,13 @@ function renderClues(){
     // in _attemptCache as solved:true, OR by the next clue having been unlocked
     // (reveal_at <= now). _solved is never set on the raw DB object so we derive it.
     var attempt=_attemptCache[c.clue_number]||{};
-    var isSolved=!!attempt.solved||(idx<currentClues.length-1&&new Date(currentClues[idx+1]&&currentClues[idx+1].reveal_at||'9999')<=now);
-    var prevUnlocked=idx===0?true:new Date((currentClues[idx-1]&&currentClues[idx-1].reveal_at)||'9999')<=now;
-    var prevAttempt=idx===0?null:(_attemptCache[(currentClues[idx-1]&&currentClues[idx-1].clue_number)]||{});
-    var prevSolved=idx===0?true:(!!prevAttempt.solved||prevUnlocked);
-    var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolved);
+    var nextClue=currentClues[idx+1];
+    var isSolved=!!attempt.solved||(nextClue&&new Date(nextClue.reveal_at||'9999')<=now);
+    // canShow: clue #1 always shows once location confirmed.
+    // All clues have reveal_at = startsAt (no time stagger). Only gate is prev clue solved.
+    var prevClue=idx>0?currentClues[idx-1]:null;
+    var prevSolvedInCache=idx===0?true:!!(_attemptCache[prevClue&&prevClue.clue_number]||{}).solved;
+    var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolvedInCache);
     var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
     var mapInfo=null,photoUrl=null;
     if(c.is_photo&&c.photo_url){if(c.photo_url.indexOf('map:')===0){mapInfo={radiusFt:parseInt(c.photo_url.split(':')[1])};}else{photoUrl=c.photo_url;mapInfo={radiusFt:100};}}
@@ -869,10 +864,10 @@ function renderClues(){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
-      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:#fde047;font-weight:500;">⚡ This clue is enough to find it</div>':'')+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div>';
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div>';
     }else{
       var lockMsg=locRequired&&!locConfirmed2?'Confirm your location to unlock clues.':'Solve the previous clue to unlock.';
-      return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="padding:16px 18px;"><div style="font-size:18px;font-weight:400;color:rgba(74,222,128,.5);margin-bottom:5px;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">'+lockMsg+'</div>'+(isFinder?'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;padding:5px 12px;margin-top:10px;font-size:17px;color:rgba(253,224,71,.5);font-weight:500;">⚡ This clue is enough to find it</div>':'')+'</div></div></div>';
+      return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="padding:16px 18px;"><div style="font-size:18px;font-weight:400;color:rgba(74,222,128,.5);margin-bottom:5px;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">'+lockMsg+'</div>'+'</div></div></div>';
     }
   }).join('');
   container.innerHTML=html;
@@ -921,11 +916,7 @@ function confirmQuestLocation(){
     {timeout:10000,enableHighAccuracy:true}
   );
 }
-function startTimer(){
-  if(!currentHunt||!currentHunt.ends_at)return;var endsAt=new Date(currentHunt.ends_at);
-  function tick(){var now=new Date(),diff=endsAt-now;if(diff<=0){['cd-h','cd-m','cd-s'].forEach(function(id){document.getElementById(id).textContent='00';});return;}totalSecs=Math.floor(diff/1000);document.getElementById('cd-h').textContent=String(Math.floor(totalSecs/3600)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');document.getElementById('cd-s').textContent=String(totalSecs%60).padStart(2,'0');var nextClue=currentClues.find(function(c){return new Date(c.reveal_at)>now;});if(nextClue&&(new Date(nextClue.reveal_at)-now)<=1000)setTimeout(function(){renderHunt();renderClues();},1100);}
-  tick();setInterval(tick,1000);
-}
+function startTimer(){}  // timer removed — clues unlock by Q&A only
 async function claimPrize(){
   var btn=document.getElementById('btn-claim');if(!currentHunt)return;
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
