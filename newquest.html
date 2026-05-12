@@ -191,7 +191,7 @@ body.kb-up /* bottom-nav removed */
 .hb-nav-item.active .hb-nav-label{color:#e8a820;}
 
 /* ── HIDING-SPOT MODAL (full-screen picker) ────────────────── */
-@keyframes hsRingPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.05);}}
+@keyframes hsRingPulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}}
 @keyframes hsDotGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
 .hs-modal-overlay{position:fixed;inset:0;background:rgba(6,5,10,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:18000;display:none;align-items:flex-end;justify-content:center;}
 .hs-modal-overlay.open{display:flex;}
