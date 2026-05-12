@@ -71,7 +71,7 @@ export default async function handler(req, res) {
   try {
     const { data: hunt } = await supabase
       .from('hunts')
-      .select('id, title, prize_value, quest_id, status, escrow_status')
+      .select('id, title, prize_value, quest_id, status, payout_status, winner_id, payment_type, pirate_id, lat, lng')
       .eq('id', huntId)
       .single();
 
