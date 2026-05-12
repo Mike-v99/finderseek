@@ -2125,32 +2125,26 @@ async function createQuest(){
     // Pick a random "finder clue" — any middle clue (not first, not last)
     const finderIdx = clueCount <= 2 ? 0 : Math.floor(Math.random() * (clueCount - 2)) + 1;
     const clueRows = clueData.clues.map((c, idx) => {
-      const stagger = duration / clueCount;
-      const revealAt = new Date(startsAt.getTime() + (idx * stagger) * 60 * 60 * 1000);
-      // Pro tier: last 2 clues if 5+, last 1 if 4 or fewer
+      // All clues revealed at quest start — Q&A answers are the only unlock gate
       const proCount = clueCount >= 5 ? 2 : 1;
       const tier = idx >= (clueCount - proCount) ? 'pro' : 'free';
-      // Zoomed maps: last 3 clues get progressively tighter zoom
-      // 3rd to last = quarter mile (1320ft), 2nd to last = 500ft, last = 100ft + photo
       const fromEnd = clueCount - 1 - idx;
       let hasMap = false;
       let mapPhotoUrl = null;
-      if (fromEnd === 2) { hasMap = true; mapPhotoUrl = 'map:1320'; }      // quarter mile
-      else if (fromEnd === 1) { hasMap = true; mapPhotoUrl = 'map:500'; }   // 500 feet
-      else if (fromEnd === 0) { hasMap = true; mapPhotoUrl = photoUrl || 'map:100'; } // 100ft + photo if uploaded
+      if (fromEnd === 2) { hasMap = true; mapPhotoUrl = 'map:1320'; }
+      else if (fromEnd === 1) { hasMap = true; mapPhotoUrl = 'map:500'; }
+      else if (fromEnd === 0) { hasMap = true; mapPhotoUrl = photoUrl || 'map:100'; }
       return {
         hunt_id: huntId,
         clue_number: c.number || (idx + 1),
         tier: tier,
-        reveal_at: revealAt.toISOString(),
+        reveal_at: startsAt.toISOString(),
         clue_text: c.text || '',
         clue_question: c.question || '',
         clue_answer: c.answer || '',
         is_photo: hasMap,
         photo_url: mapPhotoUrl,
-        is_finder: idx === finderIdx,
-        day_label: 'Day '+Math.ceil((idx+1)/Math.ceil(clueCount/Math.max(Math.round(duration/24),1))),
-        date_label: revealAt.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+        is_finder: false,
       };
     });
 
