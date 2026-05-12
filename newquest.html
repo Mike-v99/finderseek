@@ -2884,8 +2884,8 @@ if ('serviceWorker' in navigator) {
 <style>
 .pm-backdrop{position:fixed;inset:0;background:rgba(6,5,10,.7);backdrop-filter:blur(8px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s;}
 .pm-backdrop.show{opacity:1;pointer-events:auto;}
-.pm-sheet{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.9);z-index:9999;background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:24px;max-width:400px;width:calc(100% - 32px);max-height:85vh;overflow-y:auto;opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .3s;padding:16px 20px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 20px 60px rgba(0,0,0,.7);}
-.pm-sheet.show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto;}
+.pm-sheet{position:fixed;left:0;right:0;bottom:0;transform:translateY(100%);z-index:9999;background:#0d0b18;border:1px solid rgba(232,168,32,.25);border-radius:24px 24px 0 0;max-width:100%;width:100%;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .3s;padding:16px 20px calc(32px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 40px rgba(0,0,0,.7);}
+.pm-sheet.show{transform:translateY(0);opacity:1;pointer-events:auto;}
 .pm-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;margin:0 auto 18px;}
 .pm-title{font-size:22px;font-weight:400;color:#fff;text-align:center;margin-bottom:4px;}
 .pm-sub{font-size:16px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:18px;line-height:1.5;font-weight:400;}
@@ -3017,7 +3017,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
     await new Promise(function(resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo&disable-funding=credit,paylater';
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo,card&disable-funding=paylater';
       s.onload = resolve;
       s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
       document.head.appendChild(s);
@@ -3170,6 +3170,11 @@ function closePaymentModal(){
     var s5 = document.getElementById('step5');
     if (s5) s5.style.display = 'flex';
   }
+  // Re-enable Schedule Quest buttons so user can retry
+  var btn = document.getElementById('btn-create');
+  var previewBtn = document.getElementById('btn-preview');
+  if (btn) { btn.disabled = false; btn.textContent = '+  CREATE QUEST →'; }
+  if (previewBtn) { previewBtn.disabled = false; previewBtn.textContent = 'Schedule Quest →'; }
   // Clear the success flag so the next payment attempt isn't blocked
   setTimeout(function(){ window._paymentSuccessHandled = false; }, 500);
 }
