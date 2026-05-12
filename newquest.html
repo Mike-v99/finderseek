@@ -360,7 +360,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow:hidden;">
 
-```
 <!-- Heading + bouncy step circles -->
 <div style="text-align:center;">
   <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:14px;">Hide the Treasure</div>
@@ -419,7 +418,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
-```
 
   </div>
 
@@ -496,7 +494,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
-    <div style="display:flex;gap:7px;justify-content:center;margin-bottom:20px;"><div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(74,222,128,.5);"></div><div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);"></div></div>
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;">CLUE STYLE</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
       <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);"><div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div></div>
@@ -556,7 +553,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
     </div>
 
-```
 <!-- Mini summary from steps 1-3 -->
 <div id="mini-summary" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:14px;">
   <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
@@ -624,7 +620,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <input type="hidden" id="quest-start-date" value=""/>
 <input type="hidden" id="quest-end-date" value=""/>
 <div style="height:8px;"></div>
-```
 
   </div>
   <div class="step-footer">
@@ -663,7 +658,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:16px;overflow:hidden;">
   <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.15);border-radius:24px;max-width:400px;width:100%;padding:28px 22px 32px;box-shadow:0 20px 60px rgba(0,0,0,.8);pointer-events:auto;transform:scale(0.9);opacity:0;transition:transform .35s cubic-bezier(0.22,1,0.36,1),opacity .35s ease;position:relative;max-height:90vh;overflow-y:auto;">
 
-```
 <!-- Drag handle -->
 <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 22px;"></div>
 
@@ -705,7 +699,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
   style="width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:14px;">Continue with Email →</button>
 
 <div style="font-size:13px;color:rgba(184,196,208,.4);text-align:center;line-height:1.5;">🔒 Used only for quest notifications and payment receipt.</div>
-```
 
   </div>
 </div>
@@ -3803,7 +3796,7 @@ function renderHsModal() {
     actionArea.innerHTML = '';
   }
 
-  // ── Full-width rectangular map ──────────────────────────
+  // ── Full-width rectangular map with radar rings overlay ──
   var radarWrap = document.getElementById('hs-radar-wrap');
   var mapContent = '';
   if (locationConfirmed && selectedLat && selectedLng) {
@@ -3819,11 +3812,39 @@ function renderHsModal() {
       '&style=feature:poi.park|element:geometry|color:0x14532d' +
       '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|' + selectedLat + ',' + selectedLng +
       '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
-    mapContent = '<img src="' + sMapUrl + '" style="width:100%;height:160px;object-fit:cover;display:block;"/>';
+    mapContent = '<img src="' + sMapUrl + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>';
   } else {
-    mapContent = '<div style="width:100%;height:160px;background:#0a0810;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:rgba(255,255,255,.2);">Set location to see map</span></div>';
+    mapContent = '<div style="position:absolute;inset:0;background:#0a0810;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:rgba(255,255,255,.2);">Set location to see map</span></div>';
   }
-  radarWrap.innerHTML = mapContent;
+
+  // Radar rings centered over the map
+  var rings = total + 1;
+  var maxR = 140, minR = 18;
+  var step = (maxR - minR) / (rings - 1 || 1);
+  var allDoneRadar = cur >= rings;
+  var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
+  var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor + ';') : '';
+
+  var ringsHtml = '';
+  for (var r = 0; r < rings; r++) {
+    var size = maxR - r * step;
+    var isDone = r < cur;
+    var isActive = r === cur;
+    var borderColor = isDone
+      ? 'rgba(74,222,128,' + (0.5 + r*0.08) + ')'
+      : isActive
+        ? (allDoneRadar ? '#4ade80' : 'rgba(232,168,32,.92)')
+        : 'rgba(255,255,255,.18)';
+    var glowStyle = isActive && !allDoneRadar
+      ? ';animation:hsRingPulse 2s ease-in-out infinite'
+      : isActive && allDoneRadar
+        ? ';animation:hsRingPulse 1.5s ease-in-out infinite'
+        : '';
+    ringsHtml += '<div style="position:absolute;width:' + size + 'px;height:' + size + 'px;border:1.5px solid ' + borderColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)' + glowStyle + ';pointer-events:none;box-sizing:border-box;"></div>';
+  }
+  ringsHtml += '<div style="position:absolute;width:12px;height:12px;background:' + dotColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);' + dotGlow + 'z-index:2;pointer-events:none;"></div>';
+
+  radarWrap.innerHTML = mapContent + ringsHtml;
 
   // ── Panel ─────────────────────────────────────────────────
   var panel = document.getElementById('hs-panel');
@@ -4149,7 +4170,7 @@ _hsCurrent = _hsClueCount;
 var sheet = document.querySelector(".hs-modal-sheet");
 sheet.innerHTML =
 '<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
-'<div id="hs-radar-wrap" style="width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
+'<div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
 '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
 '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
 '<div class="hs-nav" id="hs-nav"></div>';
@@ -4281,7 +4302,7 @@ reader.readAsDataURL(file);
     </div>
     <!-- Map full width -->
     <div style="flex-shrink:0;">
-      <div id="hs-radar-wrap" style="width:100%;height:160px;overflow:hidden;background:#0a0810;"></div>
+      <div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div>
     </div>
     <!-- Action below radar -->
     <div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>
