@@ -3817,7 +3817,8 @@ function renderHsModal() {
     mapContent = '<div style="position:absolute;inset:0;background:#0a0810;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:rgba(255,255,255,.2);">Set location to see map</span></div>';
   }
 
-  // Radar rings centered over the map
+  // Radar rings: r=0 innermost, r=rings-1 outermost (largest)
+  // cur=0 (location) → gold on outermost ring; progresses inward each clue step
   var rings = total + 1;
   var maxR = 140, minR = 18;
   var step = (maxR - minR) / (rings - 1 || 1);
@@ -3826,14 +3827,15 @@ function renderHsModal() {
   var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor + ';') : '';
 
   var ringsHtml = '';
-  // Render inactive rings first (behind), active ring last (on top)
   var activeRingHtml = '';
+  // activeIdx maps cur=0→outermost (rings-1), cur=rings-1→innermost (0)
+  var activeIdx = (rings - 1) - cur;
   for (var r = 0; r < rings; r++) {
-    var size = maxR - r * step;
-    var isDone = r < cur;
-    var isActive = r === cur;
+    var size = minR + r * step; // r=0=smallest, r=rings-1=largest
+    var isDone = r > activeIdx;
+    var isActive = r === activeIdx;
     var borderColor = isDone
-      ? 'rgba(74,222,128,' + (0.5 + r*0.08) + ')'
+      ? 'rgba(74,222,128,' + Math.min(0.9, 0.35 + (r/(rings-1))*0.55) + ')'
       : isActive
         ? (allDoneRadar ? '#4ade80' : 'rgba(232,168,32,.92)')
         : 'rgba(255,255,255,.18)';
@@ -3844,12 +3846,12 @@ function renderHsModal() {
         : '';
     var ringDiv = '<div style="position:absolute;width:' + size + 'px;height:' + size + 'px;border:1.5px solid ' + borderColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)' + glowStyle + ';pointer-events:none;box-sizing:border-box;"></div>';
     if (isActive) {
-      activeRingHtml = ringDiv; // defer active ring to render last
+      activeRingHtml = ringDiv;
     } else {
       ringsHtml += ringDiv;
     }
   }
-  ringsHtml += activeRingHtml; // active ring on top
+  ringsHtml += activeRingHtml; // active ring rendered last = on top
   ringsHtml += '<div style="position:absolute;width:12px;height:12px;background:' + dotColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);' + dotGlow + 'z-index:2;pointer-events:none;"></div>';
 
   radarWrap.innerHTML = mapContent + ringsHtml;
