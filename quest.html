@@ -810,7 +810,7 @@ async function loadQuest(){
     if(huntData.length===0||!huntData[0]||!huntData[0].id){showToast('Quest not found','error');setTimeout(function(){window.location.href='index.html';},1500);return;}
     currentHunt=huntData[0];currentClues=Array.isArray(cluesData)?cluesData:[];
     if(currentHunt.pirate_id){try{var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}});var pd=await pr.json();if(pd&&pd[0])currentHunt._pirate=pd[0];}catch(e){}}
-    renderHunt();await loadAttempts();renderClues();startTimer();checkUserGoldStatus();checkFollowState();
+    renderHunt();await loadAttempts();renderHunt();renderClues();startTimer();checkUserGoldStatus();checkFollowState();
     // Instant expiry trigger
     try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
     // Increment quests_joined for seekers (non-creator, once per session)
@@ -838,7 +838,14 @@ function renderHunt(){
   var statsEl=document.getElementById('q-master-stats');if(statsEl&&h._pirate){var qc=h._pirate.quests_created||0,fc=h._pirate.followers_count||0;statsEl.textContent=qc+' quest'+(qc!==1?'s':'')+' · '+fc+' follower'+(fc!==1?'s':'');}
   if(h.lat&&h.lng)setTimeout(function(){initQuestMap(h.lat,h.lng,unlocked,currentClues.length);},100);
   updatePhotoBlur(unlocked,currentClues.length);
-  if(h.photo_url){var img=document.getElementById('q-photo-img');if(img){img.src=h.photo_url;img.style.display='block';}}
+  var photoCell=document.getElementById('q-photo-cell');
+  if(h.photo_url){
+    var img=document.getElementById('q-photo-img');if(img){img.src=h.photo_url;img.style.display='block';}
+    if(photoCell)photoCell.style.display='block';
+  }else{
+    // No photo uploaded — hide the cell so it doesn't show a blurred green box
+    if(photoCell)photoCell.style.display='none';
+  }
   if(h.static_map_url){var smi=document.getElementById('q-static-map');if(smi){smi.src=h.static_map_url;smi.style.display='block';}}
   var pinEl=document.getElementById('q-pin-btn');
   try{var token=getToken();if(token&&h.pirate_id){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id===h.pirate_id){var pinned=h.is_pinned;pinEl.innerHTML='<button onclick="togglePin()" style="display:inline-flex;align-items:center;gap:6px;background:'+(pinned?'rgba(201,137,12,.15)':'rgba(255,255,255,.04)')+';border:1px solid '+(pinned?'rgba(201,137,12,.4)':'rgba(255,255,255,.1)')+';border-radius:20px;padding:7px 16px;font-size:17px;color:'+(pinned?'#e8a820':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;">'+(pinned?'Pinned':'Pin quest')+'</button>';}}).catch(function(){});}}catch(e){}
