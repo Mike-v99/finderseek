@@ -76,6 +76,10 @@ export default async function handler(req, res) {
       .single();
 
     if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
+    // Duplicate claim guard — if already processing/sent, block double-payout
+    if (hunt.status === 'won' || hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
+      return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
+    }
 
     const { data: winner } = await supabase
       .from('profiles')
@@ -154,12 +158,13 @@ export default async function handler(req, res) {
     }
 
     // ── Email notification (always sent) ─────────────────────
-    // Build a PayPal send-money deep link (opens PayPal app or web, pre-fills recipient)
-    // PayPal: https://www.paypal.com/paypalme/send/{amount}/{currency} doesn't prefill recipient,
-    // but https://www.paypal.com/cgi-bin/webscr does for Send Money
+    // Deep links pre-fill recipient + amount — one tap to send
+    const note = encodeURIComponent('FinderSeek prize' + (hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''));
     const paypalSendUrl = method === 'venmo'
-      ? `https://venmo.com/?txn=pay&audience=private&recipients=${encodeURIComponent(destination)}&amount=${prizeAmount}&note=${encodeURIComponent('FinderSeek prize - Quest ' + (hunt.quest_id || ''))}`
-      : `https://www.paypal.com/myaccount/transfer/homepage/pay`;
+      ? `https://venmo.com/?txn=pay&audience=private&recipients=${encodeURIComponent(destination)}&amount=${prizeAmount}&note=${note}`
+      : `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(destination)}&amount=${prizeAmount}&currency_code=USD&item_name=${note}&no_shipping=1&no_note=1`;
+    // PayPal app deep link (opens app directly on mobile)
+    const paypalAppUrl = `paypal://paypalme/send?email=${encodeURIComponent(destination)}&amount=${prizeAmount}&currencyCode=USD`;
 
     try {
       await resend.emails.send({
@@ -182,38 +187,40 @@ export default async function handler(req, res) {
                 <tr><td style="padding:6px 0;color:#888;">Winner</td><td style="padding:6px 0;">${winner?.username || winnerId}</td></tr>
               </table>
             </div>`
-          : `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;padding:24px;">
-              <!-- Big green amount box -->
-              <div style="background:#15803d;border-radius:16px;padding:28px 24px;text-align:center;margin-bottom:16px;">
-                <div style="font-size:14px;color:rgba(255,255,255,.7);margin-bottom:4px;">SEND THIS AMOUNT</div>
-                <div style="font-size:48px;font-weight:700;color:#fff;">$${prizeAmount}</div>
+          : `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;padding:20px;">
+
+              <!-- Header -->
+              <div style="background:#0a0810;border-radius:16px;padding:20px 24px;text-align:center;margin-bottom:12px;border:2px solid #e8a820;">
+                <div style="font-size:13px;color:#e8a820;letter-spacing:2px;margin-bottom:6px;">ACTION REQUIRED · FINDERSEEK</div>
+                <div style="font-size:42px;font-weight:700;color:#fff;">$${prizeAmount}</div>
+                <div style="font-size:15px;color:rgba(255,255,255,.5);margin-top:4px;">Quest ${hunt.quest_id || huntId.slice(0,8)} · Won by ${winner?.username || 'winner'}</div>
               </div>
 
-              <!-- Recipient box with big copyable text -->
-              <div style="background:#f8f9fa;border:2px solid #e5e7eb;border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;">
-                <div style="font-size:13px;color:#888;margin-bottom:6px;">SEND TO (${methodLabel.toUpperCase()})</div>
-                <div style="font-size:28px;font-weight:600;color:#111;word-break:break-all;letter-spacing:0.5px;">${destination}</div>
-                <div style="font-size:12px;color:#999;margin-top:8px;">Long-press to copy</div>
+              <!-- Step 1: One-tap send button (pre-filled) -->
+              <div style="margin-bottom:10px;">
+                <div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:6px;">STEP 1 — TAP TO OPEN ${methodLabel.toUpperCase()} PRE-FILLED</div>
+                <a href="${paypalSendUrl}" style="display:block;background:${method === 'venmo' ? '#008CFF' : '#0070e0'};color:#fff;text-align:center;padding:18px 24px;border-radius:14px;font-size:19px;font-weight:700;text-decoration:none;">
+                  ${method === 'venmo' ? '💙 Open Venmo · Send $' + prizeAmount : '🅿 Open PayPal · Send $' + prizeAmount}
+                </a>
               </div>
 
-              <!-- One-tap send button -->
-              <a href="${paypalSendUrl}" style="display:block;background:${method === 'venmo' ? '#008CFF' : '#0070e0'};color:#fff;text-align:center;padding:18px;border-radius:14px;font-size:20px;font-weight:600;text-decoration:none;margin-bottom:12px;">
-                ${method === 'venmo' ? '💙 Open Venmo & Send' : '🅿️ Open PayPal & Send'}
+              <!-- Step 2: Recipient clearly shown for manual fallback -->
+              <div style="background:#f8f9fa;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px 20px;margin-bottom:10px;">
+                <div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:8px;">STEP 2 — RECIPIENT (if link doesn't pre-fill)</div>
+                <div style="font-size:26px;font-weight:600;color:#111;word-break:break-all;">${destination}</div>
+                <div style="font-size:12px;color:#aaa;margin-top:4px;">Tap and hold to copy · Send via ${methodLabel}</div>
+              </div>
+
+              <!-- Confirm done button (mailto: to yourself as a receipt) -->
+              <a href="mailto:payments@finderseek.com?subject=PAID%20-%20Quest%20${encodeURIComponent(hunt.quest_id || huntId.slice(0,8))}&body=Sent%20%24${prizeAmount}%20to%20${encodeURIComponent(destination)}%20via%20${encodeURIComponent(methodLabel)}" style="display:block;background:#15803d;color:#fff;text-align:center;padding:14px;border-radius:12px;font-size:16px;font-weight:600;text-decoration:none;margin-bottom:12px;">
+                ✅ Tap here after sending (sends receipt to yourself)
               </a>
 
-              <!-- Quest details -->
-              <div style="background:#f8f9fa;border-radius:12px;padding:14px 16px;font-size:14px;">
-                <table style="width:100%;border-collapse:collapse;">
-                  <tr><td style="padding:5px 0;color:#888;">Quest</td><td style="padding:5px 0;font-weight:600;">${hunt.quest_id || '—'}</td></tr>
-                  <tr><td style="padding:5px 0;color:#888;">Winner</td><td style="padding:5px 0;">${winner?.username || winnerId}</td></tr>
-                  <tr><td style="padding:5px 0;color:#888;">Method</td><td style="padding:5px 0;">${methodLabel}</td></tr>
-                  <tr><td style="padding:5px 0;color:#888;">Hunt ID</td><td style="padding:5px 0;font-size:11px;color:#aaa;">${huntId}</td></tr>
-                </table>
+              <!-- Details -->
+              <div style="font-size:12px;color:#bbb;text-align:center;padding:0 8px;">
+                Winner has been told prize is on the way · Quest ${hunt.quest_id || '—'} · Hunt ID: ${huntId.slice(0,8)}
               </div>
 
-              <div style="text-align:center;margin-top:14px;font-size:12px;color:#bbb;">
-                After sending, the winner has already been told their prize is on the way.
-              </div>
             </div>`
       });
     } catch (e) { console.warn('[payout] Email failed:', e.message); }
