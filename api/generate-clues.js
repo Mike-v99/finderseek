@@ -232,6 +232,13 @@ Return ONLY a JSON object: {"number": ${position}, "text": "riddle sentence here
     ? `\nStarting point: The seeker begins at "${startingPoint}" — naturally weave this into the riddle so they know exactly where to stand when they start.`
     : '';
 
+  // If quest master wrote a yes/no answer, reframe to a specific observable word
+  const yesNoWords = ['yes','no','true','false','yeah','nope','yep','nah','not'];
+  const isYesNo = yesNoWords.includes((answer||'').trim().toLowerCase());
+  const answerRule = isYesNo
+    ? `ANSWER REFRAME REQUIRED: The Quest Master wrote "${answer}" as the answer, but yes/no answers are too vague. Rewrite sentence 2 so the answer becomes a specific observable word or short phrase the seeker discovers on-site (e.g. "fake", "gas", "decorative", "wood", "stone"). Use the hint "${hint}" as context. Put the new specific answer in the JSON "answer" field.`
+    : `CRITICAL: Do NOT reveal the answer "${answer}" in sentence 1. Keep "${answer}" exactly as-is in the JSON "answer" field.`;
+
   return `You are writing clue #${position} of ${total} for FinderSeek, a real-money treasure hunt app.
 Style: ${styleHint}
 Action: "${action}" — the seeker must physically do this
@@ -240,11 +247,11 @@ Question to ask seeker: "${question}"
 Correct answer: "${answer}"${startingLine}
 
 Write EXACTLY 2 sentences:
-Sentence 1: A rhyming riddle in the persona voice that naturally includes the action "${action}" and describes "${hint}" — but DO NOT reveal the answer "${answer}" anywhere in the riddle. The riddle should make the seeker go look for something and discover the answer themselves. Tease and hint, never tell.
-Sentence 2: The question "${question}" rewritten in the same persona voice. Keep it as a question.
+Sentence 1: A rhyming riddle in the persona voice that includes the action "${action}" and describes "${hint}" without revealing the answer. Make the seeker go there and discover it themselves.
+Sentence 2: The question rewritten in the same persona voice. Keep it as a question.
 
-CRITICAL: The answer "${answer}" must NOT appear in sentence 1. The seeker discovers it by going there.
+${answerRule}
 
 Return ONLY a JSON object (no markdown):
-{"number": ${position}, "text": "sentence 1 here sentence 2 here", "question": "${question}", "answer": "${answer}"}`;
+{"number": ${position}, "text": "sentence 1 here sentence 2 here", "question": "rewritten question here", "answer": "specific answer here"}`;
 }
