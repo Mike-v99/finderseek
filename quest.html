@@ -545,8 +545,40 @@ async function submitAnswer(clueNumber,userAnswer,correctAnswer){
   var btn=document.getElementById('qa-submit-'+clueNumber);if(btn){btn.disabled=true;btn.textContent='Checking...';}
   var attempt=_attemptCache[clueNumber]||{wrong_count:0,cooldown_level:0,hints_unlocked:0};
   if(attempt.cooldown_until&&new Date(attempt.cooldown_until)>new Date()){var rem=Math.ceil((new Date(attempt.cooldown_until)-new Date())/60000);showToast('Still in cooldown — '+rem+' min remaining','error');if(btn){btn.disabled=false;btn.textContent='Submit';}return;}
-  var norm=(userAnswer||'').trim().toLowerCase(),corr=(correctAnswer||'').trim().toLowerCase();
-  var isCorrect=norm===corr||(norm.length>1&&corr.includes(norm))||(corr.length>1&&norm.includes(corr));
+  var norm=(userAnswer||'').trim().toLowerCase().replace(/[^a-z0-9\s]/g,'');
+  var corr=(correctAnswer||'').trim().toLowerCase().replace(/[^a-z0-9\s]/g,'');
+  // Stopwords to strip before keyword matching
+  var STOP=['a','an','the','is','it','be','of','in','on','at','to','for','and','or','not','no','yes','i','its','was','are'];
+  function keywords(s){return s.split(/\s+/).filter(function(w){return w.length>1&&STOP.indexOf(w)===-1;});}
+  // Synonym groups — any word in a group matches any other word in the group
+  var SYNONYMS=[
+    ['no','fake','false','not real','for show','decorative','gas','artificial','not','nope','nah'],
+    ['yes','real','true','actual','genuine','live','lit','burning','yep','yeah'],
+    ['fire','flame','flames','burn','burning'],
+  ];
+  function expandSynonyms(words){
+    var expanded=words.slice();
+    words.forEach(function(w){
+      SYNONYMS.forEach(function(grp){
+        if(grp.indexOf(w)!==-1){grp.forEach(function(s){if(expanded.indexOf(s)===-1)expanded.push(s);});}
+      });
+    });
+    return expanded;
+  }
+  var normKeys=expandSynonyms(keywords(norm).concat([norm]));
+  var corrKeys=expandSynonyms(keywords(corr).concat([corr]));
+  // Also expand using full phrase match against synonym groups
+  SYNONYMS.forEach(function(grp){
+    grp.forEach(function(phrase){
+      if(wordMatch(norm,phrase)&&normKeys.indexOf(phrase)===-1)normKeys.push(phrase);
+      if(wordMatch(corr,phrase)&&corrKeys.indexOf(phrase)===-1)corrKeys.push(phrase);
+    });
+  });
+  function wordMatch(haystack,needle){if(needle.length<2)return false;var re=new RegExp('\\b'+needle.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');return re.test(haystack);}
+  var isCorrect=norm===corr||
+    normKeys.some(function(w){return w.length>1&&corrKeys.indexOf(w)!==-1;})||
+    (corr.length>2&&wordMatch(norm,corr))||
+    (norm.length>2&&wordMatch(corr,norm));
   if(isCorrect){
     showToast('Correct! Unlocking next clue...','success');var inp=document.getElementById('qa-input-'+clueNumber);if(inp)inp.value='';
     await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0,solved:true});_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},{solved:true});await unlockNextClue(clueNumber);renderHunt();renderClues();
@@ -798,7 +830,7 @@ function renderHunt(){
   document.getElementById('q-status-label').textContent='QUEST';
   var qidEl=document.getElementById('q-quest-id');if(qidEl&&h.quest_id)qidEl.textContent=h.quest_id;
   if(h.ends_at){var endDate=new Date(h.ends_at),today=new Date(),sameDay=endDate.toDateString()===today.toDateString();document.getElementById('q-end-label').textContent=sameDay?'Expires today at '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Expires '+endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
-  var now=new Date(),unlocked=currentClues.filter(function(c){return new Date(c.reveal_at)<=now;}).length;
+  var unlocked=Object.values(_attemptCache).filter(function(a){return a.solved;}).length;
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;var sl=document.getElementById('q-solved-label');if(sl)sl.textContent=unlocked+' of '+currentClues.length+' solved';
   var bars='';for(var i=0;i<currentClues.length;i++)bars+='<div style="width:18px;height:4px;border-radius:2px;background:'+(i<unlocked?'#4ade80':'rgba(255,255,255,.08)')+'"></div>';
   document.getElementById('q-clue-bars').innerHTML=bars;
@@ -860,11 +892,14 @@ function renderClues(){
       var attempt=_attemptCache[c.clue_number]||{};
       var cr=getCooldownRemaining(attempt.cooldown_until),ht=getHintText(attempt.hints_unlocked||0),wc=attempt.wrong_count||0;
       var qaBlock='';
-      if(!isFinal&&!isSolved){
+      // Final clue also needs Q&A to unlock the PIN claim section
+      // Photo from hunt (h.photo_url) shows on final clue after it's solved
+      var huntPhotoBlock=isFinal&&isSolved&&currentHunt.photo_url?'<img src="'+currentHunt.photo_url+'" style="width:100%;border-radius:12px;margin-top:14px;border:1px solid rgba(232,168,32,.35);" alt="Hiding spot photo"/>':'';
+      if(!isSolved){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
-      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+qaBlock+'</div></div></div>';
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+huntPhotoBlock+qaBlock+'</div></div></div>';
     }else{
       var lockMsg=locRequired&&!locConfirmed2?'Confirm your location to unlock clues.':'Solve the previous clue to unlock.';
       return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="padding:16px 18px;"><div style="font-size:18px;font-weight:400;color:rgba(74,222,128,.5);margin-bottom:5px;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">'+lockMsg+'</div>'+'</div></div></div>';
@@ -872,6 +907,7 @@ function renderClues(){
   }).join('');
   container.innerHTML=html;
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;var sl=document.getElementById('q-solved-label');if(sl)sl.textContent=unlocked+' of '+currentClues.length+' solved';
+  updatePhotoBlur(unlocked,currentClues.length);
   wireQaButtons();
   setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18;var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
 }
