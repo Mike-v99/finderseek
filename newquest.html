@@ -3792,21 +3792,7 @@ function renderHsModal() {
   var total = _hsClueCount;
   var cur = _hsCurrent;
 
-  // ── Tabs ──────────────────────────────────────────────────
-  var tabsHtml = '';
-  // Location tab
-  var locDone = _hsData.location.trim().length > 0 && locationConfirmed;
-  tabsHtml += '<div class="hs-tab ' + (cur===0 ? 'active' : locDone ? 'done' : '') + '" onclick="hsGoTo(0)">📍</div>';
-  for (var i = 1; i <= total; i++) {
-    var cl = _hsData.clues[i-1] || {};
-    var isFinal = i === total;
-    var done = !!(cl.hint||'').trim() && !!cl.action && (isFinal || ((cl.question||'').trim() && (cl.answer||'').trim()));
-    var label = isFinal ? i + '★' : (done && cur !== i ? i + '✓' : i + '');
-    tabsHtml += '<div class="hs-tab ' + (cur===i ? 'active' : done ? 'done' : '') + '" onclick="hsGoTo(' + i + ')">' + label + '</div>';
-  }
-  document.getElementById('hs-tabs').innerHTML = tabsHtml;
-
-  // ── Action area ───────────────────────────────────────────
+  // ── Full-width rectangular map ──────────────────────────
   var actionArea = document.getElementById('hs-action-area');
   if (cur === 0) {
     actionArea.innerHTML = '';
@@ -3817,20 +3803,12 @@ function renderHsModal() {
     actionArea.innerHTML = '';
   }
 
-  // ── Radar with map background ────────────────────────────
+  // ── Full-width rectangular map ──────────────────────────
   var radarWrap = document.getElementById('hs-radar-wrap');
-  var rings = total + 1;
-  var maxR = 180, minR = 22;
-  var step = (maxR - minR) / (rings - 1 || 1);
-  var allDoneRadar = cur >= rings;
-  var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
-  var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor.replace(')', ',.35)').replace('rgba','rgba') + ';') : '';
-
-  // Real static map behind radar only after Quest Master explicitly confirms location
-  var radarMapContent = '';
+  var mapContent = '';
   if (locationConfirmed && selectedLat && selectedLng) {
     var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
-      '&zoom=17&size=600x600&scale=2&maptype=roadmap' +
+      '&zoom=17&size=800x320&scale=2&maptype=roadmap' +
       '&style=feature:all|element:labels.text.fill|color:0x9ca3af' +
       '&style=feature:all|element:labels.text.stroke|color:0x1f2937' +
       '&style=feature:landscape|element:geometry|color:0x1f2937' +
@@ -3841,39 +3819,11 @@ function renderHsModal() {
       '&style=feature:poi.park|element:geometry|color:0x14532d' +
       '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|' + selectedLat + ',' + selectedLng +
       '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
-    radarMapContent = '<img src="' + sMapUrl + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>';
+    mapContent = '<img src="' + sMapUrl + '" style="width:100%;height:160px;object-fit:cover;display:block;"/>';
   } else {
-    // No location yet — plain dark background
-    radarMapContent = '';
+    mapContent = '<div style="width:100%;height:160px;background:#0a0810;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:rgba(255,255,255,.2);">Set location to see map</span></div>';
   }
-
-  var radarHtml = '<div class="hs-radar" style="width:100%;aspect-ratio:1 / 1;max-height:' + maxR + 'px;position:relative;border-radius:12px;overflow:hidden;">' +
-    '<div class="hs-radar-map">' + radarMapContent + '</div>';
-
-  // Active ring glow halo
-  for (var r = 0; r < rings; r++) {
-    var size = maxR - r * step;
-    var isDone = r < cur;
-    var isActive = r === cur;
-    var borderColor = isDone
-      ? 'rgba(74,222,128,' + (0.5 + r*0.08) + ')'
-      : isActive
-        ? (allDoneRadar ? '#4ade80' : 'rgba(232,168,32,.92)')
-        : 'rgba(255,255,255,.1)';
-    var glowStyle = isActive && !allDoneRadar
-      ? ';animation:hsRingPulse 2s ease-in-out infinite'
-      : isActive && allDoneRadar
-        ? ';animation:hsRingPulse 1.5s ease-in-out infinite'
-        : '';
-    if (isActive && !allDoneRadar) {
-      // Gold glow fill behind active ring
-      radarHtml += '<div style="position:absolute;width:' + (size * 0.85) + 'px;height:' + (size * 0.85) + 'px;border-radius:50%;background:rgba(232,168,32,.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>';
-    }
-    radarHtml += '<div class="hs-ring" style="width:' + size + 'px;height:' + size + 'px;border-color:' + borderColor + glowStyle + ';"></div>';
-  }
-  radarHtml += '<div class="hs-dot" style="width:12px;height:12px;background:' + dotColor + ';' + dotGlow + 'z-index:2;"></div>';
-  radarHtml += '</div>';
-  radarWrap.innerHTML = radarHtml;
+  radarWrap.innerHTML = mapContent;
 
   // ── Panel ─────────────────────────────────────────────────
   var panel = document.getElementById('hs-panel');
@@ -4199,8 +4149,7 @@ _hsCurrent = _hsClueCount;
 var sheet = document.querySelector(".hs-modal-sheet");
 sheet.innerHTML =
 '<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
-'<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>' +
-'<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>' +
+'<div id="hs-radar-wrap" style="width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
 '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
 '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
 '<div class="hs-nav" id="hs-nav"></div>';
@@ -4330,14 +4279,9 @@ reader.readAsDataURL(file);
         </div>
       </div>
     </div>
-    <!-- Tabs horizontal across top -->
-    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px 8px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;">
-      <div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div>
-      <div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div>
-    </div>
-    <!-- Radar full width -->
-    <div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;">
-      <div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div>
+    <!-- Map full width -->
+    <div style="flex-shrink:0;">
+      <div id="hs-radar-wrap" style="width:100%;height:160px;overflow:hidden;background:#0a0810;"></div>
     </div>
     <!-- Action below radar -->
     <div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>
