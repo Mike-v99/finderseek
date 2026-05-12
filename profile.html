@@ -1566,8 +1566,15 @@ function handleUrlRedirects(){
     } catch(e){}
   }
 
-  // Redirect after login
+  // Redirect after login — check pending claim first, then ?redirect= param
   var redirect = params.get('redirect');
+  try {
+    var pc = JSON.parse(localStorage.getItem('fs_pending_claim') || 'null');
+    var pcAge = pc && pc.savedAt ? (Date.now() - pc.savedAt) : Infinity;
+    if (pc && pc.huntId && pcAge < 3600000) {
+      redirect = 'quest.html?id=' + encodeURIComponent(pc.huntId);
+    }
+  } catch(e) {}
   if (redirect && getToken()) {
     setTimeout(function(){ window.location.href = redirect; }, 300);
   }
@@ -1605,6 +1612,14 @@ function handleUrlRedirects(){
               // Check if there's a redirect waiting (e.g. back to newquest)
               var urlParams = new URLSearchParams(window.location.search);
               var redirectTo = urlParams.get('redirect');
+              // Also check for a pending prize claim — takes priority
+              try {
+                var pc = JSON.parse(localStorage.getItem('fs_pending_claim') || 'null');
+                var pcAge = pc && pc.savedAt ? (Date.now() - pc.savedAt) : Infinity;
+                if (pc && pc.huntId && pcAge < 3600000) {
+                  redirectTo = 'quest.html?id=' + encodeURIComponent(pc.huntId);
+                }
+              } catch(e) {}
               if (redirectTo) {
                 window.location.href = redirectTo;
               } else {
