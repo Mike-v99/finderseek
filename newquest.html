@@ -3826,6 +3826,8 @@ function renderHsModal() {
   var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor + ';') : '';
 
   var ringsHtml = '';
+  // Render inactive rings first (behind), active ring last (on top)
+  var activeRingHtml = '';
   for (var r = 0; r < rings; r++) {
     var size = maxR - r * step;
     var isDone = r < cur;
@@ -3840,8 +3842,14 @@ function renderHsModal() {
       : isActive && allDoneRadar
         ? ';animation:hsRingPulse 1.5s ease-in-out infinite'
         : '';
-    ringsHtml += '<div style="position:absolute;width:' + size + 'px;height:' + size + 'px;border:1.5px solid ' + borderColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)' + glowStyle + ';pointer-events:none;box-sizing:border-box;"></div>';
+    var ringDiv = '<div style="position:absolute;width:' + size + 'px;height:' + size + 'px;border:1.5px solid ' + borderColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)' + glowStyle + ';pointer-events:none;box-sizing:border-box;"></div>';
+    if (isActive) {
+      activeRingHtml = ringDiv; // defer active ring to render last
+    } else {
+      ringsHtml += ringDiv;
+    }
   }
+  ringsHtml += activeRingHtml; // active ring on top
   ringsHtml += '<div style="position:absolute;width:12px;height:12px;background:' + dotColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);' + dotGlow + 'z-index:2;pointer-events:none;"></div>';
 
   radarWrap.innerHTML = mapContent + ringsHtml;
