@@ -3902,7 +3902,6 @@ function renderHsModal() {
             '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> — required</span>') + '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80">' + (_hsData.location||'') + '</textarea>' +
 
-```
   '<div style="height:1px;background:rgba(255,255,255,.08);margin:20px 0;"></div>' +
   '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:22px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:17px;color:#fff;font-weight:500;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;"> — required</span>') + '</div></div></div>' +
   '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="e.g. North entrance by the pharmacy&#10;East lot near the big oak tree" maxlength="120">' + (_hsData.startingPoint||'') + '</textarea>';
@@ -3911,7 +3910,6 @@ setTimeout(function() {
   var pickBtn = document.getElementById('hs-map-pick-btn');
   if (pickBtn) pickBtn.addEventListener('click', function() { _mapOpenedFromStep = false; openMapModal(); });
 }, 0);
-```
 
 } else {
 var cl2 = _hsData.clues[cur-1] || {};
@@ -3923,7 +3921,6 @@ var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
 var selAction = cl2.action || '';
 var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
 
-```
 // Pick Action button
 var actionPickHtml = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
   '<div style="flex:1;position:relative;">' +
@@ -3976,7 +3973,6 @@ setTimeout(function() {
     });
   }
 }, 0);
-```
 
 }
 
@@ -4053,7 +4049,6 @@ var searchAddress = (document.getElementById("map-search") && document.getElemen
 var persona = "pirate";
 try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
 
-```
 var resp = await fetch(API_BASE + "/api/generate-clues", {
   method: "POST",
   headers: {"Content-Type": "application/json"},
@@ -4073,7 +4068,6 @@ _generatedClues = data.clues || [];
 _generatedLocationRiddle = data.location_riddle || "";
 sheet.innerHTML = origHTML;
 hsShowPreview();
-```
 
 } catch(err) {
 sheet.innerHTML = origHTML;
