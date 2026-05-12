@@ -816,8 +816,8 @@ async function loadQuest(){
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
-    try{var pending=JSON.parse(sessionStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6){for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Auto-submit — they already entered the PIN, don't make them do it again
-showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}catch(e){}
+    try{var pending=JSON.parse(sessionStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6){if(currentHunt.winner_id){// Already won — clear stale pending claim
+try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
@@ -970,19 +970,36 @@ async function claimPrize(){
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
   if(code.length!==6){showToast('Enter all 6 digits','error');return;}
   if(code!==currentHunt.finder_code){showToast('Wrong code — keep searching!','error');btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);return;}
-  // PIN correct
+  // Duplicate claim guard — if already won, show celebration directly
+  if(currentHunt.winner_id){
+    window._winHuntId=currentHunt.id;
+    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
+    showToast('You already claimed this prize!','success');
+    return;
+  }
+  // PIN correct — save pending claim for recovery
   try{sessionStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
   var token=getToken();if(!token){showToast('Prize unlocked! Sign in to receive it.','success');setTimeout(function(){window.location.href='profile.html?redirect='+encodeURIComponent('quest.html?id='+currentHunt.id);},1200);return;}
   btn.disabled=true;btn.textContent='Verifying...';
   try{
     var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
     var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
+    // Insert find_report so seeker count and analytics are accurate
+    try{
+      await fetch(SB+'/rest/v1/find_reports',{
+        method:'POST',
+        headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify({hunt_id:currentHunt.id,user_id:user.id,found_at:new Date().toISOString()})
+      });
+    }catch(e){console.warn('find_report insert failed:',e);}
     btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';
     window._winHuntId=currentHunt.id;
     window._winUserId=user.id;
     window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
+    // Clear pending claim immediately — winner confirmed
+    try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}
     showWinCelebration(window._winAmount);
-  }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize';}
+  }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize →';}
 }
 
 var _selectedPayoutMethod=null;
@@ -1013,7 +1030,7 @@ async function submitPayoutRequest(){
       body:JSON.stringify({huntId:window._winHuntId,winnerId:window._winUserId,method:_selectedPayoutMethod,destination:dest,amount:window._winAmount})
     });
     var d=await r.json();
-    if(!r.ok)throw new Error(d.error||'Failed to submit');
+    if(!r.ok){if(d.alreadyClaimed){document.getElementById('win-confirm-msg').textContent='Your prize is already on its way! Check your '+(_selectedPayoutMethod==='paypal'?'PayPal':'Venmo')+' within 24 hours.';document.getElementById('win-step-2').style.display='none';document.getElementById('win-step-3').style.display='block';return;}throw new Error(d.error||'Failed to submit');}
     var methodLabel=_selectedPayoutMethod==='paypal'?'PayPal':'Venmo';
     document.getElementById('win-confirm-msg').textContent='Your $'+window._winAmount+' will be sent to your '+methodLabel+' within 24 hours. 🎉';
     document.getElementById('win-step-2').style.display='none';
