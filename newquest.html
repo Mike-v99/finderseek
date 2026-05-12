@@ -404,7 +404,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Photo section -->
 <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
-  <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:10px;">Capture the Hiding Spot</div>
+  <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:4px;">Capture the Hiding Spot</div>
+  <div style="font-size:13px;color:rgba(232,168,32,.7);text-align:center;margin-bottom:10px;letter-spacing:.5px;">— required</div>
   <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 9px;"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
     <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
@@ -1575,6 +1576,7 @@ function validateQuestForm(){
   }
   if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
   if (code.length < 6 || code.replace(/\s/g,'').length < 6) { showToast('Generate your 6-digit secret code first', 'error'); return false; }
+  if (!window._hsPhotoDataUrl) { showToast('A photo of the hiding spot is required', 'error'); goStep(1); return false; }
   if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location first', 'error'); return false; }
   return true;
 }
