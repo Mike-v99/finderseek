@@ -816,8 +816,8 @@ async function loadQuest(){
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
-    try{var pending=JSON.parse(sessionStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6){if(currentHunt.winner_id){// Already won — clear stale pending claim
-try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}}catch(e){}
+    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<3600000){if(currentHunt.winner_id){// Already won — clear stale pending claim
+try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}else if(pending&&claimAge>=3600000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
@@ -978,7 +978,7 @@ async function claimPrize(){
     return;
   }
   // PIN correct — save pending claim for recovery
-  try{sessionStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
+  try{localStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
   var token=getToken();if(!token){showToast('Prize unlocked! Sign in to receive it.','success');setTimeout(function(){window.location.href='profile.html?redirect='+encodeURIComponent('quest.html?id='+currentHunt.id);},1200);return;}
   btn.disabled=true;btn.textContent='Verifying...';
   try{
@@ -997,7 +997,7 @@ async function claimPrize(){
     window._winUserId=user.id;
     window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
     // Clear pending claim immediately — winner confirmed
-    try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}
+    try{localStorage.removeItem('fs_pending_claim');}catch(e){}
     showWinCelebration(window._winAmount);
   }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize →';}
 }
@@ -1035,7 +1035,7 @@ async function submitPayoutRequest(){
     document.getElementById('win-confirm-msg').textContent='Your $'+window._winAmount+' will be sent to your '+methodLabel+' within 24 hours. 🎉';
     document.getElementById('win-step-2').style.display='none';
     document.getElementById('win-step-3').style.display='block';
-    try{sessionStorage.removeItem('fs_pending_claim');}catch(e){}
+    try{localStorage.removeItem('fs_pending_claim');}catch(e){}
   }catch(e){
     showToast(e.message||'Error submitting','error');
     btn.disabled=false;btn.textContent='Claim My Prize →';
