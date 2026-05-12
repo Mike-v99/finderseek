@@ -27,13 +27,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(–dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(–dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
 /* Page header */
 .page-header{text-align:center;margin-bottom:24px;position:relative;}
-.page-title{font-family:‘Noto Sans Display’,sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
+.page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
 .page-sub{font-size:18px;color:var(–dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
@@ -53,14 +53,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:18px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(–cream);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(–cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
 .finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:‘Noto Sans Display’,sans-serif;font-weight:400;font-size:28px;color:var(–blue-light);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:28px;color:var(–blue-light);}
 input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(–blue-light) var(–pct,50%),rgba(147,197,253,.15) var(–pct,50%));}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(–blue-light),#93c5fd);border:3px solid var(–ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
 .slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(–muted);}
@@ -79,7 +79,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;transition:all .2s;color:var(–cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;color:var(–cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:18px;font-weight:400;}
@@ -88,7 +88,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 /* Map */
 .map-box{width:100%;height:260px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(203,213,225,.1);overflow:hidden;margin-bottom:6px;position:relative;z-index:2;}
 .map-search-wrap{position:relative;margin-bottom:10px;}
-.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#b8c4d0;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.map-search-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.2);border-radius:12px;padding:13px 90px 13px 38px;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .map-search-input:focus{border-color:rgba(203,213,225,.4);}
 .map-search-input::placeholder{color:rgba(203,213,225,.35);}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
@@ -102,14 +102,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .search-result-icon{font-size:18px;flex-shrink:0;}
 .search-result-main{font-size:18px;color:var(–cream);font-weight:400;}
 .search-result-sub{font-size:18px;color:var(–muted);margin-top:2px;}
-.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#b8c4d0;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
+.my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
 .my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
 /* Code entry */
 .code-wrap{display:flex;gap:8px;justify-content:center;}
-.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:‘Noto Sans Display’,sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+.code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.35);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(–dim);font-family:‘Noto Sans Display’,sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(–dim);font-family:'Noto Sans Display',sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
 .btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(–cream);}
 
 /* Payment options */
@@ -129,16 +129,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
-.warning-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–red),#f97316);border-radius:18px 18px 0 0;}
+.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–red),#f97316);border-radius:18px 18px 0 0;}
 .warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .warning-item{display:flex;align-items:center;gap:8px;font-size:18px;color:#ffffff;}
 .warning-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(239,68,68,.15);font-size:18px;color:#ffffff;}
 
 /* Submit buttons */
-.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);margin-bottom:10px;transition:transform .15s;}
 .btn-submit:active{transform:scale(.97);}
-.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
+.btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08);}
 .submit-note{font-size:18px;color:var(–muted);text-align:center;margin-top:10px;line-height:1.5;}
 
@@ -224,8 +224,8 @@ body.kb-up /* bottom-nav removed */
 
 /* Bottom nav (back / next within HS modal) */
 .hs-nav{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.06);background:#0c0b1a;flex-shrink:0;}
-.hs-nav-back{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px;background:rgba(255,255,255,.03);color:#fff;font-size:16px;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.hs-nav-next{flex:1;padding:18px;border:none;border-radius:16px;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:18px;font-weight:500;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;}
+.hs-nav-back{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px;background:rgba(255,255,255,.03);color:#fff;font-size:16px;font-family:'Noto Sans Display',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hs-nav-next{flex:1;padding:18px;border:none;border-radius:16px;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;}
 .hs-nav-next:active{transform:scale(.98);}
 .hs-nav-next:disabled{opacity:.4;pointer-events:none;}
 
@@ -257,10 +257,10 @@ body.kb-up /* bottom-nav removed */
 
 /* ── STEP NAVIGATION FOOTER ────────────────────────────────── */
 .step-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:sticky;bottom:0;display:flex;gap:10px;align-items:center;z-index:5;}
-.step-next-btn{flex:1;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;-webkit-tap-highlight-color:transparent;}
+.step-next-btn{flex:1;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;-webkit-tap-highlight-color:transparent;}
 .step-next-btn:active{transform:scale(.98);}
 .step-next-btn:disabled{opacity:.4;pointer-events:none;}
-.step-back-btn{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px;background:rgba(255,255,255,.03);color:#fff;font-size:16px;font-family:‘Noto Sans Display’,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
+.step-back-btn{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px;background:rgba(255,255,255,.03);color:#fff;font-size:16px;font-family:'Noto Sans Display',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
 .step-back-btn:active{transform:scale(.98);}
 
 /* ── FULL-SCREEN MAP-PICKER MODAL ──────────────────────────── */
@@ -3916,11 +3916,11 @@ setTimeout(function() {
 } else {
 var cl2 = _hsData.clues[cur-1] || {};
 var isFinal2 = cur === total;
-var hintPhs = [‘Light poles on the left facing the store’,‘Walk towards the pharmacy’,‘Entrance — something used for chimneys’,‘Behind the brick pillar at the entrance’,‘Base of the oak tree near the exit’,‘Under the green bench by the cart return’];
-var qPhs = [‘How many light poles?’,‘How many drive through lanes?’,‘What is used for chimneys?’,‘What color is the mat?’,‘What type of tree?’,‘What color is the bench?’];
-var aPhs = [‘4’,‘2’,‘brick’,‘black’,‘oak’,‘green’];
-var ph = hintPhs[cur-1] || ‘Specific landmark or feature here’;
-var selAction = cl2.action || ‘’;
+var hintPhs = ['Light poles on the left facing the store','Walk towards the pharmacy','Entrance — something used for chimneys','Behind the brick pillar at the entrance','Base of the oak tree near the exit','Under the green bench by the cart return'];
+var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
+var aPhs = ['4','2','brick','black','oak','green'];
+var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
+var selAction = cl2.action || '';
 var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
 
 ```
@@ -3981,52 +3981,52 @@ setTimeout(function() {
 }
 
 // ── Nav ───────────────────────────────────────────────────
-var nav = document.getElementById(‘hs-nav’);
-// isHsPageComplete: returns true only when the current panel’s required fields are filled.
+var nav = document.getElementById('hs-nav');
+// isHsPageComplete: returns true only when the current panel's required fields are filled.
 // Page 0: needs location text + starting point + confirmed map pin.
 // Pages 1..N-1: need clue hint + action + question + answer.
-// Final page (cur === total): question/answer not required (it’s the reveal).
+// Final page (cur === total): question/answer not required (it's the reveal).
 function isHsPageComplete() {
 if (cur === 0) {
-return !!((_hsData.location||’’).trim()) && !!((_hsData.startingPoint||’’).trim()) && !!locationConfirmed;
+return !!((_hsData.location||'').trim()) && !!((_hsData.startingPoint||'').trim()) && !!locationConfirmed;
 }
 var clue = _hsData.clues[cur - 1] || {};
 var isFinal = (cur === total);
-if (!(clue.hint||’’).trim()) return false;
+if (!(clue.hint||'').trim()) return false;
 if (!clue.action) return false;
 if (!isFinal) {
-if (!(clue.question||’’).trim()) return false;
-if (!(clue.answer||’’).trim()) return false;
+if (!(clue.question||'').trim()) return false;
+if (!(clue.answer||'').trim()) return false;
 }
 return true;
 }
 var pageReady = isHsPageComplete();
-// allDone is still useful as a sanity check for the final “Generate Clues” button —
+// allDone is still useful as a sanity check for the final "Generate Clues" button —
 // user might be on page 0 but have filled everything via direct nav.
-var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||’’).trim() && cl.action && (isFin || ((cl.question||’’).trim() && (cl.answer||’’).trim())); });
-var disabledAttr = pageReady ? ‘’ : ’ disabled’;
+var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||'').trim() && cl.action && (isFin || ((cl.question||'').trim() && (cl.answer||'').trim())); });
+var disabledAttr = pageReady ? '' : ' disabled';
 if (cur === total) {
-nav.innerHTML = ‘<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>’ +
-‘<button class=“hs-nav-next” onclick=“hsGenerateAndPreview()”’ + disabledAttr + ‘>Generate Clues ✨</button>’;
+nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+'<button class="hs-nav-next" onclick="hsGenerateAndPreview()"' + disabledAttr + '>Generate Clues ✨</button>';
 } else if (cur === 0) {
-nav.innerHTML = ‘<button class="hs-nav-back" onclick="hsBackToStep3()">← Back</button>’ +
-‘<button class=“hs-nav-next” onclick=“hsGoTo(1)”’ + disabledAttr + ‘>Next Clue →</button>’;
+nav.innerHTML = '<button class="hs-nav-back" onclick="hsBackToStep3()">← Back</button>' +
+'<button class="hs-nav-next" onclick="hsGoTo(1)"' + disabledAttr + '>Next Clue →</button>';
 } else {
-nav.innerHTML = ‘<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>’ +
-‘<button class=“hs-nav-next” onclick=“hsGoTo(’ + (cur+1) + ‘)”’ + disabledAttr + ‘>Next Clue →</button>’;
+nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
+'<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')"' + disabledAttr + '>Next Clue →</button>';
 }
 
 // Live-revalidate as the user types so the Next button enables/disables in real time.
 // Without this, the button only updates on full re-render (e.g. when action changes).
 setTimeout(function() {
-var inputs = document.querySelectorAll(’.hs-modal-sheet textarea, .hs-modal-sheet input[type=“text”]’);
+var inputs = document.querySelectorAll('.hs-modal-sheet textarea, .hs-modal-sheet input[type="text"]');
 inputs.forEach(function(el) {
-el.addEventListener(‘input’, function() {
+el.addEventListener('input', function() {
 saveHsPanel();
-var nextBtn = document.querySelector(’#hs-nav .hs-nav-next’);
+var nextBtn = document.querySelector('#hs-nav .hs-nav-next');
 if (!nextBtn) return;
-if (isHsPageComplete()) { nextBtn.removeAttribute(‘disabled’); }
-else { nextBtn.setAttribute(‘disabled’, ‘’); }
+if (isHsPageComplete()) { nextBtn.removeAttribute('disabled'); }
+else { nextBtn.setAttribute('disabled', ''); }
 });
 });
 }, 0);
@@ -4038,20 +4038,20 @@ var _generatedLocationRiddle = null;
 
 async function hsGenerateAndPreview() {
 saveHsPanel();
-var sheet = document.querySelector(’.hs-modal-sheet’);
+var sheet = document.querySelector('.hs-modal-sheet');
 if (!sheet) return;
 var origHTML = sheet.innerHTML;
 
-sheet.innerHTML = ‘<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">’ +
-‘<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>’ +
-‘<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues…</div>’ +
-‘<div style="font-size:15px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>’ +
-‘</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>’;
+sheet.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">' +
+'<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>' +
+'<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues…</div>' +
+'<div style="font-size:15px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>' +
+'</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>';
 
 try {
-var searchAddress = (document.getElementById(“map-search”) && document.getElementById(“map-search”).value) || “”;
-var persona = “pirate”;
-try { var fs2 = JSON.parse(localStorage.getItem(“fs_newquest_form”)||”{}”); if (fs2.persona) persona = fs2.persona; } catch(e2){}
+var searchAddress = (document.getElementById("map-search") && document.getElementById("map-search").value) || "";
+var persona = "pirate";
+try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
 
 ```
 var resp = await fetch(API_BASE + "/api/generate-clues", {
@@ -4077,7 +4077,7 @@ hsShowPreview();
 
 } catch(err) {
 sheet.innerHTML = origHTML;
-showToast(“Generation failed: “ + err.message, “error”);
+showToast("Generation failed: " + err.message, "error");
 renderHsModal();
 }
 }
@@ -4103,19 +4103,19 @@ default:      { rate: 0.88, pitch: 0.82, preferMale: false }
 };
 
 function pvGetSettings() {
-var p = (document.querySelector(’.persona-card.selected’)||{}).dataset;
-var persona = (p && p.persona) || ‘default’;
+var p = (document.querySelector('.persona-card.selected')||{}).dataset;
+var persona = (p && p.persona) || 'default';
 return PREVIEW_PERSONA_VOICE[persona] || PREVIEW_PERSONA_VOICE.default;
 }
 
 function pvPickVoice(settings) {
 var voices = window.speechSynthesis.getVoices();
 if (!voices || !voices.length) return null;
-var eng = voices.filter(function(v){ return v.lang.indexOf(‘en’)===0; });
+var eng = voices.filter(function(v){ return v.lang.indexOf('en')===0; });
 if (!eng.length) eng = voices;
 var gk = settings.preferMale
-? [‘male’,‘man’,‘daniel’,‘alex’,‘fred’,‘ralph’,‘aaron’,‘tom’,‘david’,‘james’,‘mark’,‘ryan’,‘oliver’]
-: [‘female’,‘woman’,‘samantha’,‘victoria’,‘karen’,‘moira’,‘fiona’,‘tessa’,‘alice’,‘zoe’,‘kate’,‘emily’,‘susan’];
+? ['male','man','daniel','alex','fred','ralph','aaron','tom','david','james','mark','ryan','oliver']
+: ['female','woman','samantha','victoria','karen','moira','fiona','tessa','alice','zoe','kate','emily','susan'];
 var match = eng.filter(function(v){ var n=v.name.toLowerCase(); return gk.some(function(k){ return n.indexOf(k)>=0; }); });
 var pool = match.length ? match : eng;
 var local = pool.filter(function(v){ return v.localService; });
@@ -4123,14 +4123,14 @@ return local.length ? local[0] : pool[0];
 }
 
 function pvSpeak(key, text) {
-if (!window.speechSynthesis) { showToast(‘Voice not supported on this device’,’’); return; }
+if (!window.speechSynthesis) { showToast('Voice not supported on this device',''); return; }
 if (_pvSpeaking && _pvKey === key) { pvStop(); return; }
 pvStop(true);
 var settings = pvGetSettings();
 var utt = new SpeechSynthesisUtterance(text);
 utt.rate = settings.rate;
 utt.pitch = settings.pitch;
-utt.lang = ‘en-US’;
+utt.lang = 'en-US';
 var voice = pvPickVoice(settings);
 if (voice) utt.voice = voice;
 utt.onstart = function(){ _pvSpeaking=true; _pvKey=key; pvUpdateBtn(key,true); };
@@ -4144,72 +4144,72 @@ var prev=_pvKey; _pvSpeaking=false; _pvKey=null;
 if(prev&&!silent) pvUpdateBtn(prev,false);
 }
 
-var PV_SPEAKER_SVG = ‘<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>’;
-var PV_PAUSE_SVG  = ‘<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>’;
+var PV_SPEAKER_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+var PV_PAUSE_SVG  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
 function pvUpdateBtn(key, speaking) {
-var btn = document.getElementById(‘pv-voice-’+key);
+var btn = document.getElementById('pv-voice-'+key);
 if (!btn) return;
 btn.innerHTML = speaking ? PV_PAUSE_SVG : PV_SPEAKER_SVG;
-btn.style.background = speaking ? ‘rgba(74,222,128,.2)’ : ‘rgba(255,255,255,.06)’;
-btn.style.borderColor = speaking ? ‘rgba(74,222,128,.5)’ : ‘rgba(255,255,255,.12)’;
-btn.style.color = speaking ? ‘#4ade80’ : ‘#b8c4d0’;
+btn.style.background = speaking ? 'rgba(74,222,128,.2)' : 'rgba(255,255,255,.06)';
+btn.style.borderColor = speaking ? 'rgba(74,222,128,.5)' : 'rgba(255,255,255,.12)';
+btn.style.color = speaking ? '#4ade80' : '#b8c4d0';
 }
 
 function pvBtn(key, text) {
-var safe = text.replace(/’/g, “\’”).replace(/\n/g, ’ ‘);
-return ‘<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">’+PV_SPEAKER_SVG+’</button>’;
+var safe = text.replace(/'/g, "\'").replace(/\n/g, ' ');
+return '<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+PV_SPEAKER_SVG+'</button>';
 }
 
 function hsShowPreview() {
 if (window.speechSynthesis) window.speechSynthesis.cancel();
-var sheet = document.querySelector(”.hs-modal-sheet”);
+var sheet = document.querySelector(".hs-modal-sheet");
 if (!sheet) return;
-var html = ‘<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">’ +
-‘<div style="font-size:20px;color:#fff;">Quest Preview</div>’ +
-‘<div style="font-size:13px;color:#b8c4d0;">Seeker view</div></div>’ +
-‘<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">’;
+var html = '<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
+'<div style="font-size:20px;color:#fff;">Quest Preview</div>' +
+'<div style="font-size:13px;color:#b8c4d0;">Seeker view</div></div>' +
+'<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">';
 if (_generatedLocationRiddle) {
-html += ‘<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">’ +
-‘<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">’ +
-‘<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>’ +
-pvBtn(‘loc’, _generatedLocationRiddle) +
-‘</div>’ +
-‘<div style="font-size:17px;color:#fff;line-height:1.6;">’ + _generatedLocationRiddle + “</div></div>”;
+html += '<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">' +
+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+'<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>' +
+pvBtn('loc', _generatedLocationRiddle) +
+'</div>' +
+'<div style="font-size:17px;color:#fff;line-height:1.6;">' + _generatedLocationRiddle + "</div></div>";
 }
 (_generatedClues || []).forEach(function(clue, i) {
 var isFinal = i === _hsClueCount - 1;
-var label = isFinal ? “Final Clue” : “Clue “ + (i+1);
-var key = ‘clue’ + i;
-html += ‘<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">’ +
-‘<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">’ +
-‘<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">’ + label + “</div>” +
-pvBtn(key, clue.text || ‘’) +
-‘</div>’ +
-‘<div style=“font-size:17px;color:#fff;line-height:1.6;margin-bottom:’ + (clue.question && !isFinal ? “10px” : “0”) + ‘;”>’ + (clue.text || “”) + “</div>” +
-(clue.question && !isFinal ? ‘<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">’ + clue.question + “</div>” : “”) +
-(clue.answer && !isFinal ? ‘<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">’ + clue.answer + “</span></div>” : “”) +
-“</div>”;
+var label = isFinal ? "Final Clue" : "Clue " + (i+1);
+var key = 'clue' + i;
+html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">' +
+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+'<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">' + label + "</div>" +
+pvBtn(key, clue.text || '') +
+'</div>' +
+'<div style="font-size:17px;color:#fff;line-height:1.6;margin-bottom:' + (clue.question && !isFinal ? "10px" : "0") + ';">' + (clue.text || "") + "</div>" +
+(clue.question && !isFinal ? '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:15px;color:#b8c4d0;margin-bottom:6px;">' + clue.question + "</div>" : "") +
+(clue.answer && !isFinal ? '<div style="font-size:12px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">' + clue.answer + "</span></div>" : "") +
+"</div>";
 });
-html += “</div>” +
-‘<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">’ +
-‘<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:17px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>’ +
-‘<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;">Confirm & Save →</button>’ +
-“</div>”;
+html += "</div>" +
+'<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">' +
+'<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:17px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>' +
+'<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;">Confirm & Save →</button>' +
+"</div>";
 sheet.innerHTML = html;
 }
 
 function hsEditFromPreview() {
 if (window.speechSynthesis) window.speechSynthesis.cancel();
 _hsCurrent = _hsClueCount;
-var sheet = document.querySelector(”.hs-modal-sheet”);
+var sheet = document.querySelector(".hs-modal-sheet");
 sheet.innerHTML =
-‘<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>’ +
-‘<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>’ +
-‘<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>’ +
-‘<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>’ +
-‘<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>’ +
-‘<div class="hs-nav" id="hs-nav"></div>’;
+'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
+'<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;"><div style="font-size:10px;color:rgba(184,196,208,.4);letter-spacing:1px;white-space:nowrap;">CLUES</div><div class="hs-tabs" id="hs-tabs" style="display:flex;gap:4px;flex:1;"></div></div>' +
+'<div style="padding:10px 12px 0;flex-shrink:0;max-height:42vh;"><div class="hs-radar-wrap" id="hs-radar-wrap" style="width:100%;max-height:42vh;overflow:hidden;"></div></div>' +
+'<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
+'<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
+'<div class="hs-nav" id="hs-nav"></div>';
 renderHsModal();
 }
 
@@ -4218,38 +4218,38 @@ if (window.speechSynthesis) window.speechSynthesis.cancel();
 if (_generatedClues) {
 _generatedClues.forEach(function(cl, i) {
 if (_hsData.clues[i]) {
-_hsData.clues[i].generatedText = cl.text || “”;
-_hsData.clues[i].generatedQuestion = cl.question || “”;
-_hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || “”;
+_hsData.clues[i].generatedText = cl.text || "";
+_hsData.clues[i].generatedQuestion = cl.question || "";
+_hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || "";
 }
 });
 }
-_hsData.locationRiddle = _generatedLocationRiddle || “”;
+_hsData.locationRiddle = _generatedLocationRiddle || "";
 closeHsModal();
 // Save immediately after confirming so refresh preserves everything
 saveFormState();
-showToast(“✓ Clues saved!”, “success”);
+showToast("✓ Clues saved!", "success");
 }
 
 function hsSetAction(actionId) {
 var idx = _hsCurrent - 1;
 if (idx < 0) return;
-if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:’’, question:’’, answer:’’, action:’’ };
+if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
 _hsData.clues[idx].action = actionId;
 renderHsModal(); // re-render so button updates and fields appear
 }
 
 function buildHsText() {
 var parts = [];
-if (_hsData.location) parts.push(’Location: ’ + _hsData.location);
-if (_hsData.startingPoint) parts.push(‘Starting point: ’ + _hsData.startingPoint);
+if (_hsData.location) parts.push('Location: ' + _hsData.location);
+if (_hsData.startingPoint) parts.push('Starting point: ' + _hsData.startingPoint);
 _hsData.clues.forEach(function(cl, i) {
 if (cl.hint) {
 var action = HS_ACTIONS.find(function(a){ return a.id === cl.action; });
-parts.push(‘Clue ’ + (i+1) + ’ [’ + (action ? action.label : ‘Walk towards’) + ‘]: ’ + cl.hint);
+parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + ']: ' + cl.hint);
 }
 });
-return parts.join(’\n’);
+return parts.join('\n');
 }
 // Photo handler
 function handleHsPhoto(input) {
@@ -4258,12 +4258,12 @@ var file = input.files[0];
 var reader = new FileReader();
 reader.onload = function(e) {
 // Update step1 photo preview
-var img = document.getElementById(‘hs-photo-img’);
+var img = document.getElementById('hs-photo-img');
 if (img) img.src = e.target.result;
-var placeholder = document.getElementById(‘photo-placeholder-s1’);
-var preview = document.getElementById(‘photo-preview-s1’);
-if (placeholder) placeholder.style.display = ‘none’;
-if (preview) preview.style.display = ‘block’;
+var placeholder = document.getElementById('photo-placeholder-s1');
+var preview = document.getElementById('photo-preview-s1');
+if (placeholder) placeholder.style.display = 'none';
+if (preview) preview.style.display = 'block';
 // Store for upload
 window._hsPhotoDataUrl = e.target.result;
 // Enable Next if code is also generated
