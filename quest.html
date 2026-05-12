@@ -555,7 +555,7 @@ async function submitAnswer(clueNumber,userAnswer,correctAnswer){
   var isCorrect=norm===corr||(norm.length>1&&corr.includes(norm))||(corr.length>1&&norm.includes(corr));
   if(isCorrect){
     showToast('Correct! Unlocking next clue...','success');var inp=document.getElementById('qa-input-'+clueNumber);if(inp)inp.value='';
-    await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0});await unlockNextClue(clueNumber);renderHunt();renderClues();
+    await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0,solved:true});_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},{solved:true});await unlockNextClue(clueNumber);renderHunt();renderClues();
   }else{
     var nw=(attempt.wrong_count||0)+1;showToast(["Arrr, that's not it!","Wrong, ye scallywag!","Nay! Try again!"][Math.floor(Math.random()*3)],'error');
     var upd={wrong_count:nw};if(nw>=3){var nl=Math.min((attempt.cooldown_level||0)+1,3);upd={wrong_count:0,cooldown_until:new Date(Date.now()+COOLDOWN_MS[nl]).toISOString(),cooldown_level:nl,hints_unlocked:nl};showToast('Too many wrong answers! Rest for '+COOLDOWN_LABELS[nl],'error');}
@@ -585,11 +585,18 @@ function initQuestMap(lat,lng,solved,total){
   var lbl=document.getElementById('q-map-zoom-label');if(lbl)lbl.textContent=ZOOM_LABELS[zIdx];
 }
 function updatePhotoBlur(solved,total){
-  var idx=Math.min(solved,BLUR_PX.length-1),px=BLUR_PX[idx],pct=total>0?solved/total:0;
+  // Scale proportionally so solving the last clue always reaches full reveal
+  var steps=BLUR_PX.length-1;
+  var idx=total>0?Math.round((solved/total)*steps):0;
+  idx=Math.min(idx,steps);
+  var px=BLUR_PX[idx],pct=total>0?solved/total:0;
   function applyBlur(el){if(!el)return;if(px===0){el.style.backdropFilter='none';el.style.webkitBackdropFilter='none';el.style.background='transparent';}else{el.style.backdropFilter='blur('+px+'px)';el.style.webkitBackdropFilter='blur('+px+'px)';el.style.background='rgba(13,11,24,'+(0.1+px*0.015)+')';}};
   applyBlur(document.getElementById('q-photo-blur'));applyBlur(document.getElementById('q-map-blur'));
   var smi=document.getElementById('q-static-map');if(smi){smi.style.transform='scale('+(1+pct*0.8)+')';smi.style.transformOrigin='center center';}
-  var lbl=document.getElementById('q-map-zoom-label');if(lbl)lbl.textContent=ZOOM_LABELS[Math.min(solved,ZOOM_LABELS.length-1)];
+  var zoomIdx=total>0?Math.round((solved/total)*(ZOOM_LEVELS.length-1)):0;
+  zoomIdx=Math.min(zoomIdx,ZOOM_LEVELS.length-1);
+  if(_questMap)_questMap.setZoom(ZOOM_LEVELS[zoomIdx]);
+  var lbl=document.getElementById('q-map-zoom-label');if(lbl)lbl.textContent=ZOOM_LABELS[zoomIdx];
   var dotsEl=document.getElementById('q-photo-dots');if(!dotsEl)return;var dots='';for(var i=0;i<total;i++)dots+='<div style="width:5px;height:5px;border-radius:50%;background:'+(i<solved?'#4ade80':'rgba(255,255,255,.15)')+'"></div>';dotsEl.innerHTML=dots;
 }
 
@@ -837,8 +844,14 @@ function renderClues(){
   var locConfirmed2=window._locationConfirmed||false;
 
   html+=currentClues.map(function(c,idx){
-    var isSolved=c._solved||false;
-    var prevSolved=idx===0?true:(currentClues[idx-1]&&currentClues[idx-1]._solved);
+    // A clue is considered solved when the seeker answered correctly — tracked
+    // in _attemptCache as solved:true, OR by the next clue having been unlocked
+    // (reveal_at <= now). _solved is never set on the raw DB object so we derive it.
+    var attempt=_attemptCache[c.clue_number]||{};
+    var isSolved=!!attempt.solved||(idx<currentClues.length-1&&new Date(currentClues[idx+1]&&currentClues[idx+1].reveal_at||'9999')<=now);
+    var prevUnlocked=idx===0?true:new Date((currentClues[idx-1]&&currentClues[idx-1].reveal_at)||'9999')<=now;
+    var prevAttempt=idx===0?null:(_attemptCache[(currentClues[idx-1]&&currentClues[idx-1].clue_number)]||{});
+    var prevSolved=idx===0?true:(!!prevAttempt.solved||prevUnlocked);
     var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolved);
     var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
     var mapInfo=null,photoUrl=null;
