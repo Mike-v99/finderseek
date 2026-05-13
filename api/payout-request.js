@@ -77,7 +77,7 @@ export default async function handler(req, res) {
 
     if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
     // Duplicate claim guard — if already processing/sent, block double-payout
-    if (hunt.status === 'won' || hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
+    if (hunt.status === 'ended' || hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
     }
 
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
       payout_method: method,
       payout_destination: destination,
       payout_status: 'processing',
-      status: 'won',
+      status: 'ended',
     }).eq('id', huntId);
 
     // ── Try PayPal Payouts API ────────────────────────────────
