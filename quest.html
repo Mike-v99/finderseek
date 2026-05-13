@@ -189,6 +189,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <button onclick="document.getElementById('win-step-2').style.display='none';document.getElementById('win-step-1').style.display='block';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
     </div>
 
+    <!-- Step sign-in: shown when seeker isn't logged in at payout time -->
+    <div id="win-step-signin" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:40px;margin-bottom:8px;">🔑</div>
+        <div style="font-size:21px;font-weight:400;color:#fff;margin-bottom:6px;">One last step</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Enter your email to receive your <span style="color:#4ade80;font-weight:500;">$<span id="win-signin-amount">0</span></span> prize. We'll send a magic link — no password needed.</div>
+      </div>
+      <input id="win-signin-email" type="email" inputmode="email" placeholder="your@email.com" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:13px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;"/>
+      <div id="win-signin-msg" style="font-size:13px;color:rgba(74,222,128,.7);text-align:center;min-height:18px;margin-bottom:8px;"></div>
+      <button onclick="winSignIn()" id="win-signin-btn" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:10px;">✨ Send Magic Link</button>
+      <button onclick="document.getElementById('win-step-signin').style.display='none';document.getElementById('win-step-2').style.display='block';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
+    </div>
+
     <!-- Step 3: Confirmed -->
     <div id="win-step-3" style="display:none;text-align:center;">
       <div style="font-size:52px;margin-bottom:14px;">✅</div>
@@ -629,7 +642,7 @@ function updatePhotoBlur(solved,total){
 // ── CONFETTI ─────────────────────────────────────────────────
 function fireConfetti(){if(typeof confetti==='undefined')return;var colors=['#e8a820','#f5c842','#c9890c','#4ade80','#22c55e','#ffffff'];confetti({particleCount:120,spread:90,origin:{y:0.6},colors:colors});setTimeout(function(){confetti({particleCount:60,angle:60,spread:60,origin:{x:0,y:0.7},colors:colors});confetti({particleCount:60,angle:120,spread:60,origin:{x:1,y:0.7},colors:colors});},250);}
 function showWinCelebration(amount){var amt=typeof amount==='number'?amount.toFixed(2):amount;document.getElementById('win-amount').textContent='$'+amt;document.getElementById('win-backdrop').style.display='block';document.getElementById('win-modal').style.display='flex';setTimeout(function(){document.getElementById('win-backdrop').style.opacity='1';document.getElementById('win-inner').style.transform='scale(1)';document.getElementById('win-inner').style.opacity='1';},10);fireConfetti();}
-function closeWinModal(){document.getElementById('win-inner').style.transform='scale(0.9)';document.getElementById('win-inner').style.opacity='0';document.getElementById('win-backdrop').style.opacity='0';setTimeout(function(){document.getElementById('win-modal').style.display='none';document.getElementById('win-backdrop').style.display='none';},400);}
+function closeWinModal(){document.getElementById('win-inner').style.transform='scale(0.9)';document.getElementById('win-inner').style.opacity='0';document.getElementById('win-backdrop').style.opacity='0';setTimeout(function(){document.getElementById('win-modal').style.display='none';document.getElementById('win-backdrop').style.display='none';window.location.href='index.html';},400);}
 function showFundedCelebration(prizeValueCents){
   var dollars=Math.max(1,Math.round((prizeValueCents||0)/100));
   document.getElementById('fund-amount').textContent='$'+dollars;
@@ -816,8 +829,9 @@ async function loadQuest(){
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
-    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<3600000){if(currentHunt.winner_id){// Already won — clear stale pending claim
-try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}}}else if(pending&&claimAge>=3600000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
+    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<3600000){if(currentHunt.winner_id){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Signed in — complete claim automatically
+showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}else{// Not signed in — show win modal directly so they can sign in inline
+window._winHuntId=pending.huntId;window._winAmount=pending.amount||((currentHunt.prize_value||0)/100).toFixed(2);setTimeout(function(){showWinCelebration(window._winAmount);},500);}}}else if(pending&&claimAge>=3600000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
@@ -978,8 +992,16 @@ async function claimPrize(){
     return;
   }
   // PIN correct — save pending claim for recovery
-  try{localStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,savedAt:Date.now()}));}catch(e){}
-  var token=getToken();if(!token){showToast('Prize unlocked! Sign in to receive it.','success');setTimeout(function(){window.location.href='profile.html?redirect='+encodeURIComponent('quest.html?id='+currentHunt.id);},1200);return;}
+  try{localStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,amount:window._winAmount||((currentHunt.prize_value||0)/100).toFixed(2),savedAt:Date.now()}));}catch(e){}
+  var token=getToken();
+  if(!token){
+    // Not signed in — show win modal immediately, gate sign-in at payout step
+    window._winHuntId=currentHunt.id;
+    window._winUserId=null;
+    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
+    showWinCelebration(window._winAmount);
+    return;
+  }
   btn.disabled=true;btn.textContent='Verifying...';
   try{
     var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
@@ -1004,6 +1026,31 @@ async function claimPrize(){
 
 var _selectedPayoutMethod=null;
 
+// Called when seeker taps "Claim My Prize" but isn't signed in yet
+async function winSignIn(){
+  var email=(document.getElementById('win-signin-email').value||'').trim();
+  if(!email||!email.includes('@')){document.getElementById('win-signin-msg').textContent='Enter a valid email address.';return;}
+  var btn=document.getElementById('win-signin-btn');
+  btn.disabled=true;btn.textContent='Sending...';
+  document.getElementById('win-signin-msg').textContent='';
+  try{
+    var r=await fetch(SB+'/auth/v1/otp',{
+      method:'POST',
+      headers:{'apikey':KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,create_user:true,options:{emailRedirectTo:window.location.href}})
+    });
+    if(r.ok){
+      document.getElementById('win-signin-msg').textContent='✓ Magic link sent! Tap it in your email to complete your claim.';
+      btn.textContent='Link sent ✓';
+    } else {
+      throw new Error('Could not send link');
+    }
+  }catch(e){
+    document.getElementById('win-signin-msg').textContent='Error: '+e.message;
+    btn.disabled=false;btn.textContent='✨ Send Magic Link';
+  }
+}
+
 function selectPayoutMethod(method){
   _selectedPayoutMethod=method;
   var icon=method==='paypal'?'🅿':'💙';
@@ -1015,7 +1062,13 @@ function selectPayoutMethod(method){
   document.getElementById('win-payout-dest').placeholder=placeholder;
   document.getElementById('win-payout-dest').value='';
   document.getElementById('win-step-1').style.display='none';
-  document.getElementById('win-step-2').style.display='block';
+  // If not signed in, show inline sign-in step first
+  if(!getToken()){
+    document.getElementById('win-signin-amount').textContent=(window._winAmount||'0');
+    document.getElementById('win-step-signin').style.display='block';
+  } else {
+    document.getElementById('win-step-2').style.display='block';
+  }
 }
 
 async function submitPayoutRequest(){
