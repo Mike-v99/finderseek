@@ -275,7 +275,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="text-align:right;">
         <!-- LIVE + pin row at TOP -->
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:6px;">
-          <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;"><div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div><div style="font-size:13px;color:#4ade80;font-weight:500;letter-spacing:1px;">LIVE</div></div>
+          <div id="q-live-badge" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:3px 10px;"><div style="width:5px;height:5px;border-radius:50%;background:#4ade80;"></div><div style="font-size:13px;color:#4ade80;font-weight:500;letter-spacing:1px;">LIVE</div></div>
           <div id="q-save-btn" style="width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;" onclick="toggleSaveQuest()"><img id="q-save-icon" src="/pin-icon.png" style="width:18px;height:18px;object-fit:contain;" onerror="this.outerHTML='<svg width=14 height=14 viewBox=\'0 0 24 24\' fill=\'#ef4444\' stroke=\'none\'><path d=\'M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z\'/></svg>'"/></div>
         </div>
         <div id="q-location" style="font-size:17px;color:rgba(255,255,255,.5);">Loading…</div>
@@ -843,6 +843,25 @@ function renderHunt(){
   var styleEl=document.getElementById('q-pirate-style');if(styleEl)styleEl.textContent=(currentClues.length||'?')+' clues · '+(h.clue_persona||h.persona||'Pirate')+' style';
   document.getElementById('q-status-label').textContent='QUEST';
   var qidEl=document.getElementById('q-quest-id');if(qidEl&&h.quest_id)qidEl.textContent=h.quest_id;
+  // Status badge + interaction gating
+  var liveBadge=document.getElementById('q-live-badge');
+  var claimSection=document.getElementById('q-claim-section');
+  var isEnded=h.status==='ended'||h.status==='cancelled';
+  var isWon=!!(h.winner_id);
+  if(isWon){
+    if(liveBadge)liveBadge.innerHTML='<div style="font-size:13px;color:#4ade80;font-weight:500;letter-spacing:1px;">WON 🏆</div>';
+    if(liveBadge)liveBadge.style.background='rgba(74,222,128,.08)';
+    if(liveBadge)liveBadge.style.border='1px solid rgba(74,222,128,.3)';
+    if(claimSection)claimSection.style.display='none';
+    // Show won banner instead
+    var wonBanner=document.getElementById('q-won-banner');
+    if(!wonBanner){var b=document.createElement('div');b.id='q-won-banner';b.style.cssText='background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:13px;padding:14px 16px;text-align:center;margin-bottom:12px;font-size:17px;color:#4ade80;';b.textContent='🏆 This quest has been won!';if(claimSection&&claimSection.parentNode)claimSection.parentNode.insertBefore(b,claimSection);}
+  } else if(isEnded){
+    if(liveBadge)liveBadge.innerHTML='<div style="font-size:13px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:1px;">ENDED</div>';
+    if(liveBadge)liveBadge.style.background='rgba(255,255,255,.04)';
+    if(liveBadge)liveBadge.style.border='1px solid rgba(255,255,255,.1)';
+    if(claimSection)claimSection.style.display='none';
+  }
   if(h.ends_at){var endDate=new Date(h.ends_at),today=new Date(),sameDay=endDate.toDateString()===today.toDateString();document.getElementById('q-end-label').textContent=sameDay?'Expires today at '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Expires '+endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
   var unlocked=Object.values(_attemptCache).filter(function(a){return a.solved;}).length;
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;var sl=document.getElementById('q-solved-label');if(sl)sl.textContent=unlocked+' of '+currentClues.length+' solved';
@@ -871,6 +890,8 @@ async function togglePin(){
 function renderClues(){
   var container=document.getElementById('q-clues-container'),now=new Date();
   if(currentClues.length===0){container.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">No clues yet for this quest.</div>';return;}
+  // Ended or won quests — show clues as read-only, no Q&A input
+  var questEnded=currentHunt&&(currentHunt.status==='ended'||currentHunt.status==='cancelled'||!!currentHunt.winner_id);
 
   var html='';
   var unlocked=0;
@@ -917,10 +938,10 @@ function renderClues(){
       // Show hunt photo immediately when final clue is unlocked (no answer needed).
       var hasAnswer=!!(c.clue_answer||'').trim();
       var huntPhotoBlock=isFinal&&currentHunt.photo_url?'<img src="'+currentHunt.photo_url+'" style="width:100%;border-radius:12px;margin-top:14px;border:1px solid rgba(232,168,32,.35);" alt="Hiding spot photo"/>':'';
-      if(!isFinal&&!isSolved){
+      if(!isFinal&&!isSolved&&!questEnded){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
-      } else if(isFinal&&hasAnswer&&!isSolved){
+      } else if(isFinal&&hasAnswer&&!isSolved&&!questEnded){
         // Quest master manually added a final answer — show Q&A for it
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
