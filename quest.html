@@ -853,14 +853,29 @@ function renderHunt(){
     if(liveBadge)liveBadge.style.background='rgba(74,222,128,.08)';
     if(liveBadge)liveBadge.style.border='1px solid rgba(74,222,128,.3)';
     if(claimSection)claimSection.style.display='none';
-    // Show won banner instead
     var wonBanner=document.getElementById('q-won-banner');
-    if(!wonBanner){var b=document.createElement('div');b.id='q-won-banner';b.style.cssText='background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:13px;padding:14px 16px;text-align:center;margin-bottom:12px;font-size:17px;color:#4ade80;';b.textContent='🏆 This quest has been won!';if(claimSection&&claimSection.parentNode)claimSection.parentNode.insertBefore(b,claimSection);}
+    if(!wonBanner){
+      var b=document.createElement('div');b.id='q-won-banner';
+      b.style.cssText='background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:13px;padding:14px 16px;text-align:center;margin-bottom:12px;';
+      b.innerHTML='<div style="font-size:28px;margin-bottom:6px;">🏆</div><div style="font-size:18px;color:#4ade80;font-weight:500;">This quest has been won!</div><div id="q-winner-name" style="font-size:14px;color:rgba(255,255,255,.4);margin-top:4px;">Loading winner...</div><div style="font-size:13px;color:rgba(255,255,255,.2);margin-top:6px;">Answers revealed below</div>';
+      if(claimSection&&claimSection.parentNode)claimSection.parentNode.insertBefore(b,claimSection);
+      fetch(SB+'/rest/v1/profiles?id=eq.'+h.winner_id+'&select=username',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}})
+        .then(function(r){return r.json();})
+        .then(function(d){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='Found by '+(d&&d[0]&&d[0].username?d[0].username:'a lucky seeker');})
+        .catch(function(){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='';});
+    }
   } else if(isEnded){
     if(liveBadge)liveBadge.innerHTML='<div style="font-size:13px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:1px;">ENDED</div>';
     if(liveBadge)liveBadge.style.background='rgba(255,255,255,.04)';
     if(liveBadge)liveBadge.style.border='1px solid rgba(255,255,255,.1)';
     if(claimSection)claimSection.style.display='none';
+    var endedBanner=document.getElementById('q-ended-banner');
+    if(!endedBanner){
+      var eb=document.createElement('div');eb.id='q-ended-banner';
+      eb.style.cssText='background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:14px 16px;text-align:center;margin-bottom:12px;';
+      eb.innerHTML='<div style="font-size:28px;margin-bottom:6px;">⏱️</div><div style="font-size:18px;color:rgba(255,255,255,.5);">This quest ended with no winner</div><div style="font-size:13px;color:rgba(255,255,255,.25);margin-top:4px;">The hiding spot has been revealed below</div>';
+      if(claimSection&&claimSection.parentNode)claimSection.parentNode.insertBefore(eb,claimSection);
+    }
   }
   if(h.ends_at){var endDate=new Date(h.ends_at),today=new Date(),sameDay=endDate.toDateString()===today.toDateString();document.getElementById('q-end-label').textContent=sameDay?'Expires today at '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Expires '+endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+endDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
   var unlocked=Object.values(_attemptCache).filter(function(a){return a.solved;}).length;
@@ -921,7 +936,8 @@ function renderClues(){
     // All clues have reveal_at = startsAt (no time stagger). Only gate is prev clue solved.
     var prevClue=idx>0?currentClues[idx-1]:null;
     var prevSolvedInCache=idx===0?true:!!(_attemptCache[prevClue&&prevClue.clue_number]||{}).solved;
-    var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolvedInCache);
+    // Ended/won quests: show all clues regardless of progress
+    if(questEnded) canShow=true;
     var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
     var mapInfo=null,photoUrl=null;
     if(c.is_photo&&c.photo_url){if(c.photo_url.indexOf('map:')===0){mapInfo={radiusFt:parseInt(c.photo_url.split(':')[1])};}else{photoUrl=c.photo_url;mapInfo={radiusFt:100};}}
@@ -934,15 +950,15 @@ function renderClues(){
       var attempt=_attemptCache[c.clue_number]||{};
       var cr=getCooldownRemaining(attempt.cooldown_until),ht=getHintText(attempt.hints_unlocked||0),wc=attempt.wrong_count||0;
       var qaBlock='';
-      // Final clue: no Q&A — the PIN claim section below is the final action.
-      // Show hunt photo immediately when final clue is unlocked (no answer needed).
       var hasAnswer=!!(c.clue_answer||'').trim();
       var huntPhotoBlock=isFinal&&currentHunt.photo_url?'<img src="'+currentHunt.photo_url+'" style="width:100%;border-radius:12px;margin-top:14px;border:1px solid rgba(232,168,32,.35);" alt="Hiding spot photo"/>':'';
-      if(!isFinal&&!isSolved&&!questEnded){
+      if(questEnded&&hasAnswer){
+        // Revealed answer — show green check + answer text
+        qaBlock='<div style="margin-top:12px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;"><div style="font-size:20px;">✓</div><div><div style="font-size:13px;color:rgba(74,222,128,.6);letter-spacing:.5px;margin-bottom:2px;">ANSWER</div><div style="font-size:17px;color:#4ade80;font-weight:500;">'+escapeHtml(c.clue_answer)+'</div></div></div>';
+      } else if(!isFinal&&!isSolved&&!questEnded){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       } else if(isFinal&&hasAnswer&&!isSolved&&!questEnded){
-        // Quest master manually added a final answer — show Q&A for it
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
