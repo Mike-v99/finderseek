@@ -928,12 +928,13 @@ function timeAgo(iso) {
   var now = new Date();
   var t = new Date(iso);
   var diff = now - t;
+  if (diff < 60000) return 'just now';
   var h = Math.floor(diff / 3600000);
   var d = Math.floor(h / 24);
   if (d > 0) return d + 'd ago';
   if (h > 0) return h + 'h ago';
   var m = Math.floor(diff / 60000);
-  return Math.max(0, m) + 'm ago';
+  return m + 'm ago';
 }
 
 function renderQuestRow(q, status) {
@@ -942,7 +943,10 @@ function renderQuestRow(q, status) {
   var meta = '';
   if (status === 'active')        meta = 'Ends ' + timeUntil(q.ends_at);
   else if (status === 'scheduled') meta = 'Starts ' + timeUntil(q.starts_at);
-  else if (status === 'completed') meta = q.found_at ? 'Found ' + timeAgo(q.found_at) : 'Expired ' + timeAgo(q.ends_at);
+  else if (status === 'completed') {
+    var wonAt = q.found_at || (q.winner_id ? q.updated_at : null);
+    meta = wonAt ? 'Won ' + timeAgo(wonAt) : (q.ends_at && new Date(q.ends_at) < new Date() ? 'Expired ' + timeAgo(q.ends_at) : 'Ended');
+  }
 
   var pinBadge = q.is_pinned ? '<div class="pin-badge">📌 Pinned</div>' : '';
 
@@ -971,7 +975,7 @@ async function fetchQuests(status) {
   }
   // Only return funded escrow OR honor-payment hunts (don't show unpaid drafts)
   // Plus: select specific columns we need
-  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,winner_id,escrow_status,payment_type,is_pinned,quest_id,state_code,pirate_id';
+  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,updated_at,winner_id,escrow_status,payment_type,is_pinned,quest_id,state_code,pirate_id';
   try {
     var r = await fetch(SB + '/rest/v1/hunts' + query + select, {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
