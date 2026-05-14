@@ -3789,8 +3789,15 @@ function renderHsModal() {
   var total = _hsClueCount;
   var cur = _hsCurrent;
 
+  // Scope all getElementById calls to the active modal sheet so duplicate IDs
+  // (static HTML vs hsEditFromPreview rebuild) don't cause the wrong element to be written.
+  function hsEl(id) {
+    var sheet = document.querySelector('.hs-modal-sheet');
+    return sheet ? sheet.querySelector('#' + id) : document.getElementById(id);
+  }
+
   // ── Full-width rectangular map ──────────────────────────
-  var actionArea = document.getElementById('hs-action-area');
+  var actionArea = hsEl('hs-action-area');
   if (cur === 0) {
     actionArea.innerHTML = '';
   } else if (cur === total) {
@@ -3801,7 +3808,7 @@ function renderHsModal() {
   }
 
   // ── Full-width rectangular map with radar rings overlay ──
-  var radarWrap = document.getElementById('hs-radar-wrap');
+  var radarWrap = hsEl('hs-radar-wrap');
   var mapContent = '';
   if (locationConfirmed && selectedLat && selectedLng) {
     var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
@@ -3861,7 +3868,7 @@ function renderHsModal() {
   radarWrap.innerHTML = mapContent + ringsHtml;
 
   // ── Panel ─────────────────────────────────────────────────
-  var panel = document.getElementById('hs-panel');
+  var panel = hsEl('hs-panel');
   if (cur === 0) {
     // Map picker button — pick if no location, change if already set
     var mapPickerHtml = locationConfirmed ?
@@ -3954,7 +3961,7 @@ panel.innerHTML = actionPickHtml + fieldsHtml;
 }
 
 // ── Nav ───────────────────────────────────────────────────
-var nav = document.getElementById('hs-nav');
+var nav = hsEl('hs-nav');
 // isHsPageComplete: returns true only when the current panel's required fields are filled.
 // Page 0: needs location text + starting point + confirmed map pin.
 // Pages 1..N-1: need clue hint + action + question + answer.
@@ -3992,11 +3999,12 @@ nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">�
 // Live-revalidate as the user types so the Next button enables/disables in real time.
 // Without this, the button only updates on full re-render (e.g. when action changes).
 setTimeout(function() {
-var inputs = document.querySelectorAll('.hs-modal-sheet textarea, .hs-modal-sheet input[type="text"]');
+var _sheet = document.querySelector('.hs-modal-sheet');
+var inputs = _sheet ? _sheet.querySelectorAll('textarea, input[type="text"]') : [];
 inputs.forEach(function(el) {
 el.addEventListener('input', function() {
 saveHsPanel();
-var nextBtn = document.querySelector('#hs-nav .hs-nav-next');
+var nextBtn = _sheet ? _sheet.querySelector('#hs-nav .hs-nav-next') : document.querySelector('#hs-nav .hs-nav-next');
 if (!nextBtn) return;
 if (isHsPageComplete()) { nextBtn.removeAttribute('disabled'); }
 else { nextBtn.setAttribute('disabled', ''); }
