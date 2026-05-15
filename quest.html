@@ -307,7 +307,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(10,8,26,.55) 100%);pointer-events:none;"></div>
     <!-- Bottom label -->
     <div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(0deg,rgba(10,8,26,.9),transparent);pointer-events:none;">
-      <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.35);">HUNT AREA · 5 MILE RADIUS</div>
+      <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.35);">HUNT AREA · 1.5 MILE RADIUS</div>
     </div>
   </div>
   <!-- hidden compat elements -->
@@ -624,11 +624,11 @@ function initQuestMap(lat,lng,solved,total){
     {featureType:'transit',elementType:'geometry',stylers:[{color:'#111020'}]}
   ];
   _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:13,disableDefaultUI:true,gestureHandling:'none',styles:darkStyles});
-  // 5-mile glowing green ring
-  var r=8046;
+  // 1.5-mile glowing green ring — fits within zoom 13 viewport
+  var r=2414;
   new google.maps.Circle({map:_questMap,center:{lat:lat,lng:lng},radius:r,strokeColor:'#4ade80',strokeOpacity:.9,strokeWeight:2.5,fillColor:'#4ade80',fillOpacity:.04});
   // Outer soft glow
-  new google.maps.Circle({map:_questMap,center:{lat:lat,lng:lng},radius:r*1.05,strokeColor:'#4ade80',strokeOpacity:.18,strokeWeight:1,fillOpacity:0});
+  new google.maps.Circle({map:_questMap,center:{lat:lat,lng:lng},radius:r*1.06,strokeColor:'#4ade80',strokeOpacity:.2,strokeWeight:1,fillOpacity:0});
 }
 function updatePhotoBlur(solved,total){
   // Scale proportionally so solving the last clue always reaches full reveal
