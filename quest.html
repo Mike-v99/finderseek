@@ -930,8 +930,9 @@ function renderClues(){
     // in _attemptCache as solved:true, OR by the next clue having been unlocked
     // (reveal_at <= now). _solved is never set on the raw DB object so we derive it.
     var attempt=_attemptCache[c.clue_number]||{};
-    var nextClue=currentClues[idx+1];
-    var isSolved=!!attempt.solved||(nextClue&&new Date(nextClue.reveal_at||'9999')<=now);
+    // isSolved: only trust the attempt cache — all clues share reveal_at=startsAt now,
+    // so reveal_at<=now is always true and no longer a valid solved signal.
+    var isSolved=!!attempt.solved;
     // canShow: clue #1 always shows once location confirmed.
     // All clues have reveal_at = startsAt (no time stagger). Only gate is prev clue solved.
     var prevClue=idx>0?currentClues[idx-1]:null;
