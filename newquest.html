@@ -2237,6 +2237,7 @@ function saveFormState() {
       staticMapUrl: window._staticMapUrl || '',
       generatedClues: _generatedClues || null,
       generatedLocationRiddle: _generatedLocationRiddle || '',
+      savedAt: Date.now(),
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
     // Save photo together with state — they must stay in sync.
@@ -2446,6 +2447,18 @@ document.addEventListener('DOMContentLoaded', async function(){
   var hasStep = urlParams.get('step');
   var hasPending = !!localStorage.getItem('fs_pending_quest');
   var hasFormState = !!localStorage.getItem('fs_newquest_form');
+  // Treat form state older than 24 hours as stale — clear it and send home
+  if (hasFormState) {
+    try {
+      var fs = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
+      var age = fs.savedAt ? (Date.now() - fs.savedAt) : Infinity;
+      if (age > 86400000) { // 24 hours
+        localStorage.removeItem('fs_newquest_form');
+        localStorage.removeItem('fs_newquest_form_photo');
+        hasFormState = false;
+      }
+    } catch(e) { hasFormState = false; }
+  }
   var hasAbandon = !!localStorage.getItem('fs_newquest_abandon');
   if (!fromApp && !hasStep && !hasPending && !hasFormState && !hasAbandon) {
     window.location.replace('index.html');
