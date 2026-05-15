@@ -958,12 +958,15 @@ function renderClues(){
         var clueZoom=12+Math.round(cluePct*6); // 13→18 scaled across all clues
         clueZoom=Math.min(clueZoom,18);
         var clueZoomLabel=clueZoom<=13?'Neighborhood':clueZoom<=14?'Streets':clueZoom<=15?'Block level':clueZoom<=16?'Paths':clueZoom<=17?'Near ground':'Ground level';
-        var radiusFt2=isFinal?100:mapInfo?mapInfo.radiusFt:5280;
+        var radiusFt2=isFinal?100:mapInfo?mapInfo.radiusFt:2640; // default 0.5mi if no mapInfo
+        // Scale radius to fit nicely within the thumbnail at the given zoom level
+        // At zoom 13 (~0.3mi viewport half-width) use 0.25mi; at zoom 18 use 100ft
+        var ringRadiusM=clueZoom>=18?30:clueZoom>=17?60:clueZoom>=16?120:clueZoom>=15?250:clueZoom>=14?500:800;
         var mapCell2='';
         if(currentHunt.lat&&currentHunt.lng){
           // Map cell — no blur, just zoom progression
           mapCell2='<div style="position:relative;overflow:hidden;border-radius:10px;background:#0a0f1a;">'
-            +'<div id="cmap-'+c.clue_number+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+radiusFt2+'" data-zoom="'+clueZoom+'" style="width:100%;height:120px;"></div>'
+            +'<div id="cmap-'+c.clue_number+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+radiusFt2+'" data-zoom="'+clueZoom+'" data-ring-m="'+ringRadiusM+'" style="width:100%;height:120px;"></div>'
             +'<div style="position:absolute;bottom:0;left:0;right:0;padding:4px 8px;background:linear-gradient(0deg,rgba(10,8,26,.9),transparent);">'
             +'<div style="font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;">MAP &bull; '+clueZoomLabel+'</div>'
             +'</div></div>';
@@ -1003,7 +1006,7 @@ function renderClues(){
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;var sl=document.getElementById('q-solved-label');if(sl)sl.textContent=unlocked+' of '+currentClues.length+' solved';
   updatePhotoBlur(unlocked,currentClues.length);
   wireQaButtons();
-  setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=el.dataset.zoom?parseInt(el.dataset.zoom):(radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18);var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
+  setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=el.dataset.zoom?parseInt(el.dataset.zoom):(radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18);var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:el.dataset.ringM?parseFloat(el.dataset.ringM):radiusM,strokeColor:'#4ade80',strokeOpacity:.9,strokeWeight:2.5,fillColor:'#4ade80',fillOpacity:.05});});},50);
 }
 
 // ── GPS LOCATION VERIFICATION ────────────────────────────
