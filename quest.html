@@ -936,6 +936,7 @@ function renderClues(){
     // All clues have reveal_at = startsAt (no time stagger). Only gate is prev clue solved.
     var prevClue=idx>0?currentClues[idx-1]:null;
     var prevSolvedInCache=idx===0?true:!!(_attemptCache[prevClue&&prevClue.clue_number]||{}).solved;
+    var canShow=(locRequired?locConfirmed2:true)&&(idx===0||prevSolvedInCache);
     // Ended/won quests: show all clues regardless of progress
     if(questEnded) canShow=true;
     var isFinal=idx===currentClues.length-1,isFinder=c.is_finder===true;
