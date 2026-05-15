@@ -922,10 +922,9 @@ function renderClues(){
       var locRevealStrip='';
       var locMapCell='',locPhotoCell='';
       if(currentHunt.lat&&currentHunt.lng){
-        var blurOv0=clueBlurPx0>0?'<div style="position:absolute;inset:0;backdrop-filter:blur('+clueBlurPx0+'px);-webkit-backdrop-filter:blur('+clueBlurPx0+'px);background:rgba(13,11,24,'+(0.1+clueBlurPx0*0.012)+');"></div>':'';
+        // Map cell — no blur, clean map
         locMapCell='<div style="position:relative;overflow:hidden;border-radius:10px;background:#0a0f1a;">'
           +'<div id="cmap-0" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="8046" data-zoom="'+clueZoom0+'" data-ring-m="'+ringR0+'" style="width:100%;height:120px;"></div>'
-          +blurOv0
           +'<div style="position:absolute;bottom:0;left:0;right:0;padding:4px 8px;background:linear-gradient(0deg,rgba(10,8,26,.9),transparent);">'
           +'<div style="font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;">MAP &bull; City view</div>'
           +'</div></div>';
