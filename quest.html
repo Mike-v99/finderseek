@@ -946,14 +946,48 @@ function renderClues(){
 
     if(canShow){
       unlocked++;
-      var mapLabel='',mapBlock='';
-      if(mapInfo&&currentHunt.lat&&currentHunt.lng){var label=mapInfo.radiusFt>=1000?(Math.round(mapInfo.radiusFt/528)/10)+' mile radius':mapInfo.radiusFt+' ft radius';mapLabel='<div style="font-size:18px;color:#e8a820;margin:10px 0 6px;">📍 '+label+'</div>';mapBlock='<div id="clue-map-'+c.id+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+mapInfo.radiusFt+'" style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-top:8px;border:1px solid rgba(232,168,32,.25);"></div>';}
-      var photoBlock=photoUrl?'<img src="'+photoUrl+'" style="width:100%;border-radius:12px;margin-top:10px;border:1px solid rgba(232,168,32,.25);" alt="Hiding spot"/>':'';
       var attempt=_attemptCache[c.clue_number]||{};
       var cr=getCooldownRemaining(attempt.cooldown_until),ht=getHintText(attempt.hints_unlocked||0),wc=attempt.wrong_count||0;
       var qaBlock='';
       var hasAnswer=!!(c.clue_answer||'').trim();
-      var huntPhotoBlock=isFinal&&currentHunt.photo_url?'<img src="'+currentHunt.photo_url+'" style="width:100%;border-radius:12px;margin-top:14px;border:1px solid rgba(232,168,32,.35);" alt="Hiding spot photo"/>':'';
+
+      // Progressive map+photo strip shown at bottom of each solved clue.
+      // Blur and zoom scale by clue_number/total using the same BLUR_PX formula.
+      var clueRevealStrip='';
+      var isClueSolved=isSolved||isFinal;
+      if(isClueSolved&&(currentHunt.lat||currentHunt.photo_url)){
+        var cluePct=currentClues.length>0?c.clue_number/currentClues.length:1;
+        var blurIdx=Math.min(Math.round(cluePct*(BLUR_PX.length-1)),BLUR_PX.length-1);
+        var clueBlurPx=BLUR_PX[blurIdx];
+        var zoomIdx=Math.min(Math.round(cluePct*(ZOOM_LEVELS.length-1)),ZOOM_LEVELS.length-1);
+        var clueZoom=ZOOM_LEVELS[zoomIdx];
+        var clueZoomLabel=ZOOM_LABELS[zoomIdx];
+        var radiusFt2=isFinal?100:mapInfo?mapInfo.radiusFt:5280;
+        var mapCell2='';
+        if(currentHunt.lat&&currentHunt.lng){
+          var blurOverlay2=clueBlurPx>0?'<div style="position:absolute;inset:0;backdrop-filter:blur('+clueBlurPx+'px);-webkit-backdrop-filter:blur('+clueBlurPx+'px);background:rgba(13,11,24,'+(0.1+clueBlurPx*0.012)+');"></div>':'';
+          mapCell2='<div style="position:relative;overflow:hidden;border-radius:10px;background:#0a0f1a;">'
+            +'<div id="cmap-'+c.clue_number+'" class="clue-map" data-lat="'+currentHunt.lat+'" data-lng="'+currentHunt.lng+'" data-radius="'+radiusFt2+'" data-zoom="'+clueZoom+'" style="width:100%;height:120px;"></div>'
+            +blurOverlay2
+            +'<div style="position:absolute;bottom:0;left:0;right:0;padding:4px 8px;background:linear-gradient(0deg,rgba(10,8,26,.9),transparent);">'
+            +'<div style="font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;">MAP &bull; '+clueZoomLabel+'</div>'
+            +'</div></div>';
+        }
+        var photoCell2='';
+        if(currentHunt.photo_url){
+          var blurOverlay3=clueBlurPx>0?'<div style="position:absolute;inset:0;backdrop-filter:blur('+clueBlurPx+'px);-webkit-backdrop-filter:blur('+clueBlurPx+'px);background:rgba(13,11,24,'+(0.1+clueBlurPx*0.012)+');"></div>':'';
+          photoCell2='<div style="position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(160deg,#0f2a1a,#1a3a2a,#2d5a3d);">'
+            +'<img src="'+currentHunt.photo_url+'" style="width:100%;height:120px;object-fit:cover;display:block;"/>'
+            +blurOverlay3
+            +'<div style="position:absolute;bottom:0;left:0;right:0;padding:4px 8px;background:linear-gradient(0deg,rgba(13,11,24,.9),transparent);">'
+            +'<div style="font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;">PHOTO</div>'
+            +'</div></div>';
+        }
+        if(mapCell2||photoCell2){
+          var gridCols=mapCell2&&photoCell2?'1fr 1fr':'1fr';
+          clueRevealStrip='<div style="display:grid;grid-template-columns:'+gridCols+';gap:6px;margin-top:12px;">'+mapCell2+photoCell2+'</div>';
+        }
+      }
       if(questEnded&&hasAnswer){
         // Revealed answer — show green check + answer text
         qaBlock='<div style="margin-top:12px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;"><div style="font-size:20px;">✓</div><div><div style="font-size:13px;color:rgba(74,222,128,.6);letter-spacing:.5px;margin-bottom:2px;">ANSWER</div><div style="font-size:17px;color:#4ade80;font-weight:500;">'+escapeHtml(c.clue_answer)+'</div></div></div>';
@@ -964,7 +998,7 @@ function renderClues(){
         if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
-      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+mapLabel+mapBlock+photoBlock+huntPhotoBlock+qaBlock+'</div></div></div>';
+      return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+(c.tier==='pro'?'<div style="font-size:17px;color:#e8a820;margin-top:8px;font-weight:500;">GOLD CLUE</div>':'')+clueRevealStrip+qaBlock+'</div></div></div>';
     }else{
       var lockMsg=locRequired&&!locConfirmed2?'Confirm your location to unlock clues.':'Solve the previous clue to unlock.';
       return '<div class="locked-wrap" style="margin-bottom:10px;opacity:.45;"><div class="inner"><div class="clue-accent-off"></div><div style="padding:16px 18px;"><div style="font-size:18px;font-weight:400;color:rgba(74,222,128,.5);margin-bottom:5px;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><div style="font-size:17px;color:rgba(255,255,255,.25);line-height:1.65;">'+lockMsg+'</div>'+'</div></div></div>';
@@ -974,7 +1008,7 @@ function renderClues(){
   _solvedCount=unlocked;document.getElementById('q-unlocked').textContent=unlocked;document.getElementById('q-total-clues').textContent=currentClues.length;var sl=document.getElementById('q-solved-label');if(sl)sl.textContent=unlocked+' of '+currentClues.length+' solved';
   updatePhotoBlur(unlocked,currentClues.length);
   wireQaButtons();
-  setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18;var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
+  setTimeout(function(){document.querySelectorAll('.clue-map').forEach(function(el){if(el._mapInit)return;el._mapInit=true;var lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng),radiusFt=parseInt(el.dataset.radius),radiusM=radiusFt*0.3048;var zoom=el.dataset.zoom?parseInt(el.dataset.zoom):(radiusFt>=2000?14:radiusFt>=1000?15:radiusFt>=400?16:radiusFt>=150?17:18);var m=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:zoom,disableDefaultUI:true,gestureHandling:'none',styles:[{elementType:'geometry',stylers:[{color:'#1a1a2e'}]},{elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]},{elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2d2d44'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1a2e1a'}]},{featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#4ade80'}]},{featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#b8c4d0'}]}]});new google.maps.Circle({map:m,center:{lat:lat,lng:lng},radius:radiusM,strokeColor:'#4ade80',strokeOpacity:1,strokeWeight:3,fillColor:'#4ade80',fillOpacity:0.06});});},50);
 }
 
 // ── GPS LOCATION VERIFICATION ────────────────────────────
