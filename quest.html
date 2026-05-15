@@ -404,8 +404,19 @@ function shareQuest(){
   if(navigator.share)navigator.share({title:'FinderSeek Quest',text:'Join this quest!',url:url});
   else navigator.clipboard.writeText(url).then(function(){showToast('Link copied!','success');});
 }
-var _questSaved=false;
-function toggleSaveQuest(){_questSaved=!_questSaved;var icon=document.getElementById('q-save-icon');if(icon)icon.setAttribute('fill',_questSaved?'#e8a820':'none');showToast(_questSaved?'Quest saved':'Quest unsaved',_questSaved?'success':'');}
+var _questSaved=false; // set true if this quest is in localStorage saved list
+function getSavedQuestIds(){try{return JSON.parse(localStorage.getItem('fs_saved_quests')||'[]');}catch(e){return[];}}
+function toggleSaveQuest(){
+  if(!currentHunt)return;
+  var ids=getSavedQuestIds();
+  var idx=ids.indexOf(currentHunt.id);
+  if(idx===-1){ids.push(currentHunt.id);_questSaved=true;showToast('Quest saved','success');}
+  else{ids.splice(idx,1);_questSaved=false;showToast('Removed from saved','');}
+  localStorage.setItem('fs_saved_quests',JSON.stringify(ids));
+  var btn=document.getElementById('q-save-btn');
+  if(btn){btn.style.background=_questSaved?'rgba(232,168,32,.15)':'rgba(239,68,68,.08)';btn.style.borderColor=_questSaved?'rgba(232,168,32,.4)':'rgba(239,68,68,.2)';}
+  var icon=document.getElementById('q-save-icon');if(icon)icon.style.filter=_questSaved?'sepia(1) saturate(3) hue-rotate(5deg)':'none';
+}
 var _following=false;
 async function followQuestMaster(){
   var token=getToken();
@@ -830,6 +841,10 @@ async function loadQuest(){
     currentHunt=huntData[0];currentClues=Array.isArray(cluesData)?cluesData:[];
     if(currentHunt.pirate_id){try{var pr=await fetch(SB+'/rest/v1/profiles?id=eq.'+currentHunt.pirate_id+'&select=username,quests_created,is_pro,followers_count',{headers:{'apikey':KEY,'Authorization':'Bearer '+(getToken()||KEY)}});var pd=await pr.json();if(pd&&pd[0])currentHunt._pirate=pd[0];}catch(e){}}
     renderHunt();await loadAttempts();renderHunt();renderClues();startTimer();checkUserGoldStatus();checkFollowState();
+    // Init pin/save state from localStorage
+    var _savedIds=getSavedQuestIds();_questSaved=_savedIds.indexOf(currentHunt.id)!==-1;
+    var _saveBtn=document.getElementById('q-save-btn');if(_saveBtn&&_questSaved){_saveBtn.style.background='rgba(232,168,32,.15)';_saveBtn.style.borderColor='rgba(232,168,32,.4)';}
+    var _saveIcon=document.getElementById('q-save-icon');if(_saveIcon&&_questSaved)_saveIcon.style.filter='sepia(1) saturate(3) hue-rotate(5deg)';
     // Instant expiry trigger
     try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
     // Increment quests_joined for seekers (non-creator, once per session)

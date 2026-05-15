@@ -134,26 +134,16 @@ body::after {
 @keyframes glowPulseB { 0%,100% { text-shadow: 0 0 8px rgba(96,165,250,.4); } 50% { text-shadow: 0 0 20px rgba(96,165,250,.8), 0 0 40px rgba(96,165,250,.3); } }
 
 /* STATS STRIP */
-.stats-wrap {
-  margin-top: 22px;
-  padding: 2px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--gold), var(--gold3), #a8781a, var(--gold2), var(--gold));
-}
-.stats-inner {
-  display: flex;
-  background: var(--ink);
-  border-radius: 14px;
-  overflow: hidden;
-}
-.stat {
-  flex: 1;
-  text-align: center;
-  padding: 14px 4px;
-}
-.stat + .stat { border-left: 1px solid rgba(255,255,255,.07); }
-.stat-num { font-size: 20px; font-weight: 400; display: block; }
-.stat-lbl { font-size: 17px; letter-spacing: 1.5px; color: rgba(255,255,255,.5); display: block; margin-top: 2px; }
+.filter-btns-wrap { margin: 0 0 2px; }
+.filter-btns { display: flex; gap: 8px; }
+.filter-btn { flex: 1; padding: 10px 6px; border: none; border-radius: 12px; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
+.filter-btn:active { transform: scale(.97); }
+.filter-btn .fb-label { font-size: 14px; font-weight: 600; }
+.filter-btn .fb-sub   { font-size: 10px; font-weight: 400; opacity: .65; letter-spacing: .5px; }
+.filter-btn.saved  { background: #14532d; color: #4ade80; }
+.filter-btn.sched  { background: #0c2d48; color: #93c5fd; }
+.filter-btn.hot    { background: #450a0a; color: #fca5a5; }
+.filter-btn.active-filter { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* SEARCH */
 .search-row { display: flex; gap: 10px; align-items: center; margin: 18px 16px 18px; }
@@ -560,25 +550,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </a>
     </div>
 
-    <!-- STATS STRIP -->
-    <div class="stats-wrap el from-scale" data-d="575">
-      <div class="stats-inner">
-        <div class="stat">
-          <span class="stat-num" id="stat-hidden" style="color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.35);">$0</span>
-          <span class="stat-lbl">HIDDEN</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num" id="stat-active" style="color:#2dd4bf;">0</span>
-          <span class="stat-lbl">ACTIVE</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num" id="stat-seekers" style="color:#4ade80;">0</span>
-          <span class="stat-lbl">SEEKERS</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num" id="stat-cities" style="color:#fff;">0</span>
-          <span class="stat-lbl">CITIES</span>
-        </div>
+    <!-- FILTER BUTTONS -->
+    <div class="filter-btns-wrap el from-scale" data-d="575">
+      <div class="filter-btns">
+        <button class="filter-btn saved" id="filter-saved" onclick="applyFilter('saved')">
+          <span class="fb-label">Saved</span>
+          <span class="fb-sub">Quests</span>
+        </button>
+        <button class="filter-btn sched" id="filter-scheduled" onclick="applyFilter('scheduled')">
+          <span class="fb-label">Scheduled</span>
+          <span class="fb-sub">Quests</span>
+        </button>
+        <button class="filter-btn hot" id="filter-hot" onclick="applyFilter('hot')">
+          <span class="fb-label">Hot Quests</span>
+          <span class="fb-sub">Quests</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1081,6 +1067,58 @@ async function loadQuests() {
       if (seekerEl) seekerEl.textContent = (seekers || []).length;
     }
   } catch(e) {}
+}
+
+function applyFilter(type) {
+  // Clear all active states
+  ['saved','scheduled','hot'].forEach(function(t) {
+    var el = document.getElementById('filter-' + t);
+    if (el) el.classList.remove('active-filter');
+  });
+  var btn = document.getElementById('filter-' + type);
+
+  if (type === 'scheduled') {
+    // Scroll to scheduled section and open it
+    var sec = document.getElementById('sec-scheduled');
+    if (sec) {
+      if (!sec.classList.contains('open')) sec.classList.add('open');
+      setTimeout(function() { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+    }
+    return; // don't mark as active — it's a scroll action
+  }
+
+  if (btn) btn.classList.add('active-filter');
+
+  if (type === 'saved') {
+    // Show only saved (pinned) quests from localStorage
+    var savedIds = getSavedQuestIds();
+    var all = _cachedQuests['active'] || [];
+    var filtered = all.filter(function(q) { return savedIds.indexOf(q.id) !== -1; });
+    renderSection('active', filtered);
+    if (filtered.length === 0) showToast('No saved quests yet — tap the pin on any quest to save it', '');
+    return;
+  }
+
+  if (type === 'hot') {
+    // Show only quests with prize >= $50
+    var all = _cachedQuests['active'] || [];
+    var filtered = all.filter(function(q) { return (q.prize_value || 0) >= 5000; });
+    renderSection('active', filtered);
+    if (filtered.length === 0) showToast('No hot quests right now — check back soon!', '');
+    return;
+  }
+}
+
+function getSavedQuestIds() {
+  try { return JSON.parse(localStorage.getItem('fs_saved_quests') || '[]'); } catch(e) { return []; }
+}
+
+function toggleSaveQuestId(id) {
+  var ids = getSavedQuestIds();
+  var idx = ids.indexOf(id);
+  if (idx === -1) { ids.push(id); showToast('Quest saved', 'success'); }
+  else { ids.splice(idx, 1); showToast('Quest removed from saved', ''); }
+  localStorage.setItem('fs_saved_quests', JSON.stringify(ids));
 }
 
 function filterQuests(query) {
