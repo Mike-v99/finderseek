@@ -216,8 +216,12 @@ body.kb-up /* bottom-nav removed */
 .hs-hint{font-size:14px;color:rgba(255,255,255,.5);line-height:1.4;margin:0 0 4px 0;}
 .hs-inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 14px;font-size:16px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;}
 .hs-inp:focus{border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.04);}
+.hs-inp.hs-filled{border-color:rgba(74,222,128,.6);color:#4ade80;}
+.hs-inp.hs-filled::placeholder{color:rgba(74,222,128,.35);}
 .hs-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;font-size:16px;color:#fff;font-family:inherit;outline:none;resize:vertical;min-height:90px;-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;}
 .hs-ta:focus{border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.04);}
+.hs-ta.hs-filled{border-color:rgba(74,222,128,.6);color:#4ade80;}
+.hs-ta.hs-filled::placeholder{color:rgba(74,222,128,.35);}
 
 /* Action row buttons */
 .hs-action-row{display:flex;gap:8px;flex-wrap:wrap;}
@@ -3639,6 +3643,23 @@ document.addEventListener('click', function(e) {
 // ── HIDING SPOT DETAILS MODAL ────────────────────────────────
 var _hsData = { location: '', startingPoint: '', clues: [] };
 var _hsCurrent = 0; // 0 = location, 1..N = clue index
+
+// Scoped element getter — always finds elements within the active modal sheet,
+// preventing duplicate-ID bugs where static HTML and hsEditFromPreview both have
+// the same IDs and document.getElementById grabs the wrong (hidden) one.
+function hsApplyFilled(el) {
+  if (!el) return;
+  if (el.value && el.value.trim().length > 0) {
+    el.classList.add('hs-filled');
+  } else {
+    el.classList.remove('hs-filled');
+  }
+}
+
+function hsEl(id) {
+  var sheet = document.querySelector('.hs-modal-sheet');
+  return sheet ? sheet.querySelector('#' + id) : document.getElementById(id);
+}
 var _hsClueCount = 4;
 
 var HS_ACTIONS = [
@@ -3725,10 +3746,10 @@ function hsModalBgClose(e) { if (e.target === document.getElementById('hs-modal-
 
 function saveHsPanel() {
   if (_hsCurrent === 0) {
-    var el = document.getElementById('hs-loc-input');
-    if (el) _hsData.location = el.value;
-    var sp = document.getElementById('hs-start-input');
-    if (sp) _hsData.startingPoint = sp.value;
+    var el = hsEl('hs-loc-input');
+    if (el) { _hsData.location = el.value; hsApplyFilled(el); }
+    var sp = hsEl('hs-start-input');
+    if (sp) { _hsData.startingPoint = sp.value; hsApplyFilled(sp); }
   } else {
     var idx = _hsCurrent - 1;
     // Make sure the clues array is large enough — guards against state where
@@ -3739,13 +3760,13 @@ function saveHsPanel() {
       _hsData.clues.push({ hint:'', question:'', answer:'', action:'' });
     }
     if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
-    var h = document.getElementById('hs-hint-cur');
-    var q = document.getElementById('hs-q-cur');
-    var a = document.getElementById('hs-a-cur');
-    var s = document.getElementById('hs-action-sel');
-    if (h) _hsData.clues[idx].hint = h.value;
-    if (q) _hsData.clues[idx].question = q.value;
-    if (a) _hsData.clues[idx].answer = a.value;
+    var h = hsEl('hs-hint-cur');
+    var q = hsEl('hs-q-cur');
+    var a = hsEl('hs-a-cur');
+    var s = hsEl('hs-action-sel');
+    if (h) { _hsData.clues[idx].hint = h.value; hsApplyFilled(h); }
+    if (q) { _hsData.clues[idx].question = q.value; hsApplyFilled(q); }
+    if (a) { _hsData.clues[idx].answer = a.value; hsApplyFilled(a); }
     if (s && s.value) _hsData.clues[idx].action = s.value;
   }
 }
@@ -3766,7 +3787,7 @@ function hsGoTo(idx) {
       if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
     } else {
       // Re-read DOM directly in case iOS didn't fire change events before tap
-      var _sel = document.getElementById('hs-action-sel');
+      var _sel = hsEl('hs-action-sel');
       if (_sel && _sel.value) { if (!_hsData.clues[_hsCurrent-1]) _hsData.clues[_hsCurrent-1] = {}; _hsData.clues[_hsCurrent-1].action = _sel.value; }
       var cl = (_hsData.clues && _hsData.clues[_hsCurrent - 1]) || {};
       var isFinal = _hsCurrent === _hsClueCount;
@@ -3788,13 +3809,6 @@ function hsGoTo(idx) {
 function renderHsModal() {
   var total = _hsClueCount;
   var cur = _hsCurrent;
-
-  // Scope all getElementById calls to the active modal sheet so duplicate IDs
-  // (static HTML vs hsEditFromPreview rebuild) don't cause the wrong element to be written.
-  function hsEl(id) {
-    var sheet = document.querySelector('.hs-modal-sheet');
-    return sheet ? sheet.querySelector('#' + id) : document.getElementById(id);
-  }
 
   // ── Full-width rectangular map ──────────────────────────
   var actionArea = hsEl('hs-action-area');
@@ -4004,7 +4018,10 @@ setTimeout(function() {
 var _sheet = document.querySelector('.hs-modal-sheet');
 var inputs = _sheet ? _sheet.querySelectorAll('textarea, input[type="text"]') : [];
 inputs.forEach(function(el) {
+// Apply filled state immediately for pre-filled values
+hsApplyFilled(el);
 el.addEventListener('input', function() {
+hsApplyFilled(el);
 saveHsPanel();
 var nextBtn = _sheet ? _sheet.querySelector('#hs-nav .hs-nav-next') : document.querySelector('#hs-nav .hs-nav-next');
 if (!nextBtn) return;
