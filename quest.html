@@ -623,7 +623,7 @@ function initQuestMap(lat,lng,solved,total){
     {featureType:'administrative',elementType:'labels',stylers:[{visibility:'simplified'}]},
     {featureType:'transit',elementType:'geometry',stylers:[{color:'#111020'}]}
   ];
-  _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:11,disableDefaultUI:true,gestureHandling:'none',styles:darkStyles});
+  _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:13,disableDefaultUI:true,gestureHandling:'none',styles:darkStyles});
   // 5-mile glowing green ring
   var r=8046;
   new google.maps.Circle({map:_questMap,center:{lat:lat,lng:lng},radius:r,strokeColor:'#4ade80',strokeOpacity:.9,strokeWeight:2.5,fillColor:'#4ade80',fillOpacity:.04});
@@ -955,8 +955,9 @@ function renderClues(){
         var blurIdx=Math.min(Math.round(cluePct*(BLUR_PX.length-1)),BLUR_PX.length-1);
         var clueBlurPx=BLUR_PX[blurIdx];
         var zoomIdx=Math.min(Math.round(cluePct*(ZOOM_LEVELS.length-1)),ZOOM_LEVELS.length-1);
-        var clueZoom=ZOOM_LEVELS[zoomIdx];
-        var clueZoomLabel=ZOOM_LABELS[zoomIdx];
+        var clueZoom=12+Math.round(cluePct*6); // 13→18 scaled across all clues
+        clueZoom=Math.min(clueZoom,18);
+        var clueZoomLabel=clueZoom<=13?'Neighborhood':clueZoom<=14?'Streets':clueZoom<=15?'Block level':clueZoom<=16?'Paths':clueZoom<=17?'Near ground':'Ground level';
         var radiusFt2=isFinal?100:mapInfo?mapInfo.radiusFt:5280;
         var mapCell2='';
         if(currentHunt.lat&&currentHunt.lng){
