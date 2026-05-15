@@ -623,7 +623,7 @@ function initQuestMap(lat,lng,solved,total){
     {featureType:'administrative',elementType:'labels',stylers:[{visibility:'simplified'}]},
     {featureType:'transit',elementType:'geometry',stylers:[{color:'#111020'}]}
   ];
-  _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:13,disableDefaultUI:true,gestureHandling:'none',styles:darkStyles});
+  _questMap=new google.maps.Map(mapEl,{center:{lat:lat,lng:lng},zoom:12,disableDefaultUI:true,gestureHandling:'none',styles:darkStyles});
   // 1.5-mile glowing green ring — fits within zoom 13 viewport
   var r=2414;
   new google.maps.Circle({map:_questMap,center:{lat:lat,lng:lng},radius:r,strokeColor:'#4ade80',strokeOpacity:.9,strokeWeight:2.5,fillColor:'#4ade80',fillOpacity:.04});
