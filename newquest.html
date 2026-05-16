@@ -871,37 +871,67 @@ function setWeekendDates() {
 }
 
 function speakPersonaSample(){
-  if(!window.speechSynthesis)return;
   var btn=document.getElementById('persona-speak-btn');
   var icon=document.getElementById('persona-speak-icon');
-  // Toggle off if already speaking
+  var stopIcon='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+  var pauseIcon='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+
+  // Stop if already playing
   if(window._personaSpeaking){
-    window.speechSynthesis.cancel();
+    if(window._sampleAudio){window._sampleAudio.pause();window._sampleAudio=null;}
+    if(window.speechSynthesis)window.speechSynthesis.cancel();
     window._personaSpeaking=false;
     if(btn){btn.style.background='rgba(255,255,255,.05)';btn.style.borderColor='rgba(255,255,255,.12)';btn.style.color='#b8c4d0';}
-    if(icon)icon.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+    if(icon)icon.innerHTML=stopIcon;
     return;
   }
+
+  // Get current persona
+  var selectedPersona=(document.querySelector('.persona-card.selected')||{}).dataset&&document.querySelector('.persona-card.selected').dataset.persona||'pirate';
+
+  // Try OpenAI stored sample first
+  var SB_URL='https://qeiuycuasjkopxfkmggp.supabase.co';
+  var sampleUrl=SB_URL+'/storage/v1/object/public/clue-audio/samples/'+selectedPersona+'.mp3';
+
+  var audio=new Audio(sampleUrl);
+  window._sampleAudio=audio;
+
+  audio.oncanplaythrough=function(){
+    window._personaSpeaking=true;
+    if(btn){btn.style.background='rgba(74,222,128,.15)';btn.style.borderColor='rgba(74,222,128,.4)';btn.style.color='#4ade80';}
+    if(icon)icon.innerHTML=pauseIcon;
+    audio.play();
+  };
+  audio.onended=audio.onerror=function(){
+    window._personaSpeaking=false;
+    window._sampleAudio=null;
+    if(btn){btn.style.background='rgba(255,255,255,.05)';btn.style.borderColor='rgba(255,255,255,.12)';btn.style.color='#b8c4d0';}
+    if(icon)icon.innerHTML=stopIcon;
+    // Fallback to browser TTS on error
+    if(event&&event.type==='error'){_speakPersonaBrowserTTS(btn,icon,stopIcon,pauseIcon);}
+  };
+  audio.load();
+}
+
+function _speakPersonaBrowserTTS(btn,icon,stopIcon,pauseIcon){
+  if(!window.speechSynthesis)return;
   var text=document.getElementById('preview-text');
   if(!text)return;
   var utt=new SpeechSynthesisUtterance(text.textContent);
-  utt.lang='en-US';
-  utt.rate=0.9;
-  // Pick best local English voice
+  utt.lang='en-US';utt.rate=0.9;
   var voices=window.speechSynthesis.getVoices();
   var eng=voices.filter(function(v){return v.lang.indexOf('en')===0;});
   var local=eng.filter(function(v){return v.localService;});
-  if(local.length)utt.voice=local[0];
-  else if(eng.length)utt.voice=eng[0];
+  if(local.length)utt.voice=local[0];else if(eng.length)utt.voice=eng[0];
   utt.onstart=function(){
     window._personaSpeaking=true;
     if(btn){btn.style.background='rgba(74,222,128,.15)';btn.style.borderColor='rgba(74,222,128,.4)';btn.style.color='#4ade80';}
-    if(icon)icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    if(icon)icon.innerHTML=pauseIcon;
   };
   utt.onend=utt.onerror=function(){
     window._personaSpeaking=false;
     if(btn){btn.style.background='rgba(255,255,255,.05)';btn.style.borderColor='rgba(255,255,255,.12)';btn.style.color='#b8c4d0';}
-    if(icon)icon.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+    if(icon)icon.innerHTML=stopIcon;
   };
   window.speechSynthesis.speak(utt);
 }
