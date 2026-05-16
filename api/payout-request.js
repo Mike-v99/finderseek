@@ -12,13 +12,27 @@
 //   FINDERSEEK_NOTIFY_SECRET or NOTIFY_SECRET
 
 import { createClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Send email via Resend using fetch (no SDK dependency)
+async function sendEmail({ from, to, subject, html }) {
+  const r = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from, to, subject, html }),
+  });
+  if (!r.ok) {
+    const err = await r.text();
+    throw new Error(`Resend error: ${r.status} ${err}`);
+  }
+  return r.json();
+}
 
 // ── PayPal OAuth2 access token ───────────────────────────
 async function getPayPalAccessToken() {
@@ -172,7 +186,7 @@ export default async function handler(req, res) {
     const paypalAppUrl = `paypal://paypalme/send?email=${encodeURIComponent(destination)}&amount=${prizeAmount}&currencyCode=USD`;
 
     try {
-      await resend.emails.send({
+      await sendEmail({
         from: 'FinderSeek <payments@finderseek.com>',
         to: 'payments@finderseek.com',
         subject: paypalSuccess
