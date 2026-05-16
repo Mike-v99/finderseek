@@ -154,9 +154,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="toast" style="position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;"></div>
 
 <!-- WIN MODAL -->
-<div id="win-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;"></div>
+<div id="win-backdrop" onclick="closeWinModal()" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;cursor:pointer;"></div>
 <div id="win-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:16px;">
-  <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;max-height:90vh;overflow-y:auto;">
+  <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;max-height:90vh;overflow-y:auto;position:relative;">
+    <button onclick="closeWinModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;padding:4px;">✕</button>
     
     <!-- Step 1: Celebration -->
     <div id="win-step-1">
@@ -209,7 +210,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="win-step-3" style="display:none;text-align:center;">
       <div style="font-size:52px;margin-bottom:14px;">✅</div>
       <div style="font-size:22px;font-weight:400;color:#4ade80;margin-bottom:8px;">Prize Claimed!</div>
-      <div style="font-size:16px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:20px;" id="win-confirm-msg">Your prize will be sent within 24 hours.</div>
+      <div style="font-size:16px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:12px;" id="win-confirm-msg">Your prize will be sent within 24 hours.</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:20px;line-height:1.5;">📬 Check your spam or junk folder if you don't see a confirmation email within a few minutes.</div>
       <button onclick="closeWinModal()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;">Awesome! 🎉</button>
     </div>
 
@@ -492,40 +494,67 @@ function pickVoice(settings) {
   return (genMatch.length ? genMatch : eng)[0];
 }
 
-function speakClue(clueNum, text) {
-  if (!window.speechSynthesis) { showToast('Voice not supported on this device', ''); return; }
-  // If already speaking this clue, stop it
-  if (_voiceSpeaking && _voiceClueNum === clueNum) {
-    stopVoice();
-    return;
-  }
-  // Stop any current speech
+function speakClue(clueNum, text, type) {
+  // type = 'clue' | 'question' | 'location'
+  // Stop if already speaking this clue
+  if (_voiceSpeaking && _voiceClueNum === clueNum) { stopVoice(); return; }
   stopVoice(true);
 
+  // Look up stored OpenAI audio URL from currentClues
+  var audioUrl = null;
+  if (clueNum === 0) {
+    // Location riddle
+    audioUrl = currentHunt && currentHunt.location_riddle_audio_url;
+  } else {
+    var clueObj = (currentClues || []).find(function(c) { return c.clue_number === clueNum; });
+    if (clueObj) {
+      audioUrl = (type === 'question') ? (clueObj.question_audio_url || clueObj.audio_url) : clueObj.audio_url;
+    }
+  }
+
+  if (audioUrl) {
+    // ── Play OpenAI TTS audio ──
+    if (window._ttsAudio) { window._ttsAudio.pause(); window._ttsAudio = null; }
+    var audio = new Audio(audioUrl);
+    window._ttsAudio = audio;
+    _voiceSpeaking = true;
+    _voiceClueNum = clueNum;
+    updateSpeakerBtn(clueNum, true);
+    audio.onended = audio.onerror = function() {
+      _voiceSpeaking = false;
+      _voiceClueNum = null;
+      window._ttsAudio = null;
+      updateSpeakerBtn(clueNum, false);
+    };
+    audio.play().catch(function(e) {
+      console.warn('[tts] Audio play failed, falling back to browser TTS:', e.message);
+      window._ttsAudio = null;
+      _speakBrowserTTS(clueNum, text);
+    });
+    return;
+  }
+
+  // ── Fallback: browser TTS ──
+  _speakBrowserTTS(clueNum, text);
+}
+
+function _speakBrowserTTS(clueNum, text) {
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device', ''); return; }
   var settings = getPersonaVoiceSettings();
   var utt = new SpeechSynthesisUtterance(text);
   utt.rate = settings.rate;
   utt.pitch = settings.pitch;
   utt.lang = settings.lang;
-  // Voice selection — may need to wait for voices to load
   var voice = pickVoice(settings);
   if (voice) utt.voice = voice;
-
-  utt.onstart = function() {
-    _voiceSpeaking = true;
-    _voiceClueNum = clueNum;
-    updateSpeakerBtn(clueNum, true);
-  };
-  utt.onend = utt.onerror = function() {
-    _voiceSpeaking = false;
-    _voiceClueNum = null;
-    updateSpeakerBtn(clueNum, false);
-  };
+  utt.onstart = function() { _voiceSpeaking = true; _voiceClueNum = clueNum; updateSpeakerBtn(clueNum, true); };
+  utt.onend = utt.onerror = function() { _voiceSpeaking = false; _voiceClueNum = null; updateSpeakerBtn(clueNum, false); };
   window.speechSynthesis.speak(utt);
 }
 
 function stopVoice(silent) {
-  window.speechSynthesis.cancel();
+  if (window._ttsAudio) { window._ttsAudio.pause(); window._ttsAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   var prev = _voiceClueNum;
   _voiceSpeaking = false;
   _voiceClueNum = null;
@@ -658,8 +687,37 @@ function updatePhotoBlur(solved,total){
 
 // ── CONFETTI ─────────────────────────────────────────────────
 function fireConfetti(){if(typeof confetti==='undefined')return;var colors=['#e8a820','#f5c842','#c9890c','#4ade80','#22c55e','#ffffff'];confetti({particleCount:120,spread:90,origin:{y:0.6},colors:colors});setTimeout(function(){confetti({particleCount:60,angle:60,spread:60,origin:{x:0,y:0.7},colors:colors});confetti({particleCount:60,angle:120,spread:60,origin:{x:1,y:0.7},colors:colors});},250);}
-function showWinCelebration(amount){var amt=typeof amount==='number'?amount.toFixed(2):amount;document.getElementById('win-amount').textContent='$'+amt;document.getElementById('win-backdrop').style.display='block';document.getElementById('win-modal').style.display='flex';setTimeout(function(){document.getElementById('win-backdrop').style.opacity='1';document.getElementById('win-inner').style.transform='scale(1)';document.getElementById('win-inner').style.opacity='1';},10);fireConfetti();}
-function closeWinModal(){document.getElementById('win-inner').style.transform='scale(0.9)';document.getElementById('win-inner').style.opacity='0';document.getElementById('win-backdrop').style.opacity='0';setTimeout(function(){document.getElementById('win-modal').style.display='none';document.getElementById('win-backdrop').style.display='none';window.location.href='index.html';},400);}
+function showWinCelebration(amount){
+  var amt=typeof amount==='number'?amount.toFixed(2):amount;
+  document.getElementById('win-amount').textContent='$'+amt;
+  // Reset all steps to step 1
+  document.getElementById('win-step-1').style.display='block';
+  document.getElementById('win-step-2').style.display='none';
+  document.getElementById('win-step-3').style.display='none';
+  var ss=document.getElementById('win-step-signin');if(ss)ss.style.display='none';
+  // Re-enable submit button in case it was stuck
+  var sb=document.getElementById('win-submit-btn');if(sb){sb.disabled=false;sb.textContent='Claim My Prize →';}
+  document.getElementById('win-backdrop').style.display='block';
+  document.getElementById('win-modal').style.display='flex';
+  setTimeout(function(){
+    document.getElementById('win-backdrop').style.opacity='1';
+    document.getElementById('win-inner').style.transform='scale(1)';
+    document.getElementById('win-inner').style.opacity='1';
+  },10);
+  fireConfetti();
+}
+function closeWinModal(){
+  document.getElementById('win-inner').style.transform='scale(0.9)';
+  document.getElementById('win-inner').style.opacity='0';
+  document.getElementById('win-backdrop').style.opacity='0';
+  setTimeout(function(){
+    document.getElementById('win-modal').style.display='none';
+    document.getElementById('win-backdrop').style.display='none';
+    // Only redirect if prize was claimed (step 3 visible), otherwise stay on quest
+    var s3=document.getElementById('win-step-3');
+    if(s3&&s3.style.display!=='none') window.location.href='index.html';
+  },400);
+}
 function showFundedCelebration(prizeValueCents){
   var dollars=Math.max(1,Math.round((prizeValueCents||0)/100));
   document.getElementById('fund-amount').textContent='$'+dollars;
