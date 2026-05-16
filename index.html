@@ -309,14 +309,39 @@ body::after {
 /* Quest list (expanded inside section) */
 .quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
 .section.open .quest-list { max-height: 4000px; }
-.quest-row { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; transition: background .15s; }
-.quest-row:hover { background: rgba(255,255,255,.03); }
-.quest-row:active { background: rgba(255,255,255,.06); }
+.quest-row { border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; display: flex; transition: background .15s; }
+.quest-row:active { background: rgba(255,255,255,.03); }
+.quest-row-accent { width: 4px; flex-shrink: 0; background: var(--green); border-radius: 0; }
+.quest-row-accent.hot { background: var(--yellow); }
+.quest-row-inner { flex: 1; padding: 12px 14px; min-width: 0; }
+.quest-row-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+.quest-row-title { font-size: 16px; color: #fff; font-weight: 500; line-height: 1.3; }
+.quest-row-city { font-size: 12px; color: rgba(255,255,255,.3); margin-top: 2px; }
+.quest-row-prize { font-size: 26px; font-weight: 700; color: var(--green); line-height: 1; flex-shrink: 0; }
+.quest-row-prize.hot { color: var(--yellow); }
+.quest-row-map { width: 100%; height: 80px; border-radius: 10px; overflow: hidden; background: #0d1117; margin-bottom: 8px; cursor: pointer; }
+.quest-row-map img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quest-row-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.quest-row-badges { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.qbadge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.qbadge-pirate   { background: rgba(232,168,32,.12); color: #e8a820; border: 1px solid rgba(232,168,32,.25); }
+.qbadge-poetic   { background: rgba(147,197,253,.1); color: #93c5fd; border: 1px solid rgba(147,197,253,.2); }
+.qbadge-insults  { background: rgba(239,68,68,.1);   color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+.qbadge-sarcastic{ background: rgba(167,139,250,.1); color: #c4b5fd; border: 1px solid rgba(167,139,250,.2); }
+.qbadge-hillbilly{ background: rgba(74,222,128,.1);  color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
+.qbadge-grandma  { background: rgba(251,191,36,.1);  color: #fcd34d; border: 1px solid rgba(251,191,36,.2); }
+.qbadge-surfer   { background: rgba(56,189,248,.1);  color: #7dd3fc; border: 1px solid rgba(56,189,248,.2); }
+.qbadge-detective{ background: rgba(148,163,184,.1); color: #cbd5e1; border: 1px solid rgba(148,163,184,.2); }
+.qbadge-5yr      { background: rgba(249,168,212,.1); color: #f9a8d4; border: 1px solid rgba(249,168,212,.2); }
+.qbadge-default  { background: rgba(255,255,255,.06); color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.1); }
+.qtimer-normal { font-size: 12px; color: rgba(255,255,255,.35); }
+.qtimer-soon   { font-size: 12px; color: #fbbf24; }
+.qtimer-urgent { font-size: 12px; color: #f87171; }
+.qclues { font-size: 12px; color: rgba(255,255,255,.3); display: flex; align-items: center; gap: 3px; }
+.qclues::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.2); display: inline-block; }
 .quest-row-left { flex: 1; min-width: 0; }
-.quest-row-title { font-size: 17px; color: #ffffff; font-weight: 400; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.quest-row-meta { font-size: 17px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
+.quest-row-meta { font-size: 14px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
 .quest-row-meta .dot { width: 3px; height: 3px; background: #c8c8c8; border-radius: 50%; }
-.quest-row-prize { font-size: 17px; font-weight: 400; color: var(--green); flex-shrink: 0; }
 .section-scheduled .quest-row-prize { color: var(--yellow); }
 .section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
 .quest-empty { padding: 20px 16px; text-align: center; color: var(--muted); font-size: 17px; font-style: italic; }
@@ -937,29 +962,80 @@ function timeAgo(iso) {
 
 function renderQuestRow(q, status) {
   var prizeDollars = Math.round((q.prize_value || 0) / 100);
+  var isHot = prizeDollars >= 50;
   var location = escapeHtml(q.neighborhood || q.city || 'Unknown location');
-  var meta = '';
-  if (status === 'active')        meta = 'Ends ' + timeUntil(q.ends_at);
-  else if (status === 'scheduled') meta = 'Starts ' + timeUntil(q.starts_at);
-  else if (status === 'completed') {
+
+  // Timer with urgency color
+  var timerHtml = '';
+  if (status === 'active' && q.ends_at) {
+    var diff = new Date(q.ends_at) - new Date();
+    var timerClass = diff < 7200000 ? 'qtimer-urgent' : diff < 86400000 ? 'qtimer-soon' : 'qtimer-normal';
+    timerHtml = '<span class="' + timerClass + '">Ends ' + timeUntil(q.ends_at) + '</span>';
+  } else if (status === 'scheduled' && q.starts_at) {
+    timerHtml = '<span class="qtimer-normal">Starts ' + timeUntil(q.starts_at) + '</span>';
+  } else if (status === 'completed') {
     var wonAt = q.found_at || (q.winner_id ? q.updated_at : null);
-    meta = wonAt ? 'Won ' + timeAgo(wonAt) : (q.ends_at && new Date(q.ends_at) < new Date() ? 'Expired ' + timeAgo(q.ends_at) : 'Ended');
+    var completedText = wonAt ? 'Won ' + timeAgo(wonAt) : 'Ended';
+    timerHtml = '<span class="qtimer-normal">' + completedText + '</span>';
   }
 
-  var pinBadge = q.is_pinned ? '<div class="pin-badge">📌 Pinned</div>' : '';
+  // Persona badge
+  var persona = (q.clue_persona || '').toLowerCase();
+  var personaMap = {
+    'pirate':    ['🏴‍☠️', 'Pirate',    'qbadge-pirate'],
+    'poetic':    ['📜',          'Poetic',    'qbadge-poetic'],
+    'insults':   ['😤',          'Insults',   'qbadge-insults'],
+    'sarcastic': ['🙄',          'Sarcastic', 'qbadge-sarcastic'],
+    'hillbilly': ['🤠',          'Hillbilly', 'qbadge-hillbilly'],
+    'grandma':   ['👵',          'Grandma',   'qbadge-grandma'],
+    'surfer':    ['🏄',          'Surfer',    'qbadge-surfer'],
+    'detective': ['🕵️',         'Detective', 'qbadge-detective'],
+    '5 yr old':  ['🧒',          '5 Yr Old',  'qbadge-5yr'],
+  };
+  var pd = personaMap[persona] || ['✨', persona || 'Quest', 'qbadge-default'];
+  var personaBadge = '<span class="qbadge ' + pd[2] + '">' + pd[0] + ' ' + pd[1] + '</span>';
+
+  // Clue count
+  var cluesBadge = q.clue_count ? '<span class="qclues">' + q.clue_count + ' clues</span>' : '';
+
+  // Map thumbnail — static map with green circle, links to Google Maps
+  var mapHtml = '';
+  if (q.lat && q.lng) {
+    var mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
+      + '?center=' + q.lat + ',' + q.lng
+      + '&zoom=15&size=600x160&scale=2&maptype=roadmap'
+      + '&style=feature:all|element:geometry|color:0x0d1117'
+      + '&style=feature:road|element:geometry|color:0x1e2d3d'
+      + '&style=feature:water|element:geometry|color:0x080612'
+      + '&style=feature:poi|element:geometry|color:0x111020'
+      + '&style=feature:all|element:labels.text.fill|color:0x6b7280'
+      + '&style=feature:all|element:labels.text.stroke|color:0x0d1117'
+      + '&markers=color:green|' + q.lat + ',' + q.lng
+      + '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
+    var gmapsUrl = 'https://www.google.com/maps?q=' + q.lat + ',' + q.lng;
+    mapHtml = '<div class="quest-row-map" onclick="event.stopPropagation();window.open(\'' + gmapsUrl + '\',\'_blank\')">'
+      + '<img src="' + mapUrl + '" alt="map" loading="lazy"/>'
+      + '</div>';
+  }
 
   return (
-    '<div class="quest-row' + (q.is_pinned ? ' quest-row-pinned' : '') + '" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">' +
-      '<div class="quest-row-left">' +
-        (q.is_pinned ? '<div class="pin-badge">📌 Pinned</div>' : '') +
-        '<div class="quest-row-title">' + location + '</div>' +
-        '<div class="quest-row-meta">' +
-          '<span>' + escapeHtml(q.city || '') + '</span>' +
-          (meta ? '<span class="dot"></span><span>' + meta + '</span>' : '') +
-        '</div>' +
-      '</div>' +
-      '<div class="quest-row-prize">$' + prizeDollars + '</div>' +
-    '</div>'
+    '<div class="quest-row" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">'
+    + '<div class="quest-row-accent' + (isHot ? ' hot' : '') + '"></div>'
+    + '<div class="quest-row-inner">'
+      + '<div class="quest-row-top">'
+        + '<div>'
+          + '<div class="quest-row-title">' + location + '</div>'
+          + '<div class="quest-row-city">' + escapeHtml(q.city || '') + (q.state_code ? ', ' + q.state_code : '') + '</div>'
+        + '</div>'
+        + '<div class="quest-row-prize' + (isHot ? ' hot' : '') + '">$' + prizeDollars + '</div>'
+      + '</div>'
+      + mapHtml
+      + '<div class="quest-row-bottom">'
+        + '<div class="quest-row-badges">' + personaBadge + cluesBadge + '</div>'
+        + timerHtml
+      + '</div>'
+    + '</div>'
+    + '</div>'
   );
 }
 
@@ -973,7 +1049,7 @@ async function fetchQuests(status) {
   }
   // Only return funded escrow OR honor-payment hunts (don't show unpaid drafts)
   // Plus: select specific columns we need
-  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,updated_at,winner_id,escrow_status,payment_type,is_pinned,quest_id,state_code,pirate_id';
+  var select = '&select=id,city,neighborhood,prize_value,starts_at,ends_at,status,found_at,updated_at,winner_id,escrow_status,payment_type,is_pinned,quest_id,state_code,pirate_id,clue_count,clue_persona,lat,lng';
   try {
     var r = await fetch(SB + '/rest/v1/hunts' + query + select, {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
