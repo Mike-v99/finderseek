@@ -1240,9 +1240,19 @@ function selectPayoutMethod(method){
 
 async function submitPayoutRequest(){
   var dest=document.getElementById('win-payout-dest').value.trim();
+  // Normalize Venmo phone — strip non-digits, add +1 if needed
+  if(_selectedPayoutMethod==='venmo'){
+    var digits=dest.replace(/\D/g,'');
+    if(digits.length===10) dest='+1'+digits;
+    else if(digits.length===11&&digits[0]==='1') dest='+'+digits;
+    else if(!dest.startsWith('+')) dest='+'+digits;
+  }
   if(!dest){showToast('Please enter your '+((_selectedPayoutMethod==='paypal')?'PayPal email':'Venmo phone'),'error');return;}
   var btn=document.getElementById('win-submit-btn');
   btn.disabled=true;btn.textContent='Submitting...';
+  // Validate required state before firing API
+  if(!window._winHuntId){showToast('Quest not identified — please try again','error');btn.disabled=false;btn.textContent='Claim My Prize →';return;}
+  if(!_selectedPayoutMethod){showToast('Please select PayPal or Venmo first','error');btn.disabled=false;btn.textContent='Claim My Prize →';return;}
   try{
     // Resolve winnerId if not set yet — can happen if seeker signed in via magic link
     if(!window._winUserId){
