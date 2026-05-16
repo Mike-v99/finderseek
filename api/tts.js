@@ -24,15 +24,15 @@ const PERSONA_VOICE = {
 const DEFAULT_VOICE = { voice: 'alloy', speed: 1.0 };
 
 const SAMPLES = {
-  pirate:    "Arrr, ye scallywag! The treasure ye seek lies where iron meets stone and shadows grow long at midday. X marks the spot — if ye dare face what lurks in the dark corners of that forgotten place!",
-  poetic:    "Where morning light spills golden through the leaves and silence holds its breath, something waits — patient as a stone, quiet as the space between heartbeats. Follow the shadow's longest reach.",
-  insults:   "Oh congratulations, genius — you've managed to read this far without hurting yourself. Now drag your obviously superior intellect to the place where people actually go to think. You'll recognize it because you've never been there.",
-  sarcastic: "Oh sure, because obviously the first place anyone would look is the most obvious spot imaginable. But hey, what do I know — maybe you'll surprise me this time. The clue is exactly where you'd expect it. Shocking, I know.",
-  hillbilly: "Well shoot, y'all, it ain't rocket science — Grandpappy always said the best hidin' spots are right under your nose, like a possum in a persimmon tree. Head on over to where the old folks gather and poke around a spell.",
-  grandma:   "Oh sweetie, now don't rush — take a nice deep breath and think about where the prettiest flowers grow in the morning light. That's where I'd leave something special, dearie. Right where anyone with a gentle heart would think to look.",
-  surfer:    "Dude, okay, so like — the vibe is totally strong over by where the locals chill, you know? It's giving major hidden gem energy. Just flow with it bro, trust your instincts, and you'll totally find it. Gnarly clue, right?",
-  detective: "The evidence points to a location frequented by persons of routine habit. Note the wear patterns, the sightlines, the geometry of approach. A careful observer would identify exactly one position where concealment meets accessibility. Proceed with caution.",
-  kid:       "OKAY SO! There's this super cool hiding spot and it's the BEST PART because nobody ever looks there! And then when you find it you're gonna be SO EXCITED! It's near the big thing — you know the BIG THING — go look there RIGHT NOW!",
+  pirate:    "Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare.",
+  poetic:    "Where morning light kisses ancient stone, and water speaks in silver tones — seek the place where elm trees lean, and find what rests unseen between.",
+  insults:   "Listen up, genius. The treasure is at Memorial Park. You know, that big green thing with trees? Or are you too busy being wrong to notice? East entrance. Go.",
+  sarcastic: "Oh sure, it'll be SO hard to find. Just head to Memorial Park — you know, the most obvious place ever. East entrance. Try not to trip on your way.",
+  hillbilly: "Well shoot, y'all better git yerself down to Memorial Park, near them big ol' fountains by the east gate. Reckon the treasure's hidin' right there, I tell ya what.",
+  grandma:   "Oh sweetheart, you'll want to head over to Memorial Park, dear. You know the one — by Westheimer. The east entrance near the lovely fountain. Bundle up, it might be chilly!",
+  surfer:    "Duuude, shred your way over to Memorial Park, bro! Hang a left at the gnarly fountain near the east entrance, ya know? The treasure's like, totally waiting for you out there!",
+  detective: "Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won't find itself.",
+  kid:       "Ooooh go to the BIG park!! The one with the fountain that goes SPLASH!! It's sooooo fun there!! The treasure is hiding near the gate!! GO GO GO!!",
 };
 
 async function generateAndStore(text, voice, speed, storagePath, model) {
