@@ -18,6 +18,7 @@ const PERSONA_VOICE = {
   grandma:     { voice: 'shimmer', speed: 0.85 },
   surfer:      { voice: 'echo',    speed: 0.95 },
   detective:   { voice: 'onyx',    speed: 0.90 },
+  investigator:{ voice: 'onyx',    speed: 0.90 }, // alias for detective
   kid:         { voice: 'nova',    speed: 1.10 },
   location:    { voice: 'alloy',   speed: 0.92 },
 };
@@ -31,7 +32,8 @@ const SAMPLES = {
   hillbilly: "Well shoot, y'all better git yerself down to Memorial Park, near them big ol' fountains by the east gate. Reckon the treasure's hidin' right there, I tell ya what.",
   grandma:   "Oh sweetheart, you'll want to head over to Memorial Park, dear. You know the one — by Westheimer. The east entrance near the lovely fountain. Bundle up, it might be chilly!",
   surfer:    "Duuude, shred your way over to Memorial Park, bro! Hang a left at the gnarly fountain near the east entrance, ya know? The treasure's like, totally waiting for you out there!",
-  detective: "Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won't find itself.",
+  detective:   "Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won't find itself.",
+  investigator:"Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won't find itself.",
   kid:       "Ooooh go to the BIG park!! The one with the fountain that goes SPLASH!! It's sooooo fun there!! The treasure is hiding near the gate!! GO GO GO!!",
 };
 
