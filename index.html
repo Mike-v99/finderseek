@@ -147,9 +147,9 @@ body::after {
 .filter-btn.saved .fb-text { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; text-align: left; }
 .filter-btn.sched  { background: #1e3a5f; }
 .filter-btn.sched .fb-sub { color: #bfdbfe; }
-.filter-btn.hot    { background: #7f1d1d; animation: hotPulse 3s ease-in-out infinite; }
+.filter-btn.hot    { background: #150505; border: 1.5px solid rgba(239,68,68,.35); animation: hotPulse 3s ease-in-out infinite; }
 .filter-btn.hot .fb-sub { color: #fecaca; }
-@keyframes hotPulse { 0%,100%{background:#7f1d1d;} 50%{background:#991b1b;} }
+@keyframes hotPulse { 0%,100%{border-color:rgba(239,68,68,.3);background:#150505;} 50%{border-color:rgba(239,68,68,.8);background:#1e0808;} }
 .filter-btn.active-filter { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* SEARCH */
