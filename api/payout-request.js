@@ -83,13 +83,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: hunt } = await supabase
+    const { data: hunt, error: huntErr } = await supabase
       .from('hunts')
       .select('id, title, prize_value, quest_id, status, payout_status, winner_id, payment_type, pirate_id, lat, lng')
       .eq('id', huntId)
       .single();
 
-    if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
+    if (huntErr || !hunt) {
+      console.error('[payout-request] Hunt fetch error:', huntErr?.message, 'huntId:', huntId);
+      return res.status(404).json({ error: 'Hunt not found', detail: huntErr?.message });
+    }
     // Block quest creator from winning their own quest
     if (winnerId && hunt.pirate_id && winnerId === hunt.pirate_id) {
       return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
@@ -100,23 +103,32 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
     }
 
-    const { data: winner } = await supabase
+    const { data: winner, error: winnerErr } = await supabase
       .from('profiles')
       .select('username, email')
       .eq('id', winnerId)
       .single();
 
+    console.log('[payout-request] winner:', winner?.username, 'winnerErr:', winnerErr?.message);
+
     const prizeAmount = amount || (hunt.prize_value / 100).toFixed(2);
     const methodLabel = method === 'paypal' ? 'PayPal' : method === 'venmo' ? 'Venmo' : 'PayPal';
 
+    console.log('[payout-request] Updating hunt status to ended...');
     // Mark hunt as processing
-    await supabase.from('hunts').update({
+    const { error: updateErr } = await supabase.from('hunts').update({
       winner_id: winnerId,
       payout_method: method,
       payout_destination: destination,
       payout_status: 'processing',
       status: 'ended',
     }).eq('id', huntId);
+
+    if (updateErr) {
+      console.error('[payout-request] Hunt update error:', updateErr.message);
+      return res.status(500).json({ error: 'Failed to update hunt: ' + updateErr.message });
+    }
+    console.log('[payout-request] Hunt updated OK');
 
     // ── Try PayPal Payouts API ────────────────────────────────
     let paypalSuccess = false;
