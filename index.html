@@ -139,7 +139,7 @@ body::after {
 .filter-btn { flex: 1; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
 .filter-btn:active { transform: scale(.97); }
 .filter-btn .fb-label { font-size: 16px; font-weight: 700; display: block; color: #fff; }
-.filter-btn .fb-sub   { font-size: 11px; font-weight: 400; opacity: .55; display: block; margin-top: 3px; letter-spacing: .5px; text-transform: uppercase; }
+.filter-btn .fb-sub   { font-size: 12px; font-weight: 400; opacity: .65; display: block; margin-top: 3px; letter-spacing: .5px; text-transform: uppercase; }
 .filter-btn.saved  { background: #166534; display: flex; align-items: center; padding: 14px 10px; gap: 8px; }
 .filter-btn.saved .fb-sub { color: #86efac; }
 .filter-btn.saved .pin-circle { width: 32px; height: 32px; border-radius: 50%; background: #0d3320; border: 1px solid rgba(74,222,128,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -309,38 +309,40 @@ body::after {
 /* Quest list (expanded inside section) */
 .quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
 .section.open .quest-list { max-height: 4000px; }
-.quest-row { border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; display: flex; transition: background .15s; }
-.quest-row:active { background: rgba(255,255,255,.03); }
-.quest-row-accent { width: 4px; flex-shrink: 0; background: var(--green); border-radius: 0; }
+.quest-row { border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; position: relative; height: 130px; overflow: hidden; display: block; }
+.quest-row:active { opacity: .85; }
+.quest-row-map-bg { position: absolute; inset: 0; background: #0d1117; }
+.quest-row-map-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quest-row-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(10,8,26,.1) 0%, rgba(10,8,26,.75) 100%); }
+.quest-row-overlay  { position: absolute; inset: 0; background: rgba(10,8,26,.45); }
+.quest-row-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; z-index: 2; background: var(--green); }
 .quest-row-accent.hot { background: var(--yellow); }
-.quest-row-inner { flex: 1; padding: 12px 14px; min-width: 0; }
-.quest-row-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
-.quest-row-title { font-size: 16px; color: #fff; font-weight: 500; line-height: 1.3; }
-.quest-row-city { font-size: 12px; color: rgba(255,255,255,.3); margin-top: 2px; }
-.quest-row-prize { font-size: 26px; font-weight: 700; color: var(--green); line-height: 1; flex-shrink: 0; }
+.quest-row-content { position: absolute; inset: 0; padding: 12px 14px; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; }
+.quest-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.quest-row-title { font-size: 17px; color: #fff; font-weight: 600; line-height: 1.3; text-shadow: 0 1px 6px rgba(0,0,0,1); }
+.quest-row-city { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 2px; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.quest-row-prize { font-size: 28px; font-weight: 700; color: var(--green); line-height: 1; flex-shrink: 0; text-shadow: 0 1px 6px rgba(0,0,0,1); }
 .quest-row-prize.hot { color: var(--yellow); }
-.quest-row-map { width: 100%; height: 80px; border-radius: 10px; overflow: hidden; background: #0d1117; margin-bottom: 8px; cursor: pointer; }
-.quest-row-map img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .quest-row-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .quest-row-badges { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
-.qbadge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-.qbadge-pirate   { background: rgba(232,168,32,.12); color: #e8a820; border: 1px solid rgba(232,168,32,.25); }
-.qbadge-poetic   { background: rgba(147,197,253,.1); color: #93c5fd; border: 1px solid rgba(147,197,253,.2); }
-.qbadge-insults  { background: rgba(239,68,68,.1);   color: #f87171; border: 1px solid rgba(239,68,68,.2); }
-.qbadge-sarcastic{ background: rgba(167,139,250,.1); color: #c4b5fd; border: 1px solid rgba(167,139,250,.2); }
-.qbadge-hillbilly{ background: rgba(74,222,128,.1);  color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
-.qbadge-grandma  { background: rgba(251,191,36,.1);  color: #fcd34d; border: 1px solid rgba(251,191,36,.2); }
-.qbadge-surfer   { background: rgba(56,189,248,.1);  color: #7dd3fc; border: 1px solid rgba(56,189,248,.2); }
-.qbadge-detective{ background: rgba(148,163,184,.1); color: #cbd5e1; border: 1px solid rgba(148,163,184,.2); }
-.qbadge-5yr      { background: rgba(249,168,212,.1); color: #f9a8d4; border: 1px solid rgba(249,168,212,.2); }
-.qbadge-default  { background: rgba(255,255,255,.06); color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.1); }
-.qtimer-normal { font-size: 12px; color: rgba(255,255,255,.35); }
-.qtimer-soon   { font-size: 12px; color: #fbbf24; }
-.qtimer-urgent { font-size: 12px; color: #f87171; }
-.qclues { font-size: 12px; color: rgba(255,255,255,.3); display: flex; align-items: center; gap: 3px; }
-.qclues::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.2); display: inline-block; }
+.qbadge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+.qbadge-pirate   { background: rgba(232,168,32,.25); color: #fcd34d; border: 1px solid rgba(232,168,32,.4); }
+.qbadge-poetic   { background: rgba(147,197,253,.2); color: #bfdbfe; border: 1px solid rgba(147,197,253,.35); }
+.qbadge-insults  { background: rgba(239,68,68,.2);   color: #fca5a5; border: 1px solid rgba(239,68,68,.35); }
+.qbadge-sarcastic{ background: rgba(167,139,250,.2); color: #ddd6fe; border: 1px solid rgba(167,139,250,.35); }
+.qbadge-hillbilly{ background: rgba(74,222,128,.2);  color: #86efac; border: 1px solid rgba(74,222,128,.35); }
+.qbadge-grandma  { background: rgba(251,191,36,.2);  color: #fde68a; border: 1px solid rgba(251,191,36,.35); }
+.qbadge-surfer   { background: rgba(56,189,248,.2);  color: #bae6fd; border: 1px solid rgba(56,189,248,.35); }
+.qbadge-detective{ background: rgba(148,163,184,.2); color: #e2e8f0; border: 1px solid rgba(148,163,184,.35); }
+.qbadge-5yr      { background: rgba(249,168,212,.2); color: #fbcfe8; border: 1px solid rgba(249,168,212,.35); }
+.qbadge-default  { background: rgba(255,255,255,.12); color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.2); }
+.qtimer-normal { font-size: 13px; color: rgba(255,255,255,.65); text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.qtimer-soon   { font-size: 13px; color: #fbbf24; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.qtimer-urgent { font-size: 13px; color: #f87171; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.qclues { font-size: 13px; color: rgba(255,255,255,.65); display: flex; align-items: center; gap: 4px; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.qclues::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.4); display: inline-block; }
 .quest-row-left { flex: 1; min-width: 0; }
-.quest-row-meta { font-size: 14px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
+.quest-row-meta { font-size: 15px; color: #c8c8c8; display: flex; gap: 8px; align-items: center; }
 .quest-row-meta .dot { width: 3px; height: 3px; background: #c8c8c8; border-radius: 50%; }
 .section-scheduled .quest-row-prize { color: var(--yellow); }
 .section-completed .quest-row-prize { color: var(--gray); opacity: .7; }
@@ -965,63 +967,63 @@ function renderQuestRow(q, status) {
   var isHot = prizeDollars >= 50;
   var location = escapeHtml(q.neighborhood || q.city || 'Unknown location');
 
-  // Timer with urgency color
+  // Timer with urgency
   var timerHtml = '';
   if (status === 'active' && q.ends_at) {
     var diff = new Date(q.ends_at) - new Date();
-    var timerClass = diff < 7200000 ? 'qtimer-urgent' : diff < 86400000 ? 'qtimer-soon' : 'qtimer-normal';
-    timerHtml = '<span class="' + timerClass + '">Ends ' + timeUntil(q.ends_at) + '</span>';
+    var tc = diff < 7200000 ? 'qtimer-urgent' : diff < 86400000 ? 'qtimer-soon' : 'qtimer-normal';
+    timerHtml = '<span class="' + tc + '">Ends ' + timeUntil(q.ends_at) + '</span>';
   } else if (status === 'scheduled' && q.starts_at) {
     timerHtml = '<span class="qtimer-normal">Starts ' + timeUntil(q.starts_at) + '</span>';
   } else if (status === 'completed') {
     var wonAt = q.found_at || (q.winner_id ? q.updated_at : null);
-    var completedText = wonAt ? 'Won ' + timeAgo(wonAt) : 'Ended';
-    timerHtml = '<span class="qtimer-normal">' + completedText + '</span>';
+    timerHtml = '<span class="qtimer-normal">' + (wonAt ? 'Won ' + timeAgo(wonAt) : 'Ended') + '</span>';
   }
 
   // Persona badge
   var persona = (q.clue_persona || '').toLowerCase();
-  var personaMap = {
-    'pirate':    ['🏴‍☠️', 'Pirate',    'qbadge-pirate'],
-    'poetic':    ['📜',          'Poetic',    'qbadge-poetic'],
-    'insults':   ['😤',          'Insults',   'qbadge-insults'],
-    'sarcastic': ['🙄',          'Sarcastic', 'qbadge-sarcastic'],
-    'hillbilly': ['🤠',          'Hillbilly', 'qbadge-hillbilly'],
-    'grandma':   ['👵',          'Grandma',   'qbadge-grandma'],
-    'surfer':    ['🏄',          'Surfer',    'qbadge-surfer'],
-    'detective': ['🕵️',         'Detective', 'qbadge-detective'],
-    '5 yr old':  ['🧒',          '5 Yr Old',  'qbadge-5yr'],
+  var pm = {
+    'pirate':    ['🏴‍☠️','Pirate',   'qbadge-pirate'],
+    'poetic':    ['📜','Poetic',            'qbadge-poetic'],
+    'insults':   ['😤','Insults',           'qbadge-insults'],
+    'sarcastic': ['🙄','Sarcastic',         'qbadge-sarcastic'],
+    'hillbilly': ['🤠','Hillbilly',         'qbadge-hillbilly'],
+    'grandma':   ['👵','Grandma',           'qbadge-grandma'],
+    'surfer':    ['🏄','Surfer',            'qbadge-surfer'],
+    'detective': ['🕵️','Detective',        'qbadge-detective'],
+    '5 yr old':  ['🧒','5 Yr Old',         'qbadge-5yr'],
   };
-  var pd = personaMap[persona] || ['✨', persona || 'Quest', 'qbadge-default'];
+  var pd = pm[persona] || ['✨', persona || 'Quest', 'qbadge-default'];
   var personaBadge = '<span class="qbadge ' + pd[2] + '">' + pd[0] + ' ' + pd[1] + '</span>';
-
-  // Clue count
   var cluesBadge = q.clue_count ? '<span class="qclues">' + q.clue_count + ' clues</span>' : '';
 
-  // Map thumbnail — static map with green circle, links to Google Maps
-  var mapHtml = '';
+  // Map background — city level zoom (13), no marker, just the area
+  var mapHtml = '<div class="quest-row-map-bg"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1520,#0a1828,#111827);"></div></div>';
   if (q.lat && q.lng) {
     var mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
       + '?center=' + q.lat + ',' + q.lng
-      + '&zoom=15&size=600x160&scale=2&maptype=roadmap'
+      + '&zoom=13&size=600x260&scale=2&maptype=roadmap'
       + '&style=feature:all|element:geometry|color:0x0d1117'
       + '&style=feature:road|element:geometry|color:0x1e2d3d'
+      + '&style=feature:road.arterial|element:geometry|color:0x252238'
+      + '&style=feature:road.highway|element:geometry|color:0x2d2844'
       + '&style=feature:water|element:geometry|color:0x080612'
       + '&style=feature:poi|element:geometry|color:0x111020'
-      + '&style=feature:all|element:labels.text.fill|color:0x6b7280'
+      + '&style=feature:poi.park|element:geometry|color:0x0f1a0f'
+      + '&style=feature:all|element:labels.text.fill|color:0x4b5563'
       + '&style=feature:all|element:labels.text.stroke|color:0x0d1117'
-      + '&markers=color:green|' + q.lat + ',' + q.lng
-      + '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
-    var gmapsUrl = 'https://www.google.com/maps?q=' + q.lat + ',' + q.lng;
-    mapHtml = '<div class="quest-row-map" onclick="event.stopPropagation();window.open(\'' + gmapsUrl + '\',\'_blank\')">'
-      + '<img src="' + mapUrl + '" alt="map" loading="lazy"/>'
-      + '</div>';
+      + '&key=' + 'AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
+    mapHtml = '<div class="quest-row-map-bg"><img src="' + mapUrl + '" alt="" loading="lazy"/></div>';
   }
 
+  var questUrl = 'quest.html?id=' + encodeURIComponent(q.id);
   return (
-    '<div class="quest-row" onclick="window.location.href=\'quest.html?id=' + encodeURIComponent(q.id) + '\'">'
+    '<div class="quest-row" onclick="window.location.href=\'' + questUrl + '\'">'
+    + mapHtml
+    + '<div class="quest-row-vignette"></div>'
+    + '<div class="quest-row-overlay"></div>'
     + '<div class="quest-row-accent' + (isHot ? ' hot' : '') + '"></div>'
-    + '<div class="quest-row-inner">'
+    + '<div class="quest-row-content">'
       + '<div class="quest-row-top">'
         + '<div>'
           + '<div class="quest-row-title">' + location + '</div>'
@@ -1029,7 +1031,6 @@ function renderQuestRow(q, status) {
         + '</div>'
         + '<div class="quest-row-prize' + (isHot ? ' hot' : '') + '">$' + prizeDollars + '</div>'
       + '</div>'
-      + mapHtml
       + '<div class="quest-row-bottom">'
         + '<div class="quest-row-badges">' + personaBadge + cluesBadge + '</div>'
         + timerHtml
