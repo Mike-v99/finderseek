@@ -1157,7 +1157,7 @@ async function winSignIn(){
     var r=await fetch(SB+'/auth/v1/otp',{
       method:'POST',
       headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email:email,create_user:true,options:{emailRedirectTo:window.location.href}})
+      body:JSON.stringify({email:email,create_user:true,options:{emailRedirectTo:window.location.href.split('?')[0]+'?id='+(currentHunt?currentHunt.id:'')}})
     });
     if(r.ok){
       document.getElementById('win-signin-msg').textContent='✓ Magic link sent! Tap it in your email to complete your claim.';
@@ -1197,6 +1197,25 @@ async function submitPayoutRequest(){
   var btn=document.getElementById('win-submit-btn');
   btn.disabled=true;btn.textContent='Submitting...';
   try{
+    // Resolve winnerId if not set yet — can happen if seeker signed in via magic link
+    if(!window._winUserId){
+      var token=getToken();
+      if(!token){showToast('Please sign in to claim your prize','error');btn.disabled=false;btn.textContent='Claim My Prize →';return;}
+      var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+      var usr=await ur.json();
+      if(!usr||!usr.id){showToast('Could not verify your account','error');btn.disabled=false;btn.textContent='Claim My Prize →';return;}
+      window._winUserId=usr.id;
+      // Also insert find_report if not already done
+      try{
+        await fetch(SB+'/rest/v1/find_reports',{
+          method:'POST',
+          headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body:JSON.stringify({hunt_id:window._winHuntId,user_id:usr.id,found_at:new Date().toISOString()})
+        });
+      }catch(e){console.warn('find_report insert failed:',e);}
+      // Clear pending claim now that we have the user
+      try{localStorage.removeItem('fs_pending_claim');}catch(e){}
+    }
     var r=await fetch(API_BASE+'/api/payout-request',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
