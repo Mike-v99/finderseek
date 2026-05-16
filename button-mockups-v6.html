@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinderSeek — Saved Pin Mockups v3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #06040e; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; gap: 36px; }
+  h2 { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+
+  .phone { background: #0a0810; border-radius: 36px; padding: 20px 0; width: 360px; border: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+  .btns { display: flex; gap: 8px; margin: 0 12px; }
+
+  .btn { flex: 1; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; }
+  .btn .lbl { font-size: 16px; font-weight: 700; display: block; color: #fff; }
+  .btn .sub { font-size: 11px; font-weight: 400; opacity: .55; display: block; margin-top: 3px; letter-spacing: .5px; text-transform: uppercase; }
+  .btn.upcoming { background: #1e3a5f; }
+  .btn.upcoming .sub { color: #bfdbfe; }
+  .btn.hot { background: #7f1d1d; animation: bgPulse 3s ease-in-out infinite; }
+  .btn.hot .sub { color: #fecaca; }
+  @keyframes bgPulse { 0%,100%{background:#7f1d1d;} 50%{background:#991b1b;} }
+  .btn.saved { background: #166534; }
+  .btn.saved .sub { color: #86efac; }
+
+  img.pin { display: block; }
+
+  /* A: pin left inline */
+  .btn-a { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 14px 6px; }
+  .btn-a .tcol { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+
+  /* B: pin above stacked */
+  .btn-b { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 11px 4px; }
+
+  /* C: pin badge corner */
+  .btn-c-wrap { flex: 1; position: relative; }
+  .btn-c { width: 100%; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; background: #166534; }
+  .pin-badge { position: absolute; top: -7px; right: -5px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,.6); border: 1.5px solid rgba(239,68,68,.4); display: flex; align-items: center; justify-content: center; }
+
+  /* D: pin in dark circle left */
+  .btn-d { display: flex; align-items: center; padding: 14px 10px; gap: 8px; border-radius: 14px; }
+  .pin-circle { width: 32px; height: 32px; border-radius: 50%; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .btn-d .tcol { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; text-align: left; }
+
+  /* Quest preview */
+  .section-preview { margin: 12px 12px 0; background: #13111f; border-radius: 14px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.06); }
+  .sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .sec-title { font-size: 12px; letter-spacing: 1.5px; color: rgba(255,255,255,.3); text-transform: uppercase; }
+  .sec-badge { font-size: 13px; color: #4ade80; }
+  .quest-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.05); margin-top: 4px; }
+  .q-name { font-size: 15px; color: #fff; font-weight: 500; }
+  .q-meta { font-size: 12px; color: rgba(255,255,255,.3); margin-top: 2px; }
+  .q-prize { font-size: 18px; color: #4ade80; }
+</style>
+</head>
+<body>
+
+<!-- A: pin left of label inline -->
+<div>
+  <h2>A — Pin left of label</h2>
+  <div class="phone">
+    <div class="btns">
+      <button class="btn saved btn-a">
+        <img class="pin" src="pin-icon.png" width="18" height="18" style="object-fit:contain;"/>
+        <div class="tcol">
+          <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
+          <span style="font-size:11px;color:#86efac;opacity:.55;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
+        </div>
+      </button>
+      <button class="btn upcoming"><span class="lbl">Upcoming</span><span class="sub">Quests</span></button>
+      <button class="btn hot"><span class="lbl">Hot Quests</span><span class="sub">$50 &amp; up</span></button>
+    </div>
+    <div class="section-preview">
+      <div class="sec-header"><span class="sec-title">Active</span><span class="sec-badge">3 live</span></div>
+      <div class="quest-item"><div><div class="q-name">Heritage Plaza</div><div class="q-meta">Houston, TX · pirate</div></div><div class="q-prize">$30</div></div>
+      <div class="quest-item"><div><div class="q-name">Conroe City Hall</div><div class="q-meta">Conroe, TX · insults</div></div><div class="q-prize" style="color:#f87171;">$75</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- B: pin above stacked -->
+<div>
+  <h2>B — Pin above label</h2>
+  <div class="phone">
+    <div class="btns">
+      <button class="btn saved btn-b">
+        <img class="pin" src="pin-icon.png" width="20" height="20" style="object-fit:contain;"/>
+        <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
+        <span style="font-size:11px;color:#86efac;opacity:.55;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
+      </button>
+      <button class="btn upcoming"><span class="lbl">Upcoming</span><span class="sub">Quests</span></button>
+      <button class="btn hot"><span class="lbl">Hot Quests</span><span class="sub">$50 &amp; up</span></button>
+    </div>
+    <div class="section-preview">
+      <div class="sec-header"><span class="sec-title">Active</span><span class="sec-badge">3 live</span></div>
+      <div class="quest-item"><div><div class="q-name">Heritage Plaza</div><div class="q-meta">Houston, TX · pirate</div></div><div class="q-prize">$30</div></div>
+      <div class="quest-item"><div><div class="q-name">Conroe City Hall</div><div class="q-meta">Conroe, TX · insults</div></div><div class="q-prize" style="color:#f87171;">$75</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- C: pin badge corner -->
+<div>
+  <h2>C — Pin badge top-right corner</h2>
+  <div class="phone">
+    <div class="btns">
+      <div class="btn-c-wrap">
+        <button class="btn-c">
+          <span style="font-size:16px;font-weight:700;color:#fff;display:block;">Saved</span>
+          <span style="font-size:11px;color:#86efac;opacity:.55;display:block;margin-top:3px;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
+        </button>
+        <div class="pin-badge">
+          <img src="pin-icon.png" width="13" height="13" style="object-fit:contain;"/>
+        </div>
+      </div>
+      <button class="btn upcoming"><span class="lbl">Upcoming</span><span class="sub">Quests</span></button>
+      <button class="btn hot"><span class="lbl">Hot Quests</span><span class="sub">$50 &amp; up</span></button>
+    </div>
+    <div class="section-preview">
+      <div class="sec-header"><span class="sec-title">Active</span><span class="sec-badge">3 live</span></div>
+      <div class="quest-item"><div><div class="q-name">Heritage Plaza</div><div class="q-meta">Houston, TX · pirate</div></div><div class="q-prize">$30</div></div>
+      <div class="quest-item"><div><div class="q-name">Conroe City Hall</div><div class="q-meta">Conroe, TX · insults</div></div><div class="q-prize" style="color:#f87171;">$75</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- D: pin in red circle left -->
+<div>
+  <h2>D — Pin in red circle, left side</h2>
+  <div class="phone">
+    <div class="btns">
+      <button class="btn saved btn-d">
+        <div class="pin-circle">
+          <img src="pin-icon.png" width="16" height="16" style="object-fit:contain;"/>
+        </div>
+        <div class="tcol">
+          <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
+          <span style="font-size:11px;color:#86efac;opacity:.55;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
+        </div>
+      </button>
+      <button class="btn upcoming"><span class="lbl">Upcoming</span><span class="sub">Quests</span></button>
+      <button class="btn hot"><span class="lbl">Hot Quests</span><span class="sub">$50 &amp; up</span></button>
+    </div>
+    <div class="section-preview">
+      <div class="sec-header"><span class="sec-title">Active</span><span class="sec-badge">3 live</span></div>
+      <div class="quest-item"><div><div class="q-name">Heritage Plaza</div><div class="q-meta">Houston, TX · pirate</div></div><div class="q-prize">$30</div></div>
+      <div class="quest-item"><div><div class="q-name">Conroe City Hall</div><div class="q-meta">Conroe, TX · insults</div></div><div class="q-prize" style="color:#f87171;">$75</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
