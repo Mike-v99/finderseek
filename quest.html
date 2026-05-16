@@ -930,10 +930,11 @@ function renderClues(){
     if(locConfirmed){
       // Build map+photo strip for location confirmed card (position 0/total = max blur, widest zoom)
       var total0=currentClues.length||1;
-      var blurIdx0=0; // position 0 = most blurred
+      // Location card = position 0/(total-1) = 0% = max blur, city zoom
+      var blurIdx0=0;
       var clueBlurPx0=BLUR_PX[blurIdx0];
-      var clueZoom0=12; // city level zoom matching overview map
-      var ringR0=800; // 800m ring at this zoom
+      var clueZoom0=12;
+      var ringR0=800;
       var locRevealStrip='';
       var locMapCell='',locPhotoCell='';
       if(currentHunt.lat&&currentHunt.lng){
@@ -993,16 +994,17 @@ function renderClues(){
       var qaBlock='';
       var hasAnswer=!!(c.clue_answer||'').trim();
 
-      // Progressive map+photo strip shown at bottom of each solved clue.
-      // Blur and zoom scale by clue_number/total using the same BLUR_PX formula.
+      // Progressive map+photo strip — skip on final clue (redundant with final clue map).
+      // Formula: position/(total-1) so 2nd-to-last clue always hits 100% reveal.
+      // Position = clue_number (1-based); total-1 = last non-final clue index.
       var clueRevealStrip='';
       var isClueSolved=isSolved||isFinal;
-      if(isClueSolved&&(currentHunt.lat||currentHunt.photo_url)){
-        var cluePct=currentClues.length>0?c.clue_number/currentClues.length:1;
+      if(!isFinal&&isClueSolved&&(currentHunt.lat||currentHunt.photo_url)){
+        var denominator=Math.max(currentClues.length-1,1); // total-1 so 2nd-to-last=100%
+        var cluePct=Math.min(c.clue_number/denominator,1);
         var blurIdx=Math.min(Math.round(cluePct*(BLUR_PX.length-1)),BLUR_PX.length-1);
         var clueBlurPx=BLUR_PX[blurIdx];
-        var zoomIdx=Math.min(Math.round(cluePct*(ZOOM_LEVELS.length-1)),ZOOM_LEVELS.length-1);
-        var clueZoom=12+Math.round(cluePct*6); // 13→18 scaled across all clues
+        var clueZoom=12+Math.round(cluePct*6); // 12→18 scaled, 100%=18
         clueZoom=Math.min(clueZoom,18);
         var clueZoomLabel=clueZoom<=13?'Neighborhood':clueZoom<=14?'Streets':clueZoom<=15?'Block level':clueZoom<=16?'Paths':clueZoom<=17?'Near ground':'Ground level';
         var radiusFt2=isFinal?100:mapInfo?mapInfo.radiusFt:2640; // default 0.5mi if no mapInfo
