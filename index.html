@@ -660,7 +660,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="section-body">
         <div class="section-left">
           <div class="num-circle" id="count-scheduled">0</div>
-          <div class="section-title">SCHEDULED</div>
+          <div class="section-title">UPCOMING</div>
         </div>
         <div style="display:flex;align-items:center;">
           <span class="section-prize" id="prize-scheduled">$0</span>
@@ -1159,27 +1159,33 @@ async function loadQuests() {
 }
 
 function applyFilter(type) {
+  var btn = document.getElementById('filter-' + type);
+  var isActive = btn && btn.classList.contains('active-filter');
+
   // Clear all active states
   ['saved','scheduled','hot'].forEach(function(t) {
     var el = document.getElementById('filter-' + t);
     if (el) el.classList.remove('active-filter');
   });
-  var btn = document.getElementById('filter-' + type);
+
+  // Tapping active filter again → reset to full list
+  if (isActive) {
+    renderSection('active', _cachedQuests['active'] || []);
+    return;
+  }
 
   if (type === 'scheduled') {
-    // Scroll to scheduled section and open it
     var sec = document.getElementById('sec-scheduled');
     if (sec) {
       if (!sec.classList.contains('open')) sec.classList.add('open');
       setTimeout(function() { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
-    return; // don't mark as active — it's a scroll action
+    return;
   }
 
   if (btn) btn.classList.add('active-filter');
 
   if (type === 'saved') {
-    // Show only saved (pinned) quests from localStorage
     var savedIds = getSavedQuestIds();
     var all = _cachedQuests['active'] || [];
     var filtered = all.filter(function(q) { return savedIds.indexOf(q.id) !== -1; });
@@ -1189,7 +1195,6 @@ function applyFilter(type) {
   }
 
   if (type === 'hot') {
-    // Show only quests with prize >= $50
     var all = _cachedQuests['active'] || [];
     var filtered = all.filter(function(q) { return (q.prize_value || 0) >= 5000; });
     renderSection('active', filtered);
