@@ -138,11 +138,18 @@ body::after {
 .filter-btns { display: flex; gap: 8px; }
 .filter-btn { flex: 1; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
 .filter-btn:active { transform: scale(.97); }
-.filter-btn .fb-label { font-size: 16px; font-weight: 700; display: block; }
+.filter-btn .fb-label { font-size: 16px; font-weight: 700; display: block; color: #fff; }
 .filter-btn .fb-sub   { font-size: 11px; font-weight: 400; opacity: .55; display: block; margin-top: 3px; letter-spacing: .5px; text-transform: uppercase; }
-.filter-btn.saved  { background: #166534; color: #86efac; }
-.filter-btn.sched  { background: #1e3a5f; color: #bfdbfe; }
-.filter-btn.hot    { background: #7f1d1d; color: #fecaca; }
+.filter-btn.saved  { background: #166534; display: flex; align-items: center; padding: 14px 10px; gap: 8px; }
+.filter-btn.saved .fb-sub { color: #86efac; }
+.filter-btn.saved .pin-circle { width: 32px; height: 32px; border-radius: 50%; background: #0d3320; border: 1px solid rgba(74,222,128,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.filter-btn.saved .pin-circle img { mix-blend-mode: screen; display: block; }
+.filter-btn.saved .fb-text { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; text-align: left; }
+.filter-btn.sched  { background: #1e3a5f; }
+.filter-btn.sched .fb-sub { color: #bfdbfe; }
+.filter-btn.hot    { background: #7f1d1d; animation: hotPulse 3s ease-in-out infinite; }
+.filter-btn.hot .fb-sub { color: #fecaca; }
+@keyframes hotPulse { 0%,100%{background:#7f1d1d;} 50%{background:#991b1b;} }
 .filter-btn.active-filter { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* SEARCH */
@@ -554,11 +561,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div class="filter-btns-wrap el from-scale" data-d="575">
       <div class="filter-btns">
         <button class="filter-btn saved" id="filter-saved" onclick="applyFilter('saved')">
-          <span class="fb-label">Saved</span>
-          <span class="fb-sub">Quests</span>
+          <div class="pin-circle">
+            <img src="/pin-icon.png" width="18" height="18" onerror="this.style.display='none'"/>
+          </div>
+          <div class="fb-text">
+            <span class="fb-label">Saved</span>
+            <span class="fb-sub">Quests</span>
+          </div>
         </button>
         <button class="filter-btn sched" id="filter-scheduled" onclick="applyFilter('scheduled')">
-          <span class="fb-label">Scheduled</span>
+          <span class="fb-label">Upcoming</span>
           <span class="fb-sub">Quests</span>
         </button>
         <button class="filter-btn hot" id="filter-hot" onclick="applyFilter('hot')">
