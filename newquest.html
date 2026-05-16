@@ -3343,7 +3343,7 @@ function closePaymentModal(){
       var ds=document.getElementById('hb-drawer-sub');
       var avSvg=document.getElementById('hb-avatar-svg');
       if(dn)dn.textContent=uname;
-      if(ds)ds.textContent=isGold?'👑 Gold Tier Profile':'Free Tier Profile';
+      if(ds)ds.textContent='';
       if(avSvg)avSvg.setAttribute('fill',isGold?'rgba(232,168,32,.8)':'rgba(180,190,210,.65)');
       if(si)si.style.display='none';
       if(sp)sp.style.display='flex';

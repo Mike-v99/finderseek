@@ -237,7 +237,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div class="step-txt" style="margin-top:8px;">Find it, enter the PIN into the quest screen, and the prize transfers <span style="color:#4ade80;">automatically</span> to your linked bank account.</div>
         <div style="margin-top:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:10px 12px;">
           <div style="font-size:13px;color:#4ade80;margin-bottom:4px;">💳 Banking required to receive prizes</div>
-          <div style="font-size:17px;color:rgba(255,255,255,.7);">Link a bank account via Stripe in your profile. Takes about 2 minutes to set up — prizes go straight to your bank automatically.</div>
+          <div style="font-size:17px;color:rgba(255,255,255,.7);">Enter your PayPal email or Venmo handle when you win. Prizes are sent within 24 hours — no setup needed.</div>
         </div>
       </div>
     </div>
@@ -298,7 +298,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div class="acc-arrow">▾</div>
       </div>
       <div class="acc-body">
-        <div class="step-txt">Choose from pre-selected prizes from <span style="color:#4ade80;">$5 to $100</span>. The prize is held securely in escrow via Stripe — it's released automatically to the winner when they enter the correct PIN.</div>
+        <div class="step-txt">Choose from pre-selected prizes from <span style="color:#4ade80;">$5 to $100</span>. The prize is held securely in escrow — it's sent to the winner via PayPal or Venmo when they enter the correct PIN.</div>
         <div class="step-txt" style="margin-top:8px;">If no one claims it before the timer expires, you get a full refund.</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
           <span class="tag" style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:#4ade80;">Auto refund if unclaimed</span>
@@ -314,7 +314,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <!-- Trust strip -->
   <div class="el" style="margin:10px 12px 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;display:flex;padding:12px 6px;">
-    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🔒</div><div style="font-size:17px;color:#b8c4d0;margin-top:4px;">Stripe<br/>secure</div></div>
+    <div style="flex:1;text-align:center;"><div style="font-size:20px;">🔒</div><div style="font-size:17px;color:#b8c4d0;margin-top:4px;">Securely<br/>held</div></div>
     <div style="flex:1;text-align:center;"><div style="font-size:20px;">⚡</div><div style="font-size:17px;color:#b8c4d0;margin-top:4px;">Auto<br/>payouts</div></div>
     <div style="flex:1;text-align:center;"><div style="font-size:20px;">🎯</div><div style="font-size:17px;color:#b8c4d0;margin-top:4px;">Skill<br/>based</div></div>
     <div style="flex:1;text-align:center;"><div style="font-size:20px;">🆓</div><div style="font-size:17px;color:#b8c4d0;margin-top:4px;">Free<br/>to play</div></div>
@@ -481,7 +481,7 @@ document.querySelectorAll('.el').forEach(function(el){ observer.observe(el); });
         var dn=document.getElementById('hb-drawer-name');
         if(dn)dn.textContent=uname;
         var ds=document.getElementById('hb-drawer-sub');
-        if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier';
+        // if(ds)ds.textContent=isGold?'👑 Gold Member':'Free Tier'; // Gold coming soon
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
       }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});

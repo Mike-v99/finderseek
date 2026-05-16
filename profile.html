@@ -147,6 +147,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-size:18px;color:#d0e4f0;">Hidden Treasure. Real Adventure.</div>
       </div>
 
+      <!-- Prize claim banner — shown when seeker arrived from winning a quest -->
+      <div id="prize-claim-banner" style="display:none;background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(21,128,61,.08));border:1.5px solid rgba(74,222,128,.4);border-radius:16px;padding:16px 18px;margin-bottom:20px;text-align:center;">
+        <div style="font-size:32px;margin-bottom:6px;">🏆</div>
+        <div style="font-size:20px;font-weight:600;color:#4ade80;margin-bottom:4px;">You found the treasure!</div>
+        <div id="prize-claim-amount" style="font-size:15px;color:rgba(255,255,255,.7);margin-bottom:12px;">Sign in or create a free account to claim your prize.</div>
+        <div style="font-size:13px;color:rgba(74,222,128,.6);">Your prize is reserved — it won't expire while you sign in.</div>
+      </div>
+
       <!-- Tab toggle -->
       <div style="display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin-bottom:20px;">
         <div id="tab-signin" class="auth-tab auth-tab-active lg-anim lg-slide-right" onclick="switchAuthTab('signin')">Sign in</div>
@@ -262,7 +270,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </div>
       </div>
       <div id="p-name" style="font-size:22px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1;margin-bottom:3px;max-width:100%;">Loading…</div>
-      <div id="p-tier-label" style="display:none;align-items:center;gap:6px;justify-content:center;">
+      <div id="p-tier-label" style="display:none;align-items:center;gap:6px;justify-content:center;" hidden>
         <span id="p-tier-icon" style="font-size:14px;display:none;">👑</span>
         <span id="p-tier-text" style="font-size:14px;color:#b8c4d0;font-weight:400;">—</span>
       </div>
@@ -588,6 +596,8 @@ async function saveSettings() {
 }
 
 async function openBillingPortal() {
+  showToast('Gold membership coming soon! 👑', 'success');
+  return;
   if (!currentUser) { showToast('Please sign in first', 'error'); return; }
   var isPro = currentProfile?.is_pro && (!currentProfile.pro_expires || new Date(currentProfile.pro_expires) > new Date());
   if (!isPro || !currentProfile?.stripe_customer_id) {
@@ -976,13 +986,9 @@ function renderHeader(){
   // Tier label — always visible
   var tierText = document.getElementById('p-tier-text');
   var tierIcon = document.getElementById('p-tier-icon');
-  if (isPro2) {
-    if (tierIcon) tierIcon.style.display = 'inline';
-    if (tierText) { tierText.textContent = 'Gold Member'; tierText.style.color = '#e8a820'; }
-  } else {
-    if (tierIcon) tierIcon.style.display = 'none';
-    if (tierText) { tierText.textContent = 'Free Tier'; tierText.style.color = '#b8c4d0'; }
-  }
+  // Gold tier display hidden — coming soon
+  if (tierIcon) tierIcon.style.display = 'none';
+  // if (tierText) tierText.textContent = isPro2 ? 'Gold Member' : 'Free Tier';
 
   // Gold status compat
   var gs = document.getElementById('m-gold-status');
@@ -1386,21 +1392,8 @@ async function handlePayoutBtn(){
 
 // Fallback: redirect to Stripe hosted onboarding
 async function handlePayoutBtnRedirect(){
-  var btn = document.getElementById('payout-modal-btn');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
-  try {
-    var r = await fetch(API_BASE+'/api/connect-onboard', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
-      body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
-    });
-    var d = await r.json();
-    if (!r.ok || !d.url) throw new Error(d.error || 'Failed');
-    window.location.href = d.url;
-  } catch(e) {
-    showToast('Error: ' + e.message, 'error');
-    if (btn) { btn.disabled = false; btn.textContent = 'Continue to Stripe →'; }
-  }
+  // Stripe Connect removed — payouts now via PayPal/Venmo at claim time
+  showToast('Enter your PayPal or Venmo when you win a quest — no setup needed!', 'success');
 }
 
 
@@ -1660,6 +1653,23 @@ function handleUrlRedirects(){
       if (banner) banner.style.display = 'block';
     }
   } catch(e){ try { localStorage.removeItem('fs_pending_quest'); } catch(e2){} }
+  // Show prize claim banner if seeker arrived after winning but isn't signed in
+  try {
+    var pc = JSON.parse(localStorage.getItem('fs_pending_claim') || 'null');
+    var pcAge = pc && pc.savedAt ? (Date.now() - pc.savedAt) : Infinity;
+    if (pc && pc.huntId && pcAge < 3600000 && !getToken()) {
+      var claimBanner = document.getElementById('prize-claim-banner');
+      if (claimBanner) {
+        claimBanner.style.display = 'block';
+        if (pc.amount) {
+          var amtEl = document.getElementById('prize-claim-amount');
+          if (amtEl) amtEl.textContent = 'Sign in or create a free account to claim your $' + pc.amount + ' prize.';
+        }
+      }
+      // Default to signup tab — most winners won't have an account yet
+      setTimeout(function(){ if (typeof switchAuthTab === 'function') switchAuthTab('signup'); }, 100);
+    }
+  } catch(e2) {}
   loadProfile();
 })();
 
@@ -1824,7 +1834,7 @@ if ('serviceWorker' in navigator) {
         var dn=document.getElementById('hb-drawer-name');
         if(dn)dn.textContent=uname;
         var ds=document.getElementById('hb-drawer-sub');
-        if(ds)ds.textContent=isGold?'👑 Gold Tier Profile':'Free Tier Profile';
+        // Gold tier hidden — coming soon
         if(si)si.style.display='none';
         if(sp)sp.style.display='flex';
       }).catch(function(){if(si)si.style.display='flex';if(sp)sp.style.display='none';});
@@ -1881,7 +1891,7 @@ if ('serviceWorker' in navigator) {
         </div>
       </div>
 
-      <button onclick="startStripeOnboarding()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:12px;">Continue with Stripe →</button>
+      <button onclick="startStripeOnboarding()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#0070ba,#008CFF);border:none;color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:12px;">No setup needed — enter PayPal or Venmo when you win</button>
       <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.25);line-height:1.6;">FinderSeek does not store your bank details.<br>Protected by Stripe's Privacy Policy.</div>
     </div>
 
@@ -1895,7 +1905,7 @@ if ('serviceWorker' in navigator) {
     <!-- Fallback -->
     <div id="payout-modal-fallback" style="display:none;padding:24px;">
       <div style="font-size:15px;color:rgba(255,255,255,.5);margin-bottom:14px;text-align:center;">Unable to load. Continue on Stripe's page:</div>
-      <button id="payout-modal-btn" onclick="handlePayoutBtnRedirect()" style="width:100%;padding:13px;border:none;border-radius:11px;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#635bff,#7c3aed);color:#fff;">Continue to Stripe →</button>
+      <button id="payout-modal-btn" onclick="handlePayoutBtnRedirect()" style="width:100%;padding:13px;border:none;border-radius:11px;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#0070ba,#008CFF);color:#fff;">ℹ️ How payouts work</button>
     </div>
   </div>
 </div>

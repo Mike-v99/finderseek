@@ -914,7 +914,7 @@ async function loadHeroAuth() {
 
     // Update drawer
     if (drawerName) drawerName.textContent = name;
-    if (drawerSub) drawerSub.textContent = isGold ? '👑 Gold Tier Profile' : 'Free Tier Profile';
+    // if (drawerSub) drawerSub.textContent = isGold ? '👑 Gold Tier Profile' : 'Free Tier Profile'; // Gold coming soon
     if (signInSection) signInSection.style.display = 'none';
     if (profileSection) { profileSection.style.display = 'flex'; }
   } catch(e) {
