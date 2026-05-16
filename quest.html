@@ -1070,11 +1070,12 @@ function renderClues(){
                 var rem=new Date(cu)-new Date();
                 if(rem<=0){
                   clearInterval(t);
-                  var inp='<div style="margin-top:14px;display:flex;gap:8px;">'
+                  var inp='<div style="margin-top:14px;">'
                     +(ht2?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht2+'</div>':'')
+                    +'<div style="display:flex;gap:8px;">'
                     +'<input id="qa-input-'+cn+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/>'
                     +'<button id="qa-submit-'+cn+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button>'
-                    +'</div>';
+                    +'</div></div>';
                   var el=document.getElementById('cd-wrap-'+cn);
                   if(el){el.outerHTML=inp;setTimeout(function(){wireQaButtons();},50);}
                   return;
