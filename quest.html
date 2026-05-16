@@ -1053,12 +1053,39 @@ function renderClues(){
       if(questEnded&&hasAnswer){
         // Revealed answer — show green check + answer text
         qaBlock='<div style="margin-top:12px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;"><div style="font-size:20px;">✓</div><div><div style="font-size:13px;color:rgba(74,222,128,.6);letter-spacing:.5px;margin-bottom:2px;">ANSWER</div><div style="font-size:17px;color:#4ade80;font-weight:500;">'+escapeHtml(c.clue_answer)+'</div></div></div>';
-      } else if(!isFinal&&!isSolved&&!questEnded){
-        if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
+      } else if((!isFinal||hasAnswer)&&!isSolved&&!questEnded){
+        if(cr){
+          // Live countdown — swaps to input when timer hits zero
+          qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;" id="cd-wrap-'+c.clue_number+'">'
+            +'<div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div>'
+            +'<div style="font-size:15px;color:#b8c4d0;">Try again in <span id="cd-'+c.clue_number+'" style="color:#fff;font-weight:600;">'+cr+'</span></div>'
+            +(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')
+            +'</div>';
+          (function(cn,cu,ht2){
+            setTimeout(function(){
+              var wrap=document.getElementById('cd-wrap-'+cn);
+              var span=document.getElementById('cd-'+cn);
+              if(!wrap||!span)return;
+              var t=setInterval(function(){
+                var rem=new Date(cu)-new Date();
+                if(rem<=0){
+                  clearInterval(t);
+                  var inp='<div style="margin-top:14px;display:flex;gap:8px;">'
+                    +(ht2?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht2+'</div>':'')
+                    +'<input id="qa-input-'+cn+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/>'
+                    +'<button id="qa-submit-'+cn+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button>'
+                    +'</div>';
+                  var el=document.getElementById('cd-wrap-'+cn);
+                  if(el){el.outerHTML=inp;setTimeout(function(){wireQaButtons();},50);}
+                  return;
+                }
+                var s=document.getElementById('cd-'+cn);
+                if(s)s.textContent=rem>3600000?Math.ceil(rem/3600000)+'h remaining':Math.ceil(rem/60000)+' min remaining';
+              },10000);
+            },100);
+          })(c.clue_number,attempt.cooldown_until,ht);
+        }
         else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(ht?'<div style="font-size:14px;color:rgba(232,168,32,.6);margin-bottom:8px;">'+ht+'</div>':'')+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
-      } else if(isFinal&&hasAnswer&&!isSolved&&!questEnded){
-        if(cr){qaBlock='<div style="margin-top:14px;padding:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;"><div style="font-size:17px;color:rgba(239,68,68,.8);margin-bottom:6px;">Too many wrong answers</div><div style="font-size:15px;color:#b8c4d0;">'+cr+' until you can try again</div>'+(ht?'<div style="font-size:15px;color:rgba(232,168,32,.7);margin-top:8px;">'+ht+'</div>':'')+'</div>';}
-        else{qaBlock='<div style="margin-top:14px;display:flex;gap:8px;">'+(wc>0?'<div style="font-size:13px;color:rgba(239,68,68,.7);margin-bottom:6px;">'+wc+'/3 attempts</div>':'')+'<input id="qa-input-'+c.clue_number+'" type="text" placeholder="Your answer..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;"/><button id="qa-submit-'+c.clue_number+'" style="padding:11px 18px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;white-space:nowrap;">Submit</button></div>';}
       }
       return '<div class="green-wrap" style="margin-bottom:10px;"><div class="inner"><div class="clue-accent-on"></div><div style="padding:16px 18px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px;"><div style="font-size:18px;font-weight:400;color:#4ade80;">Clue #'+c.clue_number+(isFinal?' — Final Clue':'')+'</div><button id="voice-btn-'+c.clue_number+'" onclick="speakClue('+c.clue_number+','+JSON.stringify(c.clue_text)+')" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+SPEAKER_SVG+'</button></div><div style="font-size:18px;color:#ffffff;line-height:1.65;font-weight:400;">'+escapeHtml(c.clue_text)+'</div>'+''+clueRevealStrip+qaBlock+'</div></div></div>';
     }else{
