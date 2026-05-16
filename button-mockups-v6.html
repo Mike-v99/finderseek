@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinderSeek — Saved Pin Mockups v3</title>
+<title>FinderSeek — Saved Pin Mockups v4</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #06040e; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; gap: 36px; }
@@ -23,7 +23,8 @@
   .btn.saved { background: #166534; }
   .btn.saved .sub { color: #86efac; }
 
-  img.pin { display: block; }
+  /* Black removed from PNG via mix-blend-mode: screen */
+  img.pin { display: block; mix-blend-mode: screen; }
 
   /* A: pin left inline */
   .btn-a { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 14px 6px; }
@@ -35,11 +36,11 @@
   /* C: pin badge corner */
   .btn-c-wrap { flex: 1; position: relative; }
   .btn-c { width: 100%; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; background: #166534; }
-  .pin-badge { position: absolute; top: -7px; right: -5px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,.6); border: 1.5px solid rgba(239,68,68,.4); display: flex; align-items: center; justify-content: center; }
+  .pin-badge { position: absolute; top: -7px; right: -5px; width: 24px; height: 24px; border-radius: 50%; background: #166534; border: 1.5px solid rgba(239,68,68,.5); display: flex; align-items: center; justify-content: center; }
 
   /* D: pin in dark circle left */
   .btn-d { display: flex; align-items: center; padding: 14px 10px; gap: 8px; border-radius: 14px; }
-  .pin-circle { width: 32px; height: 32px; border-radius: 50%; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pin-circle { width: 32px; height: 32px; border-radius: 50%; background: #0d3320; border: 1px solid rgba(74,222,128,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .btn-d .tcol { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; text-align: left; }
 
   /* Quest preview */
@@ -61,7 +62,7 @@
   <div class="phone">
     <div class="btns">
       <button class="btn saved btn-a">
-        <img class="pin" src="pin-icon.png" width="18" height="18" style="object-fit:contain;"/>
+        <img class="pin" src="pin-icon.png" width="18" height="18"/>
         <div class="tcol">
           <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
           <span style="font-size:11px;color:#86efac;opacity:.55;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
@@ -84,7 +85,7 @@
   <div class="phone">
     <div class="btns">
       <button class="btn saved btn-b">
-        <img class="pin" src="pin-icon.png" width="20" height="20" style="object-fit:contain;"/>
+        <img class="pin" src="pin-icon.png" width="22" height="22"/>
         <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
         <span style="font-size:11px;color:#86efac;opacity:.55;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
       </button>
@@ -110,7 +111,7 @@
           <span style="font-size:11px;color:#86efac;opacity:.55;display:block;margin-top:3px;letter-spacing:.5px;text-transform:uppercase;">Quests</span>
         </button>
         <div class="pin-badge">
-          <img src="pin-icon.png" width="13" height="13" style="object-fit:contain;"/>
+          <img src="pin-icon.png" width="14" height="14" style="mix-blend-mode:screen;display:block;"/>
         </div>
       </div>
       <button class="btn upcoming"><span class="lbl">Upcoming</span><span class="sub">Quests</span></button>
@@ -124,14 +125,14 @@
   </div>
 </div>
 
-<!-- D: pin in red circle left -->
+<!-- D: pin in circle left -->
 <div>
-  <h2>D — Pin in red circle, left side</h2>
+  <h2>D — Pin in circle, left side</h2>
   <div class="phone">
     <div class="btns">
       <button class="btn saved btn-d">
         <div class="pin-circle">
-          <img src="pin-icon.png" width="16" height="16" style="object-fit:contain;"/>
+          <img src="pin-icon.png" width="18" height="18" style="mix-blend-mode:screen;display:block;"/>
         </div>
         <div class="tcol">
           <span style="font-size:16px;font-weight:700;color:#fff;">Saved</span>
