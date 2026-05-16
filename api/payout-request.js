@@ -76,6 +76,11 @@ export default async function handler(req, res) {
       .single();
 
     if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
+    // Block quest creator from winning their own quest
+    if (winnerId && hunt.pirate_id && winnerId === hunt.pirate_id) {
+      return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
+    }
+
     // Duplicate claim guard — if already processing/sent, block double-payout
     if (hunt.status === 'ended' || hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
