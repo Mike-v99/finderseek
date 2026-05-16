@@ -134,15 +134,15 @@ body::after {
 @keyframes glowPulseB { 0%,100% { text-shadow: 0 0 8px rgba(96,165,250,.4); } 50% { text-shadow: 0 0 20px rgba(96,165,250,.8), 0 0 40px rgba(96,165,250,.3); } }
 
 /* STATS STRIP */
-.filter-btns-wrap { margin: 14px 16px 0; }
+.filter-btns-wrap { margin: 14px 12px 0; }
 .filter-btns { display: flex; gap: 8px; }
-.filter-btn { flex: 1; padding: 10px 6px; border: none; border-radius: 12px; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
+.filter-btn { flex: 1; padding: 14px 4px; border: none; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: center; transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
 .filter-btn:active { transform: scale(.97); }
-.filter-btn .fb-label { font-size: 14px; font-weight: 600; }
-.filter-btn .fb-sub   { font-size: 10px; font-weight: 400; opacity: .65; letter-spacing: .5px; }
-.filter-btn.saved  { background: #14532d; color: #4ade80; }
-.filter-btn.sched  { background: #0c2d48; color: #93c5fd; }
-.filter-btn.hot    { background: #450a0a; color: #fca5a5; }
+.filter-btn .fb-label { font-size: 16px; font-weight: 700; display: block; }
+.filter-btn .fb-sub   { font-size: 11px; font-weight: 400; opacity: .55; display: block; margin-top: 3px; letter-spacing: .5px; text-transform: uppercase; }
+.filter-btn.saved  { background: #166534; color: #86efac; }
+.filter-btn.sched  { background: #1e3a5f; color: #bfdbfe; }
+.filter-btn.hot    { background: #7f1d1d; color: #fecaca; }
 .filter-btn.active-filter { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* SEARCH */
@@ -563,7 +563,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         </button>
         <button class="filter-btn hot" id="filter-hot" onclick="applyFilter('hot')">
           <span class="fb-label">Hot Quests</span>
-          <span class="fb-sub">Quests</span>
+          <span class="fb-sub">$50 &amp; up</span>
         </button>
       </div>
     </div>
