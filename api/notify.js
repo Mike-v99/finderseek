@@ -78,15 +78,13 @@ function tplPrizeClaimed({ username, city, prize, winnerName, huntUrl }) {
     subject: `🏆 Someone found your treasure in ${city}!`,
     html: html('Prize Claimed', `
       <h1>Your Treasure Was Found! 🏆</h1>
-      <p>Hey ${username}, <strong style="color:#4ade80;">${winnerName}</strong> just claimed your prize in <strong style="color:#f5ead8;">${city}</strong>.</p>
+      <p>Hey ${username}, someone just claimed your prize in <strong style="color:#f5ead8;">${city}</strong>. Congrats on a successful quest!</p>
       <div class="highlight">
-        <div class="highlight-label">Prize to deliver</div>
+        <div class="highlight-label">Prize delivered</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <p style="color:#22d3ee;"><strong>Look for a separate email titled "🚨 SEND $X →"</strong> — that email has a one-tap button to send the prize via Venmo or PayPal.</p>
-      <p>You can also check your admin panel to manage payouts.</p>
-      <a href="https://www.finderseek.com/admin.html" class="btn">Open Admin →</a>
-      <a href="${huntUrl}" class="btn" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-left:8px;">View Quest</a>
+      <p>The winner's payout is being handled by FinderSeek — no action needed on your end.</p>
+      <a href="${huntUrl}" class="btn">View Quest →</a>
     `)
   };
 }
