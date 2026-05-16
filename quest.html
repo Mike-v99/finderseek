@@ -1126,6 +1126,8 @@ async function claimPrize(){
   try{
     var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
     var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
+    // Block quest creator from winning their own quest
+    if(user.id===currentHunt.pirate_id){showToast('You can\'t win your own quest!','error');btn.disabled=false;btn.textContent='Claim Prize →';return;}
     // Insert find_report so seeker count and analytics are accurate
     try{
       await fetch(SB+'/rest/v1/find_reports',{
