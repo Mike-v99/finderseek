@@ -2214,7 +2214,7 @@ async function createQuest(){
     try {
       // Fetch the saved clue IDs so we can update audio_url on each row
       const savedCluesRes = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=id,clue_number,clue_text,clue_question&order=clue_number.asc', {
-        headers:{'apikey':KEY,'Authorization':'Bearer '+getToken()}
+        headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken}
       });
       const savedClues = await savedCluesRes.json();
 
@@ -2233,7 +2233,7 @@ async function createQuest(){
             // Update clue row with audio_url
             await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
               method:'PATCH',
-              headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+              headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
               body: JSON.stringify({ audio_url: d.audioUrl })
             });
           }
@@ -2247,7 +2247,7 @@ async function createQuest(){
             if (dq.audioUrl) {
               await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
                 method:'PATCH',
-                headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+                headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
                 body: JSON.stringify({ question_audio_url: dq.audioUrl })
               });
             }
@@ -2267,7 +2267,7 @@ async function createQuest(){
             if (dl.audioUrl) {
               await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
                 method:'PATCH',
-                headers:{'apikey':KEY,'Authorization':'Bearer '+getToken(),'Content-Type':'application/json','Prefer':'return=minimal'},
+                headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
                 body: JSON.stringify({ location_riddle_audio_url: dl.audioUrl })
               });
             }
