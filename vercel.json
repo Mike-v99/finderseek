@@ -1,4 +1,12 @@
 {
+  "functions": {
+    "api/tts.js": {
+      "maxDuration": 60
+    },
+    "api/generate-clues.js": {
+      "maxDuration": 60
+    }
+  },
   "crons": [
     {
       "path": "/api/cron-activate-hunts",
