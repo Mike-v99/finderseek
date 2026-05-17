@@ -4122,18 +4122,28 @@ var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
 var selAction = cl2.action || '';
 var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
 
-// Pick Action button — visible native select styled to match the UI.
-// Chrome desktop won't open a <select> via <label for> or transparent overlay reliably,
-// so we use a visible, styled select element directly.
+// Pick Action — custom div dropdown (replaces <select> which Chrome blocks when styled).
+// A hidden input#hs-action-sel tracks the value so saveHsPanel / hsGoTo read it unchanged.
 var actionPickHtml =
+  '<input type="hidden" id="hs-action-sel" value="' + selAction + '">' +
   '<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">' +
-    '<div style="flex:1;position:relative;min-height:56px;">' +
-      '<select id="hs-action-sel" onchange="hsSetAction(this.value)" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appearance:none;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="this.focus();"' +
-        '<option value="" style="background:#1a1300;color:#fff;">' + (isFinal2 ? 'Final Action ▾' : 'Pick Action ▾') + '</option>' +
-        HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '" style="background:#1a1300;color:#fff;"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
-      '</select>' +
-      (actionObj ? '<span style="position:absolute;right:48px;top:50%;transform:translateY(-50%);color:#4ade80;font-size:16px;font-weight:500;pointer-events:none;">✓</span>' : '') +
-      '<svg style="position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+    '<div style="flex:1;position:relative;" id="hs-drop-wrap">' +
+      // Trigger button
+      '<div id="hs-drop-btn" onclick="hsDropToggle()" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">' +
+        '<span id="hs-drop-label">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : (isFinal2 ? 'Final Action' : 'Pick Action')) + '</span>' +
+        (actionObj ? '<span style="color:#4ade80;font-size:16px;font-weight:500;margin-right:28px;">✓</span>' : '') +
+        '<svg style="flex-shrink:0;pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '</div>' +
+      // Dropdown list — hidden by default
+      '<div id="hs-drop-list" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);">' +
+        HS_ACTIONS.map(function(a){
+          var isSelected = a.id === selAction;
+          return '<div onclick="hsDropPick(\'' + a.id + '\')" style="padding:14px 18px;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:' + (isSelected ? 'rgba(232,168,32,.18)' : 'transparent') + ';-webkit-tap-highlight-color:transparent;touch-action:manipulation;" onmouseover="this.style.background=\'rgba(232,168,32,.12)\'" onmouseout="this.style.background=\'' + (isSelected ? 'rgba(232,168,32,.18)' : 'transparent') + '\'">' +
+            '<span>' + a.emoji + ' ' + a.label + '</span>' +
+            (isSelected ? '<span style="color:#4ade80;">✓</span>' : '') +
+          '</div>';
+        }).join('') +
+      '</div>' +
     '</div>' +
     '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
       '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
@@ -4421,6 +4431,37 @@ closeHsModal();
 saveFormState();
 showToast("✓ Clues saved!", "success");
 }
+
+// ── Custom dropdown helpers ──────────────────────────────────
+function hsDropToggle() {
+  var list = hsEl('hs-drop-list');
+  if (!list) return;
+  var isOpen = list.style.display !== 'none';
+  list.style.display = isOpen ? 'none' : 'block';
+  // Close when clicking outside
+  if (!isOpen) {
+    setTimeout(function() {
+      document.addEventListener('click', hsDropClose, { once: true, capture: true });
+    }, 0);
+  }
+}
+
+function hsDropClose(e) {
+  var wrap = document.getElementById('hs-drop-wrap');
+  if (wrap && wrap.contains(e.target)) return; // click inside — let it handle itself
+  var list = document.getElementById('hs-drop-list');
+  if (list) list.style.display = 'none';
+}
+
+function hsDropPick(actionId) {
+  var list = hsEl('hs-drop-list');
+  if (list) list.style.display = 'none';
+  // Update the hidden input so saveHsPanel reads it correctly
+  var hidden = hsEl('hs-action-sel');
+  if (hidden) hidden.value = actionId;
+  hsSetAction(actionId);
+}
+// ─────────────────────────────────────────────────────────────
 
 function hsSetAction(actionId) {
 var idx = _hsCurrent - 1;
