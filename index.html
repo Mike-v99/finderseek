@@ -309,8 +309,10 @@ body::after {
 /* Quest list (expanded inside section) */
 .quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
 .section.open .quest-list { max-height: 4000px; }
-.quest-row { border-top: 1px solid rgba(255,255,255,.05); cursor: pointer; position: relative; height: 130px; overflow: hidden; display: block; }
+.quest-row { border-top: none; cursor: pointer; position: relative; height: 130px; overflow: hidden; display: block; border-radius: 12px; border: 1px solid rgba(74,222,128,.2); margin: 0 12px 8px; }
 .quest-row:active { opacity: .85; }
+.section-completed .quest-row { border-color: rgba(255,255,255,.06); }
+.section-scheduled .quest-row { border-color: rgba(96,165,250,.2); }
 .quest-row-map-bg { position: absolute; inset: 0; background: #0d1117; }
 .quest-row-map-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .quest-row-vignette { position: absolute; inset: 0; background: linear-gradient(to right, rgba(10,8,26,.92) 0%, rgba(10,8,26,.55) 45%, rgba(10,8,26,.15) 65%, rgba(10,8,26,.55) 85%, rgba(10,8,26,.8) 100%); }
