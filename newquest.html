@@ -2343,14 +2343,16 @@ function saveFormState() {
       savedAt: Date.now(),
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
-    // Save photo together with state — they must stay in sync.
-    // If photo is set in memory, write it. If not, remove any stored photo
-    // so we never end up with orphan photo + clean state on restore.
+    // Save photo — try localStorage first, fall back to sessionStorage
+    // Photos can be 1-3MB so localStorage may fail silently on some devices
     if (window._hsPhotoDataUrl) {
-      try { localStorage.setItem(FORM_KEY + '_photo', window._hsPhotoDataUrl); } catch(e){}
-    } else {
-      try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
+      var photoSaved = false;
+      try { localStorage.setItem(FORM_KEY + '_photo', window._hsPhotoDataUrl); photoSaved = true; } catch(e){}
+      if (!photoSaved) {
+        try { sessionStorage.setItem(FORM_KEY + '_photo', window._hsPhotoDataUrl); } catch(e){}
+      }
     }
+    // Don't remove photo from storage here — only clear on explicit reset
   } catch(e){}
 }
 
@@ -2404,11 +2406,9 @@ function restoreFormState() {
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
     if (s.hsData) _hsData = s.hsData;
-    // Restore photo only if there's a valid PIN — photo+PIN must travel together.
-    // If PIN is missing/invalid, the saved draft is effectively half-done; drop
-    // any orphan photo so we don't end up with a photo from a different attempt.
-    var savedPhoto = localStorage.getItem(FORM_KEY + '_photo');
-    if (savedPhoto && hasValidPin) {
+    // Restore photo — check localStorage first, then sessionStorage fallback
+    var savedPhoto = localStorage.getItem(FORM_KEY + '_photo') || sessionStorage.getItem(FORM_KEY + '_photo');
+    if (savedPhoto) {
       window._hsPhotoDataUrl = savedPhoto;
       var img = document.getElementById('hs-photo-img');
       if (img) img.src = savedPhoto;
@@ -2416,10 +2416,6 @@ function restoreFormState() {
       var preview = document.getElementById('photo-preview-s1');
       if (placeholder) placeholder.style.display = 'none';
       if (preview) preview.style.display = 'block';
-    } else if (savedPhoto && !hasValidPin) {
-      // orphan photo without a PIN — drop it
-      try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
-      window._hsPhotoDataUrl = null;
     }
     updateExpiry(); setWeekendDates();
     // Always re-check step1 complete state after restore
@@ -2454,6 +2450,7 @@ function clearFormState() {
   try {
     localStorage.removeItem(FORM_KEY);
     localStorage.removeItem(FORM_KEY + '_photo');
+    sessionStorage.removeItem(FORM_KEY + '_photo');
     localStorage.removeItem('fs_pending_quest');
     localStorage.removeItem('fs_newquest_abandon');
     selectedLat = null; selectedLng = null; selectedPlaceName = null;
@@ -2541,7 +2538,7 @@ document.addEventListener('DOMContentLoaded', async function(){
         saveFormState();
       }
     } catch(e){}
-  }, 2000);
+  }, 5000); // every 5 seconds
 
 
   // Redirect to home if opened directly (not from within the app)
@@ -4371,16 +4368,16 @@ if (!input.files || !input.files[0]) return;
 var file = input.files[0];
 var reader = new FileReader();
 reader.onload = function(e) {
-// Update step1 photo preview
 var img = document.getElementById('hs-photo-img');
 if (img) img.src = e.target.result;
 var placeholder = document.getElementById('photo-placeholder-s1');
 var preview = document.getElementById('photo-preview-s1');
 if (placeholder) placeholder.style.display = 'none';
 if (preview) preview.style.display = 'block';
-// Store for upload
 window._hsPhotoDataUrl = e.target.result;
-// Enable Next if code is also generated
+// Save photo immediately to both storage locations so it survives page refresh
+try { localStorage.setItem('fs_newquest_form_photo', e.target.result); } catch(err){}
+try { sessionStorage.setItem('fs_newquest_form_photo', e.target.result); } catch(err){}
 checkStep1Complete();
 saveFormState();
 };
