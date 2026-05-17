@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -285,6 +286,8 @@ body.kb-up /* bottom-nav removed */
 /* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
+.hs-drop-item:hover{background:rgba(232,168,32,.12) !important;}
+.hs-drop-sel{background:rgba(232,168,32,.18) !important;}
 </style>
 
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
@@ -4138,7 +4141,7 @@ var actionPickHtml =
       '<div id="hs-drop-list" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);">' +
         HS_ACTIONS.map(function(a){
           var isSelected = a.id === selAction;
-          return '<div onclick="hsDropPick(\'' + a.id + '\')" style="padding:14px 18px;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:' + (isSelected ? 'rgba(232,168,32,.18)' : 'transparent') + ';-webkit-tap-highlight-color:transparent;touch-action:manipulation;" onmouseover="this.style.background=\'rgba(232,168,32,.12)\'" onmouseout="this.style.background=\'' + (isSelected ? 'rgba(232,168,32,.18)' : 'transparent') + '\'">' +
+          return '<div onclick="hsDropPick(\'' + a.id + '\')" class="hs-drop-item' + (isSelected ? ' hs-drop-sel' : '') + '" style="padding:14px 18px;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' +
             '<span>' + a.emoji + ' ' + a.label + '</span>' +
             (isSelected ? '<span style="color:#4ade80;">✓</span>' : '') +
           '</div>';
@@ -4359,8 +4362,15 @@ btn.style.color = speaking ? '#4ade80' : '#b8c4d0';
 }
 
 function pvBtn(key, text) {
-var safe = text.replace(/'/g, "\'").replace(/\n/g, ' ');
-return '<button id="pv-voice-'+key+'" onclick="pvSpeak(\''+key+'\',\''+safe+'\')" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+PV_SPEAKER_SVG+'</button>';
+// Store text in data attribute to avoid inline JS quote-escaping bugs
+var safeAttr = text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+return '<button id="pv-voice-'+key+'" data-pvkey="'+key+'" data-pvtext="'+safeAttr+'" onclick="pvBtnClick(this)" style="flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#b8c4d0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;">'+PV_SPEAKER_SVG+'</button>';
+}
+
+function pvBtnClick(el) {
+var key = el.getAttribute('data-pvkey');
+var text = el.getAttribute('data-pvtext');
+pvSpeak(key, text);
 }
 
 function hsShowPreview() {
