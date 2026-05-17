@@ -2209,77 +2209,73 @@ async function createQuest(){
       throw new Error('Failed to save clues: ' + (err || 'Database rejected the insert'));
     }
 
-    // ── 8b. Generate TTS audio for each clue + location riddle ──
+    // ── 8b. Generate TTS audio right after clues are saved ──
     btn.textContent = '⏳ Generating voice clues...';
     try {
-      // Fetch the saved clue IDs so we can update audio_url on each row
-      const savedCluesRes = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=id,clue_number,clue_text,clue_question&order=clue_number.asc', {
-        headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken}
+      var ttsToken = getToken();
+      var ttsHeaders = {'Content-Type':'application/json','x-finderseek-secret': NOTIFY_SECRET};
+      // Fetch saved clue IDs
+      var ttsCluesRes = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=id,clue_number,clue_text,clue_question&order=clue_number.asc', {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+freshToken}
       });
-      const savedClues = await savedCluesRes.json();
-
-      const ttsHeaders = {'Content-Type':'application/json','x-finderseek-secret': NOTIFY_SECRET};
-
-      // Generate TTS for each clue in parallel
-      const ttsTasks = savedClues.map(async function(clue) {
-        try {
-          // Main clue text
-          const r = await fetch(API_BASE+'/api/tts', {
-            method:'POST', headers: ttsHeaders,
-            body: JSON.stringify({ text: clue.clue_text, persona: persona, clueId: clue.id, type: 'clue' })
-          });
-          const d = await r.json();
-          if (d.audioUrl) {
-            // Update clue row with audio_url
-            await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
-              method:'PATCH',
-              headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
-              body: JSON.stringify({ audio_url: d.audioUrl })
-            });
-          }
-          // Generate Q&A audio if clue has a question
-          if (clue.clue_question) {
-            const rq = await fetch(API_BASE+'/api/tts', {
+      var ttsClues = await ttsCluesRes.json();
+      if (Array.isArray(ttsClues) && ttsClues.length > 0) {
+        // Sequential — one at a time to avoid API rate limits
+        for (var ti = 0; ti < ttsClues.length; ti++) {
+          var tc = ttsClues[ti];
+          try {
+            var tr = await fetch(API_BASE+'/api/tts', {
               method:'POST', headers: ttsHeaders,
-              body: JSON.stringify({ text: clue.clue_question, persona: persona, clueId: clue.id+'_q', type: 'question' })
+              body: JSON.stringify({ text: tc.clue_text, persona: persona, clueId: tc.id, type: 'clue' })
             });
-            const dq = await rq.json();
-            if (dq.audioUrl) {
-              await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
+            var td = await tr.json();
+            if (td.audioUrl) {
+              await fetch(SB+'/rest/v1/clues?id=eq.'+tc.id, {
                 method:'PATCH',
                 headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
-                body: JSON.stringify({ question_audio_url: dq.audioUrl })
+                body: JSON.stringify({ audio_url: td.audioUrl })
               });
+              console.log('[tts] ✓ clue', tc.clue_number);
+            } else { console.warn('[tts] no audioUrl for clue', tc.clue_number, td); }
+            // Q&A audio
+            if (tc.clue_question) {
+              var trq = await fetch(API_BASE+'/api/tts', {
+                method:'POST', headers: ttsHeaders,
+                body: JSON.stringify({ text: tc.clue_question, persona: persona, clueId: tc.id+'_q', type: 'question' })
+              });
+              var tdq = await trq.json();
+              if (tdq.audioUrl) {
+                await fetch(SB+'/rest/v1/clues?id=eq.'+tc.id, {
+                  method:'PATCH',
+                  headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
+                  body: JSON.stringify({ question_audio_url: tdq.audioUrl })
+                });
+              }
             }
-          }
-        } catch(e) { console.warn('[tts] clue', clue.clue_number, 'failed:', e.message); }
-      });
-
-      // Generate TTS for location riddle
-      if (clueData.location_riddle) {
-        ttsTasks.push((async function() {
+          } catch(e) { console.warn('[tts] clue', tc.clue_number, 'failed:', e.message); }
+        }
+        // Location riddle audio
+        if (clueData.location_riddle) {
           try {
-            const rl = await fetch(API_BASE+'/api/tts', {
+            var trl = await fetch(API_BASE+'/api/tts', {
               method:'POST', headers: ttsHeaders,
               body: JSON.stringify({ text: clueData.location_riddle, persona: persona, clueId: huntId+'_loc', type: 'location' })
             });
-            const dl = await rl.json();
-            if (dl.audioUrl) {
+            var tdl = await trl.json();
+            if (tdl.audioUrl) {
               await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
                 method:'PATCH',
                 headers:{'apikey':KEY,'Authorization':'Bearer '+freshToken,'Content-Type':'application/json','Prefer':'return=minimal'},
-                body: JSON.stringify({ location_riddle_audio_url: dl.audioUrl })
+                body: JSON.stringify({ location_riddle_audio_url: tdl.audioUrl })
               });
+              console.log('[tts] ✓ location riddle');
             }
           } catch(e) { console.warn('[tts] location riddle failed:', e.message); }
-        })());
+        }
+        console.log('[tts] ✓ All audio generated');
       }
-
-      await Promise.all(ttsTasks);
-      console.log('[tts] All audio generated');
     } catch(e) {
-      // TTS failure is non-fatal — quest still works with browser TTS fallback
-      console.warn('[tts] Audio generation failed, falling back to browser TTS:', e.message);
+      console.warn('[tts] Audio generation failed (non-fatal):', e.message);
     }
 
     // ── 9. Open the embedded payment modal ─────────────────
@@ -3212,6 +3208,12 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         // Show PIN card with quest ID
         showPinCardAfterPayment(_currentPayload.huntId, questId, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
+
+        // ── Generate TTS audio in background after payment ──
+        // Runs after modal closes so it doesn't block UI
+        setTimeout(function() {
+          try { generateClueAudio(window._pendingTtsHuntId, window._pendingTtsPersona, window._pendingTtsLocationRiddle); } catch(e) {}
+        }, 1000);
       } catch(e) {
         // Capture failed — hide processing overlay and surface the error.
         _hidePaymentProcessing();
@@ -3263,6 +3265,86 @@ function _showPaymentProcessing(msg){
 function _hidePaymentProcessing(){
   var el = document.getElementById('pm-processing');
   if (el) el.style.display = 'none';
+}
+
+// ── TTS audio generation — runs after payment, non-blocking ──
+async function generateClueAudio(huntId, persona, locationRiddle) {
+  if (!huntId) return;
+  console.log('[tts] Starting audio generation for hunt:', huntId);
+  try {
+    var token = getToken();
+    var ttsHeaders = {'Content-Type':'application/json','x-finderseek-secret': NOTIFY_SECRET};
+
+    // Fetch saved clue IDs
+    var cluesRes = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=id,clue_number,clue_text,clue_question&order=clue_number.asc', {
+      headers: {'apikey':KEY,'Authorization':'Bearer '+token}
+    });
+    var clues = await cluesRes.json();
+    if (!Array.isArray(clues) || clues.length === 0) { console.warn('[tts] No clues found for hunt', huntId); return; }
+
+    console.log('[tts] Generating audio for', clues.length, 'clues, persona:', persona);
+
+    // Generate one clue at a time (sequential) to avoid overwhelming the API
+    for (var i = 0; i < clues.length; i++) {
+      var clue = clues[i];
+      try {
+        // Main clue text
+        var r = await fetch(API_BASE+'/api/tts', {
+          method:'POST', headers: ttsHeaders,
+          body: JSON.stringify({ text: clue.clue_text, persona: persona, clueId: clue.id, type: 'clue' })
+        });
+        var d = await r.json();
+        if (d.audioUrl) {
+          await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
+            method:'PATCH',
+            headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body: JSON.stringify({ audio_url: d.audioUrl })
+          });
+          console.log('[tts] ✓ Clue', clue.clue_number, 'audio saved');
+        } else {
+          console.warn('[tts] Clue', clue.clue_number, 'no audioUrl returned:', d);
+        }
+        // Q&A audio
+        if (clue.clue_question) {
+          var rq = await fetch(API_BASE+'/api/tts', {
+            method:'POST', headers: ttsHeaders,
+            body: JSON.stringify({ text: clue.clue_question, persona: persona, clueId: clue.id+'_q', type: 'question' })
+          });
+          var dq = await rq.json();
+          if (dq.audioUrl) {
+            await fetch(SB+'/rest/v1/clues?id=eq.'+clue.id, {
+              method:'PATCH',
+              headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+              body: JSON.stringify({ question_audio_url: dq.audioUrl })
+            });
+          }
+        }
+      } catch(e) { console.warn('[tts] Clue', clue.clue_number, 'failed:', e.message); }
+    }
+
+    // Location riddle audio
+    if (locationRiddle) {
+      try {
+        var rl = await fetch(API_BASE+'/api/tts', {
+          method:'POST', headers: ttsHeaders,
+          body: JSON.stringify({ text: locationRiddle, persona: persona, clueId: huntId+'_loc', type: 'location' })
+        });
+        var dl = await rl.json();
+        if (dl.audioUrl) {
+          await fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
+            method:'PATCH',
+            headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body: JSON.stringify({ location_riddle_audio_url: dl.audioUrl })
+          });
+          console.log('[tts] ✓ Location riddle audio saved');
+        }
+      } catch(e) { console.warn('[tts] Location riddle failed:', e.message); }
+    }
+
+    console.log('[tts] ✓ All audio generation complete');
+  } catch(e) {
+    console.warn('[tts] Audio generation failed:', e.message);
+  }
 }
 
 function closePaymentModal(){
