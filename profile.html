@@ -308,7 +308,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="height:3px;background:linear-gradient(90deg,#1d4ed8,#3b82f6,#60a5fa);"></div>
         <div style="padding:16px 10px;text-align:center;">
           <div style="font-size:15px;color:#60a5fa;font-weight:500;margin-bottom:2px;">+ Start quest</div>
-          <div style="font-size:11px;color:rgba(96,165,250,.4);">Create a hunt</div>
+          <div style="font-size:11px;color:rgba(96,165,250,.4);">Create a quest</div>
         </div>
       </div>
     </div>
@@ -1082,7 +1082,7 @@ async function loadQuestTracker(){
     });
 
     if (all.length === 0) {
-      tracker.innerHTML = '<div style="text-align:center;padding:20px 0;color:rgba(255,255,255,.2);font-size:14px;">No quests yet — start one or join a hunt!</div>';
+      tracker.innerHTML = '<div style="text-align:center;padding:20px 0;color:rgba(255,255,255,.2);font-size:14px;">No quests yet — start one or join a quest!</div>';
       return;
     }
 
@@ -1493,7 +1493,7 @@ function handleUrlRedirects(){
   if (params.get('quest') === 'funded') {
     var fundedId = params.get('id');
     try { localStorage.removeItem('fs_pending_quest'); } catch(e){}
-    showToast('🎉 Quest funded! Your treasure hunt is live.', 'success');
+    showToast('🎉 Quest funded! Your quest is live.', 'success');
     window.history.replaceState({}, '', 'profile.html');
     // Poll briefly for quest_id (webhook may not have fired yet), then redirect
     if (fundedId) {
