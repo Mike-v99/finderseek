@@ -4128,7 +4128,7 @@ var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selActi
 var actionPickHtml =
   '<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">' +
     '<div style="flex:1;position:relative;min-height:56px;">' +
-      '<select id="hs-action-sel" onchange="hsSetAction(this.value)" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appearance:none;outline:none;">' +
+      '<select id="hs-action-sel" onchange="hsSetAction(this.value)" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appearance:none;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="this.focus();"' +
         '<option value="" style="background:#1a1300;color:#fff;">' + (isFinal2 ? 'Final Action ▾' : 'Pick Action ▾') + '</option>' +
         HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '" style="background:#1a1300;color:#fff;"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
       '</select>' +
