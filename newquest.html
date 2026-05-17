@@ -2979,7 +2979,7 @@ if ('serviceWorker' in navigator) {
   <div class="pm-sub" id="pm-sub">Loading PayPal...</div>
   <div id="pm-error"></div>
   <div id="paypal-button-container" style="min-height:50px;"></div>
-  <div class="pm-secure">🔒 Secure payment via PayPal · Venmo · Debit or Credit Card</div>
+  <div class="pm-secure">🔒 Secure payment via PayPal · Google Pay · Venmo · Debit or Credit Card</div>
   <!-- Loading overlay shown after PayPal authorizes, while we capture & set up the quest -->
   <div id="pm-processing" style="display:none;position:absolute;inset:0;background:rgba(13,11,24,.97);border-radius:24px;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;z-index:5;">
     <div style="position:relative;width:54px;height:54px;">
@@ -3133,7 +3133,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
     await new Promise(function(resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo,card&disable-funding=paylater';
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=venmo,card,googlepay&disable-funding=paylater';
       s.onload = resolve;
       s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
       document.head.appendChild(s);
