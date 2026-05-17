@@ -3250,16 +3250,7 @@ async function generateClueAudio(huntId, persona, locationRiddle) {
         } else {
           console.warn('[tts] Clue', clue.clue_number, 'failed:', d.error);
         }
-        // Q&A audio
-        if (clue.clue_question) {
-          var rq = await fetch(API_BASE+'/api/tts', {
-            method:'POST', headers: ttsHeaders,
-            body: JSON.stringify({ text: clue.clue_question, persona: persona, clueId: clue.id+'_q', type: 'question',
-              dbId: clue.id, dbTable: 'clues', dbColumn: 'question_audio_url' })
-          });
-          var dq = await rq.json();
-          if (dq.success) console.log('[tts] ✓ Clue', clue.clue_number, 'Q audio saved');
-        }
+        // Q&A audio removed — question is already embedded in the clue text
       } catch(e) { console.warn('[tts] Clue', clue.clue_number, 'failed:', e.message); }
     }
 
