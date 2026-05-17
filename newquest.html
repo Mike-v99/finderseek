@@ -4122,21 +4122,18 @@ var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
 var selAction = cl2.action || '';
 var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
 
-// Pick Action button — select is full-size transparent overlay so clicks open it in all browsers.
-// <label for> doesn't open <select> dropdowns in Chrome desktop, so we overlay instead.
+// Pick Action button — visible native select styled to match the UI.
+// Chrome desktop won't open a <select> via <label for> or transparent overlay reliably,
+// so we use a visible, styled select element directly.
 var actionPickHtml =
   '<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">' +
     '<div style="flex:1;position:relative;min-height:56px;">' +
-      // Styled visible button (behind the select, non-interactive)
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;pointer-events:none;">' +
-        '<div style="font-size:22px;color:#fff;font-weight:400;">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : (isFinal2 ? 'Final Action ▾' : 'Pick Action ▾')) + (actionObj ? '<span style="color:#4ade80;font-size:16px;margin-left:8px;font-weight:500;">✓</span>' : '') + '</div>' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
-      '</div>' +
-      // Transparent select stretched over the entire button — click lands directly on it
-      '<select id="hs-action-sel" onchange="hsSetAction(this.value)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;">' +
-        '<option value="">' + (isFinal2 ? 'Final Action...' : 'Pick Action...') + '</option>' +
-        HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
+      '<select id="hs-action-sel" onchange="hsSetAction(this.value)" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appearance:none;outline:none;">' +
+        '<option value="" style="background:#1a1300;color:#fff;">' + (isFinal2 ? 'Final Action ▾' : 'Pick Action ▾') + '</option>' +
+        HS_ACTIONS.map(function(a){ return '<option value="' + a.id + '" style="background:#1a1300;color:#fff;"' + (a.id === selAction ? ' selected' : '') + '>' + a.emoji + ' ' + a.label + '</option>'; }).join('') +
       '</select>' +
+      (actionObj ? '<span style="position:absolute;right:48px;top:50%;transform:translateY(-50%);color:#4ade80;font-size:16px;font-weight:500;pointer-events:none;">✓</span>' : '') +
+      '<svg style="position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
     '</div>' +
     '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
       '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
