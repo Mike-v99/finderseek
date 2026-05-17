@@ -4438,25 +4438,27 @@ function hsDropToggle() {
   if (!list) return;
   var isOpen = list.style.display !== 'none';
   list.style.display = isOpen ? 'none' : 'block';
-  // Close when clicking outside
   if (!isOpen) {
+    // Use setTimeout + bubble phase (NOT capture) so item onclick fires first
     setTimeout(function() {
-      document.addEventListener('click', hsDropClose, { once: true, capture: true });
+      document.addEventListener('click', hsDropClose);
     }, 0);
   }
 }
 
 function hsDropClose(e) {
+  document.removeEventListener('click', hsDropClose);
   var wrap = document.getElementById('hs-drop-wrap');
-  if (wrap && wrap.contains(e.target)) return; // click inside — let it handle itself
+  // If click was inside the dropdown wrap, don't close — item onclick handles it
+  if (wrap && wrap.contains(e.target)) return;
   var list = document.getElementById('hs-drop-list');
   if (list) list.style.display = 'none';
 }
 
 function hsDropPick(actionId) {
+  document.removeEventListener('click', hsDropClose);
   var list = hsEl('hs-drop-list');
   if (list) list.style.display = 'none';
-  // Update the hidden input so saveHsPanel reads it correctly
   var hidden = hsEl('hs-action-sel');
   if (hidden) hidden.value = actionId;
   hsSetAction(actionId);
