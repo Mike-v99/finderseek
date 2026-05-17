@@ -1,16 +1,13 @@
 // api/tts.js
-// Two modes:
-//   1. POST with { text, persona, clueId, type } → generate + store clue audio
-//   2. POST with { mode: 'samples' } → generate all 9 persona sample MP3s (run once)
-//   3. GET → diagnostic check (env vars present, bucket accessible)
+// Modes:
+//   1. POST { text, persona, clueId, type, dbId, dbTable, dbColumn } → generate + store + PATCH db
+//   2. POST { mode: 'samples' } → generate all persona sample MP3s
+//   3. GET → diagnostic check
 //
-// Env vars: OPENAI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY,
-//           FINDERSEEK_NOTIFY_SECRET or NOTIFY_SECRET
-//
-// vercel.json sets maxDuration: 60 for this function
+// Uses SERVICE KEY for DB writes — bypasses RLS
 
 const SB_URL = process.env.SUPABASE_URL;
-const SB_KEY = process.env.SUPABASE_SERVICE_KEY;
+const SB_KEY = process.env.SUPABASE_SERVICE_KEY; // service role — bypasses RLS
 
 const PERSONA_VOICE = {
   pirate:      { voice: 'fable',   speed: 0.95 },
@@ -52,14 +49,12 @@ async function generateAndStore(text, voice, speed, storagePath, model) {
   });
   if (!ttsRes.ok) {
     const errText = await ttsRes.text();
-    console.error(`[tts] OpenAI error ${ttsRes.status}:`, errText);
     throw new Error(`OpenAI TTS ${ttsRes.status}: ${errText.slice(0, 200)}`);
   }
   const audioBytes = Buffer.from(await ttsRes.arrayBuffer());
   console.log(`[tts] Audio generated: ${audioBytes.length} bytes`);
 
-  const uploadUrl = `${SB_URL}/storage/v1/object/${storagePath}`;
-  const uploadRes = await fetch(uploadUrl, {
+  const uploadRes = await fetch(`${SB_URL}/storage/v1/object/${storagePath}`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${SB_KEY}`,
@@ -71,12 +66,33 @@ async function generateAndStore(text, voice, speed, storagePath, model) {
   });
   if (!uploadRes.ok) {
     const errText = await uploadRes.text();
-    console.error(`[tts] Storage upload error ${uploadRes.status}:`, errText);
     throw new Error(`Storage ${uploadRes.status}: ${errText.slice(0, 200)}`);
   }
   const publicUrl = `${SB_URL}/storage/v1/object/public/${storagePath}`;
   console.log(`[tts] Stored at: ${publicUrl}`);
   return publicUrl;
+}
+
+async function patchDb(table, idColumn, idValue, column, value) {
+  // Uses service key — bypasses RLS
+  const url = `${SB_URL}/rest/v1/${table}?${idColumn}=eq.${idValue}`;
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${SB_KEY}`,
+      'apikey': SB_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({ [column]: value }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error(`[tts] DB PATCH failed ${res.status}:`, err);
+    return false;
+  }
+  console.log(`[tts] DB PATCH ✓ ${table}.${column} for ${idValue}`);
+  return true;
 }
 
 export default async function handler(req, res) {
@@ -85,7 +101,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-finderseek-secret');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // ── GET: diagnostic check ──
+  // ── GET: diagnostic ──
   if (req.method === 'GET') {
     const secret = req.headers['x-finderseek-secret'];
     const validSecret = secret === process.env.FINDERSEEK_NOTIFY_SECRET || secret === process.env.NOTIFY_SECRET;
@@ -118,44 +134,43 @@ export default async function handler(req, res) {
 
   const secret = req.headers['x-finderseek-secret'];
   if (secret !== process.env.FINDERSEEK_NOTIFY_SECRET && secret !== process.env.NOTIFY_SECRET) {
-    console.error('[tts] Unauthorized — secret:', secret ? secret.slice(0,8)+'…' : 'none');
     return res.status(401).json({ error: 'Unauthorized' });
   }
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: 'OPENAI_API_KEY not configured' });
   if (!SB_URL || !SB_KEY) return res.status(503).json({ error: 'Supabase env vars not configured' });
 
-  const { mode, text, persona, clueId, type } = req.body;
+  const { mode, text, persona, clueId, type, dbId, dbTable, dbColumn } = req.body;
 
-  // ── Mode: generate all persona samples (run once) ──
+  // ── Samples mode ──
   if (mode === 'samples') {
     const results = {}, errors = {};
     for (const [p, { voice, speed }] of Object.entries(PERSONA_VOICE)) {
       if (p === 'location') continue;
       try {
-        console.log(`[tts/samples] ${p} (${voice} @ ${speed}x)`);
         const url = await generateAndStore(SAMPLES[p], voice, speed, `clue-audio/samples/${p}.mp3`, 'tts-1-hd');
         results[p] = url;
-        console.log(`[tts/samples] ✓ ${p}`);
-      } catch(e) { errors[p] = e.message; console.error(`[tts/samples] ✗ ${p}:`, e.message); }
+      } catch(e) { errors[p] = e.message; }
     }
     return res.status(200).json({ success: true, generated: Object.keys(results).length, results, errors });
   }
 
-  // ── Mode: generate single clue audio ──
+  // ── Single clue audio ──
   if (!text || !clueId) {
-    return res.status(400).json({
-      error: 'Missing text or clueId',
-      received: { text: !!text, clueId: !!clueId, type, persona },
-    });
+    return res.status(400).json({ error: 'Missing text or clueId' });
   }
   try {
     const personaKey = type === 'location' ? 'location' : (persona || 'alloy').toLowerCase();
     const { voice, speed } = PERSONA_VOICE[personaKey] || DEFAULT_VOICE;
-    console.log(`[tts] clueId=${clueId} type=${type} persona=${personaKey} voice=${voice} textLen=${text.length}`);
-    // Sanitize clueId for use as a filename
     const safeId = String(clueId).replace(/[^a-zA-Z0-9_-]/g, '_');
     const fileName = `${safeId}_${type || 'clue'}.mp3`;
     const audioUrl = await generateAndStore(text, voice, speed, `clue-audio/${fileName}`, 'tts-1');
+
+    // ── Write audio_url directly to DB using service key (bypasses RLS) ──
+    if (dbId && dbTable && dbColumn) {
+      const idCol = dbTable === 'hunts' ? 'id' : 'id';
+      await patchDb(dbTable, idCol, dbId, dbColumn, audioUrl);
+    }
+
     return res.status(200).json({ success: true, audioUrl, voice, speed, fileName });
   } catch(err) {
     console.error('[tts] Error:', err.message);
