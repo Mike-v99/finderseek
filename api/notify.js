@@ -129,7 +129,7 @@ function tplChatMessage({ username, senderName, senderRole, preview, huntUrl, ci
   };
 }
 
-function tplNewHuntInCity({ username, city, prize, huntUrl }) {
+function tplNewQuestInCity({ username, city, prize, huntUrl }) {
   return {
     subject: `🗺️ New treasure hidden in ${city}!`,
     html: html('New Quest', `
@@ -180,7 +180,7 @@ function tplHuntExpiredSeeker({ username, city, prize, huntUrl }) {
         <div class="highlight-label">Unclaimed prize</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <p>Better luck next time! Keep an eye out for new hunts in your area.</p>
+      <p>Better luck next time! Keep an eye out for new quests in your area.</p>
       <a href="https://finderseek.com" class="btn">Browse Quests →</a>
     `)
   };
@@ -238,7 +238,7 @@ export default async function handler(req, res) {
     // Fetch hunt + pirate profile + winner profile
     const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type`);
     const hunt  = hunts?.[0];
-    if (!hunt) return res.status(404).json({ error: 'Hunt not found' });
+    if (!hunt) return res.status(404).json({ error: 'Quest not found' });
 
     const huntUrl = `${SITE_URL}/quest.html?id=${huntId}`;
     const results = [];
@@ -264,7 +264,7 @@ export default async function handler(req, res) {
       for (const s of (seekers || [])) {
         if (s.id === hunt.pirate_id) continue; // don't email the pirate twice
         if (!s.email) continue;
-        const tpl = tplNewHuntInCity({ username: s.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
+        const tpl = tplNewQuestInCity({ username: s.username, city: hunt.city, prize: hunt.prize_desc, huntUrl });
         await sendEmail(s.email, tpl.subject, tpl.html);
         results.push(`seeker_notified:${s.email}`);
       }

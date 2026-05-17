@@ -114,7 +114,7 @@ Sentence 1: Name the place, street, and city ONCE each. No repeating any detail.
 Sentence 2: ${startPoint ? 'Tell them to go to the starting point ("' + startPoint + '") using the persona voice.' : 'A call to action — go there, start the hunt.'} Do NOT repeat the place name, street, or city.
 ${startPoint ? 'Sentence 3: A short hype line to start the quest.' : ''}
 
-Bad example (repeats address twice): "Head to Kroger on Loop 336 in Conroe where folks shop! Go on down to Kroger on Loop 336 and let the hunt begin!"
+Bad example (repeats address twice): "Head to Kroger on Loop 336 in Conroe where folks shop! Go on down to Kroger on Loop 336 and let the quest begin!"
 Good example: "Arrr, seek ye Kroger on Loop 336 West in Conroe, where landlubbers stock their holds! Start at the north entrance by the pharmacy. Make haste and let the quest begin, ye brave soul!"
 
 Return ONLY the sentences, nothing else.`;
@@ -219,7 +219,7 @@ function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeNam
   const answer = clueHint.answer || '';
 
   if (isFinal) {
-    return `You are writing the FINAL clue for FinderSeek, a real-money treasure hunt app.
+    return `You are writing the FINAL clue for FinderSeek, a real-money quest app.
 Style: ${styleHint}
 Hiding spot description: "${hint}"
 Write ONE sentence: a dramatic rhyming riddle in the persona voice that builds maximum suspense — the seeker is inches away.
@@ -239,7 +239,7 @@ Return ONLY a JSON object: {"number": ${position}, "text": "riddle sentence here
     ? `ANSWER REFRAME REQUIRED: The Quest Master wrote "${answer}" as the answer, but yes/no answers are too vague. Rewrite sentence 2 so the answer becomes a specific observable word or short phrase the seeker discovers on-site (e.g. "fake", "gas", "decorative", "wood", "stone"). Use the hint "${hint}" as context. Put the new specific answer in the JSON "answer" field.`
     : `CRITICAL: Do NOT reveal the answer "${answer}" in sentence 1. Keep "${answer}" exactly as-is in the JSON "answer" field.`;
 
-  return `You are writing clue #${position} of ${total} for FinderSeek, a real-money treasure hunt app.
+  return `You are writing clue #${position} of ${total} for FinderSeek, a real-money quest app.
 Style: ${styleHint}
 Action: "${action}" — the seeker must physically do this
 Hint/keyword from Quest Master: "${hint}"
