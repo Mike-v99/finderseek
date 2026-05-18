@@ -5,6 +5,64 @@
 // Env vars: PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_MODE,
 //           SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTIFY_SECRET
 
+
+// Generate TTS audio for all clues of a hunt using service key
+async function generateTtsForHunt(huntId, sbUrl, sbKey) {
+  const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
+  if (!notifySecret) return;
+
+  // Fetch hunt persona + location riddle
+  const huntRes = await fetch(`${sbUrl}/rest/v1/hunts?id=eq.${huntId}&select=clue_persona,location_riddle`, {
+    headers: { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}` }
+  });
+  const hunts = await huntRes.json();
+  const hunt = hunts?.[0];
+  if (!hunt) { console.warn('[tts] Hunt not found:', huntId); return; }
+  const persona = hunt.clue_persona || 'pirate';
+
+  // Fetch clues
+  const cluesRes = await fetch(`${sbUrl}/rest/v1/clues?hunt_id=eq.${huntId}&select=id,clue_number,clue_text&order=clue_number.asc`, {
+    headers: { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}` }
+  });
+  const clues = await cluesRes.json();
+  if (!Array.isArray(clues) || clues.length === 0) { console.warn('[tts] No clues for hunt:', huntId); return; }
+
+  console.log(`[tts] Generating ${clues.length} clue audio + location riddle for hunt ${huntId} persona ${persona}`);
+
+  const ttsBase = 'https://www.finderseek.com';
+  const headers = { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret };
+
+  // Generate clue audio sequentially
+  for (const clue of clues) {
+    try {
+      const r = await fetch(`${ttsBase}/api/tts`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ text: clue.clue_text, persona, clueId: clue.id, type: 'clue',
+          dbId: clue.id, dbTable: 'clues', dbColumn: 'audio_url' })
+      });
+      const d = await r.json();
+      if (d.success) console.log(`[tts] ✓ Clue ${clue.clue_number}`);
+      else console.warn(`[tts] ✗ Clue ${clue.clue_number}:`, d.error);
+    } catch(e) { console.warn(`[tts] ✗ Clue ${clue.clue_number}:`, e.message); }
+  }
+
+  // Generate location riddle audio
+  if (hunt.location_riddle) {
+    try {
+      const r = await fetch(`${ttsBase}/api/tts`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ text: hunt.location_riddle, persona, clueId: huntId + '_loc', type: 'location',
+          dbId: huntId, dbTable: 'hunts', dbColumn: 'location_riddle_audio_url' })
+      });
+      const d = await r.json();
+      if (d.success) console.log('[tts] ✓ Location riddle');
+      else console.warn('[tts] ✗ Location riddle:', d.error);
+    } catch(e) { console.warn('[tts] ✗ Location riddle:', e.message); }
+  }
+
+  console.log('[tts] ✓ All audio generation complete for hunt:', huntId);
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -124,6 +182,12 @@ export default async function handler(req, res) {
         console.log('[paypal-capture] Notify sent for hunt:', huntId);
       }
     } catch(e) { console.error('[paypal-capture] Notify error:', e.message); }
+
+    // 7. Generate TTS audio server-side (fire and forget — don't block response)
+    // Runs after payment so user gets PIN card immediately
+    generateTtsForHunt(huntId, sbUrl, sbKey).catch(function(e) {
+      console.warn('[paypal-capture] TTS generation failed (non-fatal):', e.message);
+    });
 
     return res.status(200).json({
       success: true,
