@@ -369,22 +369,18 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Heading + bouncy step circles -->
 <div style="text-align:center;">
   <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:14px;">Hide the Treasure</div>
-  <div style="display:flex;justify-content:space-between;gap:6px;align-items:flex-start;padding:0 12px;">
-    <div class="hs-step-1" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#e8a820;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">1</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;">Generate<br>PIN</div>
-    </div>
+  <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;padding:0 4px;">
     <div class="hs-step-2" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#38bdf8;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">2</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;">Write<br>Down</div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#38bdf8;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">1</div>
+      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">Write Down</div>
     </div>
     <div class="hs-step-3" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#6366f1;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">3</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;">Insert in<br>Envelope</div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#6366f1;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">2</div>
+      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">In Envelope</div>
     </div>
     <div class="hs-step-4" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#4ade80;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">4</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;">Hiding<br>Spot</div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#4ade80;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">3</div>
+      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">Hiding Spot</div>
     </div>
   </div>
 </div>
@@ -402,7 +398,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="display:flex;gap:8px;">
     <button id="gen-code-btn" onclick="genCode()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-      Generate PIN
+      New PIN
     </button>
     <button id="save-code-btn" style="display:none;"></button>
   </div>
@@ -2506,6 +2502,23 @@ document.addEventListener('DOMContentLoaded', async function(){
   updateExpiry();
   setWeekendDates();
 
+  // ── Pre-load PayPal SDK so modal opens instantly ──
+  setTimeout(async function() {
+    try {
+      if (window.paypal) return;
+      var cidRes = await fetch(API_BASE + '/api/paypal-client-id');
+      var cidData = await cidRes.json();
+      if (!cidData.clientId) return;
+      window._ppClientId = cidData.clientId;
+      var s = document.createElement('script');
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + cidData.clientId + '&currency=USD&intent=capture&enable-funding=googlepay&disable-funding=paylater';
+      s.onload = function() { console.log('[paypal] SDK pre-loaded'); };
+      document.head.appendChild(s);
+    } catch(e) { console.warn('[paypal] Pre-load failed:', e.message); }
+  }, 3000);
+
+
+
   // ── Require sign-in before quest creation ──────────────
   var user = await loadCurrentUser();
   if (!user) {
@@ -2530,8 +2543,18 @@ document.addEventListener('DOMContentLoaded', async function(){
   if (hasAbandon2 || hasPending2 || hasFormState2) {
     restoreFormState();
   } else {
-    // Fresh start — make sure no stale data from a previous quest
+    // Fresh start — auto-generate PIN immediately
     clearFormState();
+    setTimeout(function() {
+      try {
+        var existingPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+          var el = document.getElementById(id); return el ? el.textContent : '';
+        }).join('');
+        if (!existingPin || existingPin.replace(/\s/g,'').length < 6) {
+          genCode();
+        }
+      } catch(e) {}
+    }, 300);
   }
 
   // Save on hiding-spot / map-search input change
@@ -3067,7 +3090,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
     await new Promise(function(resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture';
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&enable-funding=googlepay&disable-funding=paylater';
       s.onload = resolve;
       s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
       document.head.appendChild(s);
