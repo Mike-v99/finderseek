@@ -642,8 +642,39 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <div id="ai-loading" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;">
   <div id="ai-spinner" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(232,168,32,.15);border-top-color:#e8a820;animation:aiSpin 1s linear infinite;margin-bottom:24px;"></div>
-  <div style="font-size:22px;color:#fff;font-weight:400;margin-bottom:8px;">AI Clues Generating</div>
-  <div id="ai-loading-sub" style="font-size:18px;color:#d0e4f0;margin-bottom:24px;">This usually takes 5-10 seconds</div>
+  <div id="ai-loading-title" style="font-size:22px;color:#fff;font-weight:400;margin-bottom:8px;">Creating Your Quest</div>
+  <div id="ai-loading-sub" style="font-size:18px;color:#d0e4f0;margin-bottom:24px;">This usually takes 10-20 seconds</div>
+  <!-- Step progress -->
+  <div id="ai-steps" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;margin-bottom:24px;">
+    <div id="ai-step-photo" style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="ai-step-photo-icon" style="font-size:20px;width:28px;text-align:center;">📸</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:15px;color:#fff;">Uploading photo</div>
+      </div>
+      <div id="ai-step-photo-status" style="font-size:15px;color:rgba(255,255,255,.3);">—</div>
+    </div>
+    <div id="ai-step-clues" style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="ai-step-clues-icon" style="font-size:20px;width:28px;text-align:center;">🤖</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:15px;color:#fff;">Generating clues</div>
+      </div>
+      <div id="ai-step-clues-status" style="font-size:15px;color:rgba(255,255,255,.3);">—</div>
+    </div>
+    <div id="ai-step-save" style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="ai-step-save-icon" style="font-size:20px;width:28px;text-align:center;">💾</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:15px;color:#fff;">Saving quest</div>
+      </div>
+      <div id="ai-step-save-status" style="font-size:15px;color:rgba(255,255,255,.3);">—</div>
+    </div>
+    <div id="ai-step-payment" style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+      <div id="ai-step-payment-icon" style="font-size:20px;width:28px;text-align:center;">💳</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:15px;color:#fff;">Opening payment</div>
+      </div>
+      <div id="ai-step-payment-status" style="font-size:15px;color:rgba(255,255,255,.3);">—</div>
+    </div>
+  </div>
   <div style="display:flex;gap:6px;">
     <div style="width:8px;height:8px;border-radius:50%;background:#e8a820;animation:aiPulse 1.4s ease-in-out infinite;"></div>
     <div style="width:8px;height:8px;border-radius:50%;background:#e8a820;animation:aiPulse 1.4s ease-in-out .2s infinite;"></div>
@@ -1594,6 +1625,104 @@ function showToast(msg, type){
 }
 
 // ============================================================
+//  QUEST CREATION PROGRESS OVERLAY
+// ============================================================
+function showCreatingOverlay() {
+  var el = document.getElementById('ai-loading');
+  if (el) el.style.display = 'flex';
+  setCreationStep('photo', 'pending');
+  setCreationStep('clues', 'pending');
+  setCreationStep('save', 'pending');
+  setCreationStep('payment', 'pending');
+}
+
+function setCreationStep(step, state) {
+  var statusEl = document.getElementById('ai-step-' + step + '-status');
+  var rowEl = document.getElementById('ai-step-' + step);
+  if (!statusEl || !rowEl) return;
+  if (state === 'active') {
+    statusEl.textContent = '⏳';
+    statusEl.style.color = '#e8a820';
+    rowEl.style.border = '1px solid rgba(232,168,32,.4)';
+    rowEl.style.background = 'rgba(232,168,32,.06)';
+  } else if (state === 'done') {
+    statusEl.textContent = '✓';
+    statusEl.style.color = '#4ade80';
+    rowEl.style.border = '1px solid rgba(74,222,128,.3)';
+    rowEl.style.background = 'rgba(74,222,128,.05)';
+  } else if (state === 'skip') {
+    statusEl.textContent = '—';
+    statusEl.style.color = 'rgba(255,255,255,.3)';
+    rowEl.style.opacity = '0.4';
+  } else {
+    statusEl.textContent = '—';
+    statusEl.style.color = 'rgba(255,255,255,.3)';
+    rowEl.style.border = '1px solid rgba(255,255,255,.08)';
+    rowEl.style.background = 'rgba(255,255,255,.04)';
+    rowEl.style.opacity = '1';
+  }
+}
+
+// ============================================================
+//  QUEST CREATION PROGRESS
+// ============================================================
+function showCreatingOverlay() {
+  var el = document.getElementById('ai-loading');
+  if (el) el.style.display = 'flex';
+  setCreationStep('photo', 'pending');
+  setCreationStep('clues', 'pending');
+  setCreationStep('save', 'pending');
+  setCreationStep('payment', 'pending');
+}
+
+function setCreationStep(step, state) {
+  var statusEl = document.getElementById('ai-step-' + step + '-status');
+  var rowEl = document.getElementById('ai-step-' + step);
+  if (!statusEl || !rowEl) return;
+  if (state === 'active') {
+    statusEl.textContent = '⏳';
+    statusEl.style.color = '#e8a820';
+    rowEl.style.border = '1px solid rgba(232,168,32,.4)';
+    rowEl.style.background = 'rgba(232,168,32,.06)';
+    rowEl.style.opacity = '1';
+  } else if (state === 'done') {
+    statusEl.textContent = '✓';
+    statusEl.style.color = '#4ade80';
+    rowEl.style.border = '1px solid rgba(74,222,128,.3)';
+    rowEl.style.background = 'rgba(74,222,128,.05)';
+    rowEl.style.opacity = '1';
+  } else if (state === 'skip') {
+    statusEl.textContent = '—';
+    statusEl.style.color = 'rgba(255,255,255,.3)';
+    rowEl.style.opacity = '0.4';
+  } else {
+    statusEl.textContent = '—';
+    statusEl.style.color = 'rgba(255,255,255,.3)';
+    rowEl.style.border = '1px solid rgba(255,255,255,.08)';
+    rowEl.style.background = 'rgba(255,255,255,.04)';
+    rowEl.style.opacity = '1';
+  }
+}
+
+// ============================================================
+// ============================================================
+//  QUEST CREATION PROGRESS
+// ============================================================
+function showCreatingOverlay() {
+  var el = document.getElementById('ai-loading');
+  if (el) el.style.display = 'flex';
+  ['photo','clues','save','payment'].forEach(function(s){ setCreationStep(s,'pending'); });
+}
+function setCreationStep(step, state) {
+  var se = document.getElementById('ai-step-'+step+'-status');
+  var re = document.getElementById('ai-step-'+step);
+  if (!se||!re) return;
+  if (state==='active'){se.textContent='⏳';se.style.color='#e8a820';re.style.border='1px solid rgba(232,168,32,.4)';re.style.background='rgba(232,168,32,.06)';re.style.opacity='1';}
+  else if (state==='done'){se.textContent='✓';se.style.color='#4ade80';re.style.border='1px solid rgba(74,222,128,.3)';re.style.background='rgba(74,222,128,.05)';re.style.opacity='1';}
+  else if (state==='skip'){se.textContent='—';se.style.color='rgba(255,255,255,.3)';re.style.opacity='0.4';}
+  else{se.textContent='—';se.style.color='rgba(255,255,255,.3)';re.style.border='1px solid rgba(255,255,255,.08)';re.style.background='rgba(255,255,255,.04)';re.style.opacity='1';}
+}
+
 //  CREATE QUEST
 // ============================================================
 function validateQuestForm(){
@@ -1932,6 +2061,7 @@ async function createQuest(){
   btn.disabled = true; previewBtn.disabled = true;
   btn.textContent = '⏳ Creating quest...';
   previewBtn.textContent = '⏳ Creating Quest...';
+  showCreatingOverlay();
 
   try {
     // ── 5. Compute timing ───────────────────────────────────
@@ -1966,6 +2096,7 @@ async function createQuest(){
     let photoUrl = null;
     if (window._hsPhotoDataUrl) {
       btn.textContent = '⏳ Uploading photo...';
+    setCreationStep('photo', 'active');
       try {
         // Convert base64 data URL to blob
         var dataUrl = window._hsPhotoDataUrl;
@@ -1987,6 +2118,7 @@ async function createQuest(){
         if (up.ok) {
           photoUrl = SB+'/storage/v1/object/public/finderseeek-assets/'+path;
           console.log('[photo] uploaded:', photoUrl);
+          setCreationStep('photo', 'done');
         } else {
           var errTxt = await up.text();
           console.error('Photo upload failed:', up.status, errTxt);
@@ -2123,6 +2255,8 @@ async function createQuest(){
 
     // ── 7. Generate clues via Claude ─────────────────────────
     btn.textContent = '⏳ Creating Quest...';
+    setCreationStep('photo', 'done');
+    setCreationStep('clues', 'active');
     var aiOverlay = document.getElementById('ai-loading');
     aiOverlay.style.display = 'flex';
 
@@ -2152,12 +2286,16 @@ async function createQuest(){
       clueData = await clueRes.json();
       if (!clueRes.ok || !clueData.clues) {
         aiOverlay.style.display = 'none';
+    setCreationStep('clues', 'done');
+    setCreationStep('save', 'active');
         console.error('Clue generation error:', clueData);
         throw new Error('Clue generation failed: ' + (clueData?.error || 'API returned no clues. Check ANTHROPIC_API_KEY in Vercel env vars.'));
       }
     }
 
     aiOverlay.style.display = 'none';
+    setCreationStep('clues', 'done');
+    setCreationStep('save', 'active');
     // Save location_riddle to hunt row
     if (clueData.location_riddle) {
       fetch(SB+'/rest/v1/hunts?id=eq.'+huntId, {
@@ -2230,6 +2368,9 @@ async function createQuest(){
 
     // ── 9. Open the embedded payment modal ─────────────────
     btn.textContent = '⏳ Setting up payment...';
+    setCreationStep('save', 'done');
+    setCreationStep('payment', 'active');
+    document.getElementById('ai-loading').style.display = 'none';
     await openPaymentModal({
       userId: currentUser.id,
       email: currentUser.email,
