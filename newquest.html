@@ -1606,6 +1606,19 @@ function validateQuestForm(){
       if (saved.pin && saved.pin.length === 6) code = saved.pin;
     } catch(e) {}
   }
+  // Restore photo from localStorage if lost from memory
+  if (!window._hsPhotoDataUrl) {
+    var savedPhoto = localStorage.getItem('fs_newquest_form_photo') || sessionStorage.getItem('fs_newquest_form_photo');
+    if (savedPhoto) {
+      window._hsPhotoDataUrl = savedPhoto;
+      var img = document.getElementById('hs-photo-img');
+      if (img) img.src = savedPhoto;
+      var placeholder = document.getElementById('photo-placeholder-s1');
+      var preview = document.getElementById('photo-preview-s1');
+      if (placeholder) placeholder.style.display = 'none';
+      if (preview) preview.style.display = 'block';
+    }
+  }
   if (prize < 1 || prize > 100) { showToast('Prize must be between $1 and $100', 'error'); return false; }
   if (code.length < 6 || code.replace(/\s/g,'').length < 6) { showToast('Generate your 6-digit secret code first', 'error'); return false; }
   if (!window._hsPhotoDataUrl) { showToast('A photo of the hiding spot is required', 'error'); goStep(1); return false; }
