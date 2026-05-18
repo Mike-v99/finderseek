@@ -3172,16 +3172,21 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         } catch(e) {}
 
         _hidePaymentProcessing();
+        // ── Fire TTS immediately before closing modal — fire and forget ──
+        // Don't await — runs in background while user sees PIN card
+        var _ttsHuntId = window._pendingTtsHuntId;
+        var _ttsPersona = window._pendingTtsPersona;
+        var _ttsRiddle = window._pendingTtsLocationRiddle;
+        if (_ttsHuntId) {
+          generateClueAudio(_ttsHuntId, _ttsPersona, _ttsRiddle).catch(function(e){
+            console.warn('[tts] post-payment generation failed:', e.message);
+          });
+        }
+
         closePaymentModal();
         // Show PIN card with quest ID
         showPinCardAfterPayment(_currentPayload.huntId, questId, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
-
-        // ── Generate TTS audio in background after payment ──
-        // Runs after modal closes so it doesn't block UI
-        setTimeout(function() {
-          try { generateClueAudio(window._pendingTtsHuntId, window._pendingTtsPersona, window._pendingTtsLocationRiddle); } catch(e) {}
-        }, 1000);
       } catch(e) {
         // Capture failed — hide processing overlay and surface the error.
         _hidePaymentProcessing();
