@@ -583,9 +583,28 @@ var SPEAKER_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" s
 var COOLDOWN_MS=[0,15*60*1000,60*60*1000,24*60*60*1000];
 var COOLDOWN_LABELS=['','15 minutes','1 hour','24 hours'];
 var _attemptCache={},_solvedCount=0;
+
+function _getAttemptKey(){return currentHunt?'fs_attempts_'+currentHunt.id:null;}
+function _saveAttemptsLocal(){try{var k=_getAttemptKey();if(k)localStorage.setItem(k,JSON.stringify(_attemptCache));}catch(e){}}
+function _loadAttemptsLocal(){try{var k=_getAttemptKey();if(!k)return;var saved=localStorage.getItem(k);if(saved){var parsed=JSON.parse(saved);Object.assign(_attemptCache,parsed);console.log('[quest] Restored',Object.keys(parsed).length,'attempts from localStorage');}}catch(e){}}
+
 async function loadAttempts(){
-  if(!currentHunt)return;var token=getToken();if(!token)return;
-  try{var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var user=await ur.json();if(!user||!user.id)return;var r=await fetch(SB+'/rest/v1/clue_attempts?hunt_id=eq.'+currentHunt.id+'&seeker_id=eq.'+user.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});var rows=await r.json();if(Array.isArray(rows))rows.forEach(function(row){_attemptCache[row.clue_number]=row;});}catch(e){console.warn('loadAttempts:',e);}
+  if(!currentHunt)return;
+  // Restore from localStorage first for instant UI — then sync from server
+  _loadAttemptsLocal();
+  var token=getToken();if(!token)return;
+  try{
+    // Refresh token before loading attempts
+    try{var _s=await supaClient.auth.getSession();if(_s.data&&_s.data.session&&_s.data.session.access_token){token=_s.data.session.access_token;localStorage.setItem('fs_token',token);}}catch(e){}
+    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var user=await ur.json();if(!user||!user.id)return;
+    var r=await fetch(SB+'/rest/v1/clue_attempts?hunt_id=eq.'+currentHunt.id+'&seeker_id=eq.'+user.id+'&select=*',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+    var rows=await r.json();
+    if(Array.isArray(rows)){
+      rows.forEach(function(row){_attemptCache[row.clue_number]=row;});
+      _saveAttemptsLocal(); // keep localStorage in sync
+    }
+  }catch(e){console.warn('loadAttempts:',e);}
 }
 async function submitAnswer(clueNumber,userAnswer,correctAnswer){
   var btn=document.getElementById('qa-submit-'+clueNumber);if(btn){btn.disabled=true;btn.textContent='Checking...';}
@@ -627,11 +646,11 @@ async function submitAnswer(clueNumber,userAnswer,correctAnswer){
     (norm.length>2&&wordMatch(corr,norm));
   if(isCorrect){
     showToast('Correct! Unlocking next clue...','success');var inp=document.getElementById('qa-input-'+clueNumber);if(inp)inp.value='';
-    await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0,solved:true});_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},{solved:true});await unlockNextClue(clueNumber);renderHunt();renderClues();
+    await upsertAttempt(clueNumber,{wrong_count:0,cooldown_until:null,cooldown_level:0,solved:true});_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},{solved:true});_saveAttemptsLocal();await unlockNextClue(clueNumber);renderHunt();renderClues();
   }else{
     var nw=(attempt.wrong_count||0)+1;showToast(["Arrr, that's not it!","Wrong, ye scallywag!","Nay! Try again!"][Math.floor(Math.random()*3)],'error');
     var upd={wrong_count:nw};if(nw>=3){var nl=Math.min((attempt.cooldown_level||0)+1,3);upd={wrong_count:0,cooldown_until:new Date(Date.now()+COOLDOWN_MS[nl]).toISOString(),cooldown_level:nl,hints_unlocked:nl};showToast('Too many wrong answers! Rest for '+COOLDOWN_LABELS[nl],'error');}
-    await upsertAttempt(clueNumber,upd);_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},upd);renderClues();
+    await upsertAttempt(clueNumber,upd);_attemptCache[clueNumber]=Object.assign(_attemptCache[clueNumber]||{},upd);_saveAttemptsLocal();renderClues();
   }
   if(btn){btn.disabled=false;btn.textContent='Submit';}
 }
@@ -690,6 +709,8 @@ function fireConfetti(){if(typeof confetti==='undefined')return;var colors=['#e8
 function showWinCelebration(amount){
   var amt=typeof amount==='number'?amount.toFixed(2):amount;
   document.getElementById('win-amount').textContent='$'+amt;
+  // Clear saved attempts — quest is won
+  try{var k=_getAttemptKey();if(k)localStorage.removeItem(k);}catch(e){}
   // Reset all steps to step 1
   document.getElementById('win-step-1').style.display='block';
   document.getElementById('win-step-2').style.display='none';
