@@ -86,7 +86,7 @@ export default async function handler(req, res) {
     }
 
     // Duplicate claim guard
-    if (hunt.status === 'ended' || hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
+    if (hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
     }
 
@@ -97,9 +97,10 @@ export default async function handler(req, res) {
     const prizeAmount = amount || (hunt.prize_value / 100).toFixed(2);
     const methodLabel = method === 'venmo' ? 'Venmo' : 'PayPal';
 
-    // Mark hunt as processing
+    // Mark hunt as processing — only set winner_id if it's a valid UUID
+    const isValidUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(winnerId);
     await sbPatch('hunts', `id=eq.${huntId}`, {
-      winner_id: winnerId,
+      ...(isValidUuid ? { winner_id: winnerId } : {}),
       payout_method: method,
       payout_destination: destination,
       payout_status: 'processing',
