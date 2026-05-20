@@ -192,7 +192,7 @@ export default async function handler(req, res) {
         await fetch('https://www.finderseek.com/api/notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret },
-          body: JSON.stringify({ event: 'prize_claimed', huntId })
+          body: JSON.stringify({ event: 'prize_claimed', huntId, winnerEmail: destination })
         });
       }
     } catch (e) { console.warn('[payout] Notify failed:', e.message); }

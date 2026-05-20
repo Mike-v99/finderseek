@@ -227,7 +227,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { event, huntId, senderId } = req.body;
+  const { event, huntId, senderId, winnerEmail: bodyWinnerEmail } = req.body;
+  const body = req.body;
   if (!event || !huntId) return res.status(400).json({ error: 'Missing event or huntId' });
 
   try {
@@ -314,16 +315,20 @@ export default async function handler(req, res) {
         ? await sbFetch(`profiles?id=eq.${hunt.winner_id}&select=username,email,notify_hunt_won`)
         : [null];
 
-      if (pirate?.email && winner) {
-        const tpl = tplPrizeClaimed({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, winnerName: winner.username, huntUrl });
+      // winnerEmail passed directly from payout-request for anonymous claims
+      const winnerEmail = winner?.email || bodyWinnerEmail || hunt.payout_destination;
+
+      if (pirate?.email) {
+        const winnerName = winner?.username || 'a lucky seeker';
+        const tpl = tplPrizeClaimed({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, winnerName, huntUrl });
         await sendEmail(pirate.email, tpl.subject, tpl.html);
         results.push(`pirate_notified:${pirate.email}`);
       }
-      if (winner?.email) {
+      if (winnerEmail) {
         const isEscrow = hunt.payment_type === 'escrow';
-        const tpl = tplYouWon({ username: winner.username, city: hunt.city, prize: hunt.prize_desc, huntUrl, isEscrow, paypalEmail: hunt.payout_destination });
-        await sendEmail(winner.email, tpl.subject, tpl.html);
-        results.push(`winner_notified:${winner.email}`);
+        const tpl = tplYouWon({ username: winner?.username || 'Winner', city: hunt.city, prize: hunt.prize_desc, huntUrl, isEscrow, paypalEmail: hunt.payout_destination });
+        await sendEmail(winnerEmail, tpl.subject, tpl.html);
+        results.push(`winner_notified:${winnerEmail}`);
       }
     }
 
