@@ -150,9 +150,7 @@ export default async function handler(req, res) {
 
     // ── Manual payout email ──
     const note = encodeURIComponent('FinderSeek prize' + (hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''));
-    const paypalSendUrl = method === 'venmo'
-      ? `https://venmo.com/?txn=pay&audience=private&recipients=${encodeURIComponent(destination)}&amount=${prizeAmount}&note=${note}`
-      : `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(destination)}&amount=${prizeAmount}&currency_code=USD&item_name=${note}&no_shipping=1`;
+    const paypalSendUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(destination)}&amount=${prizeAmount}&currency_code=USD&item_name=${note}&no_shipping=1`;
 
     try {
       await sendEmail({
@@ -163,21 +161,24 @@ export default async function handler(req, res) {
           : `🚨 SEND $${prizeAmount} → ${destination} (${methodLabel})`,
         html: paypalSuccess
           ? `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;padding:24px;"><div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:16px;padding:24px;text-align:center;"><div style="font-size:48px;">✅</div><div style="font-size:24px;font-weight:700;color:#16a34a;">Prize Sent Automatically</div><div style="font-size:32px;font-weight:700;color:#15803d;">$${prizeAmount}</div><div style="font-size:16px;color:#666;">${methodLabel} → ${destination}</div><div style="font-size:13px;color:#999;">Batch: ${paypalBatchId}</div></div><p style="margin-top:16px;font-size:14px;color:#666;">Winner: ${winner?.username || winnerId} · Quest: ${hunt.quest_id || '—'}</p></div>`
-          : `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;padding:20px;">
-              <div style="background:#0a0810;border-radius:16px;padding:20px 24px;text-align:center;margin-bottom:12px;border:2px solid #e8a820;">
-                <div style="font-size:13px;color:#e8a820;letter-spacing:2px;margin-bottom:6px;">ACTION REQUIRED · FINDERSEEK</div>
-                <div style="font-size:42px;font-weight:700;color:#fff;">$${prizeAmount}</div>
-                <div style="font-size:15px;color:rgba(255,255,255,.5);">Quest ${hunt.quest_id || huntId.slice(0,8)} · Won by ${winner?.username || 'winner'}</div>
+          : `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;">
+              <div style="background:#003087;padding:16px;text-align:center;">` + '<svg width="80" height="22" viewBox="0 0 124 33" xmlns="http://www.w3.org/2000/svg"><path d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746zM47 13.154c-.374 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.469 1.044.332 1.906z" fill="white"/><path d="M94.992 6.749h-6.84a.95.95 0 0 0-.938.802l-2.766 17.537a.569.569 0 0 0 .562.658h3.51a.665.665 0 0 0 .656-.562l.785-4.971a.95.95 0 0 1 .938-.803h2.164c4.506 0 7.105-2.18 7.785-6.5.307-1.89.012-3.375-.873-4.415-.971-1.142-2.694-1.746-4.983-1.746zm.789 6.405c-.373 2.454-2.248 2.454-4.062 2.454h-1.031l.725-4.583a.568.568 0 0 1 .562-.481h.473c1.234 0 2.4 0 3.002.704.359.42.468 1.044.331 1.906z" fill="#009CDE"/><path d="M7.266 29.154l.523-3.322-1.165-.027H1.061L4.927 1.292a.316.316 0 0 1 .314-.268h9.38c3.114 0 5.263.648 6.385 1.927.526.6.861 1.227 1.023 1.917.17.724.173 1.589.007 2.644l-.012.077v.676l.526.298a3.69 3.69 0 0 1 1.065.812c.45.513.741 1.165.864 1.938.127.795.085 1.741-.123 2.812-.24 1.232-.628 2.305-1.152 3.183a6.547 6.547 0 0 1-1.825 2.025 7.435 7.435 0 0 1-2.457 1.109 11.627 11.627 0 0 1-3.085.368h-.733a2.219 2.219 0 0 0-2.196 1.875l-.055.301-.924 5.855-.042.215c-.011.068-.03.102-.058.125a.155.155 0 0 1-.096.035H7.266z" fill="white"/></svg>' + `</div>
+              <div style="padding:20px;">
+                <div style="font-size:18px;font-weight:600;color:#111;margin-bottom:6px;">Someone won your quest! 🎉</div>
+                <div style="font-size:14px;color:#666;margin-bottom:16px;">Quest ${hunt.quest_id || huntId.slice(0,8)} has been claimed. Send the prize when ready.</div>
+                <div style="background:#f8f9fa;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="font-size:13px;color:#888;">Winner PayPal</span>
+                    <span style="font-size:13px;color:#111;font-weight:500;">${destination}</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="font-size:13px;color:#888;">Amount to send</span>
+                    <span style="font-size:13px;color:#16a34a;font-weight:600;">$${prizeAmount}</span>
+                  </div>
+                </div>
+                <a href="${paypalSendUrl}" style="display:block;background:#003087;color:#fff;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;margin-bottom:8px;">Send $${prizeAmount} via PayPal →</a>
+                <div style="font-size:12px;color:#888;text-align:center;line-height:1.5;">Opens PayPal pre-filled with the recipient and amount. Just confirm and send.</div>
               </div>
-              <div style="margin-bottom:10px;">
-                <div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:6px;">TAP TO OPEN ${methodLabel.toUpperCase()} PRE-FILLED</div>
-                <a href="${paypalSendUrl}" style="display:block;background:${method==='venmo'?'#008CFF':'#0070e0'};color:#fff;text-align:center;padding:18px 24px;border-radius:14px;font-size:19px;font-weight:700;text-decoration:none;">${method==='venmo'?'💙 Open Venmo · Send $'+prizeAmount:'🅿 Open PayPal · Send $'+prizeAmount}</a>
-              </div>
-              <div style="background:#f8f9fa;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px 20px;margin-bottom:10px;">
-                <div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:8px;">RECIPIENT</div>
-                <div style="font-size:26px;font-weight:600;color:#111;word-break:break-all;">${destination}</div>
-              </div>
-              <a href="mailto:payments@finderseek.com?subject=PAID%20-%20Quest%20${encodeURIComponent(hunt.quest_id||huntId.slice(0,8))}&body=Sent%20%24${prizeAmount}%20to%20${encodeURIComponent(destination)}%20via%20${encodeURIComponent(methodLabel)}" style="display:block;background:#15803d;color:#fff;text-align:center;padding:14px;border-radius:12px;font-size:16px;font-weight:600;text-decoration:none;margin-bottom:12px;">✅ Tap here after sending (sends receipt)</a>
             </div>`
       });
       console.log('[payout] Email sent to payments@finderseek.com');
