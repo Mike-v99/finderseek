@@ -1381,6 +1381,7 @@ if('serviceWorker'in navigator){window.addEventListener('load',function(){naviga
     if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
     clearTimeout(window._toastT);
     toggle(true);
+    loadProfile(); // re-run so sign out button shows correctly
   };
   function loadProfile(){
     var token='';try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0){var s=JSON.parse(localStorage.getItem(keys[i]));if(s&&s.access_token){token=s.access_token;break;}}}if(!token)token=localStorage.getItem('fs_token')||'';}catch(e){}

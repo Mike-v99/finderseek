@@ -1686,6 +1686,7 @@ if ('serviceWorker' in navigator) {
     if(t){t.classList.remove('show');t.classList.remove('error');t.classList.remove('success');}
     clearTimeout(window._toastT);
     toggle(true);
+    loadProfile();
   };
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 })();
