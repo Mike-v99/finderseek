@@ -63,7 +63,7 @@ async function createEscrowOrder({ userId, email, huntId, prizeAmount, totalCent
       purchase_units: [{
         reference_id: huntId,
         description: `FinderSeek Quest — $${prize} Prize`,
-        custom_id: JSON.stringify({ userId, huntId, prizeAmount: prize }),
+        custom_id: (huntId + '|' + prize).slice(0, 127), // PayPal: max 127 chars, no JSON
         amount: {
           currency_code: 'USD',
           value: total,

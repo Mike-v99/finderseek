@@ -3326,6 +3326,12 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
           msg = 'Your bank needs you to confirm this payment. Try again or use a different card.';
         } else if (lower.indexOf('payee_account_restricted') !== -1) {
           msg = 'Payment processor error. Please try again later.';
+        } else if (lower.indexOf('string did not match') !== -1 || lower.indexOf('expected pattern') !== -1) {
+          msg = 'Payment setup error. Please close this and try again.';
+        } else if (lower.indexOf('order not found') !== -1 || lower.indexOf('invalid order') !== -1) {
+          msg = 'Payment session expired. Please close and try again.';
+        } else if (lower.indexOf('auth failed') !== -1 || lower.indexOf('unauthorized') !== -1) {
+          msg = 'Payment service temporarily unavailable. Please try again in a moment.';
         }
         errEl.textContent = msg;
       }
