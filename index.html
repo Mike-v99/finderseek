@@ -919,6 +919,7 @@ async function loadHeroAuth() {
     // if (drawerSub) drawerSub.textContent = isGold ? '👑 Gold Tier Profile' : 'Free Tier Profile'; // Gold coming soon
     if (signInSection) signInSection.style.display = 'none';
     if (profileSection) { profileSection.style.display = 'flex'; }
+    var _so=document.getElementById('hb-signout-section');if(_so)_so.style.display='block';
   } catch(e) {
     if (signInSection) signInSection.style.display = 'flex';
   }
@@ -1661,7 +1662,7 @@ if ('serviceWorker' in navigator) {
     var bd=document.getElementById('hb-backdrop');
     var dr=document.getElementById('hb-drawer');
     if(!btn||!bd||!dr)return;
-    btn.addEventListener('click',function(){toggle(true);});
+    btn.addEventListener('click',function(){toggle(true);loadProfile();});
     bd.addEventListener('click',function(){toggle(false);});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')toggle(false);});
   }
