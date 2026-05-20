@@ -4602,6 +4602,17 @@ saveFormState();
 reader.readAsDataURL(file);
 }
 
+
+function hbSignOut(){
+  try{
+    var keys=Object.keys(localStorage);
+    for(var i=0;i<keys.length;i++){
+      if(keys[i].indexOf('sb-')===0||keys[i]==='fs_token')localStorage.removeItem(keys[i]);
+    }
+    try{sessionStorage.clear();}catch(e){}
+  }catch(e){}
+  window.location.href='index.html';
+}
 </script>
 
 <!-- FULL SCREEN MAP MODAL -->

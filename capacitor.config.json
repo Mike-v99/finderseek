@@ -1,11 +1,10 @@
 {
   "appId": "com.finderseek.app",
   "appName": "FinderSeek",
-  "webDir": ".",
-  "bundledWebRuntime": false,
+  "webDir": "www",
   "server": {
-    "hostname": "finderseek.com",
-    "androidScheme": "https"
+    "url": "https://www.finderseek.com",
+    "cleartext": false
   },
   "ios": {
     "contentInset": "always",

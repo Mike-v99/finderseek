@@ -374,9 +374,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 async function hbSignOut(){
   closeHamburger();
   try{
-    if(window.supaClient){await window.supaClient.auth.signOut();}
-    localStorage.removeItem('fs_token');
-    try{var keys=Object.keys(localStorage);for(var i=0;i<keys.length;i++){if(keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0)localStorage.removeItem(keys[i]);}}catch(e){}
+    // Clear all Supabase auth tokens from localStorage
+    var keys=Object.keys(localStorage);
+    for(var i=0;i<keys.length;i++){
+      if(keys[i].indexOf('sb-')===0||keys[i]==='fs_token')localStorage.removeItem(keys[i]);
+    }
+    // Also clear session storage
+    try{sessionStorage.clear();}catch(e){}
   }catch(e){}
   window.location.href='index.html';
 }
