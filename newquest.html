@@ -2650,10 +2650,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   // ── Require sign-in before quest creation ──────────────
   var user = await loadCurrentUser();
   if (!user) {
-    // Save form state before redirecting
+    // Show email gate modal — keeps user on newquest page
     saveFormState();
-    // Redirect to profile for sign-in, with return URL
-    window.location.href = 'profile.html?redirect=' + encodeURIComponent('newquest.html?from=app');
+    showEmailGate();
     return;
   }
 
