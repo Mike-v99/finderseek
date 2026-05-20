@@ -1306,22 +1306,28 @@ async function submitPayoutRequest(){
   btn.disabled = true; btn.textContent = 'Submitting...';
   if(!window._winHuntId){showToast('Quest not identified — please try again','error');btn.disabled=false;btn.textContent='Claim Prize';return;}
   try{
-    // Resolve winnerId
+    // Resolve winnerId — optional, works without sign-in
     if(!window._winUserId){
       var token = getToken();
-      if(!token){showToast('Please sign in to claim your prize','error');btn.disabled=false;btn.textContent='Claim Prize';return;}
-      var ur = await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-      var usr = await ur.json();
-      if(!usr||!usr.id){showToast('Could not verify your account','error');btn.disabled=false;btn.textContent='Claim Prize';return;}
-      window._winUserId = usr.id;
-      try{
-        await fetch(SB+'/rest/v1/find_reports',{
-          method:'POST',
-          headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
-          body:JSON.stringify({hunt_id:window._winHuntId,user_id:usr.id,found_at:new Date().toISOString()})
-        });
-      }catch(e){console.warn('find_report insert failed:',e);}
-      try{localStorage.removeItem('fs_pending_claim');}catch(e){}
+      if(token){
+        try{
+          var ur = await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
+          var usr = await ur.json();
+          if(usr&&usr.id){
+            window._winUserId = usr.id;
+            try{
+              await fetch(SB+'/rest/v1/find_reports',{
+                method:'POST',
+                headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
+                body:JSON.stringify({hunt_id:window._winHuntId,user_id:usr.id,found_at:new Date().toISOString()})
+              });
+            }catch(e){console.warn('find_report insert failed:',e);}
+            try{localStorage.removeItem('fs_pending_claim');}catch(e){}
+          }
+        }catch(e){console.warn('Could not resolve user, continuing anonymously');}
+      }
+      // If no token or user lookup failed, use a placeholder — payout only needs the PayPal email
+      if(!window._winUserId) window._winUserId = 'anonymous_' + Date.now();
     }
     var r = await fetch(API_BASE+'/api/payout-request',{
       method:'POST',
