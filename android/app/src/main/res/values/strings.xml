@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FinderSeek</string>
+    <string name="title_activity_main">FinderSeek</string>
+    <string name="package_name">com.finderseek.app</string>
+    <string name="custom_url_scheme">com.finderseek.app</string>
+</resources>
