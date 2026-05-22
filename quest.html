@@ -1012,6 +1012,16 @@ function renderClues(){
   // Ended or won quests — show clues as read-only, no Q&A input
   var questEnded=currentHunt&&(currentHunt.status==='ended'||currentHunt.status==='cancelled'||!!currentHunt.winner_id);
 
+  // If quest is ended, treat all clues as solved so photos/maps are fully revealed
+  if(questEnded){
+    (currentClues||[]).forEach(function(c){
+      if(!_attemptCache[c.clue_number]){_attemptCache[c.clue_number]={solved:true};}
+      else{_attemptCache[c.clue_number].solved=true;}
+    });
+    _solvedCount=(currentClues||[]).length;
+    window._locationConfirmed=true;
+  }
+
   var html='';
   var unlocked=0;
 
