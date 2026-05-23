@@ -726,7 +726,7 @@ async function gateSignIn(){
   btn.disabled = true; btn.innerHTML = 'Sending...';
   try {
     var returnTo = localStorage.getItem('fs_magic_return') || 'profile.html';
-    localStorage.setItem('fs_magic_return', 'profile.html');
+    // Don't overwrite magic_return — it may have been set by another page
     var { error } = await supaClient.auth.signInWithOtp({
       email: email,
       options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }

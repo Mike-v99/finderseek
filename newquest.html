@@ -2712,6 +2712,17 @@ document.addEventListener('DOMContentLoaded', async function(){
   var hasFormState2 = localStorage.getItem('fs_newquest_form');
   if (hasAbandon2 || hasPending2 || hasFormState2) {
     restoreFormState();
+    // After restoring, check if PIN is missing and generate if needed
+    setTimeout(function() {
+      try {
+        var existingPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
+          var el = document.getElementById(id); return el ? el.textContent : '';
+        }).join('');
+        if (!existingPin || existingPin.replace(/[^0-9]/g,'').length < 6) {
+          genCode();
+        }
+      } catch(e) {}
+    }, 400);
   } else {
     // Fresh start — auto-generate PIN immediately
     clearFormState();
