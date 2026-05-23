@@ -167,11 +167,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
           <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
             style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
         </div>
-        <input id="gate-email" type="text" inputmode="email" autocomplete="off" placeholder="Email" name="email"
+        <input id="gate-email" type="text" inputmode="email" autocomplete="off" placeholder="Email" name="email" oninput="var e=this.value.trim(),p=document.getElementById('gate-password'),b=document.getElementById('gate-submit'),r=e==='reviewer@finderseek.com';if(p)p.style.display=r?'block':'none';if(b)b.textContent=r?'Sign In':'✨ Send Magic Link';"
           style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
 
 
 
+        <input id="gate-password" type="password" placeholder="Password" autocomplete="current-password"
+          style="display:none;width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;"
+          oninput="" />
+                <input id="gate-password" type="password" placeholder="Password" autocomplete="current-password"
+          style="display:none;width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;" />
         <button id="gate-submit" onclick="gateSubmit()"
           style="padding:14px 20px;border-radius:30px;border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-size:18px;font-weight:400;font-family:inherit;cursor:pointer;letter-spacing:.5px;transition:transform .15s,background .2s;">✨ Send Magic Link</button>
       </div>
