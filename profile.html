@@ -775,8 +775,10 @@ async function gateSignUp(){
 
 async function gateSocial(provider){
   try {
-    // Always redirect to profile after OAuth sign in
-    localStorage.setItem('fs_magic_return', 'profile.html');
+    // Only set magic_return if not already set by another page (e.g. newquest.html)
+    if(!localStorage.getItem('fs_magic_return')){
+      localStorage.setItem('fs_magic_return', 'profile.html');
+    }
 
     // Detect if running inside Capacitor native app
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
@@ -824,8 +826,9 @@ async function gateForgotPassword(){
 
   // Save where user was trying to go so we redirect back after login
   try {
-    // Always redirect to profile after sign in
-    localStorage.setItem('fs_magic_return', 'profile.html');
+    if(!localStorage.getItem('fs_magic_return')){
+      localStorage.setItem('fs_magic_return', 'profile.html');
+    }
   } catch(e){}
 
   try {
