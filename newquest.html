@@ -407,7 +407,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
   <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:4px;">Capture the Hiding Spot</div>
   <div style="font-size:13px;color:rgba(232,168,32,.7);text-align:center;margin-bottom:10px;letter-spacing:.5px;">— required</div>
-  <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="document.getElementById('hs-photo-input').click()">
+  <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="openPhotoChoice()">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 9px;"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
     <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
     <div style="font-size:17px;color:rgba(255,255,255,.28);">Camera or library</div>
@@ -415,11 +415,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;position:relative;">
     <img id="hs-photo-img" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center;display:block;"/>
     <button onclick="clearHsPhoto()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">✕</button>
-    <button onclick="document.getElementById('hs-photo-input').click()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">Change photo</button>
+    <button onclick="openPhotoChoice()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">Change photo</button>
   </div>
 </div>
 
 <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
+<input type="file" id="hs-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handleHsPhoto(this)"/>
 
   </div>
 
@@ -696,7 +697,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Email fallback -->
 <input id="eg-email" type="text" inputmode="email" autocomplete="email" placeholder="your@email.com"
+  oninput="var e=this.value.trim().toLowerCase(),p=document.getElementById('eg-password'),b=document.getElementById('eg-continue-btn'),r=e==='reviewer@finderseek.com';if(p)p.style.display=r?'block':'none';if(b)b.textContent=r?'Sign In':'Continue with Email →';"
   style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;font-weight:400;transition:border-color .2s;"/>
+<input id="eg-password" type="password" placeholder="Password" autocomplete="current-password"
+  style="display:none;width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;"/>
 <button id="eg-continue-btn" onclick="submitEmailGate()"
   style="width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#b45309,#c9890c);color:#fff;font-size:17px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:14px;">Continue with Email →</button>
 
@@ -1800,6 +1804,46 @@ async function submitEmailGate(){
   var btn = document.getElementById('eg-continue-btn');
   var email = (emailEl.value || '').trim().toLowerCase();
   errEl.textContent = '';
+
+  // Reviewer password login
+  if(email === 'reviewer@finderseek.com'){
+    var pw = (document.getElementById('eg-password')||{}).value||'';
+    if(!pw){errEl.textContent='Please enter your password';return;}
+    btn.disabled=true;btn.textContent='Signing in...';
+    try{
+      var {data,error} = await supaClient.auth.signInWithPassword({email:email,password:pw});
+      if(error)throw error;
+      if(data&&data.session){
+        localStorage.setItem('fs_token',data.session.access_token);
+        closeEmailGate();
+        return;
+      }
+    }catch(e){
+      errEl.textContent=e.message||'Invalid password';
+      btn.disabled=false;btn.textContent='Sign In';
+      return;
+    }
+  }
+
+  // Reviewer password login
+  if(email === 'reviewer@finderseek.com'){
+    var pw = (document.getElementById('eg-password')||{}).value||'';
+    if(!pw){errEl.textContent='Please enter your password';return;}
+    btn.disabled=true;btn.textContent='Signing in...';
+    try{
+      var {data,error} = await supaClient.auth.signInWithPassword({email:email,password:pw});
+      if(error)throw error;
+      if(data&&data.session){
+        localStorage.setItem('fs_token',data.session.access_token);
+        closeEmailGate();
+        return;
+      }
+    }catch(e){
+      errEl.textContent=e.message||'Invalid password';
+      btn.disabled=false;btn.textContent='Sign In';
+      return;
+    }
+  }
 
   // Basic email validation
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -4584,6 +4628,17 @@ parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + '
 return parts.join('\n');
 }
 // Photo handler
+function openPhotoChoice(){
+  var isAndroid=/Android/i.test(navigator.userAgent);
+  if(isAndroid){
+    var choice=confirm('Tap OK to use Camera\nTap Cancel for Photo Library');
+    if(choice){document.getElementById('hs-camera-input').click();}
+    else{document.getElementById('hs-photo-input').click();}
+  }else{
+    document.getElementById('hs-photo-input').click();
+  }
+}
+
 function handleHsPhoto(input) {
 if (!input.files || !input.files[0]) return;
 var file = input.files[0];
