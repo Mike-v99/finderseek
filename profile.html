@@ -1622,8 +1622,8 @@ function handleUrlRedirects(){
                 }
               } catch(e) {}
               // Check if there's a redirect waiting (e.g. back to newquest)
-              var urlParams = new URLSearchParams(window.location.search);
-              var redirectTo = urlParams.get('redirect');
+              var redirectTo = params.get('return_to') || localStorage.getItem('fs_magic_return') || null;
+              try { localStorage.removeItem('fs_magic_return'); } catch(e) {}
               // Also check for a pending prize claim — takes priority
               try {
                 var pc = JSON.parse(localStorage.getItem('fs_pending_claim') || 'null');

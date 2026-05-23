@@ -152,10 +152,11 @@ async function handleCallback() {
         var urlParams = new URLSearchParams(window.location.search);
         var fromApp = urlParams.get('from_app') === '1';
         if (fromApp) {
-          // Deep link back to the app with tokens
+          // Deep link back to the app with tokens and return URL
           var deepLink = 'finderseek://auth?access_token=' + 
             encodeURIComponent(data.session.access_token) +
-            '&refresh_token=' + encodeURIComponent(data.session.refresh_token || '');
+            '&refresh_token=' + encodeURIComponent(data.session.refresh_token || '') +
+            '&return_to=' + encodeURIComponent(returnTo);
           window.location.href = deepLink;
           return;
         }
