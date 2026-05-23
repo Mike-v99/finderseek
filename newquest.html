@@ -2585,10 +2585,9 @@ document.addEventListener('DOMContentLoaded', async function(){
               if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
               await supaClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
               try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
-              // Reload user and close gate
-              await loadCurrentUser();
-              closeEmailGate();
-              showToast('Signed in! Tap Schedule Quest to continue.', 'success');
+              // Save form state then reload so the page starts fresh with the user logged in
+              saveFormState();
+              setTimeout(function(){ window.location.href = 'newquest.html?from=app'; }, 300);
             }
           }
         });
