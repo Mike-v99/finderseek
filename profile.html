@@ -570,13 +570,15 @@ async function confirmDeleteAccount() {
   if (!confirmed2) return;
   try {
     var token = localStorage.getItem('fs_token');
-    // Delete profile data first
-    var SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
-    var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-    await fetch(SB + '/rest/v1/profiles?id=eq.' + currentProfile.id, {
-      method: 'DELETE',
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + token, 'Prefer': 'return=minimal' }
+    // Call server-side delete to remove from both profiles and auth.users
+    var deleteRes = await fetch('https://www.finderseek.com/api/delete-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
+    if (!deleteRes.ok) {
+      var err = await deleteRes.json();
+      throw new Error(err.error || 'Failed to delete account');
+    }
     // Sign out
     await supaClient.auth.signOut();
     // Clear all local storage
