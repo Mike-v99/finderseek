@@ -4639,19 +4639,49 @@ return parts.join('\n');
 }
 // Photo handler
 async function openPhotoChoice(){
-  var isAndroid=/Android/i.test(navigator.userAgent);
   var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNative);
 
   if(isCapacitor){
     try{
-      // Request camera permission explicitly via Capacitor
       var Camera=window.Capacitor.Plugins.Camera;
-      if(Camera&&Camera.requestPermissions){
-        await Camera.requestPermissions({permissions:['camera','photos']});
+      // Check and request permissions first
+      var perms = await Camera.checkPermissions();
+      if(perms.camera !== 'granted' || perms.photos !== 'granted'){
+        perms = await Camera.requestPermissions({permissions:['camera','photos']});
       }
-    }catch(e){}
+      // Show choice: camera or gallery
+      var source = confirm('Tap OK for Camera\nTap Cancel for Photo Library') ? 'CAMERA' : 'PHOTOS';
+      var CameraSource = {CAMERA:'CAMERA', PHOTOS:'PHOTOS'};
+      var photo = await Camera.getPhoto({
+        quality: 85,
+        allowEditing: false,
+        resultType: 'dataUrl',
+        source: CameraSource[source]
+      });
+      if(photo && photo.dataUrl){
+        // Convert dataUrl to file-like object and handle
+        var arr = photo.dataUrl.split(',');
+        var mime = arr[0].match(/:(.*?);/)[1];
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+        var file = new File([u8arr], 'photo.jpg', {type: mime});
+        var dt = new DataTransfer();
+        dt.items.add(file);
+        var input = document.getElementById('hs-photo-input');
+        input.files = dt.files;
+        handleHsPhoto(input);
+      }
+      return;
+    }catch(e){
+      console.log('Capacitor camera error:', e);
+      // Fall through to file input
+    }
   }
 
+  // Web fallback
+  var isAndroid=/Android/i.test(navigator.userAgent);
   if(isAndroid){
     var choice=confirm('Tap OK to use Camera\nTap Cancel for Photo Library');
     if(choice){document.getElementById('hs-camera-input').click();}
