@@ -22,6 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>FinderSeek lets Quest Masters photograph their hiding spot for clues.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>FinderSeek uses your location to alert you when treasure is hidden nearby.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

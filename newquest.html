@@ -4638,8 +4638,20 @@ parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + '
 return parts.join('\n');
 }
 // Photo handler
-function openPhotoChoice(){
+async function openPhotoChoice(){
   var isAndroid=/Android/i.test(navigator.userAgent);
+  var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNative);
+
+  if(isCapacitor){
+    try{
+      // Request camera permission explicitly via Capacitor
+      var Camera=window.Capacitor.Plugins.Camera;
+      if(Camera&&Camera.requestPermissions){
+        await Camera.requestPermissions({permissions:['camera','photos']});
+      }
+    }catch(e){}
+  }
+
   if(isAndroid){
     var choice=confirm('Tap OK to use Camera\nTap Cancel for Photo Library');
     if(choice){document.getElementById('hs-camera-input').click();}
