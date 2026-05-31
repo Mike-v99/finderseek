@@ -825,6 +825,8 @@ function triggerFlyIn() {
 
 // Run on load
 window.addEventListener('DOMContentLoaded', function() {
+  // Clear any pending redirects when home page loads
+  try { localStorage.removeItem('fs_magic_return'); } catch(e) {}
   // If returning from a quest opened via map, reopen map immediately
   if (window.location.hash === '#openmap') {
     window.history.replaceState({}, '', 'index.html');

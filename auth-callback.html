@@ -130,7 +130,7 @@ async function handleCallback() {
       } catch(e) {}
 
       // Figure out where to go back to
-      var returnTo = localStorage.getItem('fs_magic_return') || 'profile.html';
+      var returnTo = localStorage.getItem('fs_magic_return') || 'index.html';
       try { localStorage.removeItem('fs_magic_return'); } catch(e) {}
 
       // Clean up URL
