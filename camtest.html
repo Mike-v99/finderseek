@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<title>FinderSeek — Camera Diagnostic</title>
+<meta name="theme-color" content="#0a0810"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0810;color:#f5ead8;font-family:-apple-system,system-ui,sans-serif;min-height:100vh;padding:20px;font-size:15px;line-height:1.5;}
+h1{font-size:20px;color:#f5c842;margin-bottom:4px;}
+.note{color:rgba(255,255,255,.45);font-size:13px;margin-bottom:18px;}
+.row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;margin-bottom:10px;word-break:break-all;}
+.label{color:rgba(255,255,255,.5);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.val{color:#fff;font-family:ui-monospace,Menlo,monospace;font-size:13px;}
+.ok{color:#4ade80;font-weight:600;}
+.bad{color:#f87171;font-weight:600;}
+.btn{display:block;width:100%;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-size:17px;font-weight:600;margin-top:16px;}
+</style>
+</head>
+<body>
+<h1>Camera Diagnostic</h1>
+<div class="note">Open this page INSIDE the app. Tap the button, then screenshot the whole screen.</div>
+<div id="out"></div>
+<button class="btn" onclick="requestCam()">Request Camera Permission</button>
+<script>
+function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+function row(label, val, cls){ return '<div class="row"><div class="label">'+label+'</div><div class="val '+(cls||'')+'">'+esc(val)+'</div></div>'; }
+function render(extra){
+  var C = window.Capacitor;
+  var out = '';
+  out += row('window.Capacitor exists', C ? 'YES' : 'NO', C ? 'ok' : 'bad');
+  out += row('isNativePlatform()', (C && C.isNativePlatform) ? String(C.isNativePlatform()) : 'function missing', (C && C.isNativePlatform && C.isNativePlatform()) ? 'ok' : 'bad');
+  out += row('getPlatform()', (C && C.getPlatform) ? C.getPlatform() : 'n/a', '');
+  out += row("isPluginAvailable('Camera')", (C && C.isPluginAvailable) ? String(C.isPluginAvailable('Camera')) : 'function missing', (C && C.isPluginAvailable && C.isPluginAvailable('Camera')) ? 'ok' : 'bad');
+  out += row('Plugins.Camera exists', (C && C.Plugins && C.Plugins.Camera) ? 'YES' : 'NO', (C && C.Plugins && C.Plugins.Camera) ? 'ok' : 'bad');
+  if (extra) out += extra;
+  document.getElementById('out').innerHTML = out;
+}
+async function requestCam(){
+  var C = window.Capacitor;
+  if (!(C && C.Plugins && C.Plugins.Camera)) { render(row('Result', 'Camera plugin not reachable from this page', 'bad')); return; }
+  var Camera = C.Plugins.Camera;
+  try {
+    var checked = await Camera.checkPermissions();
+    var extra = row('checkPermissions()', JSON.stringify(checked), '');
+    var req = await Camera.requestPermissions({ permissions: ['camera','photos'] });
+    extra += row('requestPermissions()', JSON.stringify(req), 'ok');
+    render(extra);
+  } catch(e) {
+    render(row('CAMERA CALL THREW', (e && e.message) ? e.message : String(e), 'bad'));
+  }
+}
+render('');
+</script>
+</body>
+</html>
