@@ -2603,10 +2603,24 @@ document.addEventListener('DOMContentLoaded', async function(){
             var params = new URLSearchParams(url.split('?')[1] || '');
             var accessToken = params.get('access_token');
             var refreshToken = params.get('refresh_token');
-            if (accessToken) {
-              localStorage.setItem('fs_token', accessToken);
-              if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
-              await supaClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+            var code = params.get('code');
+            var gotSession = false;
+            try {
+              if (accessToken) {
+                localStorage.setItem('fs_token', accessToken);
+                if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
+                await supaClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+                gotSession = true;
+              } else if (code) {
+                var ex = await supaClient.auth.exchangeCodeForSession(code);
+                if (ex && ex.data && ex.data.session) {
+                  localStorage.setItem('fs_token', ex.data.session.access_token);
+                  if (ex.data.session.refresh_token) localStorage.setItem('fs_refresh', ex.data.session.refresh_token);
+                  gotSession = true;
+                }
+              }
+            } catch(ex) { console.warn('Deep link sign-in failed:', ex); }
+            if (gotSession) {
               try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
               // Save form state then reload so the page starts fresh with the user logged in
               saveFormState();
@@ -4682,7 +4696,7 @@ return parts.join('\n');
 }
 // Photo handler
 async function openPhotoChoice(){
-  var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNative);
+  var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
 
   if(isCapacitor){
     try{

@@ -86,6 +86,35 @@ function show(id) {
 
 async function handleCallback() {
   try {
+    // ── Native app (Capacitor) path ───────────────────────────────
+    // This page is loaded inside the system browser (SFSafariViewController),
+    // which has a SEPARATE storage jar from the app's WebView. With the PKCE
+    // flow the code_verifier lives in the APP's storage, so we must NOT try to
+    // exchange the code here. Instead, hand the raw code/tokens back to the app
+    // via the custom-scheme deep link and let the in-app handler complete it.
+    var _q = new URLSearchParams(window.location.search);
+    var _h = new URLSearchParams(window.location.hash.substring(1));
+    if (_q.get('from_app') === '1') {
+      var fwdReturn = localStorage.getItem('fs_magic_return') || _q.get('return_to') || '';
+      var fwdCode = _q.get('code');
+      var fwdAccess = _h.get('access_token') || _q.get('access_token');
+      var fwdRefresh = _h.get('refresh_token') || _q.get('refresh_token');
+      if (fwdCode || fwdAccess) {
+        var dl = 'finderseek://auth';
+        var parts = [];
+        if (fwdReturn)  parts.push('return_to=' + encodeURIComponent(fwdReturn));
+        if (fwdCode)    parts.push('code=' + encodeURIComponent(fwdCode));
+        if (fwdAccess)  parts.push('access_token=' + encodeURIComponent(fwdAccess));
+        if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
+        dl += '?' + parts.join('&');
+        show('card-success');
+        var sEl = document.getElementById('success-sub');
+        if (sEl) sEl.textContent = 'Returning you to FinderSeek...';
+        window.location.href = dl;
+        return;
+      }
+    }
+
     // Try to get session from URL params (magic link / OAuth)
     var { data, error } = await supaClient.auth.getSession();
 

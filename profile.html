@@ -1654,14 +1654,30 @@ function handleUrlRedirects(){
             var params = new URLSearchParams(url.split('?')[1] || '');
             var accessToken = params.get('access_token');
             var refreshToken = params.get('refresh_token');
-            if (accessToken) {
-              localStorage.setItem('fs_token', accessToken);
-              if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
-              // Set the session in Supabase client
-              await supaClient.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken || ''
-              });
+            var code = params.get('code');
+            var gotSession = false;
+            try {
+              if (accessToken) {
+                // Implicit flow: tokens passed straight through
+                localStorage.setItem('fs_token', accessToken);
+                if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
+                await supaClient.auth.setSession({
+                  access_token: accessToken,
+                  refresh_token: refreshToken || ''
+                });
+                gotSession = true;
+              } else if (code) {
+                // PKCE flow: exchange the code HERE — the code_verifier lives in
+                // this WebView's storage (set when signInWithOAuth was called).
+                var ex = await supaClient.auth.exchangeCodeForSession(code);
+                if (ex && ex.data && ex.data.session) {
+                  localStorage.setItem('fs_token', ex.data.session.access_token);
+                  if (ex.data.session.refresh_token) localStorage.setItem('fs_refresh', ex.data.session.refresh_token);
+                  gotSession = true;
+                }
+              }
+            } catch(ex) { console.warn('Deep link sign-in failed:', ex); }
+            if (gotSession) {
               // Close the browser if it's still open
               try {
                 if (window.Capacitor.Plugins.Browser) {
