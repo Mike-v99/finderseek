@@ -1,7 +1,5 @@
 import UIKit
 import Capacitor
-import AVFoundation
-import Photos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -9,9 +7,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Request camera and photo library permissions on launch
-        AVCaptureDevice.requestAccess(for: .video) { _ in }
-        PHPhotoLibrary.requestAuthorization { _ in }
+        // NOTE: Do NOT request camera/photo/location permissions here.
+        // Requesting them at launch (a) gets the app rejected under App Store
+        // Review Guideline 5.1.1 for asking with no user-facing context, and
+        // (b) consumes the one-time system prompt before the user ever taps the
+        // photo button, so the in-context prompt never appears. Permissions are
+        // requested in-context by the Capacitor Camera/Geolocation plugins when
+        // the relevant feature is first used (see newquest.html).
         return true
     }
 
