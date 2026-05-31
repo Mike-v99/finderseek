@@ -711,14 +711,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
     if (token) {
       localStorage.setItem('fs_token', token);
       if (refresh) localStorage.setItem('fs_refresh', refresh);
-      window.location.replace('profile.html');
+      // Redirect to where user was going, default to home
+      var returnTo = localStorage.getItem('fs_magic_return') || 'index.html';
+      localStorage.removeItem('fs_magic_return');
+      window.location.replace(returnTo);
       return;
     }
   }
   // Check for PKCE code (code flow — Supabase JS client will exchange it)
   if (window.location.search.includes('code=')) {
-    // Redirect to profile.html with the code — Supabase client there will handle exchange
-    window.location.replace('profile.html' + window.location.search);
+    // Redirect to auth-callback to handle the code exchange
+    window.location.replace('auth-callback.html' + window.location.search);
     return;
   }
 })();
