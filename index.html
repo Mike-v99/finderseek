@@ -703,24 +703,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <script>
 // ── OAuth callback catch (Google/Apple may redirect here) ──
 (function(){
-  // Check for hash fragment (implicit flow)
+  // Implicit flow returns tokens in the hash. index.html has NO Supabase
+  // client, so it cannot turn them into a real session — forward to
+  // auth-callback.html, which does, instead of stashing a raw fs_token and
+  // moving on (that left every later getSession() empty -> sign-in loop).
   if (window.location.hash && window.location.hash.includes('access_token')) {
-    var params = new URLSearchParams(window.location.hash.substring(1));
-    var token = params.get('access_token');
-    var refresh = params.get('refresh_token');
-    if (token) {
-      localStorage.setItem('fs_token', token);
-      if (refresh) localStorage.setItem('fs_refresh', refresh);
-      // Redirect to where user was going, default to home
-      var returnTo = localStorage.getItem('fs_magic_return') || 'index.html';
-      localStorage.removeItem('fs_magic_return');
-      window.location.replace(returnTo);
-      return;
-    }
+    window.location.replace('auth-callback.html' + window.location.hash);
+    return;
   }
-  // Check for PKCE code (code flow — Supabase JS client will exchange it)
+  // PKCE code flow — also handled by auth-callback.html
   if (window.location.search.includes('code=')) {
-    // Redirect to auth-callback to handle the code exchange
     window.location.replace('auth-callback.html' + window.location.search);
     return;
   }
