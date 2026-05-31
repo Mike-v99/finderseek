@@ -4701,39 +4701,34 @@ async function openPhotoChoice(){
   if(isCapacitor){
     try{
       var Camera=window.Capacitor.Plugins.Camera;
-      // Check and request permissions first
+      // Request permission in-context (iOS shows the system prompt here the
+      // first time; on later uses it's already granted and stays silent).
       var perms = await Camera.checkPermissions();
       if(perms.camera !== 'granted' || perms.photos !== 'granted'){
         perms = await Camera.requestPermissions({permissions:['camera','photos']});
       }
-      // Show choice: camera or gallery
-      var source = confirm('Tap OK for Camera\nTap Cancel for Photo Library') ? 'CAMERA' : 'PHOTOS';
-      var CameraSource = {CAMERA:'CAMERA', PHOTOS:'PHOTOS'};
+      // Let the user choose camera or photo library
+      var useCamera = confirm('Tap OK for Camera\nTap Cancel for Photo Library');
       var photo = await Camera.getPhoto({
         quality: 85,
         allowEditing: false,
         resultType: 'dataUrl',
-        source: CameraSource[source]
+        source: useCamera ? 'CAMERA' : 'PHOTOS'
       });
+      // Apply the captured photo DIRECTLY. Do not round-trip through a fake
+      // File + DataTransfer + input.files — that is unsupported in iOS
+      // WKWebView, throws, and silently dropped us to the fallback picker.
       if(photo && photo.dataUrl){
-        // Convert dataUrl to file-like object and handle
-        var arr = photo.dataUrl.split(',');
-        var mime = arr[0].match(/:(.*?);/)[1];
-        var bstr = atob(arr[1]);
-        var n = bstr.length;
-        var u8arr = new Uint8Array(n);
-        while(n--){ u8arr[n] = bstr.charCodeAt(n); }
-        var file = new File([u8arr], 'photo.jpg', {type: mime});
-        var dt = new DataTransfer();
-        dt.items.add(file);
-        var input = document.getElementById('hs-photo-input');
-        input.files = dt.files;
-        handleHsPhoto(input);
+        applyHsPhotoDataUrl(photo.dataUrl);
       }
       return;
     }catch(e){
+      // If the user simply cancelled the native picker, stop here — don't
+      // fall through and pop a second picker. Only fall back on a real error.
+      var msg = ((e && e.message) || '') + '';
+      if(/cancel/i.test(msg)) return;
       console.log('Capacitor camera error:', e);
-      // Fall through to file input
+      // fall through to web fallback below
     }
   }
 
@@ -4748,25 +4743,27 @@ async function openPhotoChoice(){
   }
 }
 
+function applyHsPhotoDataUrl(dataUrl) {
+  if (!dataUrl) return;
+  var img = document.getElementById('hs-photo-img');
+  if (img) img.src = dataUrl;
+  var placeholder = document.getElementById('photo-placeholder-s1');
+  var preview = document.getElementById('photo-preview-s1');
+  if (placeholder) placeholder.style.display = 'none';
+  if (preview) preview.style.display = 'block';
+  window._hsPhotoDataUrl = dataUrl;
+  // Save immediately to both storage locations so it survives a page refresh
+  try { localStorage.setItem('fs_newquest_form_photo', dataUrl); } catch(err){}
+  try { sessionStorage.setItem('fs_newquest_form_photo', dataUrl); } catch(err){}
+  checkStep1Complete();
+  saveFormState();
+}
+
 function handleHsPhoto(input) {
-if (!input.files || !input.files[0]) return;
-var file = input.files[0];
-var reader = new FileReader();
-reader.onload = function(e) {
-var img = document.getElementById('hs-photo-img');
-if (img) img.src = e.target.result;
-var placeholder = document.getElementById('photo-placeholder-s1');
-var preview = document.getElementById('photo-preview-s1');
-if (placeholder) placeholder.style.display = 'none';
-if (preview) preview.style.display = 'block';
-window._hsPhotoDataUrl = e.target.result;
-// Save photo immediately to both storage locations so it survives page refresh
-try { localStorage.setItem('fs_newquest_form_photo', e.target.result); } catch(err){}
-try { sessionStorage.setItem('fs_newquest_form_photo', e.target.result); } catch(err){}
-checkStep1Complete();
-saveFormState();
-};
-reader.readAsDataURL(file);
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) { applyHsPhotoDataUrl(e.target.result); };
+  reader.readAsDataURL(input.files[0]);
 }
 
 
