@@ -1797,7 +1797,7 @@ async function signInWithAppleGate(){
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
           skipBrowserRedirect: true
         }
       });
@@ -1812,7 +1812,7 @@ async function signInWithAppleGate(){
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
-        options: { redirectTo: window.location.origin + '/auth-callback.html' }
+        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
       });
       if (error) throw error;
     }
@@ -1953,7 +1953,7 @@ async function signUpFromGate(){
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
           skipBrowserRedirect: true
         }
       });
@@ -1968,7 +1968,7 @@ async function signUpFromGate(){
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin + '/auth-callback.html' }
+        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
       });
       if (error) throw error;
     }
@@ -4696,6 +4696,7 @@ return parts.join('\n');
 }
 // Photo handler
 async function openPhotoChoice(){
+  alert('BUILD v2 — Capacitor='+!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())+' CameraPlugin='+!!(window.Capacitor&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera')));
   var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
 
   if(isCapacitor){
@@ -4727,6 +4728,7 @@ async function openPhotoChoice(){
       // fall through and pop a second picker. Only fall back on a real error.
       var msg = ((e && e.message) || '') + '';
       if(/cancel/i.test(msg)) return;
+      alert('CAMERA ERROR: '+msg);
       console.log('Capacitor camera error:', e);
       // fall through to web fallback below
     }

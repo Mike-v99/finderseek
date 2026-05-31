@@ -60,7 +60,7 @@ body::before{
   <div class="icon">✅</div>
   <div class="title">You're signed in!</div>
   <div class="sub" id="success-sub">Welcome back. Tap below to continue.</div>
-  <a href="profile.html" id="continue-btn" class="btn btn-solid">Continue to FinderSeek →</a>
+  <a href="index.html" id="continue-btn" class="btn btn-solid">Continue to FinderSeek →</a>
   <div style="font-size:13px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.5;">
     If the app doesn't open automatically,<br/>copy your link and paste it in your usual browser.
   </div>
@@ -70,7 +70,7 @@ body::before{
   <div class="icon">⚠️</div>
   <div class="title">Link expired</div>
   <div class="sub">This sign-in link has expired or already been used. Request a new one.</div>
-  <a href="profile.html" class="btn">Back to Sign In →</a>
+  <a href="index.html" class="btn">Back to Sign In →</a>
 </div>
 
 <script>
@@ -86,27 +86,30 @@ function show(id) {
 
 async function handleCallback() {
   try {
-    // ── Native app (Capacitor) path ───────────────────────────────
-    // This page is loaded inside the system browser (SFSafariViewController),
-    // which has a SEPARATE storage jar from the app's WebView. With the PKCE
-    // flow the code_verifier lives in the APP's storage, so we must NOT try to
-    // exchange the code here. Instead, hand the raw code/tokens back to the app
-    // via the custom-scheme deep link and let the in-app handler complete it.
     var _q = new URLSearchParams(window.location.search);
     var _h = new URLSearchParams(window.location.hash.substring(1));
+
+    // The destination after sign-in. In the native app this page runs in the
+    // system browser (separate storage from the app WebView), so localStorage
+    // is empty here — we rely on the return_to URL param that we appended to
+    // the OAuth redirectTo when starting sign-in. localStorage is only a
+    // fallback for the pure-web flow.
+    var returnTo = _q.get('return_to') || localStorage.getItem('fs_magic_return') || 'index.html';
+
+    // ── Native app (Capacitor) path ───────────────────────────────
+    // Hand the raw code/tokens back to the app via the custom-scheme deep link
+    // and let the in-app handler complete the session. We MUST forward return_to
+    // so the app knows which page to reopen.
     if (_q.get('from_app') === '1') {
-      var fwdReturn = localStorage.getItem('fs_magic_return') || _q.get('return_to') || '';
       var fwdCode = _q.get('code');
       var fwdAccess = _h.get('access_token') || _q.get('access_token');
       var fwdRefresh = _h.get('refresh_token') || _q.get('refresh_token');
       if (fwdCode || fwdAccess) {
-        var dl = 'finderseek://auth';
-        var parts = [];
-        if (fwdReturn)  parts.push('return_to=' + encodeURIComponent(fwdReturn));
+        var parts = ['return_to=' + encodeURIComponent(returnTo)];
         if (fwdCode)    parts.push('code=' + encodeURIComponent(fwdCode));
         if (fwdAccess)  parts.push('access_token=' + encodeURIComponent(fwdAccess));
         if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
-        dl += '?' + parts.join('&');
+        var dl = 'finderseek://auth?' + parts.join('&');
         show('card-success');
         var sEl = document.getElementById('success-sub');
         if (sEl) sEl.textContent = 'Returning you to FinderSeek...';
@@ -115,16 +118,13 @@ async function handleCallback() {
       }
     }
 
-    // Try to get session from URL params (magic link / OAuth)
+    // ── Web path ──────────────────────────────────────────────────
     var { data, error } = await supaClient.auth.getSession();
 
     if (error || !data.session) {
-      // Try exchanging code if present
-      var params = new URLSearchParams(window.location.search);
-      var hash = new URLSearchParams(window.location.hash.substring(1));
-      var code = params.get('code');
-      var accessToken = hash.get('access_token') || params.get('access_token');
-      var refreshToken = hash.get('refresh_token') || params.get('refresh_token');
+      var code = _q.get('code');
+      var accessToken = _h.get('access_token') || _q.get('access_token');
+      var refreshToken = _h.get('refresh_token') || _q.get('refresh_token');
 
       if (accessToken) {
         localStorage.setItem('fs_token', accessToken);
@@ -141,11 +141,9 @@ async function handleCallback() {
     }
 
     if (data && data.session) {
-      // Store tokens
       localStorage.setItem('fs_token', data.session.access_token);
       if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
 
-      // Save pending username if signup flow
       try {
         var pendingUsername = sessionStorage.getItem('fs_pending_username');
         if (pendingUsername && data.session.user) {
@@ -158,14 +156,9 @@ async function handleCallback() {
         }
       } catch(e) {}
 
-      // Figure out where to go back to
-      var returnTo = localStorage.getItem('fs_magic_return') || 'index.html';
       try { localStorage.removeItem('fs_magic_return'); } catch(e) {}
-
-      // Clean up URL
       window.history.replaceState({}, '', '/auth-callback.html');
 
-      // Show success and auto-redirect after 1.5s
       var subEl = document.getElementById('success-sub');
       var btnEl = document.getElementById('continue-btn');
       if (data.session.user && data.session.user.email) {
@@ -174,21 +167,7 @@ async function handleCallback() {
       btnEl.href = returnTo;
       show('card-success');
 
-      // Auto redirect
       setTimeout(function() {
-        // If the user came from the native app, redirect via deep link
-        // Check URL param (passed through OAuth redirect) — localStorage doesn't work cross-process
-        var urlParams = new URLSearchParams(window.location.search);
-        var fromApp = urlParams.get('from_app') === '1';
-        if (fromApp) {
-          // Deep link back to the app with tokens and return URL
-          var deepLink = 'finderseek://auth?access_token=' + 
-            encodeURIComponent(data.session.access_token) +
-            '&refresh_token=' + encodeURIComponent(data.session.refresh_token || '') +
-            '&return_to=' + encodeURIComponent(returnTo);
-          window.location.href = deepLink;
-          return;
-        }
         window.location.href = returnTo;
       }, 1500);
     } else {
