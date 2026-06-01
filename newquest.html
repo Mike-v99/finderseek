@@ -2622,9 +2622,24 @@ document.addEventListener('DOMContentLoaded', async function(){
             } catch(ex) { console.warn('Deep link sign-in failed:', ex); }
             if (gotSession) {
               try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
-              // Save form state then reload so the page starts fresh with the user logged in
               saveFormState();
-              setTimeout(function(){ window.location.href = 'newquest.html?from=app'; }, 300);
+              // Wait until the session is actually readable before reloading.
+              // setSession persists asynchronously; reloading too early (the old
+              // fixed 300ms) reopened the page still logged-out on the FIRST
+              // sign-in, bouncing the user home. Poll until getSession resolves.
+              var _tries = 0;
+              (async function waitForSession(){
+                _tries++;
+                try {
+                  var chk = await supaClient.auth.getSession();
+                  if (chk && chk.data && chk.data.session) {
+                    window.location.href = 'newquest.html?from=app';
+                    return;
+                  }
+                } catch(e){}
+                if (_tries < 20) { setTimeout(waitForSession, 150); }
+                else { window.location.href = 'newquest.html?from=app'; }
+              })();
             }
           }
         });
