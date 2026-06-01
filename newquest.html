@@ -2640,17 +2640,21 @@ document.addEventListener('DOMContentLoaded', async function(){
             var refreshToken = params.get('refresh_token');
             var code = params.get('code');
             var gotSession = false;
+            var finalAccess = '', finalRefresh = '';
             try {
               if (accessToken) {
                 localStorage.setItem('fs_token', accessToken);
                 if (refreshToken) localStorage.setItem('fs_refresh', refreshToken);
                 await supaClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+                finalAccess = accessToken; finalRefresh = refreshToken || '';
                 gotSession = true;
               } else if (code) {
                 var ex = await supaClient.auth.exchangeCodeForSession(code);
                 if (ex && ex.data && ex.data.session) {
                   localStorage.setItem('fs_token', ex.data.session.access_token);
                   if (ex.data.session.refresh_token) localStorage.setItem('fs_refresh', ex.data.session.refresh_token);
+                  finalAccess = ex.data.session.access_token;
+                  finalRefresh = ex.data.session.refresh_token || '';
                   gotSession = true;
                 }
               }
@@ -2663,8 +2667,8 @@ document.addEventListener('DOMContentLoaded', async function(){
               // by the time the page reloads, so the reloaded page sees no token
               // and bounces home. Passing it in the URL lets the new page restore
               // it immediately, independent of async storage timing.
-              var _tok = accessToken || (function(){ try { return localStorage.getItem('fs_token'); } catch(e){ return ''; } })() || '';
-              var _ref = refreshToken || '';
+              var _tok = finalAccess || (function(){ try { return localStorage.getItem('fs_token'); } catch(e){ return ''; } })() || '';
+              var _ref = finalRefresh || (function(){ try { return localStorage.getItem('fs_refresh'); } catch(e){ return ''; } })() || '';
               var _dest = 'newquest.html?from=app'
                 + (_tok ? '&at=' + encodeURIComponent(_tok) : '')
                 + (_ref ? '&rt=' + encodeURIComponent(_ref) : '');
