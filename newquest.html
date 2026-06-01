@@ -710,6 +710,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <script>
+// Restore session token passed through the deep-link reload URL (?at=&rt=).
+// Must run BEFORE the early-redirect check below, otherwise the page thinks
+// the user is logged out and bounces home on first sign-in.
+(function(){
+  try{
+    var p = new URLSearchParams(window.location.search);
+    var at = p.get('at'), rt = p.get('rt');
+    if (at) {
+      localStorage.setItem('fs_token', at);
+      if (rt) localStorage.setItem('fs_refresh', rt);
+      // Strip the tokens from the URL so they aren't left in history.
+      var clean = 'newquest.html?from=app';
+      window.history.replaceState({}, '', clean);
+    }
+  }catch(e){}
+})();
+</script>
+<script>
 // Early redirect — before page renders, check if user should be here
 (function(){
   try{
@@ -1533,6 +1551,23 @@ try {
     console.error('Supabase SDK not loaded');
   }
 } catch(e) { console.error('Supabase init error:', e); }
+
+// If we arrived via the deep-link reload with tokens in the URL, promote them
+// into a real Supabase session so getSession()/loadCurrentUser() see the user
+// on this very first load (prevents the first-time bounce to home).
+(async function(){
+  try {
+    var _p = new URLSearchParams(window.location.search);
+    var _at = _p.get('at') || (function(){ try { return localStorage.getItem('fs_token'); } catch(e){ return ''; } })();
+    var _rt = _p.get('rt') || (function(){ try { return localStorage.getItem('fs_refresh'); } catch(e){ return ''; } })();
+    if (supaClient && _at) {
+      var _cur = await supaClient.auth.getSession();
+      if (!_cur || !_cur.data || !_cur.data.session) {
+        await supaClient.auth.setSession({ access_token: _at, refresh_token: _rt || '' });
+      }
+    }
+  } catch(e) { console.warn('Session promote failed:', e); }
+})();
 // ── Auto-refresh token — uses Supabase session refresh automatically ──────
 async function getFreshToken() {
   try {
@@ -2623,23 +2658,17 @@ document.addEventListener('DOMContentLoaded', async function(){
             if (gotSession) {
               try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
               saveFormState();
-              // Wait until the session is actually readable before reloading.
-              // setSession persists asynchronously; reloading too early (the old
-              // fixed 300ms) reopened the page still logged-out on the FIRST
-              // sign-in, bouncing the user home. Poll until getSession resolves.
-              var _tries = 0;
-              (async function waitForSession(){
-                _tries++;
-                try {
-                  var chk = await supaClient.auth.getSession();
-                  if (chk && chk.data && chk.data.session) {
-                    window.location.href = 'newquest.html?from=app';
-                    return;
-                  }
-                } catch(e){}
-                if (_tries < 20) { setTimeout(waitForSession, 150); }
-                else { window.location.href = 'newquest.html?from=app'; }
-              })();
+              // Carry the token in the reload URL as a belt-and-braces measure.
+              // On first sign-in the setSession write sometimes hasn't persisted
+              // by the time the page reloads, so the reloaded page sees no token
+              // and bounces home. Passing it in the URL lets the new page restore
+              // it immediately, independent of async storage timing.
+              var _tok = accessToken || (function(){ try { return localStorage.getItem('fs_token'); } catch(e){ return ''; } })() || '';
+              var _ref = refreshToken || '';
+              var _dest = 'newquest.html?from=app'
+                + (_tok ? '&at=' + encodeURIComponent(_tok) : '')
+                + (_ref ? '&rt=' + encodeURIComponent(_ref) : '');
+              setTimeout(function(){ window.location.href = _dest; }, 200);
             }
           }
         });
