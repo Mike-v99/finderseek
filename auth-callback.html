@@ -104,6 +104,21 @@ async function handleCallback() {
       var fwdCode = _q.get('code');
       var fwdAccess = _h.get('access_token') || _q.get('access_token');
       var fwdRefresh = _h.get('refresh_token') || _q.get('refresh_token');
+
+      // Supabase often consumes the hash and creates the session BEFORE this
+      // code runs, leaving no code/token in the URL. In that case pull the
+      // tokens straight from the freshly-created session so we can still hand
+      // them back to the native app.
+      if (!fwdCode && !fwdAccess) {
+        try {
+          var sess = await supaClient.auth.getSession();
+          if (sess && sess.data && sess.data.session) {
+            fwdAccess = sess.data.session.access_token;
+            fwdRefresh = sess.data.session.refresh_token;
+          }
+        } catch(e) {}
+      }
+
       if (fwdCode || fwdAccess) {
         var parts = ['return_to=' + encodeURIComponent(returnTo)];
         if (fwdCode)    parts.push('code=' + encodeURIComponent(fwdCode));
