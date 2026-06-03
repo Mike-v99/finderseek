@@ -4777,11 +4777,20 @@ async function openPhotoChoice(){
     try{
       var Camera=window.Capacitor.Plugins.Camera;
 
-      // Ensure camera permission has been requested (may already be done
-      // by triggerCameraPermission when the photo section appeared)
-      await triggerCameraPermission();
+      // ── Step 1: Trigger the native "Allow Camera?" prompt ──
+      // Set a flag that AppDelegate polls for, triggering
+      // AVCaptureDevice.requestAccess from native code.
+      var camStatus = await new Promise(function(resolve){
+        window._fsCamResolve = resolve;
+        window._fsNeedCamPerm = true;
+        setTimeout(function(){ resolve('timeout'); }, 15000);
+      });
+      if(camStatus === 'denied'){
+        showToast('Camera access is needed — enable it in Settings → FinderSeek', 'error');
+        return;
+      }
 
-      // Request Photos permission via Capacitor Camera plugin
+      // ── Step 2: Request Photos permission ──
       var perms = await Camera.checkPermissions();
       if(perms.photos !== 'granted' && perms.photos !== 'limited'){
         perms = await Camera.requestPermissions({permissions: ['photos']});
@@ -4793,7 +4802,7 @@ async function openPhotoChoice(){
         return;
       }
 
-      // Open the camera/photo picker
+      // ── Step 3: Open the camera/photo picker ──
       var photo = await Camera.getPhoto({
         quality: 85,
         allowEditing: false,

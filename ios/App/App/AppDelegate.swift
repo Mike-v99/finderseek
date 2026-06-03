@@ -1,63 +1,63 @@
 import UIKit
 import Capacitor
 import AVFoundation
-import WebKit
-
-private class CamPermHandler: NSObject, WKScriptMessageHandler {
-    weak var webView: WKWebView?
-
-    func userContentController(
-        _ ucc: WKUserContentController,
-        didReceive message: WKScriptMessage
-    ) {
-        guard message.name == "fsRequestCameraPermission" else { return }
-        let current = AVCaptureDevice.authorizationStatus(for: .video)
-        if current == .notDetermined {
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    let s = granted ? "granted" : "denied"
-                    self.webView?.evaluateJavaScript(
-                        "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
-                    )
-                }
-            }
-        } else {
-            let s = (current == .authorized) ? "granted" : "denied"
-            webView?.evaluateJavaScript(
-                "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
-            )
-        }
-    }
-}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    private let camHandler = CamPermHandler()
-    private var handlerInstalled = false
+    private var polling = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.installCameraHandler()
+            self.startPolling()
         }
         return true
     }
 
-    private func installCameraHandler() {
-        if handlerInstalled { return }
+    private func startPolling() {
+        if polling { return }
+        polling = true
+        pollForCameraRequest()
+    }
+
+    private func pollForCameraRequest() {
         guard let vc = window?.rootViewController as? CAPBridgeViewController,
               let webView = vc.webView else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.installCameraHandler()
+                self.pollForCameraRequest()
             }
             return
         }
-        handlerInstalled = true
-        camHandler.webView = webView
-        webView.configuration.userContentController.add(
-            camHandler, name: "fsRequestCameraPermission"
-        )
+
+        webView.evaluateJavaScript("window._fsNeedCamPerm === true") { result, _ in
+            if let needs = result as? Bool, needs {
+                // Reset the flag immediately
+                webView.evaluateJavaScript("window._fsNeedCamPerm = false")
+
+                let current = AVCaptureDevice.authorizationStatus(for: .video)
+                if current == .notDetermined {
+                    AVCaptureDevice.requestAccess(for: .video) { granted in
+                        DispatchQueue.main.async {
+                            let s = granted ? "granted" : "denied"
+                            webView.evaluateJavaScript(
+                                "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
+                            )
+                        }
+                    }
+                } else {
+                    let s = (current == .authorized) ? "granted" : "denied"
+                    webView.evaluateJavaScript(
+                        "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
+                    )
+                }
+            }
+
+            // Poll again in 0.5 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.pollForCameraRequest()
+            }
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}
