@@ -1,60 +1,74 @@
-import Foundation
+import UIKit
 import Capacitor
 import AVFoundation
+import WebKit
 
-/// Minimal Capacitor plugin that explicitly triggers the iOS camera permission
-/// prompt via AVCaptureDevice. The built-in Capacitor Camera plugin uses
-/// UIImagePickerController, which accesses the camera without triggering the
-/// system "Allow Camera?" dialog — so iOS never shows the prompt and Apple
-/// Review flags the missing permission flow.
-///
-/// USAGE FROM JS:
-///   const { CameraPermission } = window.Capacitor.Plugins;
-///   const result = await CameraPermission.request();
-///   // result.status is 'granted' | 'denied' | 'prompt'
-///
-/// DROP THIS FILE into ios/App/App/ in Xcode (same folder as AppDelegate.swift).
-/// No Podfile changes needed — it uses only system frameworks.
+private class CamPermHandler: NSObject, WKScriptMessageHandler {
+    weak var webView: WKWebView?
 
-@objc(CameraPermissionPlugin)
-public class CameraPermissionPlugin: CAPPlugin, CAPBridgedPlugin {
-
-    public let identifier = "CameraPermissionPlugin"
-    public let jsName = "CameraPermission"
-    public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise)
-    ]
-
-    /// Check current camera authorization status without prompting
-    @objc func check(_ call: CAPPluginCall) {
-        let status = AVCaptureDevice.authorizationStatus(for: .video)
-        call.resolve(["status": self.statusString(status)])
-    }
-
-    /// Request camera access — triggers the iOS permission dialog if status
-    /// is .notDetermined.  If already decided, resolves immediately.
-    @objc func request(_ call: CAPPluginCall) {
+    func userContentController(
+        _ ucc: WKUserContentController,
+        didReceive message: WKScriptMessage
+    ) {
+        guard message.name == "fsRequestCameraPermission" else { return }
         let current = AVCaptureDevice.authorizationStatus(for: .video)
-
         if current == .notDetermined {
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
-                    call.resolve(["status": granted ? "granted" : "denied"])
+                    let s = granted ? "granted" : "denied"
+                    self.webView?.evaluateJavaScript(
+                        "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
+                    )
                 }
             }
         } else {
-            call.resolve(["status": self.statusString(current)])
-        }
-    }
-
-    private func statusString(_ status: AVAuthorizationStatus) -> String {
-        switch status {
-        case .authorized:            return "granted"
-        case .denied, .restricted:   return "denied"
-        case .notDetermined:         return "prompt"
-        @unknown default:            return "prompt"
+            let s = (current == .authorized) ? "granted" : "denied"
+            webView?.evaluateJavaScript(
+                "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
+            )
         }
     }
 }
 
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+    private let camHandler = CamPermHandler()
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.installCameraHandler()
+        }
+        return true
+    }
+
+    private func installCameraHandler() {
+        guard let vc = window?.rootViewController as? CAPBridgeViewController,
+              let webView = vc.webView else {
+            // Retry if webview isn't ready yet
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.installCameraHandler()
+            }
+            return
+        }
+        camHandler.webView = webView
+        webView.configuration.userContentController.add(
+            camHandler, name: "fsRequestCameraPermission"
+        )
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {}
+    func applicationDidEnterBackground(_ application: UIApplication) {}
+    func applicationWillEnterForeground(_ application: UIApplication) {}
+    func applicationDidBecomeActive(_ application: UIApplication) {}
+    func applicationWillTerminate(_ application: UIApplication) {}
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+    }
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
+    }
+}

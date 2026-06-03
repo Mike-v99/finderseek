@@ -6,10 +6,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
     </dependencies>
     <scenes>
-        <!--Finder Seek View Controller-->
+        <!--Bridge View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="FinderSeekViewController" customModule="App" customModuleProvider="target" sceneMemberID="viewController"/>
+                <viewController id="BYZ-38-t0r" customClass="CAPBridgeViewController" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-174" y="-22"/>
