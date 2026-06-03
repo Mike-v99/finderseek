@@ -30,6 +30,8 @@
 	<string>FinderSeek uses your location to show treasure quests near you.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>FinderSeek lets Quest Masters photograph their hiding spot for clues.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>FinderSeek can save quest photos to your library so you have a copy.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
