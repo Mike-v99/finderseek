@@ -4751,14 +4751,18 @@ async function openPhotoChoice(){
       var Camera=window.Capacitor.Plugins.Camera;
 
       // ── Step 1: Force the native "Allow Camera?" prompt ──
-      // The built-in Capacitor Camera plugin uses UIImagePickerController,
-      // which accesses the camera without triggering the iOS permission
-      // dialog. Our custom CameraPermissionPlugin calls AVCaptureDevice
-      // directly so the system prompt appears (required for App Review).
-      var CamPerm = window.Capacitor.Plugins.CameraPermission;
-      if(CamPerm){
-        var camResult = await CamPerm.request();
-        if(camResult && camResult.status === 'denied'){
+      // The Capacitor Camera plugin uses UIImagePickerController which
+      // bypasses the iOS camera permission dialog. We call our native
+      // FinderSeekViewController via WebKit message handler to trigger
+      // AVCaptureDevice.requestAccess directly (required for App Review).
+      if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.fsRequestCameraPermission){
+        var camStatus = await new Promise(function(resolve){
+          window._fsCamResolve = resolve;
+          window.webkit.messageHandlers.fsRequestCameraPermission.postMessage('request');
+          // Timeout fallback in case native side doesn't respond
+          setTimeout(function(){ resolve('timeout'); }, 10000);
+        });
+        if(camStatus === 'denied'){
           showToast('Camera access is needed — enable it in Settings → FinderSeek', 'error');
           return;
         }
