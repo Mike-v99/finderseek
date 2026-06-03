@@ -4744,45 +4744,62 @@ return parts.join('\n');
 }
 // Photo handler
 async function openPhotoChoice(){
-  alert('BUILD v2 — Capacitor='+!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())+' CameraPlugin='+!!(window.Capacitor&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera')));
   var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
 
   if(isCapacitor){
     try{
       var Camera=window.Capacitor.Plugins.Camera;
-      // Request permission in-context (iOS shows the system prompt here the
-      // first time; on later uses it's already granted and stays silent).
+
+      // Request permission in-context the first time.  iOS shows the system
+      // prompt here; on later uses it's already granted and stays silent.
+      // 'limited' (iOS 14+ partial library access) is perfectly usable —
+      // treat it the same as 'granted'.
       var perms = await Camera.checkPermissions();
-      if(perms.camera !== 'granted' || perms.photos !== 'granted'){
-        perms = await Camera.requestPermissions({permissions:['camera','photos']});
+      var cameraOk = (perms.camera === 'granted');
+      var photosOk = (perms.photos === 'granted' || perms.photos === 'limited');
+
+      if(!cameraOk || !photosOk){
+        var needed = [];
+        if(!cameraOk)  needed.push('camera');
+        if(!photosOk)  needed.push('photos');
+        perms = await Camera.requestPermissions({permissions: needed});
+        // After the prompt, re-evaluate (user may have denied)
+        cameraOk  = (perms.camera === 'granted');
+        photosOk  = (perms.photos === 'granted' || perms.photos === 'limited');
       }
-      // Let the user choose camera or photo library
-      var useCamera = confirm('Tap OK for Camera\nTap Cancel for Photo Library');
+
+      // If both were denied, show a polite explanation and bail
+      if(!cameraOk && !photosOk){
+        showToast('Camera & photo access are needed — enable them in Settings → FinderSeek', 'error');
+        return;
+      }
+
+      // Use Capacitor's built-in PROMPT source — it shows the native
+      // "Take Photo or Choose from Library" action sheet on iOS/Android,
+      // no ugly confirm() dialog needed.
       var photo = await Camera.getPhoto({
         quality: 85,
         allowEditing: false,
         resultType: 'dataUrl',
-        source: useCamera ? 'CAMERA' : 'PHOTOS'
+        source: 'PROMPT',
+        saveToGallery: false,
+        presentationStyle: 'fullscreen'
       });
-      // Apply the captured photo DIRECTLY. Do not round-trip through a fake
-      // File + DataTransfer + input.files — that is unsupported in iOS
-      // WKWebView, throws, and silently dropped us to the fallback picker.
+
       if(photo && photo.dataUrl){
         applyHsPhotoDataUrl(photo.dataUrl);
       }
       return;
     }catch(e){
-      // If the user simply cancelled the native picker, stop here — don't
-      // fall through and pop a second picker. Only fall back on a real error.
+      // If the user simply cancelled the native picker, stop silently.
       var msg = ((e && e.message) || '') + '';
       if(/cancel/i.test(msg)) return;
-      alert('CAMERA ERROR: '+msg);
-      console.log('Capacitor camera error:', e);
+      console.warn('Capacitor camera error:', e);
       // fall through to web fallback below
     }
   }
 
-  // Web fallback
+  // Web fallback (non-Capacitor browsers)
   var isAndroid=/Android/i.test(navigator.userAgent);
   if(isAndroid){
     var choice=confirm('Tap OK to use Camera\nTap Cancel for Photo Library');
