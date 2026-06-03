@@ -21,8 +21,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pollForCameraRequest()
     }
 
+    private func findBridgeVC() -> CAPBridgeViewController? {
+        var rootVC = window?.rootViewController
+        // Unwrap if nested inside UINavigationController
+        if let navVC = rootVC as? UINavigationController {
+            rootVC = navVC.viewControllers.first
+        }
+        // Unwrap if nested inside UITabBarController
+        if let tabVC = rootVC as? UITabBarController {
+            rootVC = tabVC.selectedViewController
+        }
+        // Try direct cast, or search children
+        if let capVC = rootVC as? CAPBridgeViewController {
+            return capVC
+        }
+        // Search one level of children
+        for child in rootVC?.children ?? [] {
+            if let capVC = child as? CAPBridgeViewController {
+                return capVC
+            }
+        }
+        return nil
+    }
+
     private func pollForCameraRequest() {
-        guard let vc = window?.rootViewController as? CAPBridgeViewController,
+        guard let vc = findBridgeVC(),
               let webView = vc.webView else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.pollForCameraRequest()
@@ -30,9 +53,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        webView.evaluateJavaScript("window._fsNeedCamPerm === true") { result, _ in
+        webView.evaluateJavaScript("window._fsNeedCamPerm === true") { [weak self] result, _ in
+            guard let self = self else { return }
+
             if let needs = result as? Bool, needs {
-                // Reset the flag immediately
                 webView.evaluateJavaScript("window._fsNeedCamPerm = false")
 
                 let current = AVCaptureDevice.authorizationStatus(for: .video)
@@ -46,14 +70,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         }
                     }
                 } else {
-                    let s = (current == .authorized) ? "granted" : "denied"
-                    webView.evaluateJavaScript(
-                        "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
-                    )
+                    DispatchQueue.main.async {
+                        let s = (current == .authorized) ? "granted" : "denied"
+                        webView.evaluateJavaScript(
+                            "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
+                        )
+                    }
                 }
             }
 
-            // Poll again in 0.5 seconds
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.pollForCameraRequest()
             }
