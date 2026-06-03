@@ -1118,11 +1118,6 @@ function genCode(){
     if (saveBtn) { saveBtn.style.display = 'none'; } // removed save copy from step 1
     var photoSec = document.getElementById('photo-section-s1');
     if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
-    // Pre-request camera permission so the iOS popup appears in context
-    // (when the user sees the photo section) rather than never appearing.
-    // getUserMedia triggers AVCaptureDevice authorization which
-    // UIImagePickerController skips.
-    try { triggerCameraPermission(); } catch(e){ console.warn('[FS] cam perm', e); }
     try { checkStep1Complete(); } catch(e){ console.warn('[FS] checkStep1Complete err', e); }
     try { saveFormState(); } catch(e){ console.warn('[FS] saveFormState err', e); }
   } catch(e) {
@@ -1837,11 +1832,22 @@ async function signInWithAppleGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      // Native app: trigger native Sign in with Apple via URL hash.
-      // AppDelegate detects this and presents ASAuthorizationController
-      // (native Apple sign-in sheet — no Safari bounce).
-      // After auth, AppDelegate navigates to auth-callback with the token.
-      window.location.hash = 'fsapplelogin:newquest.html';
+      // Native app: get the OAuth URL from Supabase, then load it
+      // directly in the webview (not in an external browser).
+      // The entire auth flow stays inside the app.
+      localStorage.setItem('fs_magic_return', 'newquest.html');
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?return_to=newquest.html',
+          skipBrowserRedirect: true
+        }
+      });
+      if (error) throw error;
+      if (data && data.url) {
+        // Load directly in webview — no Safari bounce
+        window.location.href = data.url;
+      }
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
@@ -4742,27 +4748,6 @@ return parts.join('\n');
 }
 // Photo handler
 
-// Pre-request camera permission via getUserMedia. UIImagePickerController
-// (used by Capacitor Camera plugin) does NOT trigger the iOS camera
-// permission dialog. getUserMedia goes through AVCaptureDevice which DOES
-// trigger it. We request briefly and immediately stop the stream.
-var _fsCamPermRequested = false;
-async function triggerCameraPermission(){
-  if(_fsCamPermRequested) return;
-  _fsCamPermRequested = true;
-  var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
-  if(!isNative) return;
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-  try {
-    var stream = await navigator.mediaDevices.getUserMedia({video: true});
-    // Permission granted — immediately stop the stream
-    stream.getTracks().forEach(function(t){ t.stop(); });
-  } catch(e){
-    // User denied or camera unavailable — that's fine, we tried
-    console.log('[FS] Camera permission pre-request:', e.message);
-  }
-}
-
 async function openPhotoChoice(){
   var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
 
@@ -4770,36 +4755,9 @@ async function openPhotoChoice(){
     try{
       var Camera=window.Capacitor.Plugins.Camera;
 
-      // ── Step 1: Trigger the native "Allow Camera?" prompt ──
-      // Add a hash flag to the URL that AppDelegate polls for.
-      // AppDelegate detects it and calls AVCaptureDevice.requestAccess.
-      // We then poll Camera.checkPermissions() to wait for the result.
-      var camPerms = await Camera.checkPermissions();
-      if(camPerms.camera !== 'granted'){
-        // Signal native code via URL hash
-        var oldHash = window.location.hash;
-        window.location.hash = 'fscamperm';
-        // Wait for native permission dialog to be answered
-        var camGranted = await new Promise(function(resolve){
-          var attempts = 0;
-          var check = setInterval(async function(){
-            attempts++;
-            try {
-              var p = await Camera.checkPermissions();
-              if(p.camera === 'granted'){ clearInterval(check); resolve('granted'); }
-            } catch(e){}
-            if(attempts > 30){ clearInterval(check); resolve('timeout'); }
-          }, 500);
-        });
-        // Restore original hash
-        window.location.hash = oldHash || '';
-        if(camGranted === 'timeout'){
-          // Permission wasn't determined yet — continue anyway,
-          // UIImagePickerController will still work
-        }
-      }
-
-      // ── Step 2: Request Photos permission ──
+      // Camera permission is requested by AppDelegate on launch via
+      // AVCaptureDevice.requestAccess. By this point it should be granted.
+      // Request Photos permission via Capacitor Camera plugin.
       var perms = await Camera.checkPermissions();
       if(perms.photos !== 'granted' && perms.photos !== 'limited'){
         perms = await Camera.requestPermissions({permissions: ['photos']});
@@ -4811,7 +4769,7 @@ async function openPhotoChoice(){
         return;
       }
 
-      // ── Step 3: Open the camera/photo picker ──
+      // Open the camera/photo picker
       var photo = await Camera.getPhoto({
         quality: 85,
         allowEditing: false,
@@ -4829,7 +4787,6 @@ async function openPhotoChoice(){
       var msg = ((e && e.message) || '') + '';
       if(/cancel/i.test(msg)) return;
       console.warn('Capacitor camera error:', e);
-      // fall through to web fallback below
     }
   }
 

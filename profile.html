@@ -824,26 +824,19 @@ async function gateSocial(provider){
 
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
-    if (isNativeApp && provider === 'apple') {
-      // Native Apple sign-in: trigger ASAuthorizationController via URL hash.
-      // AppDelegate presents the native Apple sign-in sheet (no Safari bounce).
-      window.location.hash = 'fsapplelogin:profile.html';
-    } else if (isNativeApp) {
-      // Other providers (Google): use browser flow for now
+    if (isNativeApp) {
+      // Native app: get the OAuth URL, then load it directly in the
+      // webview (not in an external browser). Stays inside the app.
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?return_to=profile.html',
           skipBrowserRedirect: true
         }
       });
       if (error) throw error;
       if (data && data.url) {
-        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
-          await window.Capacitor.Plugins.Browser.open({ url: data.url });
-        } else {
-          window.open(data.url, '_system');
-        }
+        window.location.href = data.url;
       }
     } else {
       var { data, error } = await supaClient.auth.signInWithOAuth({
