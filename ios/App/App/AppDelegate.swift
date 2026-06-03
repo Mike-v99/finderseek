@@ -1,44 +1,60 @@
-import UIKit
+import Foundation
 import Capacitor
+import AVFoundation
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+/// Minimal Capacitor plugin that explicitly triggers the iOS camera permission
+/// prompt via AVCaptureDevice. The built-in Capacitor Camera plugin uses
+/// UIImagePickerController, which accesses the camera without triggering the
+/// system "Allow Camera?" dialog — so iOS never shows the prompt and Apple
+/// Review flags the missing permission flow.
+///
+/// USAGE FROM JS:
+///   const { CameraPermission } = window.Capacitor.Plugins;
+///   const result = await CameraPermission.request();
+///   // result.status is 'granted' | 'denied' | 'prompt'
+///
+/// DROP THIS FILE into ios/App/App/ in Xcode (same folder as AppDelegate.swift).
+/// No Podfile changes needed — it uses only system frameworks.
 
-    var window: UIWindow?
+@objc(CameraPermissionPlugin)
+public class CameraPermissionPlugin: CAPPlugin, CAPBridgedPlugin {
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // NOTE: Do NOT request camera/photo/location permissions here.
-        // Requesting them at launch (a) gets the app rejected under App Store
-        // Review Guideline 5.1.1 for asking with no user-facing context, and
-        // (b) consumes the one-time system prompt before the user ever taps the
-        // photo button, so the in-context prompt never appears. Permissions are
-        // requested in-context by the Capacitor Camera/Geolocation plugins when
-        // the relevant feature is first used (see newquest.html).
-        return true
+    public let identifier = "CameraPermissionPlugin"
+    public let jsName = "CameraPermission"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "check", returnType: CAPPluginReturnPromise)
+    ]
+
+    /// Check current camera authorization status without prompting
+    @objc func check(_ call: CAPPluginCall) {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        call.resolve(["status": self.statusString(status)])
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
+    /// Request camera access — triggers the iOS permission dialog if status
+    /// is .notDetermined.  If already decided, resolves immediately.
+    @objc func request(_ call: CAPPluginCall) {
+        let current = AVCaptureDevice.authorizationStatus(for: .video)
+
+        if current == .notDetermined {
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    call.resolve(["status": granted ? "granted" : "denied"])
+                }
+            }
+        } else {
+            call.resolve(["status": self.statusString(current)])
+        }
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
+    private func statusString(_ status: AVAuthorizationStatus) -> String {
+        switch status {
+        case .authorized:            return "granted"
+        case .denied, .restricted:   return "denied"
+        case .notDetermined:         return "prompt"
+        @unknown default:            return "prompt"
+        }
     }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-    }
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
-    }
-
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
-    }
-
 }
 
