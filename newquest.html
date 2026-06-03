@@ -4749,48 +4749,10 @@ return parts.join('\n');
 // Photo handler
 
 async function openPhotoChoice(){
-  var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
-
-  if(isCapacitor){
-    try{
-      var Camera=window.Capacitor.Plugins.Camera;
-
-      // Camera permission is requested by AppDelegate on launch via
-      // AVCaptureDevice.requestAccess. By this point it should be granted.
-      // Request Photos permission via Capacitor Camera plugin.
-      var perms = await Camera.checkPermissions();
-      if(perms.photos !== 'granted' && perms.photos !== 'limited'){
-        perms = await Camera.requestPermissions({permissions: ['photos']});
-      }
-
-      var photosOk = (perms.photos === 'granted' || perms.photos === 'limited');
-      if(!photosOk){
-        showToast('Photo library access is needed — enable it in Settings → FinderSeek', 'error');
-        return;
-      }
-
-      // Open the camera/photo picker
-      var photo = await Camera.getPhoto({
-        quality: 85,
-        allowEditing: false,
-        resultType: 'dataUrl',
-        source: 'PROMPT',
-        saveToGallery: false,
-        presentationStyle: 'fullscreen'
-      });
-
-      if(photo && photo.dataUrl){
-        applyHsPhotoDataUrl(photo.dataUrl);
-      }
-      return;
-    }catch(e){
-      var msg = ((e && e.message) || '') + '';
-      if(/cancel/i.test(msg)) return;
-      console.warn('Capacitor camera error:', e);
-    }
-  }
-
-  // Web fallback (non-Capacitor browsers)
+  // Use the standard web file picker on all platforms.
+  // The iOS system file picker handles camera/photo library access
+  // via WebKit (no Capacitor Camera plugin needed). Camera permission
+  // is requested by AppDelegate on launch for App Review compliance.
   var isAndroid=/Android/i.test(navigator.userAgent);
   if(isAndroid){
     var choice=confirm('Tap OK to use Camera\nTap Cancel for Photo Library');

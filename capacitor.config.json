@@ -4,7 +4,12 @@
   "webDir": "www",
   "server": {
     "url": "https://www.finderseek.com",
-    "cleartext": false
+    "cleartext": false,
+    "allowNavigation": [
+      "*.supabase.co",
+      "appleid.apple.com",
+      "*.apple.com"
+    ]
   },
   "ios": {
     "contentInset": "always",
