@@ -1,61 +1,13 @@
 import UIKit
 import Capacitor
-import AVFoundation
-import WebKit
-
-private class CamPermHandler: NSObject, WKScriptMessageHandler {
-    weak var webView: WKWebView?
-
-    func userContentController(
-        _ ucc: WKUserContentController,
-        didReceive message: WKScriptMessage
-    ) {
-        guard message.name == "fsRequestCameraPermission" else { return }
-        let current = AVCaptureDevice.authorizationStatus(for: .video)
-        if current == .notDetermined {
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    let s = granted ? "granted" : "denied"
-                    self.webView?.evaluateJavaScript(
-                        "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
-                    )
-                }
-            }
-        } else {
-            let s = (current == .authorized) ? "granted" : "denied"
-            webView?.evaluateJavaScript(
-                "if(window._fsCamResolve) window._fsCamResolve('\(s)');"
-            )
-        }
-    }
-}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    private let camHandler = CamPermHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.installCameraHandler()
-        }
         return true
-    }
-
-    private func installCameraHandler() {
-        guard let vc = window?.rootViewController as? CAPBridgeViewController,
-              let webView = vc.webView else {
-            // Retry if webview isn't ready yet
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.installCameraHandler()
-            }
-            return
-        }
-        camHandler.webView = webView
-        webView.configuration.userContentController.add(
-            camHandler, name: "fsRequestCameraPermission"
-        )
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}
