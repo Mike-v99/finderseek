@@ -4744,7 +4744,19 @@ return parts.join('\n');
 }
 // Photo handler
 async function openPhotoChoice(){
-  var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
+  // ── TEMPORARY DIAGNOSTIC — remove after confirming native path works ──
+  var C = window.Capacitor;
+  var hasC = !!C;
+  var isNative = !!(C && C.isNativePlatform && C.isNativePlatform());
+  var pluginAvail = !!(C && C.isPluginAvailable && C.isPluginAvailable('Camera'));
+  var pluginObj = !!(C && C.Plugins && C.Plugins.Camera);
+
+  if(isNative){
+    alert('DIAG: Capacitor='+hasC+' native='+isNative+' pluginAvail='+pluginAvail+' pluginObj='+pluginObj);
+  }
+  // ── END DIAGNOSTIC ──
+
+  var isCapacitor=!!(isNative && pluginAvail);
 
   if(isCapacitor){
     try{
@@ -4794,6 +4806,7 @@ async function openPhotoChoice(){
       // If the user simply cancelled the native picker, stop silently.
       var msg = ((e && e.message) || '') + '';
       if(/cancel/i.test(msg)) return;
+      alert('DIAG CATCH: '+msg); // TEMPORARY — remove after debugging
       console.warn('Capacitor camera error:', e);
       // fall through to web fallback below
     }
