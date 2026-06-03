@@ -259,7 +259,7 @@ body.kb-up /* bottom-nav removed */
 .gold{color:#e8a820;}
 
 /* ── STEP NAVIGATION FOOTER ────────────────────────────────── */
-.step-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:fixed;bottom:0;left:0;right:0;display:flex;gap:10px;align-items:center;z-index:100;max-width:480px;margin:0 auto;}
+.step-footer{padding:16px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:fixed;bottom:0;left:0;right:0;display:flex;gap:10px;align-items:center;z-index:100;max-width:480px;margin:0 auto;}
 .step-next-btn{flex:1;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;-webkit-tap-highlight-color:transparent;}
 .step-next-btn:active{transform:scale(.98);}
 .step-next-btn:disabled{opacity:.4;pointer-events:none;}
@@ -336,6 +336,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
     max-width: 390px !important;
     border-radius: 44px 44px 0 0 !important;
     overflow: hidden !important;
+  }
+  /* Fixed footers must match the phone frame width */
+  .step-footer {
+    max-width: 390px !important;
+  }
+  .hs-nav {
+    max-width: 390px !important;
+    margin: 0 auto !important;
+  }
+  .hs-modal-sheet {
+    max-width: 390px !important;
   }
 }
 </style>
