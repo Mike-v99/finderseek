@@ -1118,6 +1118,11 @@ function genCode(){
     if (saveBtn) { saveBtn.style.display = 'none'; } // removed save copy from step 1
     var photoSec = document.getElementById('photo-section-s1');
     if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
+    // Pre-request camera permission so the iOS popup appears in context
+    // (when the user sees the photo section) rather than never appearing.
+    // getUserMedia triggers AVCaptureDevice authorization which
+    // UIImagePickerController skips.
+    try { triggerCameraPermission(); } catch(e){ console.warn('[FS] cam perm', e); }
     try { checkStep1Complete(); } catch(e){ console.warn('[FS] checkStep1Complete err', e); }
     try { saveFormState(); } catch(e){ console.warn('[FS] saveFormState err', e); }
   } catch(e) {
@@ -4743,6 +4748,28 @@ parts.push('Clue ' + (i+1) + ' [' + (action ? action.label : 'Walk towards') + '
 return parts.join('\n');
 }
 // Photo handler
+
+// Pre-request camera permission via getUserMedia. UIImagePickerController
+// (used by Capacitor Camera plugin) does NOT trigger the iOS camera
+// permission dialog. getUserMedia goes through AVCaptureDevice which DOES
+// trigger it. We request briefly and immediately stop the stream.
+var _fsCamPermRequested = false;
+async function triggerCameraPermission(){
+  if(_fsCamPermRequested) return;
+  _fsCamPermRequested = true;
+  var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+  if(!isNative) return;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({video: true});
+    // Permission granted — immediately stop the stream
+    stream.getTracks().forEach(function(t){ t.stop(); });
+  } catch(e){
+    // User denied or camera unavailable — that's fine, we tried
+    console.log('[FS] Camera permission pre-request:', e.message);
+  }
+}
+
 async function openPhotoChoice(){
   var isCapacitor=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.isPluginAvailable&&window.Capacitor.isPluginAvailable('Camera'));
 
@@ -4750,25 +4777,11 @@ async function openPhotoChoice(){
     try{
       var Camera=window.Capacitor.Plugins.Camera;
 
-      // ── Step 1: Force the native "Allow Camera?" prompt ──
-      // The Capacitor Camera plugin uses UIImagePickerController which
-      // bypasses the iOS camera permission dialog. We call our native
-      // FinderSeekViewController via WebKit message handler to trigger
-      // AVCaptureDevice.requestAccess directly (required for App Review).
-      if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.fsRequestCameraPermission){
-        var camStatus = await new Promise(function(resolve){
-          window._fsCamResolve = resolve;
-          window.webkit.messageHandlers.fsRequestCameraPermission.postMessage('request');
-          // Timeout fallback in case native side doesn't respond
-          setTimeout(function(){ resolve('timeout'); }, 10000);
-        });
-        if(camStatus === 'denied'){
-          showToast('Camera access is needed — enable it in Settings → FinderSeek', 'error');
-          return;
-        }
-      }
+      // Ensure camera permission has been requested (may already be done
+      // by triggerCameraPermission when the photo section appeared)
+      await triggerCameraPermission();
 
-      // ── Step 2: Request Photos permission via Capacitor Camera plugin ──
+      // Request Photos permission via Capacitor Camera plugin
       var perms = await Camera.checkPermissions();
       if(perms.photos !== 'granted' && perms.photos !== 'limited'){
         perms = await Camera.requestPermissions({permissions: ['photos']});
@@ -4780,7 +4793,7 @@ async function openPhotoChoice(){
         return;
       }
 
-      // ── Step 3: Open the camera/photo picker ──
+      // Open the camera/photo picker
       var photo = await Camera.getPhoto({
         quality: 85,
         allowEditing: false,
