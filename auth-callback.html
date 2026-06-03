@@ -96,7 +96,34 @@ async function handleCallback() {
     // fallback for the pure-web flow.
     var returnTo = _q.get('return_to') || localStorage.getItem('fs_magic_return') || 'index.html';
 
-    // ── Native app (Capacitor) path ───────────────────────────────
+    // ── Native Sign in with Apple path ─────────────────────────────
+    // AppDelegate's ASAuthorizationController navigates here with the
+    // Apple identity token as a query param. We exchange it for a
+    // Supabase session using signInWithIdToken (no OAuth redirect needed).
+    var appleIdToken = _q.get('apple_id_token');
+    if (appleIdToken) {
+      var { data, error } = await supaClient.auth.signInWithIdToken({
+        provider: 'apple',
+        token: appleIdToken
+      });
+      if (error) throw error;
+      if (data && data.session) {
+        localStorage.setItem('fs_token', data.session.access_token);
+        if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+        window.history.replaceState({}, '', '/auth-callback.html');
+        show('card-success');
+        var subEl = document.getElementById('success-sub');
+        if (subEl && data.session.user && data.session.user.email) {
+          subEl.textContent = 'Signed in as ' + data.session.user.email + '. Redirecting...';
+        }
+        var btnEl = document.getElementById('continue-btn');
+        if (btnEl) btnEl.href = returnTo;
+        setTimeout(function(){ window.location.href = returnTo; }, 1500);
+        return;
+      }
+    }
+
+    // ── Native app (Capacitor) OAuth path ──────────────────────────
     // Hand the raw code/tokens back to the app via the custom-scheme deep link
     // and let the in-app handler complete the session. We MUST forward return_to
     // so the app knows which page to reopen.
