@@ -5,17 +5,13 @@ import AVFoundation
 @objc(CameraPermissionPlugin)
 public class CameraPermissionPlugin: CAPPlugin {
 
-    /// Check current camera authorization status without prompting
     @objc func check(_ call: CAPPluginCall) {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         call.resolve(["status": statusString(status)])
     }
 
-    /// Request camera access — triggers the iOS permission dialog if status
-    /// is .notDetermined. If already decided, resolves immediately.
     @objc func request(_ call: CAPPluginCall) {
         let current = AVCaptureDevice.authorizationStatus(for: .video)
-
         if current == .notDetermined {
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
