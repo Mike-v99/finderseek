@@ -2,8 +2,13 @@ import Foundation
 import Capacitor
 import AVFoundation
 
-@objc(CameraPermissionPlugin)
-public class CameraPermissionPlugin: CAPPlugin {
+@objc(FSCameraPermission)
+public class FSCameraPermission: CAPPlugin {
+
+    // Explicit initializer to resolve Capacitor's ambiguous init()
+    override public init() {
+        super.init()
+    }
 
     @objc func check(_ call: CAPPluginCall) {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
