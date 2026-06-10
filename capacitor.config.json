@@ -8,7 +8,10 @@
     "allowNavigation": [
       "*.supabase.co",
       "appleid.apple.com",
-      "*.apple.com"
+      "*.apple.com",
+      "accounts.google.com",
+      "*.google.com",
+      "*.googleapis.com"
     ]
   },
   "ios": {
@@ -39,6 +42,14 @@
         "sound",
         "alert"
       ]
+    },
+    "GoogleAuth": {
+      "scopes": [
+        "profile",
+        "email"
+      ],
+      "serverClientId": "946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
     }
   }
 }

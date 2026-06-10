@@ -1971,20 +1971,35 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      localStorage.setItem('fs_magic_return', 'newquest.html');
-      var { data, error } = await supaClient.auth.signInWithOAuth({
+      // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
+      // Shows a native iOS account picker sheet — no browser bounce at all.
+      var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
+      if (!GoogleAuth) throw new Error('GoogleAuth plugin not available');
+      var googleUser = await GoogleAuth.signIn();
+      var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
+      if (!idToken) throw new Error('No ID token from Google');
+      // Exchange the native token for a Supabase session
+      var { data, error } = await supaClient.auth.signInWithIdToken({
         provider: 'google',
-        options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
-          skipBrowserRedirect: true
-        }
+        token: idToken
       });
       if (error) throw error;
-      if (data && data.url) {
-        // Navigate the webview directly — stays inside the app, no Safari bounce
-        window.location.href = data.url;
+      if (data && data.session) {
+        currentUser = data.user;
+        localStorage.setItem('fs_token', data.session.access_token);
+        if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+        closeEmailGate();
+        showToast('Signed in with Google!', 'success');
+        // Resume quest creation
+        setTimeout(function() {
+          var overlay = document.getElementById('ai-loading');
+          if (overlay) overlay.style.display = 'flex';
+          saveFormState();
+          createQuest();
+        }, 400);
       }
     } else {
+      // Web fallback — standard OAuth redirect
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
@@ -1992,7 +2007,8 @@ async function signUpFromGate(){
       if (error) throw error;
     }
   } catch(e) {
-    document.getElementById('eg-error').textContent = e.message || 'Sign-in failed';
+    console.error('Google sign-in error:', e);
+    document.getElementById('eg-error').textContent = e.message || 'Google sign-in failed';
   }
 }
 
