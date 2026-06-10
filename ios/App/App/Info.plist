@@ -18,8 +18,31 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.finderseek.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>finderseek</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.finderseek.app.google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.946262975462-klsc7f8ltdp9mnqmpiuqu581fquk4ea9</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GIDClientID</key>
+	<string>946262975462-klsc7f8ltdp9mnqmpiuqu581fquk4ea9.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -28,29 +51,10 @@
 	<string>FinderSeek uses your location to alert you when treasure is hidden nearby.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>FinderSeek uses your location to show treasure quests near you.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>FinderSeek lets Quest Masters photograph their hiding spot for clues.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>FinderSeek can save quest photos to your library so you have a copy.</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>finderseek</string>
-			</array>
-			<key>CFBundleURLName</key>
-			<string>com.finderseek.app</string>
-		</dict>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9</string>
-			</array>
-			<key>CFBundleURLName</key>
-			<string>com.finderseek.app.google</string>
-		</dict>
-	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>FinderSeek lets Quest Masters photograph their hiding spot for clues.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -72,7 +76,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>GIDClientID</key>
-	<string>946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com</string>
 </dict>
 </plist>
