@@ -22,7 +22,7 @@ const SITE_URL   = 'https://finderseek.com';
 
 // ── Colours / styles used in all emails ──────────────────────────
 const CSS = `
-  body { background:#06050a; margin:0; padding:0; font-family:'Helvetica Neue',Arial,sans-serif; }
+  body { margin:0; padding:0; font-family:'Helvetica Neue',Arial,sans-serif; }
   .wrap { max-width:560px; margin:0 auto; background:#0e0c14; border:1px solid rgba(201,137,12,.2); border-radius:16px; overflow:hidden; }
   .header { background:linear-gradient(135deg,#1a1628,#0e0c14); padding:32px 36px 24px; border-bottom:1px solid rgba(255,255,255,.06); }
   .logo { font-size:22px; font-weight:800; color:#f5ead8; letter-spacing:1px; }
@@ -40,7 +40,7 @@ const CSS = `
 
 function html(title, body) {
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>${CSS}</style></head>
-  <body><div style="padding:24px 16px;">
+  <body><div style="padding:24px 16px;background:#06050a;">
   <div class="wrap">
     <div class="header"><div class="logo">Finder<em>Seek</em></div></div>
     <div class="body">${body}</div>
@@ -233,7 +233,7 @@ export default async function handler(req, res) {
 
   try {
     // Fetch hunt + pirate profile + winner profile
-    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type`);
+    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type,payout_destination`);
     const hunt  = hunts?.[0];
     if (!hunt) return res.status(404).json({ error: 'Quest not found' });
 
