@@ -1990,10 +1990,14 @@ async function signUpFromGate(){
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
       if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
 
-      // signIn() — plugin reads client ID from capacitor.config.json / Info.plist
-      // No manual initialize() needed; the plugin self-configures on native iOS
-      var googleUser = await GoogleAuth.signIn();
-      console.log('[Google] signIn result:', JSON.stringify(googleUser));
+      var googleUser;
+      try {
+        googleUser = await GoogleAuth.signIn();
+        alert('[Google] signIn success: ' + JSON.stringify(googleUser).substring(0, 200));
+      } catch(signInErr) {
+        alert('[Google] signIn error: ' + (signInErr.message || JSON.stringify(signInErr)));
+        throw signInErr;
+      }
 
       var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
       if (!idToken) throw new Error('No ID token received from Google');
