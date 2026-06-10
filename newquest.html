@@ -1982,7 +1982,6 @@ async function submitEmailGate(){
 async function signUpFromGate(){
   try {
     saveFormState();
-    sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
@@ -2033,7 +2032,8 @@ async function signUpFromGate(){
 
         setTimeout(function() { closeEmailGate(); }, 1000);
 
-        // Resume quest creation
+        // Resume quest creation (clear flag so the auth listener doesn't double-resume)
+        sessionStorage.removeItem('fs_quest_pending_auth');
         setTimeout(function() {
           var overlay = document.getElementById('ai-loading');
           if (overlay) overlay.style.display = 'flex';
@@ -2042,7 +2042,11 @@ async function signUpFromGate(){
         }, 1400);
       }
     } else {
-      // Web fallback — standard OAuth redirect
+      // Web fallback — standard OAuth redirect.
+      // The pending_auth flag makes onAuthStateChange auto-resume the quest
+      // after the page reloads from the redirect. Native doesn't need it
+      // (it resumes inline) and setting it there caused a double createQuest().
+      sessionStorage.setItem('fs_quest_pending_auth', '1');
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
@@ -3445,21 +3449,32 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   }
 
   // Load PayPal JS SDK if not loaded yet
-  if (!window.paypal) {
-    if (PAYPAL_CLIENT_ID === 'LIVE') {
-      var cidRes = await fetch(API_BASE + '/api/paypal-client-id');
-      var cidData = await cidRes.json();
-      if (cidData.clientId) window._ppClientId = cidData.clientId;
+  var _pmErrEl = document.getElementById('pm-error');
+  try {
+    if (!window.paypal) {
+      if (PAYPAL_CLIENT_ID === 'LIVE') {
+        var cidRes = await fetch(API_BASE + '/api/paypal-client-id');
+        if (!cidRes.ok) throw new Error('client-id endpoint returned HTTP ' + cidRes.status);
+        var cidData = await cidRes.json();
+        if (!cidData.clientId) throw new Error('client-id endpoint returned no clientId');
+        window._ppClientId = cidData.clientId;
+      }
+      var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
+      await new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture' + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=paylater,venmo';
+        s.onload = resolve;
+        s.onerror = function() { reject(new Error('PayPal SDK script failed to load (network/blocked)')); };
+        document.head.appendChild(s);
+        // Watchdog: surface a hang instead of waiting forever
+        setTimeout(function(){ reject(new Error('PayPal SDK load timed out after 15s')); }, 15000);
+      });
     }
-    var ppCid = window._ppClientId || PAYPAL_CLIENT_ID;
-    await new Promise(function(resolve, reject) {
-      var s = document.createElement('script');
-      var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture' + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=paylater,venmo';
-      s.onload = resolve;
-      s.onerror = function() { reject(new Error('Failed to load PayPal SDK')); };
-      document.head.appendChild(s);
-    });
+  } catch(ppLoadErr) {
+    console.error('[paypal] load error:', ppLoadErr);
+    _pmErrEl.textContent = 'PayPal load failed: ' + (ppLoadErr.message || ppLoadErr);
+    return;
   }
 
   // Clear previous buttons and wait for DOM to be visible before rendering
@@ -3593,7 +3608,10 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
 
   // Check eligibility — some PayPal button configs aren't eligible on all devices
   if (ppButtons.isEligible()) {
-    ppButtons.render('#paypal-button-container').catch(function(err){
+    ppButtons.render('#paypal-button-container').then(function(){
+      var errEl = document.getElementById('pm-error');
+      if (errEl && errEl.textContent.indexOf('[debug]') === 0) errEl.textContent = '';
+    }).catch(function(err){
       console.error('[paypal] render error:', err);
       var errEl = document.getElementById('pm-error');
       if (errEl) errEl.textContent = 'Could not load payment buttons. Please close and try again.';
