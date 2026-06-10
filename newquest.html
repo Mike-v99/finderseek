@@ -1984,6 +1984,7 @@ async function signUpFromGate(){
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    alert('isNativeApp: ' + isNativeApp + '\nCapacitor: ' + (!!window.Capacitor) + '\nisNativePlatform fn: ' + (!!window.Capacitor.isNativePlatform));
     if (isNativeApp) {
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
       // Shows a native iOS account picker — no browser, no redirect at all.
