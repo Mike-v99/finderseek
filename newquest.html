@@ -2684,6 +2684,16 @@ function clearFormState() {
 }
 
 document.addEventListener('DOMContentLoaded', async function(){
+  // ── Native app: avoid double status-bar spacing ─────────
+  // Capacitor contentInset:"always" already insets scrolling content, and the
+  // CSS adds env(safe-area-inset-top) on top of that. Remove the CSS half in
+  // the app so the page isn't pushed down twice (which cut off the bottom).
+  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    document.body.style.paddingTop = '0px';
+    var strip = document.querySelector('.status-strip');
+    if (strip) strip.style.height = '0px';
+  }
+
   // ── Handle deep link from native app OAuth callback ──────
   if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
     try {
@@ -3613,6 +3623,18 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       document.getElementById('pm-error').textContent = 'Payment error. Please try again or use a different card.';
     }
   });
+
+  // Diagnose card funding availability (card fields often unsupported in webviews)
+  try {
+    var cardBtn = window.paypal.Buttons({ fundingSource: window.paypal.FUNDING.CARD });
+    if (!cardBtn.isEligible()) {
+      console.warn('[paypal] CARD funding not eligible in this environment');
+      if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+        var noteEl = document.getElementById('pm-error');
+        if (noteEl && !noteEl.textContent) noteEl.textContent = '[debug] card fields not eligible in app webview';
+      }
+    }
+  } catch(e) { console.warn('[paypal] card eligibility check failed', e); }
 
   // Check eligibility — some PayPal button configs aren't eligible on all devices
   if (ppButtons.isEligible()) {
