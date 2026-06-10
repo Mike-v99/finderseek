@@ -15,7 +15,7 @@
     ]
   },
   "ios": {
-    "contentInset": "always",
+    "contentInset": "never",
     "backgroundColor": "#0a0810",
     "preferredContentMode": "mobile",
     "scheme": "FinderSeek"
