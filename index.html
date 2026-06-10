@@ -34,8 +34,8 @@
   --gray-dark: #64748b;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; overflow-x: hidden; overscroll-behavior: none; }
-body { overflow-x: hidden; overscroll-behavior: none; }
+html { height: 100%; overflow: hidden; overscroll-behavior: none; }
+body { overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; height: 100%; }
 body {
   background: var(--ink);
   color: var(--cream);
@@ -1781,5 +1781,42 @@ function hbSignOut(){
 
 
 </div>
+
+<script>
+// ── Prevent iOS WKWebView pull-down overscroll ──────────────────
+// overscroll-behavior:none is ignored by WKWebView. The fix is to
+// block touchmove events that would scroll above y=0.
+(function() {
+  var lastY = 0;
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    var scrollEl = e.target;
+    // Walk up to find the actual scrollable container
+    while (scrollEl && scrollEl !== document.body) {
+      if (scrollEl.scrollHeight > scrollEl.clientHeight &&
+          window.getComputedStyle(scrollEl).overflowY !== 'hidden') {
+        break;
+      }
+      scrollEl = scrollEl.parentElement;
+    }
+    var y = e.touches[0].clientY;
+    var scrollTop = (scrollEl === document.body)
+      ? (document.documentElement.scrollTop || document.body.scrollTop)
+      : scrollEl.scrollTop;
+    var atTop = scrollTop <= 0 && y > lastY;
+    var atBottom = (scrollEl === document.body)
+      ? (window.innerHeight + window.scrollY >= document.body.scrollHeight)
+      : (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight);
+    if (atTop || (atBottom && y < lastY)) {
+      if (e.cancelable) e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
+</script>
+
 </body>
 </html>
