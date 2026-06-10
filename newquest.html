@@ -1974,8 +1974,12 @@ async function signUpFromGate(){
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
       // Shows a native iOS account picker sheet — no browser bounce at all.
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
-      if (!GoogleAuth) throw new Error('GoogleAuth plugin not available');
+      console.log('[Google] Available plugins:', Object.keys(window.Capacitor.Plugins || {}));
+      console.log('[Google] GoogleAuth plugin:', GoogleAuth);
+      if (!GoogleAuth) throw new Error('GoogleAuth plugin not loaded — run npm install @codetrix-studio/capacitor-google-auth && npx cap sync ios');
+      console.log('[Google] Calling GoogleAuth.signIn()...');
       var googleUser = await GoogleAuth.signIn();
+      console.log('[Google] signIn result:', JSON.stringify(googleUser));
       var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
       if (!idToken) throw new Error('No ID token from Google');
       // Exchange the native token for a Supabase session
