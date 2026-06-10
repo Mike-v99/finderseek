@@ -45,7 +45,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9</string>
+				<string>com.googleusercontent.apps.946262975462-67lu7m70jqlm09gel71b84mrghbr3v85</string>
 			</array>
 			<key>CFBundleURLName</key>
 			<string>com.finderseek.app.google</string>
@@ -73,6 +73,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>GIDClientID</key>
-	<string>946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com</string>
+	<string>946262975462-67lu7m70jqlm09gel71b84mrghbr3v85.apps.googleusercontent.com</string>
 </dict>
 </plist>
