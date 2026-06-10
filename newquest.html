@@ -2746,17 +2746,8 @@ document.addEventListener('DOMContentLoaded', async function(){
     if(!hasToken) hasToken = !!localStorage.getItem('fs_token');
   } catch(e){}
 
-  if (!fromApp && !hasStep && !hasPending && !hasFormState && !hasAbandon) {
-    window.location.replace('index.html');
-    return;
-  }
-  // If not logged in and not coming from app auth, redirect to home
-  if (!fromApp && !hasToken) {
-    localStorage.removeItem('fs_newquest_form');
-    localStorage.removeItem('fs_magic_return');
-    window.location.replace('index.html');
-    return;
-  }
+  // No redirect — anyone can access the quest builder freely
+  // Allow anyone on the page — auth is gated at schedule step only
   // Clear abandon flag now that we know we're staying on this page
   try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
 
@@ -2782,14 +2773,9 @@ document.addEventListener('DOMContentLoaded', async function(){
 
 
 
-  // ── Require sign-in before quest creation ──────────────
-  var user = await loadCurrentUser();
-  if (!user) {
-    // Show email gate modal — keeps user on newquest page
-    saveFormState();
-    showEmailGate();
-    return;
-  }
+  // Auth is checked later at the schedule step (startTheQuest)
+  // so users can build their full quest before being asked to sign in.
+  var user = await loadCurrentUser(); // silent — just loads currentUser if session exists
 
   // Hide bottom nav when virtual keyboard is likely up (input focused)
   var focusEls = document.querySelectorAll('input, textarea');
