@@ -124,19 +124,26 @@ async function handleCallback() {
     }
 
     // ── Native app (Capacitor) OAuth path ──────────────────────────
-    // Hand the raw code/tokens back to the app via the custom-scheme deep link
-    // and let the in-app handler complete the session. We MUST forward return_to
-    // so the app knows which page to reopen.
+    // OAuth runs inside the WKWebView (window.location.href = data.url),
+    // so after the provider redirects back here we are still inside the app.
+    // Just exchange the code for a session, save the tokens, and navigate
+    // directly back to the return page — no deep-link required.
     if (_q.get('from_app') === '1') {
       var fwdCode = _q.get('code');
       var fwdAccess = _h.get('access_token') || _q.get('access_token');
       var fwdRefresh = _h.get('refresh_token') || _q.get('refresh_token');
 
-      // Supabase often consumes the hash and creates the session BEFORE this
-      // code runs, leaving no code/token in the URL. In that case pull the
-      // tokens straight from the freshly-created session so we can still hand
-      // them back to the native app.
-      if (!fwdCode && !fwdAccess) {
+      // Exchange code or pull from an already-created session
+      if (fwdCode && !fwdAccess) {
+        try {
+          var exResult = await supaClient.auth.exchangeCodeForSession(fwdCode);
+          if (exResult && exResult.data && exResult.data.session) {
+            fwdAccess = exResult.data.session.access_token;
+            fwdRefresh = exResult.data.session.refresh_token;
+          }
+        } catch(e) {}
+      }
+      if (!fwdAccess) {
         try {
           var sess = await supaClient.auth.getSession();
           if (sess && sess.data && sess.data.session) {
@@ -146,16 +153,19 @@ async function handleCallback() {
         } catch(e) {}
       }
 
-      if (fwdCode || fwdAccess) {
-        var parts = ['return_to=' + encodeURIComponent(returnTo)];
-        if (fwdCode)    parts.push('code=' + encodeURIComponent(fwdCode));
-        if (fwdAccess)  parts.push('access_token=' + encodeURIComponent(fwdAccess));
-        if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
-        var dl = 'finderseek://auth?' + parts.join('&');
+      if (fwdAccess) {
+        // Save session tokens so the app page finds them immediately
+        localStorage.setItem('fs_token', fwdAccess);
+        if (fwdRefresh) localStorage.setItem('fs_refresh', fwdRefresh);
+        try { await supaClient.auth.setSession({ access_token: fwdAccess, refresh_token: fwdRefresh || '' }); } catch(e) {}
         show('card-success');
         var sEl = document.getElementById('success-sub');
-        if (sEl) sEl.textContent = 'Returning you to FinderSeek...';
-        window.location.href = dl;
+        if (sEl) sEl.textContent = 'Signed in! Returning to FinderSeek...';
+        // Navigate back inside the webview — carry tokens in URL as belt-and-braces
+        var dest = returnTo + (returnTo.indexOf('?') >= 0 ? '&' : '?') +
+          'from=app&at=' + encodeURIComponent(fwdAccess) +
+          (fwdRefresh ? '&rt=' + encodeURIComponent(fwdRefresh) : '');
+        setTimeout(function(){ window.location.href = dest; }, 800);
         return;
       }
     }

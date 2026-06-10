@@ -1823,13 +1823,13 @@ async function signInWithAppleGate(){
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?return_to=newquest.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
           skipBrowserRedirect: true
         }
       });
       if (error) throw error;
       if (data && data.url) {
-        // Load directly in webview — no Safari bounce
+        // Load directly in webview — stays inside the app, no Safari bounce
         window.location.href = data.url;
       }
     } else {
@@ -1971,7 +1971,6 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      
       localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
@@ -1982,11 +1981,8 @@ async function signUpFromGate(){
       });
       if (error) throw error;
       if (data && data.url) {
-        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
-          await window.Capacitor.Plugins.Browser.open({ url: data.url });
-        } else {
-          window.open(data.url, '_system');
-        }
+        // Navigate the webview directly — stays inside the app, no Safari bounce
+        window.location.href = data.url;
       }
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
