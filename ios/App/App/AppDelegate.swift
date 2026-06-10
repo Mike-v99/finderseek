@@ -9,6 +9,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Configure Google Sign-In with the iOS client ID
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(
+            clientID: "946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com"
+        )
+
         // Request camera permission shortly after launch so iOS shows
         // the "Allow Camera?" dialog. UIImagePickerController (used by
         // Capacitor Camera) skips this prompt, causing App Review rejection.
