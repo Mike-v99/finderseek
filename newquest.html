@@ -1985,24 +1985,58 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      // ── Google Sign-In — load OAuth URL directly in the WKWebView ──
-      // Same approach as Apple sign-in. Google allows this when the redirect
-      // lands on your own domain. auth-callback.html saves the session and
-      // navigates back to newquest.html directly — no deep link needed.
-      localStorage.setItem('fs_magic_return', 'newquest.html');
-      localStorage.setItem('fs_oauth_return', 'newquest.html');
-      sessionStorage.setItem('fs_oauth_return', 'newquest.html');
-      var { data, error } = await supaClient.auth.signInWithOAuth({
+      // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
+      // Shows a native iOS account picker — no browser, no redirect at all.
+      var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
+      if (!GoogleAuth) throw new Error('GoogleAuth plugin not found. Run: npm install @codetrix-studio/capacitor-google-auth && npx cap sync ios');
+
+      // Initialize the plugin with our client ID
+      try {
+        await GoogleAuth.initialize({
+          clientId: '946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com',
+          scopes: ['profile', 'email'],
+          grantOfflineAccess: false
+        });
+      } catch(initErr) {
+        console.log('[Google] initialize:', initErr.message);
+        // initialize() may throw if already called — safe to ignore
+      }
+
+      var googleUser = await GoogleAuth.signIn();
+      console.log('[Google] signIn result:', JSON.stringify(googleUser));
+
+      var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
+      if (!idToken) throw new Error('No ID token received from Google');
+
+      // Exchange native token for a Supabase session — stays entirely in-app
+      var { data, error } = await supaClient.auth.signInWithIdToken({
         provider: 'google',
-        options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
-          skipBrowserRedirect: true
-        }
+        token: idToken
       });
       if (error) throw error;
-      if (data && data.url) {
-        // Navigate the webview directly — stays inside the app
-        window.location.href = data.url;
+
+      if (data && data.session) {
+        currentUser = data.user;
+        localStorage.setItem('fs_token', data.session.access_token);
+        if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+
+        // Show which account signed in
+        var siEl = document.getElementById('eg-signed-in');
+        var siEmail = document.getElementById('eg-signed-in-email');
+        if (siEl) siEl.style.display = 'block';
+        if (siEmail && data.user) siEmail.textContent = data.user.email || '';
+
+        showToast('✓ Signed in as ' + (data.user && data.user.email ? data.user.email : 'Google account'), 'success');
+
+        setTimeout(function() { closeEmailGate(); }, 1000);
+
+        // Resume quest creation
+        setTimeout(function() {
+          var overlay = document.getElementById('ai-loading');
+          if (overlay) overlay.style.display = 'flex';
+          saveFormState();
+          createQuest();
+        }, 1400);
       }
     } else {
       // Web fallback — standard OAuth redirect
