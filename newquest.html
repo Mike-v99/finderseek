@@ -1985,9 +1985,10 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      // ── Google Sign-In via @capacitor/browser (SFSafariViewController) ──
-      // Store return destination in multiple places so auth-callback can find it
-      // even if Supabase strips query params from the redirect URL.
+      // ── Google Sign-In — load OAuth URL directly in the WKWebView ──
+      // Same approach as Apple sign-in. Google allows this when the redirect
+      // lands on your own domain. auth-callback.html saves the session and
+      // navigates back to newquest.html directly — no deep link needed.
       localStorage.setItem('fs_magic_return', 'newquest.html');
       localStorage.setItem('fs_oauth_return', 'newquest.html');
       sessionStorage.setItem('fs_oauth_return', 'newquest.html');
@@ -2000,14 +2001,9 @@ async function signUpFromGate(){
       });
       if (error) throw error;
       if (data && data.url) {
-        var Browser = window.Capacitor.Plugins.Browser;
-        if (Browser && Browser.open) {
-          await Browser.open({ url: data.url, presentationStyle: 'fullscreen' });
-        } else {
-          throw new Error('@capacitor/browser not available');
-        }
+        // Navigate the webview directly — stays inside the app
+        window.location.href = data.url;
       }
-      // Session returned via finderseek://auth deep link → appUrlOpen handler
     } else {
       // Web fallback — standard OAuth redirect
       var { error } = await supaClient.auth.signInWithOAuth({

@@ -170,27 +170,27 @@ async function handleCallback() {
       }
 
       if (fwdAccess) {
+        // Save session tokens into this WKWebView context
+        localStorage.setItem('fs_token', fwdAccess);
+        if (fwdRefresh) localStorage.setItem('fs_refresh', fwdRefresh);
+        try {
+          await supaClient.auth.setSession({ access_token: fwdAccess, refresh_token: fwdRefresh || '' });
+        } catch(e) {}
+
         show('card-success');
         var sEl = document.getElementById('success-sub');
         if (sEl) sEl.textContent = 'Signed in! Returning to FinderSeek...';
 
-        // Build deep link with tokens — closes SFSafariViewController
-        // and triggers appUrlOpen in the app
-        var parts = ['return_to=' + encodeURIComponent(returnTo)];
-        parts.push('access_token=' + encodeURIComponent(fwdAccess));
-        if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
-        var deepLink = 'finderseek://auth?' + parts.join('&');
+        // Navigate directly back to the app page — still inside WKWebView
+        // Carry tokens in URL so the page finds them even if storage is async
+        var dest = returnTo + (returnTo.indexOf('?') >= 0 ? '&' : '?')
+          + 'from=app&at=' + encodeURIComponent(fwdAccess)
+          + (fwdRefresh ? '&rt=' + encodeURIComponent(fwdRefresh) : '');
 
-        // Store deep link on button for manual retry
         var btnEl = document.getElementById('continue-btn');
-        if (btnEl) {
-          btnEl.href = deepLink;
-          btnEl._deepLink = deepLink;
-        }
+        if (btnEl) { btnEl.href = dest; btnEl._deepLink = dest; }
 
-        // Fire deep link — iOS needs a small delay after SFSafariViewController loads
-        setTimeout(function(){ window.location.href = deepLink; }, 100);
-        setTimeout(function(){ window.location.href = deepLink; }, 600);
+        setTimeout(function(){ window.location.href = dest; }, 600);
         return;
       }
     }
