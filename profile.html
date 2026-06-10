@@ -793,6 +793,11 @@ async function gateSocial(provider){
 
 // Handle OAuth callback — Supabase JS client exchanges the code automatically
 async function handleOAuthCallback(){
+  // Only treat this page load as an OAuth callback if the URL actually
+  // carries auth params. A signed-in user simply visiting their profile
+  // also has a session — without this guard they'd be bounced to home.
+  var isOAuthCallback = !!(window.location.search.indexOf('code=') !== -1 ||
+    (window.location.hash && window.location.hash.indexOf('access_token') !== -1));
   try {
     // getSession() will detect the OAuth callback params in the URL
     // and exchange the code for a session (PKCE flow)
@@ -801,6 +806,7 @@ async function handleOAuthCallback(){
     if (data.session) {
       localStorage.setItem('fs_token', data.session.access_token);
       if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
+      if (!isOAuthCallback) return false; // normal visit while signed in — stay on profile
       // Clean up URL
       if (window.location.hash || window.location.search.includes('code=')) {
         window.history.replaceState({}, '', window.location.pathname);
