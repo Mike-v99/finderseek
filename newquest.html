@@ -665,37 +665,43 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Sign-In Gate — Apple & Google only, shown after schedule is set -->
 
-<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:9998;opacity:0;transition:opacity .3s;"></div>
-<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:flex-end;justify-content:center;overflow:hidden;">
-  <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.12);border-radius:28px 28px 0 0;max-width:480px;width:100%;padding:0 22px calc(28px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.9);pointer-events:auto;transform:translateY(100%);opacity:1;transition:transform .4s cubic-bezier(0.22,1,0.36,1);position:relative;">
+<div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9998;opacity:0;transition:opacity .3s;"></div>
+<div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:24px;overflow:hidden;">
+  <div id="eg-inner" style="background:#0f0d1f;border:1px solid rgba(255,255,255,.14);border-radius:28px;max-width:360px;width:100%;padding:32px 24px 28px;box-shadow:0 24px 80px rgba(0,0,0,.9);pointer-events:auto;transform:scale(0.88) translateY(20px);opacity:0;transition:transform .38s cubic-bezier(0.22,1,0.36,1),opacity .3s ease;position:relative;">
 
-  <!-- Drag handle -->
-  <div style="display:flex;justify-content:center;padding:14px 0 6px;">
-    <div style="width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.18);"></div>
+  <!-- Close button -->
+  <button onclick="closeEmailGate()" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">✕</button>
+
+  <!-- Icon + heading -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+    <div style="font-size:42px;margin-bottom:14px;">🏆</div>
+    <div style="font-size:22px;color:#fff;font-weight:500;margin-bottom:8px;text-align:center;">One last step</div>
+    <div style="font-size:15px;color:rgba(184,196,208,.7);line-height:1.55;text-align:center;max-width:260px;">Sign in so we can notify you when a hunter finds your treasure.</div>
   </div>
 
-  <!-- Trophy icon + heading -->
-  <div style="display:flex;flex-direction:column;align-items:center;padding:18px 0 22px;">
-    <div style="font-size:44px;margin-bottom:14px;">&#127942;</div>
-    <div style="font-size:24px;color:#fff;font-weight:400;margin-bottom:8px;text-align:center;">One last step</div>
-    <div style="font-size:16px;color:rgba(184,196,208,.75);line-height:1.55;text-align:center;max-width:280px;">Sign in so we can notify you when a hunter finds your treasure.</div>
+  <!-- Signed-in email display (shown after auth) -->
+  <div id="eg-signed-in" style="display:none;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:12px;padding:10px 14px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:13px;color:#4ade80;letter-spacing:.5px;margin-bottom:2px;">SIGNED IN AS</div>
+    <div id="eg-signed-in-email" style="font-size:15px;color:#fff;font-weight:400;"></div>
   </div>
 
-  <div id="eg-error" style="font-size:15px;color:#f87171;margin-bottom:12px;min-height:0;text-align:center;"></div>
+  <div id="eg-error" style="font-size:14px;color:#f87171;margin-bottom:12px;min-height:0;text-align:center;"></div>
 
   <!-- Apple Sign In — primary CTA -->
-  <button id="fs-apple-btn" onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:17px;background:#fff;border:none;border-radius:16px;font-size:18px;font-weight:600;color:#000;cursor:pointer;font-family:inherit;margin-bottom:12px;-webkit-tap-highlight-color:transparent;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+  <button id="fs-apple-btn" onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;background:#fff;border:none;border-radius:14px;font-size:17px;font-weight:600;color:#000;cursor:pointer;font-family:inherit;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
     Continue with Apple
   </button>
 
   <!-- Google Sign In -->
-  <button id="fs-google-btn" onclick="signUpFromGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:16px;font-size:18px;font-weight:400;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:20px;-webkit-tap-highlight-color:transparent;">
-    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+  <button id="fs-google-btn" onclick="signUpFromGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:15px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:14px;font-size:17px;font-weight:400;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:6px;-webkit-tap-highlight-color:transparent;">
+    <svg width="19" height="19" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
     Continue with Google
   </button>
 
-  <!-- Hidden inputs kept for internal reviewer login only (not shown to users) -->
+  <div style="font-size:12px;color:rgba(184,196,208,.3);text-align:center;margin-top:10px;">Used only to notify you when your quest is won</div>
+
+  <!-- Hidden inputs — internal reviewer only -->
   <input id="eg-email" type="hidden" value=""/>
   <input id="eg-password" type="hidden" value=""/>
   <button id="eg-continue-btn" style="display:none;" onclick="submitEmailGate()"></button>
@@ -1778,21 +1784,25 @@ function showEmailGate(){
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
   } catch(e){}
-  // Always show Apple + Google — native app handles OAuth in-webview
-  var aBtn = document.getElementById('fs-apple-btn');
-  var gBtn = document.getElementById('fs-google-btn');
-  if (aBtn) aBtn.style.display = 'flex';
-  if (gBtn) gBtn.style.display = 'flex';
+  // Show signed-in email if already authenticated
+  if (currentUser && currentUser.email) {
+    var signedInEl = document.getElementById('eg-signed-in');
+    var emailEl = document.getElementById('eg-signed-in-email');
+    if (signedInEl) signedInEl.style.display = 'block';
+    if (emailEl) emailEl.textContent = currentUser.email;
+  }
   var backdrop = document.getElementById('eg-backdrop');
   var modal = document.getElementById('eg-modal');
   var inner = document.getElementById('eg-inner');
   backdrop.style.display = 'block';
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  // Center card pop-in animation
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){
       backdrop.style.opacity = '1';
-      inner.style.transform = 'translateY(0)';
+      inner.style.transform = 'scale(1) translateY(0)';
+      inner.style.opacity = '1';
     });
   });
 }
@@ -1800,14 +1810,16 @@ function showEmailGate(){
 function closeEmailGate(){
   var inner = document.getElementById('eg-inner');
   var backdrop = document.getElementById('eg-backdrop');
-  inner.style.transform = 'translateY(100%)';
+  inner.style.transform = 'scale(0.88) translateY(20px)';
+  inner.style.opacity = '0';
   backdrop.style.opacity = '0';
   setTimeout(function(){
     document.getElementById('eg-modal').style.display = 'none';
     backdrop.style.display = 'none';
-    document.getElementById('eg-error').textContent = '';
+    var errEl = document.getElementById('eg-error');
+    if (errEl) errEl.textContent = '';
     document.body.style.overflow = '';
-  }, 400);
+  }, 350);
 }
 
 async function signInWithAppleGate(){
@@ -2843,9 +2855,17 @@ document.addEventListener('DOMContentLoaded', async function(){
         if (event === 'SIGNED_IN' && session && session.user) {
           currentUser = session.user;
           currentProfile = null;
-          // Close email gate if open
+          // Show signed-in email then close gate
+          if (session.user.email) {
+            var siEl = document.getElementById('eg-signed-in');
+            var siEmail = document.getElementById('eg-signed-in-email');
+            if (siEl) siEl.style.display = 'block';
+            if (siEmail) siEmail.textContent = session.user.email;
+          }
           var egModal = document.getElementById('eg-modal');
-          if (egModal && egModal.style.display !== 'none') closeEmailGate();
+          if (egModal && egModal.style.display !== 'none') {
+            setTimeout(function(){ closeEmailGate(); }, 1200);
+          }
           // Only auto-resume if this is a fresh OAuth return (not a regular page load)
           // Check for the pending auth flag we set in showEmailGate
           var pendingAuth = sessionStorage.getItem('fs_quest_pending_auth');
