@@ -1971,37 +1971,30 @@ async function signUpFromGate(){
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
-      // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
-      // Shows a native iOS account picker sheet — no browser bounce at all.
-      var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
-      console.log('[Google] Available plugins:', Object.keys(window.Capacitor.Plugins || {}));
-      console.log('[Google] GoogleAuth plugin:', GoogleAuth);
-      if (!GoogleAuth) throw new Error('GoogleAuth plugin not loaded — run npm install @codetrix-studio/capacitor-google-auth && npx cap sync ios');
-      console.log('[Google] Calling GoogleAuth.signIn()...');
-      var googleUser = await GoogleAuth.signIn();
-      console.log('[Google] signIn result:', JSON.stringify(googleUser));
-      var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
-      if (!idToken) throw new Error('No ID token from Google');
-      // Exchange the native token for a Supabase session
-      var { data, error } = await supaClient.auth.signInWithIdToken({
+      // ── Google Sign-In via @capacitor/browser (SFSafariViewController) ──
+      // Opens a slide-up sheet over the app — user never leaves FinderSeek.
+      // auth-callback.html fires finderseek://auth deep link to close the
+      // sheet and pass the session tokens back to the app.
+      localStorage.setItem('fs_magic_return', 'newquest.html');
+      var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
-        token: idToken
+        options: {
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
+          skipBrowserRedirect: true
+        }
       });
       if (error) throw error;
-      if (data && data.session) {
-        currentUser = data.user;
-        localStorage.setItem('fs_token', data.session.access_token);
-        if (data.session.refresh_token) localStorage.setItem('fs_refresh', data.session.refresh_token);
-        closeEmailGate();
-        showToast('Signed in with Google!', 'success');
-        // Resume quest creation
-        setTimeout(function() {
-          var overlay = document.getElementById('ai-loading');
-          if (overlay) overlay.style.display = 'flex';
-          saveFormState();
-          createQuest();
-        }, 400);
+      if (data && data.url) {
+        var Browser = window.Capacitor.Plugins.Browser;
+        if (Browser && Browser.open) {
+          // SFSafariViewController — slides up over the app, never leaves it
+          await Browser.open({ url: data.url, presentationStyle: 'fullscreen' });
+        } else {
+          throw new Error('@capacitor/browser not available');
+        }
       }
+      // Session is returned via deep link (finderseek://auth?access_token=...)
+      // handled by the appUrlOpen listener in DOMContentLoaded
     } else {
       // Web fallback — standard OAuth redirect
       var { error } = await supaClient.auth.signInWithOAuth({
@@ -2664,7 +2657,11 @@ document.addEventListener('DOMContentLoaded', async function(){
               }
             } catch(ex) { console.warn('Deep link sign-in failed:', ex); }
             if (gotSession) {
-              try { if (window.Capacitor.Plugins.Browser) window.Capacitor.Plugins.Browser.close(); } catch(e) {}
+              // Close the SFSafariViewController sheet
+              try {
+                var _Browser = window.Capacitor.Plugins.Browser;
+                if (_Browser && _Browser.close) await _Browser.close();
+              } catch(e) {}
               saveFormState();
               // Carry the token in the reload URL as a belt-and-braces measure.
               // On first sign-in the setSession write sometimes hasn't persisted

@@ -154,18 +154,19 @@ async function handleCallback() {
       }
 
       if (fwdAccess) {
-        // Save session tokens so the app page finds them immediately
-        localStorage.setItem('fs_token', fwdAccess);
-        if (fwdRefresh) localStorage.setItem('fs_refresh', fwdRefresh);
-        try { await supaClient.auth.setSession({ access_token: fwdAccess, refresh_token: fwdRefresh || '' }); } catch(e) {}
         show('card-success');
         var sEl = document.getElementById('success-sub');
         if (sEl) sEl.textContent = 'Signed in! Returning to FinderSeek...';
-        // Navigate back inside the webview — carry tokens in URL as belt-and-braces
-        var dest = returnTo + (returnTo.indexOf('?') >= 0 ? '&' : '?') +
-          'from=app&at=' + encodeURIComponent(fwdAccess) +
-          (fwdRefresh ? '&rt=' + encodeURIComponent(fwdRefresh) : '');
-        setTimeout(function(){ window.location.href = dest; }, 800);
+        // Fire the deep link — this closes the SFSafariViewController sheet
+        // and hands the tokens to the appUrlOpen listener in newquest.html.
+        var parts = ['return_to=' + encodeURIComponent(returnTo)];
+        parts.push('access_token=' + encodeURIComponent(fwdAccess));
+        if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
+        var deepLink = 'finderseek://auth?' + parts.join('&');
+        // Small delay so the success UI is visible briefly before closing
+        setTimeout(function(){
+          window.location.href = deepLink;
+        }, 500);
         return;
       }
     }
