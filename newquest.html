@@ -1988,26 +1988,10 @@ async function signUpFromGate(){
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
       // Shows a native iOS account picker — no browser, no redirect at all.
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
-      // Debug: show which plugins are loaded
-      var pluginList = window.Capacitor && window.Capacitor.Plugins ? Object.keys(window.Capacitor.Plugins).join(', ') : 'Capacitor not found';
-      if (!GoogleAuth) {
-        alert('GoogleAuth not loaded.\nAvailable plugins: ' + pluginList);
-        throw new Error('GoogleAuth plugin not found');
-      }
-      alert('GoogleAuth found! Plugins: ' + pluginList);
+      if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
 
-      // Initialize the plugin with our client ID
-      try {
-        await GoogleAuth.initialize({
-          clientId: '946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com',
-          scopes: ['profile', 'email'],
-          grantOfflineAccess: false
-        });
-      } catch(initErr) {
-        console.log('[Google] initialize:', initErr.message);
-        // initialize() may throw if already called — safe to ignore
-      }
-
+      // signIn() — plugin reads client ID from capacitor.config.json / Info.plist
+      // No manual initialize() needed; the plugin self-configures on native iOS
       var googleUser = await GoogleAuth.signIn();
       console.log('[Google] signIn result:', JSON.stringify(googleUser));
 
