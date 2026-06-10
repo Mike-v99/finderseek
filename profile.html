@@ -694,15 +694,8 @@ function showGate(){
   gate.classList.remove('animate-in');
   void gate.offsetWidth;
   gate.classList.add('animate-in');
-  // Hide social sign-in buttons in native app (OAuth redirects
-  // don't work in WKWebView — users sign in via email instead)
-  var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
-  if (isNativeApp) {
-    var orDiv = document.getElementById('fs-or-divider-profile');
-    var socialWrap = document.getElementById('fs-social-wrap-profile');
-    if (orDiv) orDiv.style.display = 'none';
-    if (socialWrap) socialWrap.style.display = 'none';
-  }
+  // (Social buttons are shown everywhere — native Google uses the
+  // GoogleAuth plugin and Apple uses the in-webview OAuth flow.)
 }
 
 function closeGate(){
