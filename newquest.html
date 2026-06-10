@@ -3530,6 +3530,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         return d.orderId;
       } catch(e) {
         errEl.textContent = e.message || 'Payment failed';
+        showToast(e.message || 'Payment failed', 'error');
         throw e;
       }
     },

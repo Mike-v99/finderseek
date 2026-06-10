@@ -47,6 +47,28 @@ async function createEscrowOrder({ userId, email, huntId, prizeAmount, totalCent
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  // Guard: never create a second order for a quest that's already funded.
+  // Without this, retrying payment on a funded quest charges the user twice.
+  try {
+    const huntCheck = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/hunts?id=eq.${encodeURIComponent(huntId)}&select=escrow_status,status`,
+      { headers: {
+          'apikey': process.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+        } }
+    );
+    const hunts = await huntCheck.json();
+    const hunt = Array.isArray(hunts) ? hunts[0] : null;
+    if (!hunt) return res.status(404).json({ error: 'Quest not found' });
+    if (hunt.escrow_status === 'funded') {
+      return res.status(409).json({ error: 'This quest is already funded — no additional payment is needed.' });
+    }
+  } catch(guardErr) {
+    // If the check itself fails we log and continue rather than blocking
+    // legitimate payments on a transient DB error.
+    console.error('[create-checkout] funded-guard check failed:', guardErr);
+  }
+
   const total = (totalCents / 100).toFixed(2);
   const prize = parseFloat(prizeAmount || 0).toFixed(2);
   const { token, base } = await getPayPalToken();
