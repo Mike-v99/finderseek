@@ -1986,10 +1986,11 @@ async function signUpFromGate(){
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
       // ── Google Sign-In via @capacitor/browser (SFSafariViewController) ──
-      // Opens a slide-up sheet over the app — user never leaves FinderSeek.
-      // auth-callback.html fires finderseek://auth deep link to close the
-      // sheet and pass the session tokens back to the app.
+      // Store return destination in multiple places so auth-callback can find it
+      // even if Supabase strips query params from the redirect URL.
       localStorage.setItem('fs_magic_return', 'newquest.html');
+      localStorage.setItem('fs_oauth_return', 'newquest.html');
+      sessionStorage.setItem('fs_oauth_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -2001,14 +2002,12 @@ async function signUpFromGate(){
       if (data && data.url) {
         var Browser = window.Capacitor.Plugins.Browser;
         if (Browser && Browser.open) {
-          // SFSafariViewController — slides up over the app, never leaves it
           await Browser.open({ url: data.url, presentationStyle: 'fullscreen' });
         } else {
           throw new Error('@capacitor/browser not available');
         }
       }
-      // Session is returned via deep link (finderseek://auth?access_token=...)
-      // handled by the appUrlOpen listener in DOMContentLoaded
+      // Session returned via finderseek://auth deep link → appUrlOpen handler
     } else {
       // Web fallback — standard OAuth redirect
       var { error } = await supaClient.auth.signInWithOAuth({
@@ -2676,18 +2675,39 @@ document.addEventListener('DOMContentLoaded', async function(){
                 var _Browser = window.Capacitor.Plugins.Browser;
                 if (_Browser && _Browser.close) await _Browser.close();
               } catch(e) {}
+
+              // Load the user profile so we know who signed in
+              try { await loadCurrentUser(); } catch(e) {}
+
+              // Show which email just signed in
+              if (currentUser && currentUser.email) {
+                showToast('✓ Signed in as ' + currentUser.email, 'success');
+                // Also update the sign-in modal if it's still open
+                var siEl = document.getElementById('eg-signed-in');
+                var siEmail = document.getElementById('eg-signed-in-email');
+                if (siEl) siEl.style.display = 'block';
+                if (siEmail) siEmail.textContent = currentUser.email;
+              }
+
+              // Close sign-in modal and resume quest — no page reload needed
+              var egModal = document.getElementById('eg-modal');
+              if (egModal && egModal.style.display !== 'none') {
+                setTimeout(function(){ closeEmailGate(); }, 800);
+              }
+
               saveFormState();
-              // Carry the token in the reload URL as a belt-and-braces measure.
-              // On first sign-in the setSession write sometimes hasn't persisted
-              // by the time the page reloads, so the reloaded page sees no token
-              // and bounces home. Passing it in the URL lets the new page restore
-              // it immediately, independent of async storage timing.
-              var _tok = finalAccess || (function(){ try { return localStorage.getItem('fs_token'); } catch(e){ return ''; } })() || '';
-              var _ref = finalRefresh || (function(){ try { return localStorage.getItem('fs_refresh'); } catch(e){ return ''; } })() || '';
-              var _dest = 'newquest.html?from=app'
-                + (_tok ? '&at=' + encodeURIComponent(_tok) : '')
-                + (_ref ? '&rt=' + encodeURIComponent(_ref) : '');
-              setTimeout(function(){ window.location.href = _dest; }, 200);
+              sessionStorage.removeItem('fs_quest_pending_auth');
+
+              // Resume quest creation after a short delay
+              setTimeout(function() {
+                try {
+                  if (currentStep === 5 || selectedPreset) {
+                    var overlay = document.getElementById('ai-loading');
+                    if (overlay) overlay.style.display = 'flex';
+                    createQuest();
+                  }
+                } catch(e) { console.warn('Resume quest error:', e); }
+              }, 1200);
             }
           }
         });

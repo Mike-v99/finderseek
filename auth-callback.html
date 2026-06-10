@@ -59,10 +59,10 @@ body::before{
 <div class="card" id="card-success" style="display:none;">
   <div class="icon">✅</div>
   <div class="title">You're signed in!</div>
-  <div class="sub" id="success-sub">Welcome back. Tap below to continue.</div>
-  <a href="index.html" id="continue-btn" class="btn btn-solid">Continue to FinderSeek →</a>
+  <div class="sub" id="success-sub">Returning to FinderSeek...</div>
+  <a href="finderseek://auth" id="continue-btn" class="btn btn-solid" onclick="retryDeepLink(event)">Return to FinderSeek →</a>
   <div style="font-size:13px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.5;">
-    If the app doesn't open automatically,<br/>copy your link and paste it in your usual browser.
+    Tap above if the app doesn't open automatically.
   </div>
 </div>
 
@@ -78,6 +78,13 @@ var SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 var supaClient = window.supabase.createClient(SB, KEY);
 
+function retryDeepLink(e) {
+  e.preventDefault();
+  var btn = document.getElementById('continue-btn');
+  if (btn && btn._deepLink) {
+    window.location.href = btn._deepLink;
+  }
+}
 function show(id) {
   ['card-loading','card-success','card-error'].forEach(function(c){
     document.getElementById(c).style.display = c === id ? 'block' : 'none';
@@ -94,7 +101,14 @@ async function handleCallback() {
     // is empty here — we rely on the return_to URL param that we appended to
     // the OAuth redirectTo when starting sign-in. localStorage is only a
     // fallback for the pure-web flow.
-    var returnTo = _q.get('return_to') || localStorage.getItem('fs_magic_return') || 'index.html';
+    // Use every possible storage location — Supabase PKCE sometimes strips query params
+    var returnTo = _q.get('return_to') 
+      || localStorage.getItem('fs_oauth_return')
+      || sessionStorage.getItem('fs_oauth_return')
+      || localStorage.getItem('fs_magic_return') 
+      || 'newquest.html';
+    // Clean up so stale values don't persist
+    try { localStorage.removeItem('fs_oauth_return'); sessionStorage.removeItem('fs_oauth_return'); } catch(e) {}
 
     // ── Native Sign in with Apple path ─────────────────────────────
     // AppDelegate's ASAuthorizationController navigates here with the
@@ -128,7 +142,9 @@ async function handleCallback() {
     // so after the provider redirects back here we are still inside the app.
     // Just exchange the code for a session, save the tokens, and navigate
     // directly back to the return page — no deep-link required.
-    if (_q.get('from_app') === '1') {
+    // Detect native app flow via URL param OR localStorage flag
+    var isFromApp = _q.get('from_app') === '1' || localStorage.getItem('fs_magic_return') === 'newquest.html';
+    if (isFromApp) {
       var fwdCode = _q.get('code');
       var fwdAccess = _h.get('access_token') || _q.get('access_token');
       var fwdRefresh = _h.get('refresh_token') || _q.get('refresh_token');
@@ -157,16 +173,24 @@ async function handleCallback() {
         show('card-success');
         var sEl = document.getElementById('success-sub');
         if (sEl) sEl.textContent = 'Signed in! Returning to FinderSeek...';
-        // Fire the deep link — this closes the SFSafariViewController sheet
-        // and hands the tokens to the appUrlOpen listener in newquest.html.
+
+        // Build deep link with tokens — closes SFSafariViewController
+        // and triggers appUrlOpen in the app
         var parts = ['return_to=' + encodeURIComponent(returnTo)];
         parts.push('access_token=' + encodeURIComponent(fwdAccess));
         if (fwdRefresh) parts.push('refresh_token=' + encodeURIComponent(fwdRefresh));
         var deepLink = 'finderseek://auth?' + parts.join('&');
-        // Small delay so the success UI is visible briefly before closing
-        setTimeout(function(){
-          window.location.href = deepLink;
-        }, 500);
+
+        // Store deep link on button for manual retry
+        var btnEl = document.getElementById('continue-btn');
+        if (btnEl) {
+          btnEl.href = deepLink;
+          btnEl._deepLink = deepLink;
+        }
+
+        // Fire deep link — iOS needs a small delay after SFSafariViewController loads
+        setTimeout(function(){ window.location.href = deepLink; }, 100);
+        setTimeout(function(){ window.location.href = deepLink; }, 600);
         return;
       }
     }
