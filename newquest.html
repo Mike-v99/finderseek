@@ -1988,7 +1988,13 @@ async function signUpFromGate(){
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
       // Shows a native iOS account picker — no browser, no redirect at all.
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
-      if (!GoogleAuth) throw new Error('GoogleAuth plugin not found. Run: npm install @codetrix-studio/capacitor-google-auth && npx cap sync ios');
+      // Debug: show which plugins are loaded
+      var pluginList = window.Capacitor && window.Capacitor.Plugins ? Object.keys(window.Capacitor.Plugins).join(', ') : 'Capacitor not found';
+      if (!GoogleAuth) {
+        alert('GoogleAuth not loaded.\nAvailable plugins: ' + pluginList);
+        throw new Error('GoogleAuth plugin not found');
+      }
+      alert('GoogleAuth found! Plugins: ' + pluginList);
 
       // Initialize the plugin with our client ID
       try {
