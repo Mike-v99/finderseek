@@ -150,8 +150,6 @@ export default async function handler(req, res) {
     }
 
     // ── Manual payout email ──
-    const note = encodeURIComponent('FinderSeek prize' + (hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''));
-    const paypalSendUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(destination)}&amount=${prizeAmount}&currency_code=USD&item_name=${note}&no_shipping=1`;
 
     try {
       await sendEmail({
@@ -179,8 +177,16 @@ export default async function handler(req, res) {
                     <span style="font-size:13px;color:#16a34a;font-weight:600;">$${prizeAmount}</span>
                   </div>
                 </div>
-                <a href="${paypalSendUrl}" style="display:block;background:#003087;color:#fff;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;margin-bottom:8px;">Send $${prizeAmount} via PayPal →</a>
-                <div style="font-size:12px;color:#888;text-align:center;line-height:1.5;">Opens PayPal pre-filled with the recipient and amount. Just confirm and send.</div>
+                <div style="background:#fff8e1;border:1px solid #f0d264;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+                  <div style="font-size:13px;font-weight:600;color:#7a5c00;margin-bottom:6px;">How to pay manually:</div>
+                  <div style="font-size:13px;color:#555;line-height:1.7;">
+                    1. Open PayPal (app or paypal.com) and choose <strong>Send</strong><br/>
+                    2. Paste the winner's ${methodLabel}: <span style="font-family:monospace;background:#fff;border:1px solid #ddd;border-radius:6px;padding:2px 8px;user-select:all;">${destination}</span><br/>
+                    3. Send <strong>$${prizeAmount} USD</strong> with note: FinderSeek prize${hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''}
+                  </div>
+                </div>
+                <a href="https://www.paypal.com/myaccount/transfer/homepage/send" style="display:block;background:#003087;color:#fff;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;margin-bottom:8px;">Open PayPal Send Money →</a>
+                <div style="font-size:12px;color:#888;text-align:center;line-height:1.5;">Copy the winner's address above, then paste it in PayPal's Send flow.</div>
               </div>
             </div>`
       });
