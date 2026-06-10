@@ -187,11 +187,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="text-align:center;margin-bottom:20px;">
         <div style="font-size:40px;margin-bottom:8px;">🔑</div>
         <div style="font-size:21px;font-weight:400;color:#fff;margin-bottom:6px;">One last step</div>
-        <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Enter your email to receive your <span style="color:#4ade80;font-weight:500;">$<span id="win-signin-amount">0</span></span> prize. We'll send a magic link — no password needed.</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Sign in to receive your <span style="color:#4ade80;font-weight:500;">$<span id="win-signin-amount">0</span></span> prize — takes a few seconds.</div>
       </div>
-      <input id="win-signin-email" type="email" inputmode="email" placeholder="your@email.com" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:13px 14px;color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;"/>
       <div id="win-signin-msg" style="font-size:13px;color:rgba(74,222,128,.7);text-align:center;min-height:18px;margin-bottom:8px;"></div>
-      <button onclick="winSignIn()" id="win-signin-btn" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:17px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:10px;">✨ Send Magic Link</button>
+      <button onclick="winSignInSocial('apple')" style="width:100%;padding:13px;border-radius:12px;background:#000;border:2px solid #fff;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> Continue with Apple</button>
+      <button onclick="winSignInSocial('google')" id="win-signin-btn" style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google</button>
       <button onclick="document.getElementById('win-step-signin').style.display='none';document.getElementById('win-step-2').style.display='block';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
     </div>
 
@@ -1294,28 +1294,66 @@ async function claimPrize(){
 
 var _selectedPayoutMethod=null;
 
+
+// ── Shared native Google Sign-In (same flow that works in newquest.html) ──
+async function fsNativeGoogleSignIn(){
+  var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
+  if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
+  await GoogleAuth.initialize({
+    clientId: '946262975462-klsc7f8ltdp9mnqmpiuqu581fquk4ea9.apps.googleusercontent.com',
+    scopes: ['profile', 'email']
+  });
+  var googleUser = await GoogleAuth.signIn();
+  var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
+  if (!idToken) throw new Error('No ID token received from Google');
+  var res = await supaClient.auth.signInWithIdToken({ provider: 'google', token: idToken });
+  if (res.error) throw res.error;
+  if (res.data && res.data.session) {
+    localStorage.setItem('fs_token', res.data.session.access_token);
+    if (res.data.session.refresh_token) localStorage.setItem('fs_refresh', res.data.session.refresh_token);
+  }
+  return res.data;
+}
+function fsIsNativeApp(){
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+}
+
 // Called when seeker taps "Claim My Prize" but isn't signed in yet
-async function winSignIn(){
-  var email=(document.getElementById('win-signin-email').value||'').trim();
-  if(!email||!email.includes('@')){document.getElementById('win-signin-msg').textContent='Enter a valid email address.';return;}
-  var btn=document.getElementById('win-signin-btn');
-  btn.disabled=true;btn.textContent='Sending...';
-  document.getElementById('win-signin-msg').textContent='';
-  try{
-    var r=await fetch(SB+'/auth/v1/otp',{
-      method:'POST',
-      headers:{'apikey':KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email:email,create_user:true,options:{emailRedirectTo:window.location.href.split('?')[0]+'?id='+(currentHunt?currentHunt.id:'')}})
-    });
-    if(r.ok){
-      document.getElementById('win-signin-msg').textContent='✓ Magic link sent! Tap it in your email to complete your claim.';
-      btn.textContent='Link sent ✓';
+async function winSignInSocial(provider){
+  var msg = document.getElementById('win-signin-msg');
+  msg.style.color = 'rgba(74,222,128,.7)';
+  msg.textContent = '';
+  // Return here (with the hunt id) after sign-in so the claim resumes
+  var returnUrl = 'quest.html?id=' + (currentHunt ? currentHunt.id : '');
+  try {
+    if (fsIsNativeApp() && provider === 'google') {
+      var authData = await fsNativeGoogleSignIn();
+      if (authData && authData.session) {
+        msg.textContent = '\u2713 Signed in! Resuming your claim\u2026';
+        setTimeout(function(){ window.location.href = returnUrl; }, 600);
+      }
+    } else if (fsIsNativeApp()) {
+      localStorage.setItem('fs_magic_return', returnUrl);
+      var { data, error } = await supaClient.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=' + encodeURIComponent(returnUrl),
+          skipBrowserRedirect: true
+        }
+      });
+      if (error) throw error;
+      if (data && data.url) window.location.href = data.url;
     } else {
-      throw new Error('Could not send link');
+      localStorage.setItem('fs_magic_return', returnUrl);
+      var { error } = await supaClient.auth.signInWithOAuth({
+        provider: provider,
+        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=' + encodeURIComponent(returnUrl) }
+      });
+      if (error) throw error;
     }
-  }catch(e){
-    document.getElementById('win-signin-msg').textContent='Error: '+e.message;
-    btn.disabled=false;btn.textContent='✨ Send Magic Link';
+  } catch(e) {
+    msg.style.color = '#f87171';
+    msg.textContent = e.message || 'Sign-in failed \u2014 please try again';
   }
 }
 

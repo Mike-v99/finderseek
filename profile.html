@@ -144,7 +144,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:clamp(42px,11vw,52px);line-height:1.1;margin-bottom:10px;">
           <span style="background:linear-gradient(90deg,#e8a820,#f5c842,#c9890c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Finder</span><span style="color:#f5ead8;">Seek</span>
         </div>
-        <div style="font-size:18px;color:#d0e4f0;">Hidden Treasure. Real Adventure.</div>
+        <div style="font-size:18px;color:#d0e4f0;" onclick="window._rvTaps=(window._rvTaps||0)+1;if(window._rvTaps>=5){var r=document.getElementById('reviewer-login');if(r)r.style.display='flex';}">Hidden Treasure. Real Adventure.</div>
       </div>
 
       <!-- Prize claim banner — shown when seeker arrived from winning a quest -->
@@ -155,36 +155,17 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <div style="font-size:13px;color:rgba(74,222,128,.6);">Your prize is reserved — it won't expire while you sign in.</div>
       </div>
 
-      <!-- Tab toggle -->
-      <div style="display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin-bottom:20px;">
-        <div id="tab-signin" class="auth-tab auth-tab-active lg-anim lg-slide-right" onclick="switchAuthTab('signin')">Sign in</div>
-        <div id="tab-signup" class="auth-tab lg-anim lg-slide-left" onclick="switchAuthTab('signup')">Create account</div>
-      </div>
 
-      <!-- Form -->
-      <div class="lg-anim lg-rise-1" style="display:flex;flex-direction:column;gap:10px;">
-        <div id="gate-username-wrap" style="display:none;">
-          <input id="gate-username" type="text" autocomplete="username" placeholder="Username"
-            style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
-        </div>
-        <input id="gate-email" type="text" inputmode="email" autocomplete="off" placeholder="Email" name="email" oninput="var e=this.value.trim(),p=document.getElementById('gate-password'),b=document.getElementById('gate-submit'),r=e.toLowerCase()==='reviewer@finderseek.com';if(p)p.style.display=r?'block':'none';if(b)b.textContent=r?'Sign In':'✨ Send Magic Link';"
-          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;transition:border-color .2s;"/>
-
-
-
+      <!-- Reviewer-only sign-in (hidden; revealed by tapping the tagline 5 times) -->
+      <div id="reviewer-login" style="display:none;flex-direction:column;gap:10px;margin-bottom:18px;">
+        <input id="gate-email" type="text" inputmode="email" autocomplete="off" placeholder="Reviewer email"
+          style="padding:14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:18px;font-family:inherit;outline:none;"/>
         <input id="gate-password" type="password" placeholder="Password" autocomplete="current-password"
-          style="display:none;width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font-size:17px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box;"
-          oninput="" />
-<button id="gate-submit" onclick="gateSubmit()"
-          style="padding:14px 20px;border-radius:30px;border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-size:18px;font-weight:400;font-family:inherit;cursor:pointer;letter-spacing:.5px;transition:transform .15s,background .2s;">✨ Send Magic Link</button>
+          style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font-size:17px;font-family:inherit;outline:none;box-sizing:border-box;"/>
+        <button id="gate-submit" onclick="reviewerSignIn()"
+          style="padding:14px 20px;border-radius:30px;border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-size:18px;font-weight:400;font-family:inherit;cursor:pointer;letter-spacing:.5px;">Sign In</button>
       </div>
 
-      <!-- OR divider -->
-      <div id="fs-or-divider-profile" class="lg-anim lg-rise-2" style="display:flex;align-items:center;gap:10px;color:#d0e4f0;font-size:18px;margin:20px 0;letter-spacing:1px;">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-        <span>OR</span>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-      </div>
 
       <!-- Social -->
       <div id="fs-social-wrap-profile" class="lg-anim lg-rise-3">
@@ -729,96 +710,48 @@ function closeGate(){
   window.location.href = 'index.html';
 }
 
-function switchAuthTab(mode){
-  authMode = mode;
-  document.getElementById('tab-signin').classList.toggle('auth-tab-active', mode === 'signin');
-  document.getElementById('tab-signup').classList.toggle('auth-tab-active', mode === 'signup');
-  document.getElementById('gate-username-wrap').style.display = mode === 'signup' ? 'block' : 'none';
-  document.getElementById('gate-submit').innerHTML = mode === 'signup' ? '✨ Send Magic Link' : '✨ Send Magic Link';
-  document.getElementById('gate-err').textContent = '';
-  document.getElementById('gate-err').style.color = '#f87171';
-}
-
-async function gateSubmit(){
-  var email = document.getElementById('gate-email').value.trim().toLowerCase();
-  // Reviewer password login
-  if(email === 'reviewer@finderseek.com'){
-    var pw = (document.getElementById('gate-password')||{}).value||'';
-    if(!pw){showToast('Please enter your password','error');return;}
-    var btn=document.getElementById('gate-submit');
-    btn.disabled=true;btn.textContent='Signing in...';
-    try{
-      var {data,error} = await supaClient.auth.signInWithPassword({email:email,password:pw});
-      if(error)throw error;
-      if(data&&data.session){
-        localStorage.setItem('fs_token',data.session.access_token);
-        window.location.href='index.html';
-        return;
-      }
-    }catch(e){
-      showToast(e.message||'Invalid password','error');
-      btn.disabled=false;btn.textContent='Sign In';
+async function reviewerSignIn(){
+  var email = (document.getElementById('gate-email').value||'').trim().toLowerCase();
+  var pw = (document.getElementById('gate-password')||{}).value||'';
+  var btn = document.getElementById('gate-submit');
+  if(!email||!pw){showToast('Enter email and password','error');return;}
+  btn.disabled=true;btn.textContent='Signing in...';
+  try{
+    var {data,error} = await supaClient.auth.signInWithPassword({email:email,password:pw});
+    if(error)throw error;
+    if(data&&data.session){
+      localStorage.setItem('fs_token',data.session.access_token);
+      window.location.href='index.html';
       return;
     }
-  }
-  if (authMode === 'signin') return gateSignIn();
-  return gateSignUp();
-}
-
-async function gateSignIn(){
-  var email = document.getElementById('gate-email').value.trim();
-  var err = document.getElementById('gate-err');
-  var btn = document.getElementById('gate-submit');
-  err.textContent = '';
-  if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
-  btn.disabled = true; btn.innerHTML = 'Sending...';
-  try {
-    var returnTo = localStorage.getItem('fs_magic_return') || 'profile.html';
-    // Don't overwrite magic_return — it may have been set by another page
-    var { error } = await supaClient.auth.signInWithOtp({
-      email: email,
-      options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
-    });
-    if (error) throw error;
-    err.style.color = '#4ade80';
-    err.textContent = '✓ Magic link sent! Check your email and tap the link to sign in.';
-    btn.innerHTML = '✨ Send Magic Link';
-    btn.disabled = false;
-  } catch(e) {
-    err.textContent = e.message || 'Failed to send link — try again';
-    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
+  }catch(e){
+    showToast(e.message||'Invalid password','error');
+    btn.disabled=false;btn.textContent='Sign In';
   }
 }
 
-async function gateSignUp(){
-  var email = document.getElementById('gate-email').value.trim();
-  var username = document.getElementById('gate-username').value.trim();
-  var err = document.getElementById('gate-err');
-  var btn = document.getElementById('gate-submit');
-  err.textContent = '';
-  if (!username) { err.textContent = 'Pick a username'; return; }
-  if (username.length < 3) { err.textContent = 'Username must be 3+ characters'; return; }
-  if (!email || !email.includes('@')) { err.textContent = 'Enter a valid email address'; return; }
-  btn.disabled = true; btn.innerHTML = 'Sending...';
-  try {
-    // Save username so we can set it after magic link login
-    sessionStorage.setItem('fs_pending_username', username);
-    localStorage.setItem('fs_magic_return', 'profile.html');
-    var { error } = await supaClient.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: window.location.origin + '/auth-callback.html',
-        data: { username: username }
-      }
-    });
-    if (error) throw error;
-    err.style.color = '#4ade80';
-    err.textContent = '✓ Magic link sent! Check your email to complete sign-up.';
-    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
-  } catch(e) {
-    err.textContent = e.message || 'Failed to send link — try again';
-    btn.disabled = false; btn.innerHTML = '✨ Send Magic Link';
+
+// ── Shared native Google Sign-In (same flow that works in newquest.html) ──
+async function fsNativeGoogleSignIn(){
+  var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
+  if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
+  await GoogleAuth.initialize({
+    clientId: '946262975462-klsc7f8ltdp9mnqmpiuqu581fquk4ea9.apps.googleusercontent.com',
+    scopes: ['profile', 'email']
+  });
+  var googleUser = await GoogleAuth.signIn();
+  var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
+  if (!idToken) throw new Error('No ID token received from Google');
+  var res = await supaClient.auth.signInWithIdToken({ provider: 'google', token: idToken });
+  if (res.error) throw res.error;
+  if (res.data && res.data.session) {
+    localStorage.setItem('fs_token', res.data.session.access_token);
+    if (res.data.session.refresh_token) localStorage.setItem('fs_refresh', res.data.session.refresh_token);
   }
+  return res.data;
+}
+function fsIsNativeApp(){
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
 
 async function gateSocial(provider){
@@ -827,10 +760,18 @@ async function gateSocial(provider){
       localStorage.setItem('fs_magic_return', 'profile.html');
     }
 
-    var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    var isNativeApp = fsIsNativeApp();
 
-    if (isNativeApp) {
-      // Native app: get the OAuth URL, then load it directly in the
+    if (isNativeApp && provider === 'google') {
+      // Native Google Sign-In — same flow that works in newquest.html.
+      // Native account picker, no browser, no redirect.
+      var authData = await fsNativeGoogleSignIn();
+      if (authData && authData.session) {
+        showToast('✓ Signed in as ' + (authData.user && authData.user.email ? authData.user.email : 'Google account'), 'success');
+        setTimeout(function(){ window.location.href = 'profile.html'; }, 600);
+      }
+    } else if (isNativeApp) {
+      // Native Apple: get the OAuth URL, then load it directly in the
       // webview (not in an external browser). Stays inside the app.
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: provider,
@@ -855,32 +796,6 @@ async function gateSocial(provider){
   } catch(e) {
     document.getElementById('gate-err').textContent = e.message;
   }
-}
-
-async function gateForgotPassword(){
-  var email = document.getElementById('gate-email').value.trim();
-  var err = document.getElementById('gate-err');
-  err.style.color = '#f87171';
-  if (!email) { err.textContent = 'Enter your email first, then tap the link above'; return; }
-
-  // Save where user was trying to go so we redirect back after login
-  try {
-    if(!localStorage.getItem('fs_magic_return')){
-      localStorage.setItem('fs_magic_return', 'profile.html');
-    }
-  } catch(e){}
-
-  try {
-    var { error } = await supaClient.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: window.location.origin + '/auth-callback.html'
-      }
-    });
-    if (error) throw error;
-    err.style.color = '#4ade80';
-    err.textContent = '✓ Check your email — tap the link to sign in';
-  } catch(e) { err.textContent = e.message; }
 }
 
 // Handle OAuth callback — Supabase JS client exchanges the code automatically
