@@ -29,7 +29,7 @@
 :root{--ink:#06050a;--gold:#c9890c;--gold2:#e8a820;--gold3:#f5c842;--cream:#f5ead8;--dim:#d0e4f0;--muted:#d0e4f0;--border:rgba(255,255,255,.08);--card-bg:rgba(13,11,24,.85);--purple:#a78bfa;--purple-bg:rgba(167,139,250,.12);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{overflow-x:hidden;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body{ overscroll-behavior: none;background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 .page{max-width:520px;margin:0 auto;padding:0 0 80px;}
@@ -1142,6 +1142,35 @@ if ('serviceWorker' in navigator) {
 
 // Init
 init();
+</script>
+<script>
+// Prevent iOS WKWebView pull-down overscroll
+(function() {
+  var lastY = 0;
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    var scrollEl = e.target;
+    while (scrollEl && scrollEl !== document.body) {
+      if (scrollEl.scrollHeight > scrollEl.clientHeight &&
+          window.getComputedStyle(scrollEl).overflowY !== 'hidden') { break; }
+      scrollEl = scrollEl.parentElement;
+    }
+    var y = e.touches[0].clientY;
+    var scrollTop = (scrollEl === document.body)
+      ? (document.documentElement.scrollTop || document.body.scrollTop)
+      : scrollEl.scrollTop;
+    var atTop = scrollTop <= 0 && y > lastY;
+    var atBottom = (scrollEl === document.body)
+      ? (window.innerHeight + window.scrollY >= document.body.scrollHeight)
+      : (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight);
+    if (atTop || (atBottom && y < lastY)) {
+      if (e.cancelable) e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>

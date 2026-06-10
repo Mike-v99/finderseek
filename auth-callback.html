@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;400&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
+body{ overscroll-behavior: none;
   background:#0a0810;
   color:#f5ead8;
   font-family:'Noto Sans Display',sans-serif;
@@ -222,6 +222,35 @@ async function handleCallback() {
 }
 
 handleCallback();
+</script>
+<script>
+// Prevent iOS WKWebView pull-down overscroll
+(function() {
+  var lastY = 0;
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    var scrollEl = e.target;
+    while (scrollEl && scrollEl !== document.body) {
+      if (scrollEl.scrollHeight > scrollEl.clientHeight &&
+          window.getComputedStyle(scrollEl).overflowY !== 'hidden') { break; }
+      scrollEl = scrollEl.parentElement;
+    }
+    var y = e.touches[0].clientY;
+    var scrollTop = (scrollEl === document.body)
+      ? (document.documentElement.scrollTop || document.body.scrollTop)
+      : scrollEl.scrollTop;
+    var atTop = scrollTop <= 0 && y > lastY;
+    var atBottom = (scrollEl === document.body)
+      ? (window.innerHeight + window.scrollY >= document.body.scrollHeight)
+      : (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight);
+    if (atTop || (atBottom && y < lastY)) {
+      if (e.cancelable) e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>

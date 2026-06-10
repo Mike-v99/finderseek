@@ -13,7 +13,7 @@
   --green:#4ade80;--blue:#3b82f6;--dim:#d0e4f0;--muted:#d0e4f0;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body{ overscroll-behavior: none;background:var(--ink);color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
 
 .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px;overflow-x:hidden;}
@@ -2001,5 +2001,34 @@ function hbSignOut(){
     </div>
   </div>
 </div>
+<script>
+// Prevent iOS WKWebView pull-down overscroll
+(function() {
+  var lastY = 0;
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    var scrollEl = e.target;
+    while (scrollEl && scrollEl !== document.body) {
+      if (scrollEl.scrollHeight > scrollEl.clientHeight &&
+          window.getComputedStyle(scrollEl).overflowY !== 'hidden') { break; }
+      scrollEl = scrollEl.parentElement;
+    }
+    var y = e.touches[0].clientY;
+    var scrollTop = (scrollEl === document.body)
+      ? (document.documentElement.scrollTop || document.body.scrollTop)
+      : scrollEl.scrollTop;
+    var atTop = scrollTop <= 0 && y > lastY;
+    var atBottom = (scrollEl === document.body)
+      ? (window.innerHeight + window.scrollY >= document.body.scrollHeight)
+      : (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight);
+    if (atTop || (atBottom && y < lastY)) {
+      if (e.cancelable) e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
+</script>
 </body>
 </html>

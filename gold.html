@@ -8,7 +8,7 @@
 <title>FinderSeek Gold — Coming Soon</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: #06040e; font-family: -apple-system, 'SF Pro Display', sans-serif; color: #fff; }
+  html, body { overscroll-behavior: none; height: 100%; background: #06040e; font-family: -apple-system, 'SF Pro Display', sans-serif; color: #fff; }
   body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; min-height: 100vh; }
   .crown { font-size: 72px; margin-bottom: 24px; }
   .title { font-size: 32px; font-weight: 300; margin-bottom: 8px; background: linear-gradient(135deg, #e8a820, #f5c842, #c9890c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -22,5 +22,34 @@
   <div class="title">Gold Membership</div>
   <div class="sub">Exclusive perks for quest masters are coming soon. Stay tuned!</div>
   <a class="back-btn" href="index.html">← Back to FinderSeek</a>
+<script>
+// Prevent iOS WKWebView pull-down overscroll
+(function() {
+  var lastY = 0;
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    var scrollEl = e.target;
+    while (scrollEl && scrollEl !== document.body) {
+      if (scrollEl.scrollHeight > scrollEl.clientHeight &&
+          window.getComputedStyle(scrollEl).overflowY !== 'hidden') { break; }
+      scrollEl = scrollEl.parentElement;
+    }
+    var y = e.touches[0].clientY;
+    var scrollTop = (scrollEl === document.body)
+      ? (document.documentElement.scrollTop || document.body.scrollTop)
+      : scrollEl.scrollTop;
+    var atTop = scrollTop <= 0 && y > lastY;
+    var atBottom = (scrollEl === document.body)
+      ? (window.innerHeight + window.scrollY >= document.body.scrollHeight)
+      : (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight);
+    if (atTop || (atBottom && y < lastY)) {
+      if (e.cancelable) e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
+</script>
 </body>
 </html>
