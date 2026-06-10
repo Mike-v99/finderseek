@@ -1980,15 +1980,32 @@ async function submitEmailGate(){
 }
 
 async function signUpFromGate(){
+  alert('[1] Google button handler fired');
   try {
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+    alert('[2] Capacitor: ' + (!!window.Capacitor) +
+          ' | native: ' + isNativeApp +
+          ' | GoogleAuth plugin: ' + (!!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.GoogleAuth)));
     if (isNativeApp) {
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
       // Shows a native iOS account picker — no browser, no redirect at all.
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
       if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
+
+      // Required: initialize the plugin before signIn(). Without this,
+      // signIn() can hang forever on iOS with no error and no sheet.
+      try {
+        await GoogleAuth.initialize({
+          clientId: '946262975462-klsc7f8ltdp9mnqmpiugu581fquk4ea9.apps.googleusercontent.com',
+          scopes: ['profile', 'email']
+        });
+        alert('[3] GoogleAuth initialized — opening sign-in sheet…');
+      } catch(initErr) {
+        alert('[3] initialize error: ' + (initErr.message || JSON.stringify(initErr)));
+        throw initErr;
+      }
 
       var googleUser;
       try {
