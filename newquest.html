@@ -722,27 +722,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 })();
 </script>
 <script>
-// Early redirect — before page renders, check if user should be here
-(function(){
-  try{
-    var hasToken=false;
-    var keys=Object.keys(localStorage);
-    for(var i=0;i<keys.length;i++){
-      if((keys[i].indexOf('sb-')===0&&keys[i].indexOf('-auth-token')>0)||keys[i]==='fs_token'){
-        try{
-          var s=JSON.parse(localStorage.getItem(keys[i]));
-          if(s&&s.access_token){hasToken=true;break;}
-        }catch(e){if(keys[i]==='fs_token'&&localStorage.getItem(keys[i])){hasToken=true;break;}}
-      }
-    }
-    var hasForm=!!localStorage.getItem('fs_newquest_form');
-    var hasPending=!!localStorage.getItem('fs_pending_quest');
-    var fromApp=window.location.search.indexOf('from=app')>-1;
-    if(!hasToken&&!hasForm&&!hasPending&&!fromApp){
-      window.location.replace('index.html');
-    }
-  }catch(e){}
-})();
+// No early redirect — anyone can enter the quest builder.
+// Auth is checked at the schedule step (startTheQuest) so users
+// build their full quest before being asked to sign in.
 </script>
 <script>
 // ── Global error capture (helps debug mobile-only issues) ──────
