@@ -3471,7 +3471,8 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       await new Promise(function(resolve, reject) {
         var s = document.createElement('script');
         var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture' + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=paylater,venmo';
+        var _disabledFunding = 'paylater,venmo' + (window._fsLegacyBinary && window._fsLegacyBinary() ? ',card' : '');
+        s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture' + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=' + _disabledFunding;
         s.onload = resolve;
         s.onerror = function() { reject(new Error('PayPal SDK script failed to load (network/blocked)')); };
         document.head.appendChild(s);
@@ -5080,6 +5081,32 @@ function hbSignOut(){
     }
     lastY = y;
   }, { passive: false });
+})();
+</script>
+
+<script>
+// ── Legacy-binary safety net (app v1.0) ─────────────────────────
+// The 1.0 binary lacks the GoogleAuth plugin (and PayPal card support).
+// Hide Google sign-in there; Apple sign-in still works. Buttons reappear
+// automatically once the user updates to 1.1+.
+(function(){
+  function fsLegacyBinary(){
+    var native = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+    return native && !(window.Capacitor.Plugins && window.Capacitor.Plugins.GoogleAuth);
+  }
+  function hideGoogleButtons(){
+    if (!fsLegacyBinary()) return;
+    var els = document.querySelectorAll('[onclick]');
+    for (var i=0;i<els.length;i++){
+      var oc = els[i].getAttribute('onclick') || '';
+      if (oc.indexOf("'google'") !== -1 || oc.indexOf('signUpFromGate') !== -1) {
+        els[i].style.display = 'none';
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hideGoogleButtons);
+  else hideGoogleButtons();
+  window._fsLegacyBinary = fsLegacyBinary;
 })();
 </script>
 </body>
