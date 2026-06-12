@@ -2893,7 +2893,7 @@ document.addEventListener('DOMContentLoaded', async function(){
       window._ppClientId = cidData.clientId;
       var s = document.createElement('script');
       var _isIOS2 = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + cidData.clientId + '&currency=USD&intent=capture' + (_isIOS2 ? '' : '&enable-funding=googlepay') + '&disable-funding=paylater,venmo';
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + cidData.clientId + '&currency=USD&intent=capture&components=buttons' + (window.ApplePaySession ? ',applepay' : '') + (_isIOS2 ? '' : '&enable-funding=googlepay') + '&disable-funding=paylater,venmo';
       s.onload = function() { console.log('[paypal] SDK pre-loaded'); };
       document.head.appendChild(s);
     } catch(e) { console.warn('[paypal] Pre-load failed:', e.message); }
@@ -3345,6 +3345,7 @@ if ('serviceWorker' in navigator) {
   <div class="pm-title" id="pm-title">Fund your quest</div>
   <div class="pm-sub" id="pm-sub">Loading PayPal...</div>
   <div id="pm-error"></div>
+  <div id="applepay-button-container" style="display:none;margin-bottom:10px;"></div>
   <div id="paypal-button-container" style="min-height:50px;"></div>
   <div class="pm-secure">🔒 Secure payment via PayPal · Google Pay · Debit or Credit Card</div>
   <!-- Loading overlay shown after PayPal authorizes, while we capture & set up the quest -->
@@ -3506,7 +3507,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         var s = document.createElement('script');
         var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         var _disabledFunding = 'paylater,venmo' + (window._fsLegacyBinary && window._fsLegacyBinary() ? ',card' : '');
-        s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture' + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=' + _disabledFunding;
+        s.src = 'https://www.paypal.com/sdk/js?client-id=' + ppCid + '&currency=USD&intent=capture&components=buttons' + (window.ApplePaySession ? ',applepay' : '') + (_isIOS ? '' : '&enable-funding=googlepay') + '&disable-funding=' + _disabledFunding;
         s.onload = resolve;
         s.onerror = function() { reject(new Error('PayPal SDK script failed to load (network/blocked)')); };
         document.head.appendChild(s);
@@ -3531,35 +3532,10 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   // Bail if the modal was closed while we were loading PayPal SDK
   if (!_paypalModalOpen) return;
 
-  // Render PayPal buttons
-  var ppButtons = window.paypal.Buttons({
-    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 45 },
-    createOrder: async function() {
-      var errEl = document.getElementById('pm-error');
-      errEl.textContent = '';
-      try {
-        var r = await fetch(API_BASE + '/api/create-checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
-          body: JSON.stringify({
-            type: 'escrow',
-            userId: _currentPayload.userId,
-            email: _currentPayload.email,
-            huntId: _currentPayload.huntId,
-            prizeAmount: _currentPayload.prize,
-            totalCents: Math.round(total * 100)
-          })
-        });
-        var d = await r.json();
-        if (!r.ok || !d.orderId) throw new Error(d.error || 'Could not create order');
-        return d.orderId;
-      } catch(e) {
-        errEl.textContent = e.message || 'Payment failed';
-        showToast(e.message || 'Payment failed', 'error');
-        throw e;
-      }
-    },
-    onApprove: async function(data) {
+  // Shared success path: capture the order, activate the quest, show the
+  // PIN card, kick off TTS. Used by BOTH the PayPal buttons (onApprove)
+  // and the Apple Pay flow so they cannot drift apart.
+  async function _finalizePaidOrder(orderID) {
       var errEl = document.getElementById('pm-error');
       // If polling already handled this success, skip
       if (window._paymentSuccessHandled) return;
@@ -3581,7 +3557,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         var r = await fetch(API_BASE + '/api/paypal-capture', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: data.orderID, huntId: _currentPayload.huntId })
+          body: JSON.stringify({ orderId: orderID, huntId: _currentPayload.huntId })
         });
         var d = await r.json();
         if (!r.ok || !d.success) throw new Error(d.error || 'Capture failed');
@@ -3636,7 +3612,37 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         }
         errEl.textContent = msg;
       }
+  }
+
+  // Render PayPal buttons
+  var ppButtons = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 45 },
+    createOrder: async function() {
+      var errEl = document.getElementById('pm-error');
+      errEl.textContent = '';
+      try {
+        var r = await fetch(API_BASE + '/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+          body: JSON.stringify({
+            type: 'escrow',
+            userId: _currentPayload.userId,
+            email: _currentPayload.email,
+            huntId: _currentPayload.huntId,
+            prizeAmount: _currentPayload.prize,
+            totalCents: Math.round(total * 100)
+          })
+        });
+        var d = await r.json();
+        if (!r.ok || !d.orderId) throw new Error(d.error || 'Could not create order');
+        return d.orderId;
+      } catch(e) {
+        errEl.textContent = e.message || 'Payment failed';
+        showToast(e.message || 'Payment failed', 'error');
+        throw e;
+      }
     },
+    onApprove: async function(data) { return _finalizePaidOrder(data.orderID); },
     onCancel: function() {
       _hidePaymentProcessing();
       window._paymentSuccessHandled = false;
@@ -3679,6 +3685,96 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       var errEl = document.getElementById('pm-error');
       if (errEl) errEl.textContent = 'Payment unavailable on this device. Please try on another browser.';
     });
+  }
+
+  // ── Apple Pay (PayPal JS SDK applepay component) ──────────────────────────
+  // Renders ONLY where Apple Pay on the Web exists: Safari on iPhone/iPad/Mac.
+  // window.ApplePaySession is undefined in the Capacitor app webview, so the
+  // in-app experience is untouched. Same order create + capture pipeline as
+  // the PayPal buttons via _finalizePaidOrder.
+  try {
+    var apContainer = document.getElementById('applepay-button-container');
+    if (apContainer) { apContainer.style.display = 'none'; apContainer.innerHTML = ''; }
+    if (apContainer && window.ApplePaySession && ApplePaySession.canMakePayments() && window.paypal.Applepay) {
+      var applepay = window.paypal.Applepay();
+      var apConfig = await applepay.config();
+      if (apConfig && apConfig.isEligible) {
+        // Apple's official button web component (idempotent script load)
+        if (!document.getElementById('applepay-btn-script')) {
+          var aps = document.createElement('script');
+          aps.id = 'applepay-btn-script';
+          aps.src = 'https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js';
+          aps.crossOrigin = 'anonymous';
+          document.head.appendChild(aps);
+        }
+        apContainer.innerHTML = '<apple-pay-button buttonstyle="black" type="pay" locale="en-US" style="--apple-pay-button-width:100%;--apple-pay-button-height:45px;--apple-pay-button-border-radius:8px;display:block;width:100%;"></apple-pay-button>';
+        apContainer.style.display = 'block';
+
+        apContainer.firstChild.addEventListener('click', function onApplePayClick() {
+          var errEl = document.getElementById('pm-error');
+          errEl.textContent = '';
+          var paymentRequest = {
+            countryCode: apConfig.countryCode || 'US',
+            currencyCode: (apConfig.currencyCode || 'USD'),
+            merchantCapabilities: apConfig.merchantCapabilities || ['supports3DS'],
+            supportedNetworks: apConfig.supportedNetworks || ['visa', 'masterCard', 'amex', 'discover'],
+            requiredBillingContactFields: ['postalAddress'],
+            total: { label: 'FinderSeek Quest', amount: total.toFixed(2), type: 'final' }
+          };
+          // Must be constructed synchronously inside the tap gesture
+          var session = new ApplePaySession(4, paymentRequest);
+
+          session.onvalidatemerchant = function(event) {
+            applepay.validateMerchant({ validationUrl: event.validationURL, displayName: 'FinderSeek' })
+              .then(function(vm) { session.completeMerchantValidation(vm.merchantSession); })
+              .catch(function(err) {
+                console.error('[applepay] merchant validation failed:', err);
+                try { session.abort(); } catch(e) {}
+                errEl.textContent = 'Apple Pay validation failed. Try PayPal or card below.';
+              });
+          };
+
+          session.onpaymentauthorized = function(event) {
+            (async function() {
+              var apOrderId = null;
+              try {
+                // 1) Create the PayPal order — identical request to the PayPal buttons
+                var r = await fetch(API_BASE + '/api/create-checkout', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+                  body: JSON.stringify({
+                    type: 'escrow',
+                    userId: _currentPayload.userId,
+                    email: _currentPayload.email,
+                    huntId: _currentPayload.huntId,
+                    prizeAmount: _currentPayload.prize,
+                    totalCents: Math.round(total * 100)
+                  })
+                });
+                var d = await r.json();
+                if (!r.ok || !d.orderId) throw new Error(d.error || 'Could not create order');
+                apOrderId = d.orderId;
+                // 2) Hand Apple's encrypted payment token to PayPal
+                await applepay.confirmOrder({ orderId: apOrderId, token: event.payment.token, billingContact: event.payment.billingContact });
+                session.completePayment(ApplePaySession.STATUS_SUCCESS);
+                // 3) Capture + activate — the exact same path as PayPal/card
+                await _finalizePaidOrder(apOrderId);
+              } catch(e) {
+                console.error('[applepay] payment failed:', e);
+                try { session.completePayment(ApplePaySession.STATUS_FAILURE); } catch(_e) {}
+                window._paymentSuccessHandled = false;
+                errEl.textContent = (e && e.message) || 'Apple Pay failed. Try PayPal or card below.';
+              }
+            })();
+          };
+
+          session.oncancel = function() { window._paymentSuccessHandled = false; };
+          session.begin();
+        });
+      }
+    }
+  } catch(apErr) {
+    console.warn('[applepay] unavailable:', apErr && apErr.message);
   }
 }
 
