@@ -121,9 +121,25 @@ export default async function handler(req, res) {
     const customParts = customId.split('|');
     const prizeAmount = parseFloat(customParts[1] || 0);
 
-    // 4. Activate quest in Supabase
+    // 4. Mark quest funded — go live now ONLY if its start time has arrived.
+    // Future-scheduled quests get status 'scheduled'; cron-activate-hunts.js
+    // flips them to active (and sends the live notification) at starts_at.
     const sbUrl = process.env.SUPABASE_URL;
     const sbKey = process.env.SUPABASE_SERVICE_KEY;
+
+    let newStatus = 'active';
+    try {
+      const startRes = await fetch(`${sbUrl}/rest/v1/hunts?id=eq.${huntId}&select=starts_at`, {
+        headers: { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}` }
+      });
+      const startData = await startRes.json();
+      const startsAt = startData?.[0]?.starts_at;
+      if (startsAt && new Date(startsAt).getTime() > Date.now()) {
+        newStatus = 'scheduled';
+      }
+    } catch (e) {
+      console.error('[paypal-capture] starts_at check failed, defaulting to active:', e.message);
+    }
 
     await fetch(`${sbUrl}/rest/v1/hunts?id=eq.${huntId}`, {
       method: 'PATCH',
@@ -134,7 +150,7 @@ export default async function handler(req, res) {
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        status: 'active',
+        status: newStatus,
         escrow_status: 'funded',
         escrow_amount: Math.round(prizeAmount * 100),
         paypal_order_id: orderId,
@@ -142,7 +158,7 @@ export default async function handler(req, res) {
       })
     });
 
-    console.log('[paypal-capture] Quest activated:', huntId);
+    console.log('[paypal-capture] Quest funded; status:', newStatus, 'hunt:', huntId);
 
     // 5. Generate quest ID
     try {
@@ -173,7 +189,7 @@ export default async function handler(req, res) {
     // 6. Send notification emails (quest master + city seekers)
     try {
       const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
-      if (notifySecret) {
+      if (notifySecret && newStatus === 'active') {
         await fetch('https://www.finderseek.com/api/notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret },
