@@ -2372,7 +2372,7 @@ async function createQuest(){
       // Update in place. Also null out any old payment intent
       // mints a fresh one with the new amount.
       huntPayload.stripe_payment_intent = null;
-      huntRes = await fetch(SB+'/rest/v1/hunts?id=eq.'+existingDraft.id, {
+      huntRes = await fetch(SB+'/rest/v1/hunts?id=eq.'+existingDraft.id+'&select=id', {
         method: 'PATCH',
         headers: {
           'apikey': KEY,
@@ -2394,7 +2394,7 @@ async function createQuest(){
         });
       } catch(e){}
     } else {
-      huntRes = await fetch(SB+'/rest/v1/hunts', {
+      huntRes = await fetch(SB+'/rest/v1/hunts?select=id', {
         method: 'POST',
         headers: {
           'apikey': KEY,
