@@ -199,11 +199,20 @@ export default async function handler(req, res) {
       }
     } catch(e) { console.error('[paypal-capture] Notify error:', e.message); }
 
-    // 7. Generate TTS audio server-side (fire and forget — don't block response)
-    // Runs after payment so user gets PIN card immediately
-    generateTtsForHunt(huntId, sbUrl, sbKey).catch(function(e) {
+    // 7. Generate TTS audio server-side without blocking the response.
+    // Vercel kills plain background promises when the response is sent, so use
+    // waitUntil (keeps the function alive until the task finishes). Falls back
+    // to fire-and-forget if @vercel/functions isn't installed.
+    const ttsTask = generateTtsForHunt(huntId, sbUrl, sbKey).catch(function(e) {
       console.warn('[paypal-capture] TTS generation failed (non-fatal):', e.message);
     });
+    try {
+      const { waitUntil } = await import('@vercel/functions');
+      waitUntil(ttsTask);
+      console.log('[paypal-capture] TTS task registered with waitUntil');
+    } catch(e) {
+      console.warn('[paypal-capture] @vercel/functions unavailable, TTS may not complete:', e.message);
+    }
 
     return res.status(200).json({
       success: true,

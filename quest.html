@@ -545,6 +545,52 @@ function speakClue(clueNum, text, type) {
     return;
   }
 
+  // ── No stored audio: generate it on demand, save it, then play ──
+  // (Heals quests whose creation-time audio generation was interrupted.)
+  var genInfo = null;
+  if (clueNum === 0 && currentHunt && currentHunt.location_riddle) {
+    genInfo = { text: currentHunt.location_riddle, type: 'location',
+                clueId: currentHunt.id + '_loc', dbId: currentHunt.id,
+                dbTable: 'hunts', dbColumn: 'location_riddle_audio_url',
+                store: function(url){ currentHunt.location_riddle_audio_url = url; } };
+  } else {
+    var cObj = (currentClues || []).find(function(c){ return c.clue_number === clueNum; });
+    if (cObj && cObj.clue_text) {
+      genInfo = { text: cObj.clue_text, type: 'clue',
+                  clueId: cObj.id, dbId: cObj.id,
+                  dbTable: 'clues', dbColumn: 'audio_url',
+                  store: function(url){ cObj.audio_url = url; } };
+    }
+  }
+  if (genInfo && !window._ttsGenerating) {
+    window._ttsGenerating = true;
+    updateSpeakerBtn(clueNum, true); // show active state while generating (~3-5s)
+    fetch(API_BASE + '/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      body: JSON.stringify({ text: genInfo.text, persona: (currentHunt && currentHunt.clue_persona) || 'pirate',
+        clueId: genInfo.clueId, type: genInfo.type,
+        dbId: genInfo.dbId, dbTable: genInfo.dbTable, dbColumn: genInfo.dbColumn })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      window._ttsGenerating = false;
+      if (d.success && d.audioUrl) {
+        genInfo.store(d.audioUrl);          // remember for this session (also saved to DB)
+        updateSpeakerBtn(clueNum, false);
+        speakClue(clueNum, text, type);     // re-enter: audio now exists, plays normally
+      } else {
+        console.warn('[tts] On-demand generation failed:', d.error);
+        updateSpeakerBtn(clueNum, false);
+        _speakBrowserTTS(clueNum, text);
+      }
+    }).catch(function(e){
+      window._ttsGenerating = false;
+      console.warn('[tts] On-demand generation error:', e.message);
+      updateSpeakerBtn(clueNum, false);
+      _speakBrowserTTS(clueNum, text);
+    });
+    return;
+  }
+
   // ── Fallback: browser TTS ──
   _speakBrowserTTS(clueNum, text);
 }

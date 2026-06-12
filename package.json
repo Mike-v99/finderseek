@@ -21,7 +21,8 @@
     "@supabase/supabase-js": "^2.45.0",
     "micro": "^10.0.1",
     "resend": "^3.0.0",
-    "stripe": "^14.0.0"
+    "stripe": "^14.0.0",
+    "@vercel/functions": "^1.5.0"
   },
   "scripts": {
     "cap:sync": "npx cap sync",
