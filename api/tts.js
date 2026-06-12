@@ -68,7 +68,7 @@ async function generateAndStore(text, voice, speed, storagePath, model) {
     const errText = await uploadRes.text();
     throw new Error(`Storage ${uploadRes.status}: ${errText.slice(0, 200)}`);
   }
-  const publicUrl = `${SB_URL}/storage/v1/object/public/${storagePath}`;
+  const publicUrl = `${SB_URL}/storage/v1/object/public/${storagePath}?v=${Date.now()}`;
   console.log(`[tts] Stored at: ${publicUrl}`);
   return publicUrl;
 }
@@ -159,7 +159,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing text or clueId' });
   }
   try {
-    const personaKey = type === 'location' ? 'location' : (persona || 'alloy').toLowerCase();
+    // Location riddles speak in the quest's persona too (a pirate quest stays
+    // a pirate throughout). Neutral 'location' voice only if no persona given.
+    const personaKey = (persona || (type === 'location' ? 'location' : 'alloy')).toLowerCase();
     const { voice, speed } = PERSONA_VOICE[personaKey] || DEFAULT_VOICE;
     const safeId = String(clueId).replace(/[^a-zA-Z0-9_-]/g, '_');
     const fileName = `${safeId}_${type || 'clue'}.mp3`;
