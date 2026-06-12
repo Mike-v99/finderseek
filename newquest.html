@@ -1223,13 +1223,17 @@ function showPinCardAfterPayment(huntId, questId, pinOverride) {
         var sDate = new Date(sIso), eDate = new Date(eIso);
         var fmtD = function(d){ return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); };
         var fmtT = function(d){ return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); };
+        var FS_TZ_ABBR={'America/New_York':'EST','America/Detroit':'EST','America/Toronto':'EST','America/Chicago':'CST','America/Winnipeg':'CST','America/Denver':'MST','America/Edmonton':'MST','America/Phoenix':'MST','America/Los_Angeles':'PST','America/Vancouver':'PST','America/Anchorage':'AKST','Pacific/Honolulu':'HST','America/Halifax':'AST','America/Puerto_Rico':'AST','UTC':'UTC','Etc/UTC':'UTC','Europe/London':'GMT','Europe/Dublin':'GMT','Europe/Lisbon':'WET','Europe/Paris':'CET','Europe/Berlin':'CET','Europe/Madrid':'CET','Europe/Rome':'CET','Europe/Amsterdam':'CET','Europe/Brussels':'CET','Europe/Stockholm':'CET','Europe/Vienna':'CET','Europe/Warsaw':'CET','Europe/Athens':'EET','Europe/Helsinki':'EET','Europe/Bucharest':'EET','Europe/Kyiv':'EET','Africa/Johannesburg':'CAT','Africa/Harare':'CAT','Asia/Kolkata':'IST','Asia/Tokyo':'JST','Asia/Shanghai':'CST','Asia/Hong_Kong':'CST','Australia/Sydney':'AEST','Australia/Melbourne':'AEST','Australia/Brisbane':'AEST','Australia/Adelaide':'ACST','Australia/Darwin':'ACST','Australia/Perth':'AWST'};
+        function fsTzAbbr(tz){if(!tz)return '';if(FS_TZ_ABBR[tz])return FS_TZ_ABBR[tz];try{return new Date().toLocaleTimeString('en-US',{timeZone:tz,timeZoneName:'short'}).split(' ').pop();}catch(e){return '';}}
+        var tzA = fsTzAbbr((function(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){ return ''; } })());
+        var tzSuffix = tzA ? ' ' + tzA : '';
         if (sDate.getTime() <= Date.now()) {
-          schedEl.innerHTML = '🟢 <strong>LIVE NOW</strong><br/>Ends ' + fmtD(eDate) + ' · ' + fmtT(eDate);
+          schedEl.innerHTML = '🟢 <strong>LIVE NOW</strong><br/>Ends ' + fmtD(eDate) + ' · ' + fmtT(eDate) + tzSuffix;
           schedEl.style.background = 'rgba(74,222,128,.06)';
           schedEl.style.borderColor = 'rgba(74,222,128,.25)';
           schedEl.style.color = '#4ade80';
         } else {
-          schedEl.innerHTML = '📅 <strong>SCHEDULED</strong><br/>' + fmtD(sDate) + ' · ' + fmtT(sDate) + ' → ' + fmtD(eDate) + ' · ' + fmtT(eDate);
+          schedEl.innerHTML = '📅 <strong>SCHEDULED</strong><br/>' + fmtD(sDate) + ' · ' + fmtT(sDate) + ' → ' + fmtD(eDate) + ' · ' + fmtT(eDate) + tzSuffix;
           schedEl.style.background = 'rgba(251,191,36,.06)';
           schedEl.style.borderColor = 'rgba(251,191,36,.3)';
           schedEl.style.color = '#fbbf24';
@@ -2339,6 +2343,7 @@ async function createQuest(){
     window._fundedEndsAt = endsAt.toISOString();
 
     var huntPayload = {
+      quest_tz: (function(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch(e){ return null; } })(),
       week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
       prize_desc: '$'+prize+' Cash',
       prize_value: Math.round(prize * 100),
