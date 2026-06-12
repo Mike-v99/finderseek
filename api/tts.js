@@ -10,7 +10,7 @@ const SB_URL = process.env.SUPABASE_URL;
 const SB_KEY = process.env.SUPABASE_SERVICE_KEY; // service role — bypasses RLS
 
 const PERSONA_VOICE = {
-  pirate:      { voice: 'fable',   speed: 0.95 },
+  pirate:      { voice: 'onyx',    speed: 0.92 }, // deep male — fable read as female
   poetic:      { voice: 'nova',    speed: 0.90 },
   insults:     { voice: 'onyx',    speed: 1.10 },
   sarcastic:   { voice: 'shimmer', speed: 1.05 },
