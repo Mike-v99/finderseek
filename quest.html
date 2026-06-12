@@ -980,9 +980,14 @@ async function loadQuest(){
     }catch(e){/* network error — leave token alone, query will retry below */}
   }
   var authHeader='Bearer '+(token||KEY);
+  // Explicit column list — finder_code & hiding_spot are no longer readable by
+  // anon/authenticated roles (server-side claim.js is the only judge of wins),
+  // and select=* would now fail with "permission denied". Keep in sync with the
+  // GRANT SELECT column list in Supabase.
+  var HUNT_COLS='id,week_label,prize_desc,prize_value,starts_at,ends_at,status,city,winner_id,found_at,created_at,updated_at,pirate_id,payment_type,payment_handle,neighborhood,photo_url,lat,lng,is_promoted,created_by,escrow_status,escrow_amount,winner_payout_method,winner_payout_handle,payout_method,payout_note,payout_at,paid_at,clue_persona,clue_count,is_pinned,location_riddle,quest_id,state_code,payout_destination,payout_status,location_riddle_audio_url,quest_tz';
 
   try{
-    var results=await Promise.all([fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select=*',{headers:{'apikey':KEY,'Authorization':authHeader}}),fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':authHeader}})]);
+    var results=await Promise.all([fetch(SB+'/rest/v1/hunts?id=eq.'+encodeURIComponent(id)+'&select='+HUNT_COLS,{headers:{'apikey':KEY,'Authorization':authHeader}}),fetch(SB+'/rest/v1/clues?hunt_id=eq.'+encodeURIComponent(id)+'&select=*&order=clue_number.asc',{headers:{'apikey':KEY,'Authorization':authHeader}})]);
     var huntData=await results[0].json(),cluesData=await results[1].json();
     // Supabase can return {error:..., message:...} instead of an array if the query
     // fails (RLS block, auth expired, malformed id). Check for that explicitly.
