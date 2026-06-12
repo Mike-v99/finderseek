@@ -1080,6 +1080,21 @@ async function togglePin(){
 }
 function renderClues(){
   var container=document.getElementById('q-clues-container'),now=new Date();
+  // ── Scheduled quest: hide the riddle and clues until start time ──
+  // Keeps the race fair — nobody pre-solves from the couch. Header info
+  // (prize, schedule dates, share) stays visible above.
+  var _qNotStarted=currentHunt&&((currentHunt.status==='scheduled')||(currentHunt.starts_at&&new Date(currentHunt.starts_at)>now));
+  if(_qNotStarted){
+    var _qs=currentHunt.starts_at?new Date(currentHunt.starts_at):null;
+    var _when=_qs?(_qs.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+' at '+_qs.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})):'the scheduled start time';
+    container.innerHTML='<div style="border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(251,191,36,.08));"><div class="inner"><div style="padding:28px 20px;text-align:center;">'
+      +'<div style="font-size:34px;margin-bottom:10px;">🔒</div>'
+      +'<div style="font-size:19px;color:#fbbf24;margin-bottom:6px;">Clues unlock at quest start</div>'
+      +'<div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.6;">The location riddle and clues will appear here on<br/><strong style="color:#fff;">'+_when+'</strong></div>'
+      +'<div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.3);">Pin this quest so you\'re ready when it goes live!</div>'
+      +'</div></div></div>';
+    return;
+  }
   if(currentClues.length===0){container.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:18px;">No clues yet for this quest.</div>';return;}
   // Ended or won quests — show clues as read-only, no Q&A input
   var questEnded=currentHunt&&(currentHunt.status==='ended'||currentHunt.status==='cancelled'||!!currentHunt.winner_id);
@@ -1319,6 +1334,13 @@ function confirmQuestLocation(){
 function startTimer(){}  // timer removed — clues unlock by Q&A only
 async function claimPrize(){
   var btn=document.getElementById('btn-claim');if(!currentHunt)return;
+  // Scheduled quests can't be claimed before their start time
+  var _notStarted=(currentHunt.status==='scheduled')||(currentHunt.starts_at&&new Date(currentHunt.starts_at)>new Date());
+  if(_notStarted){
+    var _sd=currentHunt.starts_at?new Date(currentHunt.starts_at):null;
+    showToast(_sd?('This quest starts '+_sd.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+_sd.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' — come back then!'):'This quest hasn\'t started yet!','error');
+    return;
+  }
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
   if(code.length!==6){showToast('Enter all 6 digits','error');return;}
   if(code!==currentHunt.finder_code){showToast('Wrong code — keep searching!','error');btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);return;}
