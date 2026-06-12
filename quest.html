@@ -806,13 +806,26 @@ function showFundedCelebration(prizeValueCents){
   var qidEl=document.getElementById('fund-quest-id');
   if(qidEl)qidEl.textContent=qid;
 
-  // Populate code display
+  // Populate code display — the PIN is server-protected, so the creator
+  // fetches their own code through the authenticated endpoint.
   var codeEl=document.getElementById('fund-code-display');
-  if(codeEl&&currentHunt&&currentHunt.finder_code){
-    var code=currentHunt.finder_code;
-    codeEl.innerHTML=code.split('').map(function(d){
-      return '<div style="width:34px;height:40px;border-radius:8px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;color:#f5c842;">'+d+'</div>';
-    }).join('');
+  if(codeEl&&currentHunt){
+    var _renderCode=function(code){
+      codeEl.innerHTML=String(code).split('').map(function(d){
+        return '<div style="width:34px;height:40px;border-radius:8px;background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;color:#f5c842;">'+d+'</div>';
+      }).join('');
+    };
+    if(currentHunt.finder_code){_renderCode(currentHunt.finder_code);}
+    else{
+      _renderCode('······');
+      var _t=getToken();
+      if(_t){
+        fetch(API_BASE+'/api/claim',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_t},body:JSON.stringify({huntId:currentHunt.id,mode:'creator-code'})})
+          .then(function(r){return r.json();})
+          .then(function(d){if(d.ok&&d.code){currentHunt.finder_code=d.code;_renderCode(d.code);}})
+          .catch(function(){});
+      }
+    }
   }
 
   // Set view quest link
@@ -1334,55 +1347,65 @@ function confirmQuestLocation(){
 function startTimer(){}  // timer removed — clues unlock by Q&A only
 async function claimPrize(){
   var btn=document.getElementById('btn-claim');if(!currentHunt)return;
-  // Scheduled quests can't be claimed before their start time
-  var _notStarted=(currentHunt.status==='scheduled')||(currentHunt.starts_at&&new Date(currentHunt.starts_at)>new Date());
-  if(_notStarted){
-    var _sd=currentHunt.starts_at?new Date(currentHunt.starts_at):null;
-    showToast(_sd?('This quest starts '+_sd.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+_sd.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' — come back then!'):'This quest hasn\'t started yet!','error');
-    return;
-  }
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
   if(code.length!==6){showToast('Enter all 6 digits','error');return;}
-  if(code!==currentHunt.finder_code){showToast('Wrong code — keep searching!','error');btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);return;}
-  // Duplicate claim guard — if already won, show celebration directly
-  if(currentHunt.winner_id){
-    window._winHuntId=currentHunt.id;
-    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
-    showToast('You already claimed this prize!','success');
-    return;
-  }
-  // PIN correct — save pending claim for recovery
-  try{localStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,amount:window._winAmount||((currentHunt.prize_value||0)/100).toFixed(2),savedAt:Date.now()}));}catch(e){}
+
+  // The server (/api/claim) is the only judge of a win: it verifies the PIN,
+  // the start/end times, duplicate claims, and the creator rule — the PIN
+  // itself never reaches the browser.
   var token=getToken();
-  if(!token){
-    // Not signed in — show win modal immediately, gate sign-in at payout step
-    window._winHuntId=currentHunt.id;
-    window._winUserId=null;
-    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
-    showWinCelebration(window._winAmount);
-    return;
-  }
   btn.disabled=true;btn.textContent='Verifying...';
   try{
-    var ur=await fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+token}});
-    var user=await ur.json();if(!user||!user.id)throw new Error('Authentication failed');
-    // Block quest creator from winning their own quest
-    if(user.id===currentHunt.pirate_id){showToast('You can\'t win your own quest!','error');btn.disabled=false;btn.textContent='Claim Prize →';return;}
-    // Insert find_report so seeker count and analytics are accurate
-    try{
-      await fetch(SB+'/rest/v1/find_reports',{
-        method:'POST',
-        headers:{'apikey':KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({hunt_id:currentHunt.id,user_id:user.id,found_at:new Date().toISOString()})
-      });
-    }catch(e){console.warn('find_report insert failed:',e);}
-    btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';
-    window._winHuntId=currentHunt.id;
-    window._winUserId=user.id;
-    window._winAmount=((currentHunt.prize_value||0)/100).toFixed(2);
-    // Clear pending claim immediately — winner confirmed
-    try{localStorage.removeItem('fs_pending_claim');}catch(e){}
-    showWinCelebration(window._winAmount);
+    var headers={'Content-Type':'application/json'};
+    if(token)headers['Authorization']='Bearer '+token;
+    var r=await fetch(API_BASE+'/api/claim',{method:'POST',headers:headers,body:JSON.stringify({huntId:currentHunt.id,code:code})});
+    var d=await r.json();
+
+    if(!d.ok){
+      btn.disabled=false;btn.textContent='Claim Prize →';
+      if(d.reason==='wrong_code'){
+        showToast('Wrong code — keep searching!','error');
+        btn.style.transform='scale(.97)';setTimeout(function(){btn.style.transform='';},150);
+      }else if(d.reason==='not_started'){
+        var _sd=d.startsAt?new Date(d.startsAt):null;
+        showToast(_sd?('This quest starts '+_sd.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+_sd.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' — come back then!'):'This quest hasn\'t started yet!','error');
+      }else if(d.reason==='creator'){
+        showToast('You can\'t win your own quest!','error');
+      }else if(d.reason==='already_claimed'){
+        showToast('This prize has already been claimed.','error');
+      }else if(d.reason==='ended'){
+        showToast('This quest has ended.','error');
+      }else if(d.reason==='rate_limited'){
+        showToast(d.error||'Too many attempts — wait a few minutes.','error');
+      }else{
+        showToast(d.error||'Could not verify — try again.','error');
+      }
+      return;
+    }
+
+    // PIN verified by the server.
+    var amount=((currentHunt.prize_value||0)/100).toFixed(2);
+    try{localStorage.setItem('fs_pending_claim',JSON.stringify({huntId:currentHunt.id,code:code,amount:amount,savedAt:Date.now()}));}catch(e){}
+
+    if(d.claimed){
+      // Winner officially recorded server-side
+      currentHunt.winner_id=d.userId||currentHunt.winner_id;
+      btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';
+      window._winHuntId=currentHunt.id;
+      window._winUserId=d.userId||null;
+      window._winAmount=amount;
+      try{localStorage.removeItem('fs_pending_claim');}catch(e){}
+      if(d.already)showToast('You already claimed this prize!','success');
+      showWinCelebration(amount);
+    }else{
+      // Verified but not signed in — show win modal; after sign-in the pending
+      // claim recovery re-runs claimPrize with a token and the claim completes.
+      btn.disabled=false;btn.textContent='Claim Prize →';
+      window._winHuntId=currentHunt.id;
+      window._winUserId=null;
+      window._winAmount=amount;
+      showWinCelebration(amount);
+    }
   }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize →';}
 }
 

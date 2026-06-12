@@ -85,6 +85,15 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
     }
 
+    // Only the server-verified winner can be paid. /api/claim is the sole
+    // path that sets hunts.winner_id (after checking the PIN server-side),
+    // so a payout request must match it — otherwise anyone who can reach
+    // this endpoint could request money without ever finding the envelope.
+    if (!hunt.winner_id || hunt.winner_id !== winnerId) {
+      console.warn('[payout] Rejected: winner mismatch. hunt.winner_id=', hunt.winner_id, 'requested=', winnerId);
+      return res.status(403).json({ error: 'Winner not verified for this quest. Claim the prize in the app first.' });
+    }
+
     // Duplicate claim guard
     if (hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
