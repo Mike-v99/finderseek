@@ -148,7 +148,10 @@ body{background:#080612;color:#fff;font-family:'Courier New',monospace;min-heigh
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 
-const NOTIFY = 'fs-notify-2026';
+// Internal test harness: the page secret was removed from public code.
+// Paste the current NOTIFY_SECRET (from Vercel env) when prompted; it's
+// kept in sessionStorage for this tab only.
+const NOTIFY = (function(){ var v = sessionStorage.getItem('fs_admin_secret'); if (!v) { v = prompt('Enter NOTIFY_SECRET (from Vercel env):') || ''; if (v) sessionStorage.setItem('fs_admin_secret', v); } return v; })();
 var adminToken = null;
 var adminPassword = null;
 

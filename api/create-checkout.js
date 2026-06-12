@@ -5,19 +5,43 @@
 //   PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_MODE
 //   SUPABASE_URL, SUPABASE_SERVICE_KEY, NOTIFY_SECRET
 
+// Verify a Supabase user access token (same pattern as api/claim.js).
+async function getUserFromToken(token) {
+  const SB_URL = process.env.SUPABASE_URL, SB_KEY = process.env.SUPABASE_SERVICE_KEY;
+  if (!token || !SB_URL || !SB_KEY) return null;
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/user`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${token}` },
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return u && u.id ? u : null;
+  } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-finderseek-secret");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-finderseek-secret, Authorization");
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Auth: env secret (internal) OR the signed-in creator's Supabase token.
+  // The old public page secret is gone — rotate NOTIFY_SECRET after deploy.
   const secret = req.headers['x-finderseek-secret'];
-  if (secret !== process.env.NOTIFY_SECRET && secret !== process.env.FINDERSEEK_NOTIFY_SECRET) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  const secretOk = !!secret && (secret === process.env.NOTIFY_SECRET || secret === process.env.FINDERSEEK_NOTIFY_SECRET);
+  let authedUser = null;
+  if (!secretOk) {
+    const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || null;
+    authedUser = await getUserFromToken(bearer);
+    if (!authedUser) return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const body = req.body || {};
+  // JWT callers can only create checkouts as themselves
+  if (authedUser && body.userId && body.userId !== authedUser.id) {
+    return res.status(403).json({ error: 'Token does not match userId' });
+  }
 
   try {
     return await createEscrowOrder(body, res);

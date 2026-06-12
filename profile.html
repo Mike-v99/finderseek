@@ -432,7 +432,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const API_BASE='https://www.finderseek.com';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const NOTIFY_SECRET = 'fs-notify-2026';
+// NOTIFY_SECRET removed — endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
 
 // Initialize Supabase client (handles PKCE flow, session storage, token refresh)
 const supaClient = window.supabase.createClient(SB, KEY);
@@ -626,7 +626,7 @@ async function openBillingPortal() {
   try {
     var r = await fetch(API_BASE+'/api/billing-portal', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
       body: JSON.stringify({ userId: currentUser.id })
     });
     var d = await r.json();
@@ -1233,7 +1233,7 @@ async function _loadConnectStatus_legacy_disabled(){
   try {
     var r = await fetch(API_BASE+'/api/connect-status', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
       body: JSON.stringify({ userId: currentUser.id })
     });
     var d = await r.json();
@@ -1295,7 +1295,7 @@ async function openStripeDashboard(){
   try {
     var r = await fetch(API_BASE+'/api/connect-status?action=dashboard', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
       body: JSON.stringify({ userId: currentUser.id })
     });
     var d = await r.json();
@@ -1318,7 +1318,7 @@ async function disconnectPayout(){
   try {
     var r = await fetch(API_BASE+'/api/connect-status?action=disconnect', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
       body: JSON.stringify({ userId: currentUser.id })
     });
     var d = await r.json();
@@ -1356,7 +1356,7 @@ async function handlePayoutBtn(){
   try {
     var r = await fetch(API_BASE+'/api/connect-onboard', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
       body: JSON.stringify({ userId: currentUser.id, email: currentUser.email || '' })
     });
     var d = await r.json();

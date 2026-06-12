@@ -307,7 +307,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <!-- hidden compat elements -->
   <div style="display:none;"><span id="q-unlocked">0</span><span id="q-total-clues">0</span><div id="q-clue-bars"></div></div>
 
-  <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
+  <div id="q-claim-banner" style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
     <div style="font-size:22px;">🏆</div>
     <div style="flex:1;"><div style="font-size:17px;color:#4ade80;font-weight:400;">Found it? Claim your prize</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Enter the 6-digit code to win</div></div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -389,7 +389,7 @@ function cP(e,el,prev){if(e.key==='Backspace'){if(!el.value&&prev){document.getE
 const SB='https://qeiuycuasjkopxfkmggp.supabase.co';
 const API_BASE='https://www.finderseek.com';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const NOTIFY_SECRET='fs-notify-2026';
+// NOTIFY_SECRET removed — endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
 let currentHunt=null,currentClues=[],totalSecs=0;
 function getQuestId(){
   var raw=new URLSearchParams(window.location.search).get('id');
@@ -563,11 +563,13 @@ function speakClue(clueNum, text, type) {
     }
   }
   if (genInfo && !window._ttsGenerating) {
+    var _ttsTok = getToken();
+    if (!_ttsTok) { _speakBrowserTTS(clueNum, text); return; } // signed-out: server would 401, use browser voice
     window._ttsGenerating = true;
     updateSpeakerBtn(clueNum, true); // show active state while generating (~3-5s)
     fetch(API_BASE + '/api/tts', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _ttsTok },
       body: JSON.stringify({ text: genInfo.text, persona: (currentHunt && currentHunt.clue_persona) || 'pirate',
         clueId: genInfo.clueId, type: genInfo.type,
         dbId: genInfo.dbId, dbTable: genInfo.dbTable, dbColumn: genInfo.dbColumn })
@@ -1001,7 +1003,7 @@ async function loadQuest(){
     var _saveBtn=document.getElementById('q-save-btn');if(_saveBtn&&_questSaved){_saveBtn.style.background='rgba(232,168,32,.15)';_saveBtn.style.borderColor='rgba(232,168,32,.4)';}
     var _saveIcon=document.getElementById('q-save-icon');if(_saveIcon&&_questSaved)_saveIcon.style.filter='sepia(1) saturate(3) hue-rotate(5deg)';
     // Instant expiry trigger
-    try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;if(isExpiredActive){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
+    try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;var _expTok=getToken();if(isExpiredActive&&_expTok){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_expTok},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
@@ -1022,6 +1024,12 @@ function renderHunt(){
   // Status badge + interaction gating
   var liveBadge=document.getElementById('q-live-badge');
   var claimSection=document.getElementById('q-claim-section');
+  // ── Scheduled quest: hide the claim UI until start (server still rejects
+  // early claims via /api/claim 'not_started' — this is just matching UI) ──
+  var claimBanner=document.getElementById('q-claim-banner');
+  var _notStarted=(h.status==='scheduled')||(h.starts_at&&new Date(h.starts_at)>new Date());
+  if(claimBanner)claimBanner.style.display=_notStarted?'none':'flex';
+  if(claimSection&&_notStarted)claimSection.style.display='none';
   var isEnded=h.status==='ended'||h.status==='cancelled';
   var isWon=!!(h.winner_id);
   if(isWon){
@@ -1520,7 +1528,7 @@ async function submitPayoutRequest(){
     }
     var r = await fetch(API_BASE+'/api/payout-request',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-finderseek-secret':NOTIFY_SECRET},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
       body:JSON.stringify({huntId:window._winHuntId,winnerId:window._winUserId,method:'paypal',destination:dest,amount:window._winAmount})
     });
     var d = await r.json();

@@ -1556,7 +1556,7 @@ function startTheQuest() {
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const API_BASE = 'https://www.finderseek.com';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-const NOTIFY_SECRET = 'fs-notify-2026';
+// NOTIFY_SECRET removed — endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
 const PAYPAL_CLIENT_ID = 'LIVE'; // Loaded dynamically from server
 
 let currentUser = null;
@@ -3540,7 +3540,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
       try {
         var r = await fetch(API_BASE + '/api/create-checkout', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
           body: JSON.stringify({
             type: 'escrow',
             userId: _currentPayload.userId,
@@ -3719,7 +3719,7 @@ async function generateClueAudio(huntId, persona, locationRiddle) {
         console.log('[tts] Token refreshed successfully');
       }
     } catch(e) { console.warn('[tts] Token refresh failed, using cached token'); }
-    var ttsHeaders = {'Content-Type':'application/json','x-finderseek-secret': NOTIFY_SECRET};
+    var ttsHeaders = {'Content-Type':'application/json','Authorization':'Bearer '+(token||getToken())};
 
     // Fetch saved clue IDs
     var cluesRes = await fetch(SB+'/rest/v1/clues?hunt_id=eq.'+huntId+'&select=id,clue_number,clue_text,clue_question&order=clue_number.asc', {

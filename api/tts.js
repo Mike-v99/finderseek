@@ -95,10 +95,25 @@ async function patchDb(table, idColumn, idValue, column, value) {
   return true;
 }
 
+// Verify a Supabase user access token (same pattern as api/claim.js).
+// Returns the user object or null. The anon/service keys themselves fail
+// this check — only a real signed-in user's JWT passes.
+async function getUserFromToken(token) {
+  if (!token || !SB_URL || !SB_KEY) return null;
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/user`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${token}` },
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return u && u.id ? u : null;
+  } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-finderseek-secret');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-finderseek-secret, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   // ── GET: diagnostic ──
@@ -132,8 +147,17 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Auth: internal callers (paypal-capture, scripts) send the env secret;
+  // browsers send the signed-in user's Supabase token. The old public page
+  // secret is gone — rotate NOTIFY_SECRET in Vercel after deploying this.
   const secret = req.headers['x-finderseek-secret'];
-  if (secret !== process.env.FINDERSEEK_NOTIFY_SECRET && secret !== process.env.NOTIFY_SECRET) {
+  const secretOk = !!secret && (secret === process.env.FINDERSEEK_NOTIFY_SECRET || secret === process.env.NOTIFY_SECRET);
+  let authedUser = null;
+  if (!secretOk) {
+    const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || null;
+    authedUser = await getUserFromToken(bearer);
+  }
+  if (!secretOk && !authedUser) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: 'OPENAI_API_KEY not configured' });
@@ -143,6 +167,8 @@ export default async function handler(req, res) {
 
   // ── Samples mode ──
   if (mode === 'samples') {
+    // Bulk HD generation — internal/secret callers only (cost control)
+    if (!secretOk) return res.status(403).json({ error: 'Forbidden' });
     const results = {}, errors = {};
     for (const [p, { voice, speed }] of Object.entries(PERSONA_VOICE)) {
       if (p === 'location') continue;
@@ -169,8 +195,15 @@ export default async function handler(req, res) {
 
     // ── Write audio_url directly to DB using service key (bypasses RLS) ──
     if (dbId && dbTable && dbColumn) {
-      const idCol = dbTable === 'hunts' ? 'id' : 'id';
-      await patchDb(dbTable, idCol, dbId, dbColumn, audioUrl);
+      // Whitelist: only the two audio-url columns may be written via this
+      // endpoint, no matter who the caller is.
+      const allowed = (dbTable === 'clues' && dbColumn === 'audio_url') ||
+                      (dbTable === 'hunts' && dbColumn === 'location_riddle_audio_url');
+      if (allowed) {
+        await patchDb(dbTable, 'id', dbId, dbColumn, audioUrl);
+      } else {
+        console.warn('[tts] blocked db write:', dbTable, dbColumn);
+      }
     }
 
     return res.status(200).json({ success: true, audioUrl, voice, speed, fileName });

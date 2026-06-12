@@ -67,10 +67,24 @@ async function paypalRefundCapture(captureId, amountUsd, huntId) {
   }
 }
 
+// Verify a Supabase user access token (same pattern as api/claim.js).
+async function getUserFromToken(token) {
+  const SB_URL = process.env.SUPABASE_URL, SB_KEY = process.env.SUPABASE_SERVICE_KEY;
+  if (!token || !SB_URL || !SB_KEY) return null;
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/user`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${token}` },
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return u && u.id ? u : null;
+  } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-finderseek-secret, x-admin-token");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-finderseek-secret, x-admin-token, Authorization");
   if (req.method === "OPTIONS") return res.status(200).end();
   const notifySecret = process.env.NOTIFY_SECRET || process.env.FINDERSEEK_NOTIFY_SECRET;
   const cronSecret   = process.env.CRON_SECRET;
@@ -80,8 +94,15 @@ export default async function handler(req, res) {
   // immediately rather than waiting for the 8am cron. Auth uses NOTIFY_SECRET
   // so the client doesn't need the privileged CRON_SECRET.
   if (req.method === 'POST') {
-    if (!notifySecret || req.headers['x-finderseek-secret'] !== notifySecret) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    // Auth: env secret (internal/admin tools) OR any signed-in user's token.
+    // Safe to open to signed-in users: the expiry below is idempotent and
+    // only fires when the hunt is genuinely past ends_at with no winner —
+    // i.e. exactly what the cron GET would do at its next run anyway.
+    const secretOk = !!notifySecret && req.headers['x-finderseek-secret'] === notifySecret;
+    if (!secretOk) {
+      const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || null;
+      const authedUser = await getUserFromToken(bearer);
+      if (!authedUser) return res.status(401).json({ error: 'Unauthorized' });
     }
     const { huntId } = req.body || {};
     if (!huntId) return res.status(400).json({ error: 'Missing huntId' });

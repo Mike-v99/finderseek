@@ -347,7 +347,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
 const supaClient = window.supabase ? window.supabase.createClient(SB, KEY) : null;
-const NOTIFY_SECRET = 'fs-notify-2026';
+// NOTIFY_SECRET removed — endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
 const STRIPE_PUBLIC_KEY = 'pk_live_51TAF5yIH4TSSphVtpvjdygkD08BsGD8B1KFWHl5GUvDgi07g0C8v24UknXRlKyKy5nLeMuIHee3M9bKyhvy2ibX200PtcHAQUz';
 
 function getToken(){
@@ -1147,7 +1147,7 @@ async function submitPayment() {
     var total = prize + prize * 0.10;
     var r = await fetch('/api/create-checkout', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': NOTIFY_SECRET },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (typeof token !== 'undefined' && token ? token : getToken()) },
       body: JSON.stringify({
         type: 'escrow',
         userId: currentUser.id,
