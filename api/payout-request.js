@@ -193,7 +193,7 @@ export default async function handler(req, res) {
         from: 'FinderSeek <payments@finderseek.com>',
         // Ops alert recipient — payments@ has no mailbox, so default to a real
         // inbox. Override with PAYOUT_ALERT_EMAIL env var in Vercel if desired.
-        to: process.env.PAYOUT_ALERT_EMAIL || 'mike@finderseek.com',
+        to: process.env.PAYOUT_ALERT_EMAIL || 'payments@finderseek.com',
         subject: paypalSuccess
           ? `✅ Prize SENT — Quest ${hunt.quest_id || huntId.slice(0,8)} — $${prizeAmount}`
           : `🚨 SEND $${prizeAmount} → ${destination} (${methodLabel})`,
@@ -227,7 +227,7 @@ export default async function handler(req, res) {
               </div>
             </div>`
       });
-      console.log('[payout] Ops alert emailed to', process.env.PAYOUT_ALERT_EMAIL || 'mike@finderseek.com');
+      console.log('[payout] Ops alert emailed to', process.env.PAYOUT_ALERT_EMAIL || 'payments@finderseek.com');
     } catch (e) { console.warn('[payout] Email failed:', e.message); }
 
     // ── Notify quest master + winner ──

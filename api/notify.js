@@ -73,6 +73,50 @@ function tplHuntApproved({ username, city, prize, huntUrl }) {
   };
 }
 
+// Format a UTC timestamp in the quest's home timezone with a neutral
+// 2-letter US zone abbreviation (CDT/CST -> CT, etc.) — matches the site.
+function fmtInQuestTz(iso, tz) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    const opts = { timeZone: tz || 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+    const when = new Intl.DateTimeFormat('en-US', opts).format(d);
+    let zone = '';
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz || 'America/Chicago', timeZoneName: 'short' }).formatToParts(d);
+      zone = (parts.find(p => p.type === 'timeZoneName') || {}).value || '';
+      zone = zone.replace(/^([CEMP])[DS]T$/, '$1T');
+    } catch (e) {}
+    return zone ? `${when} ${zone}` : when;
+  } catch (e) { return iso; }
+}
+
+function tplQuestScheduled({ username, city, prize, questId, startsLabel, endsLabel, huntUrl }) {
+  return {
+    subject: `📅 Quest ${questId ? questId + ' ' : ''}funded & scheduled — goes live ${startsLabel}`,
+    html: html('Quest Scheduled', `
+      <h1>Payment Received — Quest Scheduled! 📅</h1>
+      <p>Hey ${username}, your payment went through and your treasure quest in <strong style="color:#f5ead8;">${city}</strong> is locked in.</p>
+      <div class="highlight">
+        <div class="highlight-label">Prize</div>
+        <div class="highlight-val">${prize}</div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-label">Goes Live</div>
+        <div class="highlight-val">${startsLabel}</div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-label">Ends</div>
+        <div class="highlight-val">${endsLabel}</div>
+      </div>
+      <p>Clues stay locked until start time. We'll email you again the moment your quest goes live — that's when seekers in ${city} get notified too.</p>
+      <a href="${huntUrl}" class="btn">View Your Quest →</a>
+      <hr class="divider"/>
+      <p style="font-size:13px;">Don't forget to hide your envelope (with the 6-digit PIN inside) before the start time!</p>
+    `)
+  };
+}
+
 function tplPrizeClaimed({ username, city, prize, winnerName, huntUrl }) {
   return {
     subject: `🏆 Someone found your treasure in ${city}!`,
@@ -233,7 +277,7 @@ export default async function handler(req, res) {
 
   try {
     // Fetch hunt + pirate profile + winner profile
-    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type,payout_destination`);
+    const hunts = await sbFetch(`hunts?id=eq.${huntId}&select=id,city,prize_desc,pirate_id,winner_id,status,payment_type,payout_destination,starts_at,ends_at,quest_tz,quest_id`);
     const hunt  = hunts?.[0];
     if (!hunt) return res.status(404).json({ error: 'Quest not found' });
 
@@ -300,6 +344,23 @@ export default async function handler(req, res) {
               results.push(`follower_notified:${follower.email}`);
             }
           }
+        }
+      }
+    }
+
+    // ── quest_scheduled ───────────────────────────────────────────
+    // Email ONLY the creator: payment received, quest scheduled for later.
+    // Seekers/followers are intentionally NOT emailed here — they get the
+    // hunt_approved announcement when cron flips the quest live.
+    if (event === 'quest_scheduled') {
+      if (hunt.pirate_id) {
+        const [pirate] = await sbFetch(`profiles?id=eq.${hunt.pirate_id}&select=username,email`);
+        if (pirate?.email) {
+          const startsLabel = fmtInQuestTz(hunt.starts_at, hunt.quest_tz);
+          const endsLabel = fmtInQuestTz(hunt.ends_at, hunt.quest_tz);
+          const tpl = tplQuestScheduled({ username: pirate.username, city: hunt.city, prize: hunt.prize_desc, questId: hunt.quest_id, startsLabel, endsLabel, huntUrl });
+          await sendEmail(pirate.email, tpl.subject, tpl.html);
+          results.push(`pirate_scheduled_notified:${pirate.email}`);
         }
       }
     }

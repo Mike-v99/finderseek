@@ -196,6 +196,15 @@ export default async function handler(req, res) {
           body: JSON.stringify({ event: 'hunt_approved', huntId })
         });
         console.log('[paypal-capture] Notify sent for hunt:', huntId);
+      } else if (notifySecret && newStatus === 'scheduled') {
+        // Creator-only confirmation: payment received, quest scheduled.
+        // The seeker announcement still happens at go-live via cron.
+        await fetch('https://www.finderseek.com/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-finderseek-secret': notifySecret },
+          body: JSON.stringify({ event: 'quest_scheduled', huntId })
+        });
+        console.log('[paypal-capture] Scheduled-confirmation notify sent for hunt:', huntId);
       }
     } catch(e) { console.error('[paypal-capture] Notify error:', e.message); }
 
