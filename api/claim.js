@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     } catch (e) { console.warn('[claim] rate-limit check failed (continuing):', e.message); }
 
     const hunts = await sbGet(
-      `hunts?id=eq.${encodeURIComponent(huntId)}&select=id,finder_code,status,starts_at,ends_at,winner_id,pirate_id,prize_value,quest_id`
+      `hunts?id=eq.${encodeURIComponent(huntId)}&select=id,finder_code,status,starts_at,ends_at,winner_id,pirate_id,prize_value,quest_id,found_at`
     );
     const hunt = hunts && hunts[0];
     if (!hunt) return res.status(404).json({ ok: false, reason: 'not_found', error: 'Quest not found' });
@@ -101,8 +101,12 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ ok: false, reason: 'already_claimed', error: 'This prize has already been claimed.' });
     }
-    // Ended / not active
-    if (hunt.status !== 'active' || (hunt.ends_at && new Date(hunt.ends_at).getTime() < now)) {
+    // Found-pending: quest ended because PIN was entered, but winner hasn't
+    // signed in yet. Allow the finder to come back and complete the claim.
+    const isFoundPending = hunt.status === 'ended' && !hunt.winner_id && !!hunt.found_at;
+
+    // Ended / not active (but not found-pending — those can still be claimed)
+    if (!isFoundPending && (hunt.status !== 'active' || (hunt.ends_at && new Date(hunt.ends_at).getTime() < now))) {
       return res.status(200).json({ ok: false, reason: 'ended', error: 'This quest has ended.' });
     }
 
@@ -123,8 +127,15 @@ export default async function handler(req, res) {
     const user = await getUserFromToken(token);
 
     if (!user) {
-      // Verified but not signed in — client shows the win modal and the user
-      // signs in, then calls again with a token to actually claim.
+      // Verified but not signed in — end the quest immediately so other
+      // seekers don't waste time. The finder signs in later to complete.
+      if (hunt.status === 'active') {
+        await fetch(`${SB}/rest/v1/hunts?id=eq.${encodeURIComponent(huntId)}&status=eq.active&winner_id=is.null`, {
+          method: 'PATCH',
+          headers: { ...SVC_HEADERS, 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ status: 'ended', found_at: new Date().toISOString() }),
+        });
+      }
       return res.status(200).json({ ok: true, verified: true, claimed: false });
     }
 
@@ -132,13 +143,15 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, reason: 'creator', error: "You can't win your own quest!" });
     }
 
-    // Atomic claim: only succeeds if nobody else has won meanwhile
+    // Atomic claim: works for both active quests (normal) and found-pending
+    // quests (delayed sign-in). The winner_id=is.null guard prevents races.
+    const claimStatus = isFoundPending ? 'ended' : 'active';
     const patchRes = await fetch(
-      `${SB}/rest/v1/hunts?id=eq.${encodeURIComponent(huntId)}&winner_id=is.null&status=eq.active`,
+      `${SB}/rest/v1/hunts?id=eq.${encodeURIComponent(huntId)}&winner_id=is.null&status=eq.${claimStatus}`,
       {
         method: 'PATCH',
         headers: { ...SVC_HEADERS, 'Prefer': 'return=representation' },
-        body: JSON.stringify({ winner_id: user.id, found_at: new Date().toISOString() }),
+        body: JSON.stringify({ winner_id: user.id, found_at: hunt.found_at || new Date().toISOString(), status: 'ended' }),
       }
     );
     const patched = patchRes.ok ? await patchRes.json() : [];

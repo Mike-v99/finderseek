@@ -1020,9 +1020,9 @@ async function loadQuest(){
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
-    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<3600000){if(currentHunt.winner_id){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Signed in — complete claim automatically
+    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<259200000){if(currentHunt.winner_id){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Signed in — complete claim automatically
 showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}else{// Not signed in — show win modal directly so they can sign in inline
-window._winHuntId=pending.huntId;window._winAmount=pending.amount||((currentHunt.prize_value||0)/100).toFixed(2);setTimeout(function(){showWinCelebration(window._winAmount);},500);}}}else if(pending&&claimAge>=3600000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
+window._winHuntId=pending.huntId;window._winAmount=pending.amount||((currentHunt.prize_value||0)/100).toFixed(2);setTimeout(function(){showWinCelebration(window._winAmount,false);},500);}}}else if(pending&&claimAge>=259200000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
@@ -1060,6 +1060,20 @@ function renderHunt(){
         .then(function(r){return r.json();})
         .then(function(d){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='Found by '+(d&&d[0]&&d[0].username?d[0].username:'a lucky seeker');})
         .catch(function(){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='';});
+    }
+  } else if(isEnded&&h.found_at&&!h.winner_id){
+    // Found-pending: PIN was entered but winner hasn't signed in yet
+    if(liveBadge)liveBadge.innerHTML='<div style="font-size:13px;color:#fb923c;font-weight:500;letter-spacing:1px;">FOUND</div>';
+    if(liveBadge)liveBadge.style.background='rgba(251,146,60,.08)';
+    if(liveBadge)liveBadge.style.border='1px solid rgba(251,146,60,.3)';
+    if(claimSection)claimSection.style.display='none';
+    if(claimBanner)claimBanner.style.display='none';
+    var foundBanner=document.getElementById('q-found-banner');
+    if(!foundBanner){
+      var fb=document.createElement('div');fb.id='q-found-banner';
+      fb.style.cssText='background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-radius:13px;padding:14px 16px;text-align:center;margin-bottom:12px;';
+      fb.innerHTML='<div style="font-size:28px;margin-bottom:6px;">🔍</div><div style="font-size:18px;color:#fb923c;font-weight:500;">This quest has been found!</div><div style="font-size:13px;color:rgba(255,255,255,.3);margin-top:4px;">The winner is completing their claim</div>';
+      if(claimSection&&claimSection.parentNode)claimSection.parentNode.insertBefore(fb,claimSection);
     }
   } else if(isEnded){
     if(liveBadge)liveBadge.innerHTML='<div style="font-size:13px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:1px;">ENDED</div>';
