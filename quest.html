@@ -1414,6 +1414,12 @@ async function claimPrize(){
   var btn=document.getElementById('btn-claim');if(!currentHunt)return;
   var code=['d1','d2','d3','d4','d5','d6'].map(function(id){return document.getElementById(id).value;}).join('');
   if(code.length!==6){showToast('Enter all 6 digits','error');return;}
+  // Gate: must be signed in before submitting PIN
+  if(!getToken()){
+    document.getElementById('claim-signin-modal').style.display='flex';
+    setTimeout(function(){document.getElementById('claim-signin-inner').style.transform='scale(1)';document.getElementById('claim-signin-inner').style.opacity='1';document.getElementById('claim-signin-backdrop').style.opacity='1';},10);
+    return;
+  }
 
   // The server (/api/claim) is the only judge of a win: it verifies the PIN,
   // the start/end times, duplicate claims, and the creator rule — the PIN
