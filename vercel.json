@@ -10,17 +10,36 @@
   "crons": [
     {
       "path": "/api/cron-activate-hunts",
-      "schedule": "0 8 * * *"
+      "schedule": "*/15 * * * *"
     }
   ],
   "redirects": [
-    { "source": "/pirate.html", "destination": "/newquest.html", "permanent": true },
-    { "source": "/pirate", "destination": "/newquest.html", "permanent": true },
-    { "source": "/pricing.html", "destination": "/gold.html", "permanent": true },
-    { "source": "/pricing", "destination": "/gold.html", "permanent": true }
+    {
+      "source": "/pirate.html",
+      "destination": "/newquest.html",
+      "permanent": true
+    },
+    {
+      "source": "/pirate",
+      "destination": "/newquest.html",
+      "permanent": true
+    },
+    {
+      "source": "/pricing.html",
+      "destination": "/gold.html",
+      "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/gold.html",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/hunt.html", "destination": "/quest.html" },
+    {
+      "source": "/hunt.html",
+      "destination": "/quest.html"
+    },
     {
       "source": "/.well-known/apple-developer-merchantid-domain-association",
       "destination": "/apple-developer-merchantid-domain-association"
@@ -30,19 +49,41 @@
     {
       "source": "/apple-developer-merchantid-domain-association",
       "headers": [
-        { "key": "Content-Type", "value": "application/json" },
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-        { "key": "Pragma", "value": "no-cache" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/(.*).html",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/api/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ]
 }
