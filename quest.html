@@ -335,7 +335,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
         <input style="width:42px;height:50px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:22px;color:#fff;font-family:inherit;font-weight:400;outline:none;-webkit-appearance:none;" maxlength="1" type="text" inputmode="numeric" id="d6" oninput="cN(this,'')" onkeydown="cP(event,this,'d5')"/>
       </div>
       <button id="btn-claim" style="width:100%;padding:15px;border:none;border-radius:13px;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;box-shadow:0 4px 20px rgba(34,197,94,.3);" onclick="claimPrize()">Claim Prize →</button>
-      <button style="width:100%;padding:13px;border:none;border-radius:13px;font-size:16px;font-weight:400;font-family:inherit;cursor:pointer;background:transparent;color:rgba(255,255,255,.35);margin-top:8px;" onclick="document.querySelectorAll('#d1,#d2,#d3,#d4,#d5,#d6').forEach(function(i){i.value='';});window.scrollTo({top:0,behavior:'smooth'});">Cancel</button>
+      <button style="width:100%;padding:13px;border:none;border-radius:13px;font-size:16px;font-weight:400;font-family:inherit;cursor:pointer;background:transparent;color:rgba(255,255,255,.35);margin-top:8px;" onclick="document.querySelectorAll('#d1,#d2,#d3,#d4,#d5,#d6').forEach(function(i){i.value='';i.blur();});if(document.activeElement)document.activeElement.blur();setTimeout(function(){document.getElementById('q-claim-banner').scrollIntoView({behavior:'smooth',block:'center'});},300);">Cancel</button>
     </div>
   </div>
   <div id="q-pin-btn" style="margin-top:10px;text-align:center;"></div>
