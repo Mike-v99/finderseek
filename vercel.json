@@ -10,7 +10,7 @@
   "crons": [
     {
       "path": "/api/cron-activate-hunts",
-      "schedule": "*/15 * * * *"
+      "schedule": "1 14 * * *"
     }
   ],
   "redirects": [
