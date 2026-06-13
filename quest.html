@@ -184,15 +184,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
     <!-- Step sign-in: shown when seeker isn't logged in at payout time -->
     <div id="win-step-signin" style="display:none;">
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="font-size:40px;margin-bottom:8px;">🔑</div>
-        <div style="font-size:21px;font-weight:400;color:#fff;margin-bottom:6px;">One last step</div>
-        <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.5;">Sign in to receive your <span style="color:#4ade80;font-weight:500;">$<span id="win-signin-amount">0</span></span> prize — takes a few seconds.</div>
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:48px;margin-bottom:10px;">🏆</div>
+        <div style="font-size:26px;font-weight:200;color:#4ade80;margin-bottom:6px;">You Found It!</div>
+        <div style="font-size:48px;font-weight:200;color:#fff;margin-bottom:4px;" id="win-signin-amount-big">$0</div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:12px;padding:14px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:15px;color:rgba(255,255,255,.7);line-height:1.5;">Sign in to claim your <strong style="color:#4ade80;">$<span id="win-signin-amount">0</span></strong> prize</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:4px;">One tap — we just need to know who won</div>
       </div>
       <div id="win-signin-msg" style="font-size:13px;color:rgba(74,222,128,.7);text-align:center;min-height:18px;margin-bottom:8px;"></div>
       <button onclick="winSignInSocial('apple')" style="width:100%;padding:13px;border-radius:12px;background:#000;border:2px solid #fff;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> Continue with Apple</button>
       <button onclick="winSignInSocial('google')" id="win-signin-btn" style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google</button>
-      <button onclick="document.getElementById('win-step-signin').style.display='none';document.getElementById('win-step-2').style.display='block';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">← Back</button>
+      <button onclick="closeWinModal();" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">I'll sign in later</button>
     </div>
 
     <!-- Step 3: Confirmed -->
@@ -766,17 +770,25 @@ function updatePhotoBlur(solved,total){
 
 // ── CONFETTI ─────────────────────────────────────────────────
 function fireConfetti(){if(typeof confetti==='undefined')return;var colors=['#e8a820','#f5c842','#c9890c','#4ade80','#22c55e','#ffffff'];confetti({particleCount:120,spread:90,origin:{y:0.6},colors:colors});setTimeout(function(){confetti({particleCount:60,angle:60,spread:60,origin:{x:0,y:0.7},colors:colors});confetti({particleCount:60,angle:120,spread:60,origin:{x:1,y:0.7},colors:colors});},250);}
-function showWinCelebration(amount){
+function showWinCelebration(amount, claimed){
   var amt=typeof amount==='number'?amount.toFixed(2):amount;
   document.getElementById('win-amount').textContent='$'+amt;
   var wam=document.getElementById('win-amount-msg');if(wam)wam.textContent='$'+amt;
   // Clear saved attempts — quest is won
   try{var k=_getAttemptKey();if(k)localStorage.removeItem(k);}catch(e){}
-  // Reset all steps to step 1
-  document.getElementById('win-step-1').style.display='block';
+  // Route: signed-in → payout form; anonymous → sign-in prompt
+  var ss=document.getElementById('win-step-signin');
+  if(claimed===false){
+    // Anonymous: show celebration + sign-in buttons
+    document.getElementById('win-step-1').style.display='none';
+    if(ss){ss.style.display='block';var _sab=document.getElementById('win-signin-amount-big');if(_sab)_sab.textContent='$'+amt;var _sa=document.getElementById('win-signin-amount');if(_sa)_sa.textContent=amt;}
+  }else{
+    // Signed in: show payout form
+    document.getElementById('win-step-1').style.display='block';
+    if(ss)ss.style.display='none';
+  }
   document.getElementById('win-step-2').style.display='none';
   document.getElementById('win-step-3').style.display='none';
-  var ss=document.getElementById('win-step-signin');if(ss)ss.style.display='none';
   // Re-enable submit button in case it was stuck
   var sb=document.getElementById('win-submit-btn');if(sb){sb.disabled=false;sb.textContent='Claim My Prize →';}
   document.getElementById('win-backdrop').style.display='block';
@@ -1410,15 +1422,16 @@ async function claimPrize(){
       window._winAmount=amount;
       try{localStorage.removeItem('fs_pending_claim');}catch(e){}
       if(d.already)showToast('You already claimed this prize!','success');
-      showWinCelebration(amount);
+      showWinCelebration(amount, true);
     }else{
-      // Verified but not signed in — show win modal; after sign-in the pending
-      // claim recovery re-runs claimPrize with a token and the claim completes.
+      // Verified but not signed in — show celebration with sign-in prompt.
+      // After sign-in the pending claim recovery re-runs claimPrize with a
+      // token, sets winner_id, and shows the payout form.
       btn.disabled=false;btn.textContent='Claim Prize →';
       window._winHuntId=currentHunt.id;
       window._winUserId=null;
       window._winAmount=amount;
-      showWinCelebration(amount);
+      showWinCelebration(amount, false);
     }
   }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize →';}
 }
@@ -1527,9 +1540,32 @@ async function submitPayoutRequest(){
       // If no token or user lookup failed, use a placeholder — payout only needs the PayPal email
       if(!window._winUserId) window._winUserId = 'anonymous_' + Date.now();
     }
+    // Refresh the token before payout — getToken() may hold a stale JWT
+    var _payoutToken = getToken();
+    try {
+      var _ps = await supaClient.auth.getSession();
+      if (_ps.data && _ps.data.session && _ps.data.session.access_token) {
+        _payoutToken = _ps.data.session.access_token;
+        localStorage.setItem('fs_token', _payoutToken);
+      }
+    } catch(e) { console.warn('[payout] token refresh failed, using cached'); }
+    if (!_payoutToken) {
+      // Last resort: try refresh token directly
+      try {
+        var _ref = localStorage.getItem('fs_refresh');
+        if (_ref) {
+          var _rr = await fetch(SB+'/auth/v1/token?grant_type=refresh_token', {
+            method:'POST', headers:{'apikey':KEY,'Content-Type':'application/json'},
+            body:JSON.stringify({refresh_token:_ref})
+          });
+          var _rd = await _rr.json();
+          if (_rd && _rd.access_token) { _payoutToken = _rd.access_token; localStorage.setItem('fs_token',_payoutToken); if(_rd.refresh_token) localStorage.setItem('fs_refresh',_rd.refresh_token); }
+        }
+      } catch(e) {}
+    }
     var r = await fetch(API_BASE+'/api/payout-request',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+_payoutToken},
       body:JSON.stringify({huntId:window._winHuntId,winnerId:window._winUserId,method:'paypal',destination:dest,amount:window._winAmount})
     });
     var d = await r.json();
