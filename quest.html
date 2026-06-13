@@ -155,6 +155,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="toast" style="position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:#f5ead8;font-size:18px;z-index:10001;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;"></div>
 
 <!-- WIN MODAL -->
+
+<!-- Pre-claim sign-in gate: shown when anonymous user taps "Found it?" -->
+<div id="claim-signin-backdrop" onclick="document.getElementById('claim-signin-modal').style.display='none';document.getElementById('claim-signin-backdrop').style.opacity='0';" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;cursor:pointer;"></div>
+<div id="claim-signin-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:16px;">
+  <div id="claim-signin-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;position:relative;">
+    <button onclick="document.getElementById('claim-signin-modal').style.display='none';document.getElementById('claim-signin-backdrop').style.opacity='0';" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:40px;margin-bottom:8px;">🔐</div>
+      <div style="font-size:22px;font-weight:400;color:#fff;margin-bottom:6px;">Sign in to claim</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.4);line-height:1.5;">One tap — then enter the 6-digit code to win</div>
+    </div>
+    <div id="claim-signin-msg" style="font-size:13px;color:rgba(74,222,128,.7);text-align:center;min-height:18px;margin-bottom:8px;"></div>
+    <button onclick="claimSignIn('apple')" style="width:100%;padding:13px;border-radius:12px;background:#000;border:2px solid #fff;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> Continue with Apple</button>
+    <button onclick="claimSignIn('google')" style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google</button>
+    <button onclick="document.getElementById('claim-signin-modal').style.display='none';document.getElementById('claim-signin-backdrop').style.opacity='0';" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">Cancel</button>
+  </div>
+</div>
+
 <div id="win-backdrop" onclick="closeWinModal()" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.85);z-index:10002;opacity:0;transition:opacity .4s;cursor:pointer;"></div>
 <div id="win-modal" style="display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:16px;">
   <div id="win-inner" style="background:#0d0b18;border:1px solid rgba(74,222,128,.3);border-radius:22px;max-width:360px;width:100%;padding:24px 20px;transform:scale(0.9);opacity:0;transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .4s;max-height:90vh;overflow-y:auto;position:relative;">
@@ -184,23 +202,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="win-step-2" style="display:none;"></div>
 
     <!-- Step sign-in: shown when seeker isn't logged in at payout time -->
-    <div id="win-step-signin" style="display:none;">
-      <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-size:48px;margin-bottom:10px;">🏆</div>
-        <div style="font-size:26px;font-weight:200;color:#4ade80;margin-bottom:6px;">You Found It!</div>
-        <div style="font-size:48px;font-weight:200;color:#fff;margin-bottom:4px;" id="win-signin-amount-big">$0</div>
-      </div>
-      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:12px;padding:14px;margin-bottom:16px;text-align:center;">
-        <div style="font-size:15px;color:rgba(255,255,255,.7);line-height:1.5;">Sign in to claim your <strong style="color:#4ade80;">$<span id="win-signin-amount">0</span></strong> prize</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:4px;">One tap — we just need to know who won</div>
-      </div>
-      <div id="win-signin-msg" style="font-size:13px;color:rgba(74,222,128,.7);text-align:center;min-height:18px;margin-bottom:8px;"></div>
-      <button onclick="winSignInSocial('apple')" style="width:100%;padding:13px;border-radius:12px;background:#000;border:2px solid #fff;color:#fff;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> Continue with Apple</button>
-      <button onclick="winSignInSocial('google')" id="win-signin-btn" style="width:100%;padding:13px;border-radius:12px;background:#fff;border:none;color:#0d0b18;font-size:17px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google</button>
-      <button onclick="closeWinModal();" style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,.3);font-size:15px;font-family:inherit;cursor:pointer;">I'll sign in later</button>
-    </div>
+    <!-- Sign-in step removed: sign-in now happens BEFORE PIN entry -->
 
-    <!-- Step 3: Confirmed -->
+        <!-- Step 3: Confirmed -->
     <div id="win-step-3" style="display:none;text-align:center;">
       <div style="font-size:52px;margin-bottom:14px;">✅</div>
       <div style="font-size:22px;font-weight:400;color:#4ade80;margin-bottom:8px;">Prize Claimed!</div>
@@ -312,7 +316,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <!-- hidden compat elements -->
   <div style="display:none;"><span id="q-unlocked">0</span><span id="q-total-clues">0</span><div id="q-clue-bars"></div></div>
 
-  <div id="q-claim-banner" style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
+  <div id="q-claim-banner" style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;" class="el" data-d="200" onclick="if(!getToken()){document.getElementById('claim-signin-modal').style.display='flex';setTimeout(function(){document.getElementById('claim-signin-inner').style.transform='scale(1)';document.getElementById('claim-signin-inner').style.opacity='1';document.getElementById('claim-signin-backdrop').style.opacity='1';},10);return;}document.getElementById('q-claim-section').scrollIntoView({behavior:'smooth'})">
     <div style="font-size:22px;">🏆</div>
     <div style="flex:1;"><div style="font-size:17px;color:#4ade80;font-weight:400;">Found it? Claim your prize</div><div style="font-size:17px;color:#b8c4d0;margin-top:2px;">Enter the 6-digit code to win</div></div>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,.5)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1021,10 +1025,10 @@ async function loadQuest(){
     try{var huntEndsAt=currentHunt.ends_at?new Date(currentHunt.ends_at):null;var isExpiredActive=currentHunt.status==='active'&&huntEndsAt&&huntEndsAt<new Date()&&!currentHunt.winner_id;var _expTok=getToken();if(isExpiredActive&&_expTok){fetch(API_BASE+'/api/cron-activate-hunts',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_expTok},body:JSON.stringify({huntId:currentHunt.id})}).then(function(r){return r.json();}).then(function(d){if(d.ok&&!d.skipped){currentHunt.status='ended';document.getElementById('q-status-label').textContent='ENDED QUEST';}}).catch(function(){});}}catch(e){}
     // Increment quests_joined for seekers (non-creator, once per session)
     try{var _qjToken=getToken(),_qjKey='fs_joined_'+currentHunt.id;if(_qjToken&&!sessionStorage.getItem(_qjKey)){fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken}}).then(function(r){return r.json();}).then(function(u){if(u&&u.id&&u.id!==currentHunt.pirate_id){sessionStorage.setItem(_qjKey,'1');fetch(SB+'/rest/v1/rpc/increment_quests_joined',{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+_qjToken,'Content-Type':'application/json'},body:JSON.stringify({user_id:u.id})}).catch(function(){});}}).catch(function(){});}}catch(e){}
+    // Auto-scroll to PIN entry after sign-in from claim gate
+    try{var _ci=localStorage.getItem('fs_claim_intent');if(_ci&&_ci===currentHunt.id&&getToken()){localStorage.removeItem('fs_claim_intent');setTimeout(function(){var cs=document.getElementById('q-claim-section');if(cs)cs.scrollIntoView({behavior:'smooth'});showToast('Signed in! Enter the 6-digit code below','success');},600);}}catch(e){}
     try{if(new URLSearchParams(window.location.search).get('funded')==='1'){showFundedCelebration(currentHunt.prize_value||0);window.history.replaceState({},document.title,window.location.pathname+'?id='+encodeURIComponent(currentHunt.id));}}catch(e){}
-    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');var claimAge=pending&&pending.savedAt?(Date.now()-pending.savedAt):Infinity;if(pending&&pending.huntId===currentHunt.id&&pending.code&&pending.code.length===6&&claimAge<259200000){if(currentHunt.winner_id){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}else{for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}if(getToken()){// Signed in — complete claim automatically
-showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}else{// Not signed in — show win modal directly so they can sign in inline
-window._winHuntId=pending.huntId;window._winAmount=pending.amount||((currentHunt.prize_value||0)/100).toFixed(2);setTimeout(function(){showWinCelebration(window._winAmount,false);},500);}}}else if(pending&&claimAge>=259200000){try{localStorage.removeItem('fs_pending_claim');}catch(e){}}}catch(e){}
+    try{var pending=JSON.parse(localStorage.getItem('fs_pending_claim')||'null');if(pending&&pending.huntId===currentHunt.id){if(currentHunt.winner_id){localStorage.removeItem('fs_pending_claim');}else if(getToken()&&pending.code&&pending.code.length===6){for(var i=0;i<6;i++){var el=document.getElementById('d'+(i+1));if(el)el.value=pending.code[i];}showToast('Completing your claim...','success');setTimeout(function(){claimPrize();},800);}else{localStorage.removeItem('fs_pending_claim');}}}catch(e){}
   }catch(e){console.error('Load quest error:',e);showToast('Error loading quest: '+e.message,'error');}
 }
 function renderHunt(){
@@ -1062,6 +1066,25 @@ function renderHunt(){
         .then(function(r){return r.json();})
         .then(function(d){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='Found by '+(d&&d[0]&&d[0].username?d[0].username:'a lucky seeker');})
         .catch(function(){var wn=document.getElementById('q-winner-name');if(wn)wn.textContent='';});
+      // If the current viewer IS the winner and hasn't submitted payout yet,
+      // show a button to reopen the payout modal
+      var _wTok=getToken();
+      if(_wTok&&!h.payout_destination){
+        fetch(SB+'/auth/v1/user',{headers:{'apikey':KEY,'Authorization':'Bearer '+_wTok}})
+          .then(function(r){return r.ok?r.json():null;})
+          .then(function(u){
+            if(u&&u.id&&u.id===h.winner_id){
+              var cb=document.createElement('button');
+              cb.textContent='Claim your $'+Math.round((h.prize_value||0)/100)+' prize →';
+              cb.style.cssText='width:100%;padding:13px;border:none;border-radius:11px;background:linear-gradient(135deg,#003087,#0070ba);color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:12px;';
+              cb.onclick=function(){
+                window._winHuntId=h.id;window._winUserId=u.id;window._winAmount=((h.prize_value||0)/100).toFixed(2);
+                showWinCelebration(window._winAmount,true);
+              };
+              var wb=document.getElementById('q-won-banner');if(wb)wb.appendChild(cb);
+            }
+          }).catch(function(){});
+      }
     }
   } else if(isEnded&&h.found_at&&!h.winner_id){
     // Found-pending: PIN was entered but winner hasn't signed in yet
@@ -1440,14 +1463,10 @@ async function claimPrize(){
       if(d.already)showToast('You already claimed this prize!','success');
       showWinCelebration(amount, true);
     }else{
-      // Verified but not signed in — show celebration with sign-in prompt.
-      // After sign-in the pending claim recovery re-runs claimPrize with a
-      // token, sets winner_id, and shows the payout form.
+      // Safety net: should not happen since sign-in is required before PIN
+      // entry. If it does, prompt sign-in.
       btn.disabled=false;btn.textContent='Claim Prize →';
-      window._winHuntId=currentHunt.id;
-      window._winUserId=null;
-      window._winAmount=amount;
-      showWinCelebration(amount, false);
+      showToast('Please sign in first, then enter the code again','error');
     }
   }catch(e){console.error('Claim error:',e);showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Claim Prize →';}
 }
@@ -1476,6 +1495,32 @@ async function fsNativeGoogleSignIn(){
 }
 function fsIsNativeApp(){
   return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+}
+
+
+// Pre-claim sign-in: sets a flag so after sign-in the page auto-scrolls to PIN entry
+async function claimSignIn(provider){
+  var msg=document.getElementById('claim-signin-msg');
+  msg.style.color='rgba(74,222,128,.7)';msg.textContent='';
+  try{localStorage.setItem('fs_claim_intent',currentHunt?currentHunt.id:'');}catch(e){}
+  var returnUrl='quest.html?id='+(currentHunt?currentHunt.id:'');
+  try{
+    if(fsIsNativeApp()&&provider==='google'){
+      var authData=await fsNativeGoogleSignIn();
+      if(authData&&authData.session){msg.textContent='\u2713 Signed in!';setTimeout(function(){window.location.href=returnUrl;},600);}
+    }else if(fsIsNativeApp()){
+      localStorage.setItem('fs_magic_return',returnUrl);
+      var{data,error}=await supaClient.auth.signInWithOAuth({provider:provider,options:{redirectTo:'https://www.finderseek.com/auth-callback.html?from_app=1&return_to='+encodeURIComponent(returnUrl),skipBrowserRedirect:true}});
+      if(error)throw error;if(data&&data.url)window.location.href=data.url;
+    }else{
+      localStorage.setItem('fs_magic_return',returnUrl);
+      var{error}=await supaClient.auth.signInWithOAuth({provider:provider,options:{redirectTo:window.location.origin+'/auth-callback.html?return_to='+encodeURIComponent(returnUrl)}});
+      if(error)throw error;
+    }
+  }catch(e){
+    console.error('[claimSignIn]',e);
+    msg.style.color='#f87171';msg.textContent=e.message||'Sign-in failed. Try the other option.';
+  }
 }
 
 // Called when seeker taps "Claim My Prize" but isn't signed in yet

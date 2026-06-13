@@ -127,16 +127,10 @@ export default async function handler(req, res) {
     const user = await getUserFromToken(token);
 
     if (!user) {
-      // Verified but not signed in — end the quest immediately so other
-      // seekers don't waste time. The finder signs in later to complete.
-      if (hunt.status === 'active') {
-        await fetch(`${SB}/rest/v1/hunts?id=eq.${encodeURIComponent(huntId)}&status=eq.active&winner_id=is.null`, {
-          method: 'PATCH',
-          headers: { ...SVC_HEADERS, 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ status: 'ended', found_at: new Date().toISOString() }),
-        });
-      }
-      return res.status(200).json({ ok: true, verified: true, claimed: false });
+      // PIN correct but not signed in. The UI gates sign-in before PIN entry,
+      // so this path should not normally be reached. Don't modify the quest —
+      // just tell the client to sign in first.
+      return res.status(200).json({ ok: false, reason: 'signin_required', error: 'Sign in to claim this prize.' });
     }
 
     if (user.id === hunt.pirate_id) {
