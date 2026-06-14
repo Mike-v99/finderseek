@@ -1613,6 +1613,16 @@ async function getFreshToken() {
   } catch(e) {}
 })();
 
+// ── Resume-own-quest guard (captured synchronously at load) ──────────────
+// True when the user is returning from sign-in to continue funding the quest
+// they just built (flag set by showEmailGate / signInWithAppleGate). Captured
+// HERE, before any async auth callback can clear it, so loadCurrentUser()'s
+// "different user" draft-wipe can reliably skip it regardless of callback
+// ordering. Without this, a guest who builds a quest then signs in — when
+// fs_last_user_id holds an earlier account — has their PIN/photo/prize/clues
+// wiped and is dropped back to step 1.
+var _fsResumingOwnQuest = false;
+try { _fsResumingOwnQuest = sessionStorage.getItem('fs_quest_pending_auth') === '1'; } catch(e){}
 
 function getToken(){
   var t = localStorage.getItem('fs_token');
@@ -1645,7 +1655,12 @@ async function loadCurrentUser(){
     // wipe per-user form data so we don't leak the previous user's draft/photo.
     try {
       var lastUserId = localStorage.getItem('fs_last_user_id');
-      if (lastUserId && lastUserId !== session.user.id) {
+      // Returning from sign-in to fund the quest they just built? That draft
+      // is theirs — don't wipe it as a "different user". Check the captured
+      // flag (survives the loadCurrentUser/onAuthStateChange ordering race)
+      // OR the live flag (covers a no-reload sign-in).
+      var _continuingOwnQuest = _fsResumingOwnQuest || (function(){ try { return sessionStorage.getItem('fs_quest_pending_auth') === '1'; } catch(e){ return false; } })();
+      if (lastUserId && lastUserId !== session.user.id && !_continuingOwnQuest) {
         localStorage.removeItem('fs_newquest_form');
         localStorage.removeItem('fs_newquest_form_photo');
         localStorage.removeItem('fs_pending_quest');

@@ -234,34 +234,42 @@ export default async function handler(req, res) {
           ? `✅ Prize SENT — Quest ${hunt.quest_id || huntId.slice(0,8)} — $${prizeAmount}`
           : `🚨 SEND $${prizeAmount} → ${destination} (${methodLabel})`,
         html: paypalSuccess
-          ? `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;padding:24px;"><div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:16px;padding:24px;text-align:center;"><div style="font-size:48px;">✅</div><div style="font-size:24px;font-weight:700;color:#16a34a;">Prize Sent Automatically</div><div style="font-size:32px;font-weight:700;color:#15803d;">$${prizeAmount}</div><div style="font-size:16px;color:#666;">${methodLabel} → ${destination}</div><div style="font-size:13px;color:#999;">Batch: ${paypalBatchId}</div></div><p style="margin-top:16px;font-size:14px;color:#666;">Winner: ${winner?.username || winnerId} · Quest: ${hunt.quest_id || '—'}</p></div>`
-          : `<div style="font-family:-apple-system,sans-serif;max-width:480px;margin:0 auto;">
-              <div style="background:#003087;padding:16px;text-align:center;">` + '<svg width="80" height="22" viewBox="0 0 124 33" xmlns="http://www.w3.org/2000/svg"><path d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746zM47 13.154c-.374 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.469 1.044.332 1.906z" fill="white"/><path d="M94.992 6.749h-6.84a.95.95 0 0 0-.938.802l-2.766 17.537a.569.569 0 0 0 .562.658h3.51a.665.665 0 0 0 .656-.562l.785-4.971a.95.95 0 0 1 .938-.803h2.164c4.506 0 7.105-2.18 7.785-6.5.307-1.89.012-3.375-.873-4.415-.971-1.142-2.694-1.746-4.983-1.746zm.789 6.405c-.373 2.454-2.248 2.454-4.062 2.454h-1.031l.725-4.583a.568.568 0 0 1 .562-.481h.473c1.234 0 2.4 0 3.002.704.359.42.468 1.044.331 1.906z" fill="#009CDE"/><path d="M7.266 29.154l.523-3.322-1.165-.027H1.061L4.927 1.292a.316.316 0 0 1 .314-.268h9.38c3.114 0 5.263.648 6.385 1.927.526.6.861 1.227 1.023 1.917.17.724.173 1.589.007 2.644l-.012.077v.676l.526.298a3.69 3.69 0 0 1 1.065.812c.45.513.741 1.165.864 1.938.127.795.085 1.741-.123 2.812-.24 1.232-.628 2.305-1.152 3.183a6.547 6.547 0 0 1-1.825 2.025 7.435 7.435 0 0 1-2.457 1.109 11.627 11.627 0 0 1-3.085.368h-.733a2.219 2.219 0 0 0-2.196 1.875l-.055.301-.924 5.855-.042.215c-.011.068-.03.102-.058.125a.155.155 0 0 1-.096.035H7.266z" fill="white"/></svg>' + `</div>
-              <div style="padding:20px;">
-                <div style="font-size:18px;font-weight:600;color:#111;margin-bottom:6px;">Someone won your quest! 🎉</div>
-                <div style="font-size:14px;color:#666;margin-bottom:16px;">Quest ${hunt.quest_id || huntId.slice(0,8)} has been claimed. Send the prize when ready.</div>
-                <div style="background:#f8f9fa;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
-                  <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:13px;color:#888;">Winner PayPal</span>
-                    <span style="font-size:13px;color:#111;font-weight:500;">${destination}</span>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;">
-                    <span style="font-size:13px;color:#888;">Amount to send</span>
-                    <span style="font-size:13px;color:#16a34a;font-weight:600;">$${prizeAmount}</span>
-                  </div>
-                </div>
-                <div style="background:#fff8e1;border:1px solid #f0d264;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
-                  <div style="font-size:13px;font-weight:600;color:#7a5c00;margin-bottom:6px;">How to pay manually:</div>
-                  <div style="font-size:13px;color:#555;line-height:1.7;">
-                    1. Open PayPal (app or paypal.com) and choose <strong>Send</strong><br/>
-                    2. Paste the winner's ${methodLabel}: <span style="font-family:monospace;background:#fff;border:1px solid #ddd;border-radius:6px;padding:2px 8px;user-select:all;">${destination}</span><br/>
-                    3. Send <strong>$${prizeAmount} USD</strong> with note: FinderSeek prize${hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''}
-                  </div>
-                </div>
-                <a href="https://www.paypal.com/myaccount/transfer/homepage/send" style="display:block;background:#003087;color:#fff;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;margin-bottom:8px;">Open PayPal Send Money →</a>
-                <div style="font-size:12px;color:#888;text-align:center;line-height:1.5;">Copy the winner's address above, then paste it in PayPal's Send flow.</div>
+          ? `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="color-scheme" content="light"/><meta name="supported-color-schemes" content="light"/></head>
+            <body style="margin:0;padding:0;background:#ffffff;"><div style="font-family:-apple-system,Helvetica,Arial,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;padding:24px 20px;color:#1a1a1a;">
+              <div style="font-size:22px;font-weight:800;color:#1a1a1a;">Finder<span style="font-style:italic;color:#c9890c;">Seek</span></div>
+              <div style="height:1px;background:#ececec;margin:14px 0 22px;font-size:0;line-height:0;">&nbsp;</div>
+              <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:24px;text-align:center;">
+                <div style="font-size:44px;">&#9989;</div>
+                <div style="font-size:22px;font-weight:800;color:#15803d;margin-top:4px;">Prize Sent Automatically</div>
+                <div style="font-size:30px;font-weight:800;color:#111111;margin:6px 0;">$${prizeAmount}</div>
+                <div style="font-size:15px;color:#444444;">${methodLabel} &rarr; ${destination}</div>
+                <div style="font-size:12px;color:#888888;margin-top:6px;">Batch: ${paypalBatchId}</div>
               </div>
-            </div>`
+              <p style="margin-top:18px;font-size:14px;color:#444444;">Winner: ${winner?.username || winnerId} &middot; Quest: ${hunt.quest_id || '\u2014'}</p>
+            </div></body></html>`
+          : `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="color-scheme" content="light"/><meta name="supported-color-schemes" content="light"/></head>
+            <body style="margin:0;padding:0;background:#ffffff;"><div style="font-family:-apple-system,Helvetica,Arial,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;padding:24px 20px;color:#1a1a1a;">
+              <div style="font-size:22px;font-weight:800;color:#1a1a1a;">Finder<span style="font-style:italic;color:#c9890c;">Seek</span></div>
+              <div style="height:1px;background:#ececec;margin:14px 0 22px;font-size:0;line-height:0;">&nbsp;</div>
+              <div style="font-size:19px;font-weight:800;color:#111111;margin-bottom:6px;">Someone won your quest! &#127881;</div>
+              <div style="font-size:14px;color:#444444;margin-bottom:18px;">Quest ${hunt.quest_id || huntId.slice(0,8)} has been claimed. Send the prize when ready.</div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f7f9;border:1px solid #e6e6e6;border-radius:10px;margin-bottom:16px;"><tr><td style="padding:14px 16px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr><td style="font-size:13px;color:#777777;">Winner ${methodLabel}</td><td align="right" style="font-size:13px;color:#111111;font-weight:600;">${destination}</td></tr>
+                  <tr><td style="font-size:13px;color:#777777;padding-top:8px;">Amount to send</td><td align="right" style="font-size:13px;color:#15803d;font-weight:700;padding-top:8px;">$${prizeAmount}</td></tr>
+                </table>
+              </td></tr></table>
+              <div style="background:#fff8e1;border:1px solid #f0d264;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+                <div style="font-size:13px;font-weight:700;color:#7a5c00;margin-bottom:6px;">How to pay manually</div>
+                <div style="font-size:13px;color:#444444;line-height:1.8;">
+                  1. Open PayPal (app or paypal.com) and choose <strong style="color:#111111;">Send</strong><br/>
+                  2. Paste the winner's ${methodLabel}: <span style="font-family:monospace;background:#ffffff;border:1px solid #dddddd;border-radius:6px;padding:2px 8px;color:#111111;">${destination}</span><br/>
+                  3. Send <strong style="color:#111111;">$${prizeAmount} USD</strong> with note: FinderSeek prize${hunt.quest_id ? ' - Quest ' + hunt.quest_id : ''}
+                </div>
+              </div>
+              <a href="https://www.paypal.com/myaccount/transfer/homepage/send" style="display:block;background:#003087;color:#ffffff;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;">Open PayPal Send Money &rarr;</a>
+              <div style="font-size:12px;color:#888888;text-align:center;line-height:1.5;margin-top:8px;">Copy the winner's address above, then paste it in PayPal's Send flow.</div>
+            </div></body></html>`
       });
       console.log('[payout] Ops alert emailed to', process.env.PAYOUT_ALERT_EMAIL || 'payments@finderseek.com');
     } catch (e) { console.warn('[payout] Email failed:', e.message); }

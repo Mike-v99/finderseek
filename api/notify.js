@@ -22,27 +22,34 @@ const SITE_URL   = 'https://finderseek.com';
 
 // ── Colours / styles used in all emails ──────────────────────────
 const CSS = `
-  body { margin:0; padding:0; font-family:'Helvetica Neue',Arial,sans-serif; }
-  .wrap { max-width:560px; margin:0 auto; background:#0e0c14; border:1px solid rgba(201,137,12,.2); border-radius:16px; overflow:hidden; }
-  .header { background:linear-gradient(135deg,#1a1628,#0e0c14); padding:32px 36px 24px; border-bottom:1px solid rgba(255,255,255,.06); }
-  .logo { font-size:22px; font-weight:800; color:#f5ead8; letter-spacing:1px; }
+  :root { color-scheme: light; supported-color-schemes: light; }
+  body { margin:0; padding:0; font-family:'Helvetica Neue',Arial,sans-serif; background:#ffffff; color:#1a1a1a; }
+  .wrap { max-width:560px; margin:0 auto; background:#ffffff; border:1px solid #e6e6e6; border-radius:16px; overflow:hidden; }
+  .header { background:#ffffff; padding:26px 36px 22px; text-align:left; }
+  .logo { font-size:24px; font-weight:800; color:#1a1a1a; letter-spacing:.5px; }
   .logo em { font-style:italic; color:#c9890c; }
-  .body { padding:28px 36px 32px; }
-  h1 { font-size:26px; font-weight:800; color:#f5ead8; margin:0 0 10px; letter-spacing:.5px; }
-  p { font-size:15px; color:#c8b48a; line-height:1.7; margin:0 0 16px; }
-  .highlight { background:rgba(201,137,12,.1); border:1px solid rgba(201,137,12,.25); border-radius:12px; padding:16px 20px; margin:20px 0; }
+  .header-rule { height:1px; line-height:1px; font-size:0; background:#ececec; }
+  .body { padding:30px 36px 32px; background:#ffffff; }
+  h1 { font-size:25px; font-weight:800; color:#111111; margin:0 0 14px; line-height:1.25; }
+  p { font-size:15px; color:#333333; line-height:1.7; margin:0 0 16px; }
+  .highlight { background:#faf7ef; border:1px solid #ece3cf; border-radius:12px; padding:16px 20px; margin:20px 0; }
   .highlight-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#8a7a5a; margin-bottom:4px; font-family:monospace; }
-  .highlight-val { font-size:18px; font-weight:800; color:#e8a820; }
-  .btn { display:inline-block; background:linear-gradient(135deg,#b45309,#e8a820); color:#0a0800 !important; text-decoration:none; border-radius:10px; padding:13px 28px; font-size:15px; font-weight:800; margin:8px 0 20px; }
-  .footer { padding:20px 36px; border-top:1px solid rgba(255,255,255,.05); font-size:11px; color:#8a7a5a; line-height:1.8; font-family:monospace; }
-  .divider { border:none; border-top:1px solid rgba(255,255,255,.05); margin:20px 0; }
+  .highlight-val { font-size:18px; font-weight:800; color:#b45309; }
+  .btn { display:inline-block; background:linear-gradient(135deg,#b45309,#e8a820); color:#ffffff !important; text-decoration:none; border-radius:10px; padding:13px 28px; font-size:15px; font-weight:800; margin:8px 0 20px; }
+  .footer { padding:20px 36px; border-top:1px solid #ececec; font-size:11px; color:#999999; line-height:1.8; font-family:monospace; background:#ffffff; }
+  .divider { border:none; border-top:1px solid #ececec; margin:20px 0; }
 `;
 
 function html(title, body) {
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>${CSS}</style></head>
-  <body><div style="padding:24px 16px;background:#06050a;">
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="light"/>
+  <meta name="supported-color-schemes" content="light"/>
+  <style>${CSS}</style></head>
+  <body style="background:#ffffff;"><div style="padding:24px 16px;background:#ffffff;">
   <div class="wrap">
     <div class="header"><div class="logo">Finder<em>Seek</em></div></div>
+    <div class="header-rule">&nbsp;</div>
     <div class="body">${body}</div>
     <div class="footer">
       You're receiving this because you have notifications enabled.<br/>
@@ -60,7 +67,7 @@ function tplHuntApproved({ username, city, prize, huntUrl }) {
     subject: `🏴‍☠️ Your quest is LIVE in ${city}!`,
     html: html('Quest Approved', `
       <h1>Your Quest is Live! 🏴‍☠️</h1>
-      <p>Hey ${username}, great news — your treasure quest has been approved by our team and is now live for seekers in <strong style="color:#f5ead8;">${city}</strong>.</p>
+      <p>Hey ${username}, great news — your treasure quest has been approved by our team and is now live for seekers in <strong style="color:#1a1a1a;">${city}</strong>.</p>
       <div class="highlight">
         <div class="highlight-label">Prize</div>
         <div class="highlight-val">${prize}</div>
@@ -96,7 +103,7 @@ function tplQuestScheduled({ username, city, prize, questId, startsLabel, endsLa
     subject: `📅 Quest ${questId ? questId + ' ' : ''}funded & scheduled — goes live ${startsLabel}`,
     html: html('Quest Scheduled', `
       <h1>Payment Received — Quest Scheduled! 📅</h1>
-      <p>Hey ${username}, your payment went through and your treasure quest in <strong style="color:#f5ead8;">${city}</strong> is locked in.</p>
+      <p>Hey ${username}, your payment went through and your treasure quest in <strong style="color:#1a1a1a;">${city}</strong> is locked in.</p>
       <div class="highlight">
         <div class="highlight-label">Prize</div>
         <div class="highlight-val">${prize}</div>
@@ -122,7 +129,7 @@ function tplPrizeClaimed({ username, city, prize, winnerName, huntUrl }) {
     subject: `🏆 Someone found your treasure in ${city}!`,
     html: html('Prize Claimed', `
       <h1>Your Treasure Was Found! 🏆</h1>
-      <p>Hey ${username}, someone just claimed your prize in <strong style="color:#f5ead8;">${city}</strong>. Congrats on a successful quest!</p>
+      <p>Hey ${username}, someone just claimed your prize in <strong style="color:#1a1a1a;">${city}</strong>. Congrats on a successful quest!</p>
       <div class="highlight">
         <div class="highlight-label">Prize delivered</div>
         <div class="highlight-val">${prize}</div>
@@ -138,16 +145,16 @@ function tplYouWon({ username, city, prize, huntUrl, isEscrow, paypalEmail }) {
     subject: `🏆 You won ${prize} on FinderSeek in ${city}!`,
     html: html('You Won!', `
       <h1>You Found the Treasure! 🏆</h1>
-      <p>Congratulations ${username}! You successfully claimed the prize in <strong style="color:#f5ead8;">${city}</strong>.</p>
+      <p>Congratulations ${username}! You successfully claimed the prize in <strong style="color:#1a1a1a;">${city}</strong>.</p>
       <div class="highlight">
         <div class="highlight-label">Your prize</div>
         <div class="highlight-val">${prize}</div>
       </div>
-      <div class="highlight" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06);">
-        <div class="highlight-label" style="color:#4ade80;">PayPal Email</div>
-        <div class="highlight-val" style="color:#4ade80;font-size:15px;">${paypalEmail || 'As submitted'}</div>
+      <div class="highlight" style="border-color:#bbf7d0;background:#f0fdf4;">
+        <div class="highlight-label" style="color:#15803d;">PayPal Email</div>
+        <div class="highlight-val" style="color:#15803d;font-size:15px;">${paypalEmail || 'As submitted'}</div>
       </div>
-      <p style="font-size:14px;color:rgba(255,255,255,.6);">Your prize will be sent to your PayPal within 24 hours. If you don't receive it, reply to this email.</p>
+      <p style="font-size:14px;color:#555555;">Your prize will be sent to your PayPal within 24 hours. If you don't receive it, reply to this email.</p>
       <a href="${huntUrl}" class="btn">View Quest →</a>
     `)
   };
@@ -159,7 +166,7 @@ function tplChatMessage({ username, senderName, senderRole, preview, huntUrl, ci
     subject: `💬 New message from your ${senderRole === 'pirate' ? 'Pirate' : 'Winner'} — ${city}`,
     html: html('New Message', `
       <h1>New Message 💬</h1>
-      <p>Hey ${username}, <strong style="color:#f5ead8;">${senderName}</strong> (${roleLabel}) sent you a message about the quest.</p>
+      <p>Hey ${username}, <strong style="color:#1a1a1a;">${senderName}</strong> (${roleLabel}) sent you a message about the quest.</p>
       <div class="highlight">
         <div class="highlight-label">Message preview</div>
         <div class="highlight-val" style="font-size:15px;font-weight:600;">"${preview}"</div>
@@ -187,9 +194,9 @@ function tplNewQuestInCity({ username, city, prize, huntUrl }) {
 
 function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
   const escrowNote = wasEscrow
-    ? `<div class="highlight" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06);">
-        <div class="highlight-label" style="color:#4ade80;">💰 Escrow Refund</div>
-        <div class="highlight-val" style="color:#4ade80;">Refund initiated</div>
+    ? `<div class="highlight" style="border-color:#bbf7d0;background:#f0fdf4;">
+        <div class="highlight-label" style="color:#15803d;">💰 Escrow Refund</div>
+        <div class="highlight-val" style="color:#15803d;">Refund initiated</div>
       </div>
       <p>Since you used FinderSeek Escrow, your prize amount has been refunded to your original payment method. The 10% service fee is non-refundable. You should see the refund on your statement within 1–2 business days depending on your bank.</p>`
     : `<p>Since this was an Honor Code quest, no payment was collected.</p>`;
@@ -197,7 +204,7 @@ function tplHuntExpired({ username, city, prize, wasEscrow, huntUrl }) {
     subject: `⏰ Your quest in ${city} expired with no winner`,
     html: html('Quest Expired', `
       <h1>Quest Expired ⏰</h1>
-      <p>Hey ${username}, your treasure quest in <strong style="color:#f5ead8;">${city}</strong> has ended — nobody cracked the clues this time!</p>
+      <p>Hey ${username}, your treasure quest in <strong style="color:#1a1a1a;">${city}</strong> has ended — nobody cracked the clues this time!</p>
       <div class="highlight">
         <div class="highlight-label">Prize</div>
         <div class="highlight-val">${prize}</div>
@@ -215,7 +222,7 @@ function tplHuntExpiredSeeker({ username, city, prize, huntUrl }) {
     subject: `⏰ The quest in ${city} ended — no one found it!`,
     html: html('Quest Expired', `
       <h1>Time's Up! ⏰</h1>
-      <p>Hey ${username}, the treasure quest in <strong style="color:#f5ead8;">${city}</strong> ended and nobody found the prize.</p>
+      <p>Hey ${username}, the treasure quest in <strong style="color:#1a1a1a;">${city}</strong> ended and nobody found the prize.</p>
       <div class="highlight">
         <div class="highlight-label">Unclaimed prize</div>
         <div class="highlight-val">${prize}</div>
