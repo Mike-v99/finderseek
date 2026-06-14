@@ -108,8 +108,8 @@ export default async function handler(req, res) {
 
   try {
     // Fetch hunt
-    const hunt = await sbGet('hunts', `id=eq.${huntId}&select=id,title,prize_value,quest_id,status,payout_status,winner_id,payment_type,pirate_id`);
-    if (!hunt) { console.error('[payout] Hunt not found:', huntId); return res.status(404).json({ error: 'Hunt not found' }); }
+    const hunt = await sbGet('hunts', `id=eq.${huntId}&select=id,finder_code,prize_value,quest_id,status,payout_status,winner_id,payment_type,pirate_id`);
+    if (!hunt || !hunt.id) { console.error('[payout] Hunt not found:', huntId, hunt); return res.status(404).json({ error: 'Hunt not found' }); }
 
     // Block creator from winning own quest
     if (winnerId && hunt.pirate_id && winnerId === hunt.pirate_id) {
