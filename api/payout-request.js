@@ -71,6 +71,21 @@ async function getUserFromToken(token) {
   } catch (e) { return null; }
 }
 
+// ── Audit log: one row per payout decision. Fire-and-forget — a logging
+// failure must NEVER block or break a payout. Writes to the payout_audit
+// table (see the CREATE TABLE in the deploy notes). Columns are text-typed
+// so even a malformed/attacker-supplied value is always recorded.
+async function logPayoutAudit(row) {
+  try {
+    if (!SB_URL || !SB_KEY) return;
+    await fetch(`${SB_URL}/rest/v1/payout_audit`, {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(row),
+    });
+  } catch (e) { console.warn('[payout] audit log failed:', e.message); }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -78,63 +93,73 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Auth: env secret (internal/admin tools), winner's Supabase token, OR
-  // the quest PIN (claimCode). The PIN is the strongest proof of identity —
-  // only the person with the physical envelope has it.
+  // Client IP for the audit trail (same derivation as api/claim.js)
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+
+  // ── Identify the caller (this does NOT authorize the payout yet) ──
+  // Authorization is decided AFTER the hunt loads, because every proof below is
+  // checked against the hunt's OWN winner_id / finder_code — never against a
+  // value supplied in the request body.
   const secret = req.headers['x-finderseek-secret'];
   const secretOk = !!secret && (secret === process.env.FINDERSEEK_NOTIFY_SECRET || secret === process.env.NOTIFY_SECRET);
   let authedUser = null;
-  let pinVerified = false;
   if (!secretOk) {
     const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || null;
     authedUser = await getUserFromToken(bearer);
-    // If JWT auth failed, check for PIN-based auth below (after fetching hunt)
   }
 
-  let { huntId, winnerId, method, destination, amount, claimCode } = req.body;
-  // JWT callers can only request a payout as themselves
-  if (authedUser) {
-    if (winnerId && winnerId !== authedUser.id) {
-      // Token mismatch — fall through to PIN auth instead of rejecting
-      console.warn('[payout] Token mismatch, trying PIN auth. token=', authedUser.id, 'requested=', winnerId);
-      authedUser = null;
-    } else {
-      winnerId = authedUser.id;
-    }
-  }
-  if (!huntId || !winnerId || !destination) {
+  // winnerId from the body is UNTRUSTED — knowing a UUID must never pay anyone.
+  // It is honored only for env-secret (admin/cron) callers; everyone else is
+  // paid out to the hunt's recorded winner_id.
+  let { huntId, winnerId: bodyWinnerId, method, destination, amount, claimCode } = req.body;
+  if (!huntId || !destination) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  let proofType = 'unknown'; // 'secret' | 'jwt' | 'pin' | 'rejected' — set after auth
+
   try {
-    // Fetch hunt
+    // Fetch hunt — the source of truth for winner_id and finder_code
     const hunt = await sbGet('hunts', `id=eq.${huntId}&select=id,finder_code,prize_value,quest_id,status,payout_status,winner_id,payment_type,pirate_id`);
     if (!hunt || !hunt.id) { console.error('[payout] Hunt not found:', huntId, hunt); return res.status(404).json({ error: 'Hunt not found' }); }
 
-    // Block creator from winning own quest
-    if (winnerId && hunt.pirate_id && winnerId === hunt.pirate_id) {
-      return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
-    }
+    // ── Authorization: require ONE independent proof, all checked vs. the DB ──
+    //   secretOk : trusted internal/admin/cron caller (env secret header)
+    //   jwtOk    : the actual winner is signed in (token user === hunt.winner_id)
+    //   pinOk    : caller proved physical possession of the envelope's PIN
+    // The body winnerId is NOT a proof and cannot satisfy any of these.
+    const jwtOk = !!(authedUser && hunt.winner_id && authedUser.id === hunt.winner_id);
+    const pinOk = !!(claimCode && hunt.finder_code && String(claimCode) === String(hunt.finder_code) && hunt.winner_id);
+    proofType = secretOk ? 'secret' : jwtOk ? 'jwt' : pinOk ? 'pin' : 'rejected';
 
-    // PIN-based auth: if JWT failed but the caller provided the correct PIN,
-    // they ARE the envelope finder. Verify the PIN server-side, then use
-    // the hunt's winner_id (which claim.js already set atomically).
-    if (!authedUser && !secretOk && claimCode && hunt.finder_code) {
-      if (String(claimCode) === String(hunt.finder_code) && hunt.winner_id) {
-        pinVerified = true;
-        winnerId = hunt.winner_id;
-        console.log('[payout] PIN-verified payout for hunt:', huntId);
-      }
-    }
-
-    // The verified winner can be paid — via JWT match, PIN match, or env secret.
-    if (!secretOk && !pinVerified && (!hunt.winner_id || hunt.winner_id !== winnerId)) {
-      console.warn('[payout] Rejected: winner mismatch. hunt.winner_id=', hunt.winner_id, 'requested=', winnerId);
+    if (!secretOk && !jwtOk && !pinOk) {
+      console.warn('[payout] Rejected: no valid proof. hunt.winner_id=', hunt.winner_id, 'token=', authedUser && authedUser.id, 'pinSent=', !!claimCode);
+      await logPayoutAudit({
+        hunt_id: String(huntId), quest_id: hunt.quest_id || null,
+        winner_id: bodyWinnerId ? String(bodyWinnerId) : null, // the UUID that was *attempted*
+        proof_type: 'rejected', outcome: 'rejected',
+        destination: destination ? String(destination) : null,
+        amount: amount ? String(amount) : null, method: method || null, ip,
+      });
       return res.status(403).json({ error: 'Winner not verified for this quest. Claim the prize in the app first.' });
+    }
+
+    // Resolve the trusted recipient. Non-admin callers are ALWAYS paid to the
+    // recorded winner; only env-secret tooling may name a specific winnerId.
+    const winnerId = secretOk ? (bodyWinnerId || hunt.winner_id) : hunt.winner_id;
+    if (!winnerId) {
+      await logPayoutAudit({ hunt_id: String(huntId), quest_id: hunt.quest_id || null, proof_type: proofType, outcome: 'no_winner', destination: String(destination), amount: amount ? String(amount) : null, method: method || null, ip });
+      return res.status(409).json({ error: 'No winner recorded for this quest yet. Claim the prize first.' });
+    }
+
+    // Block creator from being paid for their own quest (defense in depth)
+    if (hunt.pirate_id && winnerId === hunt.pirate_id) {
+      return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
     }
 
     // Duplicate claim guard
     if (hunt.payout_status === 'processing' || hunt.payout_status === 'sent') {
+      await logPayoutAudit({ hunt_id: String(huntId), quest_id: hunt.quest_id || null, winner_id: String(winnerId), proof_type: proofType, outcome: 'duplicate', destination: String(destination), amount: amount ? String(amount) : null, method: method || null, ip });
       return res.status(409).json({ error: 'This prize has already been claimed.', alreadyClaimed: true });
     }
 
@@ -253,6 +278,13 @@ export default async function handler(req, res) {
       }
     } catch (e) { console.warn('[payout] Notify failed:', e.message); }
 
+    await logPayoutAudit({
+      hunt_id: String(huntId), quest_id: hunt.quest_id || null, winner_id: String(winnerId),
+      proof_type: proofType, outcome: paypalSuccess ? 'sent' : 'processing',
+      destination: String(destination), amount: String(prizeAmount), method: method || 'paypal',
+      batch_id: paypalBatchId || null, ip,
+    });
+
     return res.status(200).json({
       success: true,
       automated: paypalSuccess,
@@ -264,6 +296,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('[payout-request] Error:', err.message);
+    await logPayoutAudit({ hunt_id: huntId ? String(huntId) : null, winner_id: bodyWinnerId ? String(bodyWinnerId) : null, proof_type: proofType, outcome: 'error', destination: destination ? String(destination) : null, amount: amount ? String(amount) : null, method: method || null, error_msg: String(err.message || err).slice(0, 300), ip });
     return res.status(500).json({ error: err.message });
   }
 }
