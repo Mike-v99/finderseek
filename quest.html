@@ -1109,7 +1109,7 @@ function renderHunt(){
               cb.textContent='Claim your $'+Math.round((h.prize_value||0)/100)+' prize →';
               cb.style.cssText='width:100%;padding:13px;border:none;border-radius:11px;background:linear-gradient(135deg,#003087,#0070ba);color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:12px;';
               cb.onclick=function(){
-                window._winHuntId=h.id;window._winUserId=u.id;window._winAmount=((h.prize_value||0)/100).toFixed(2);
+                window._winHuntId=h.id;window._winUserId=u.id;window._winAmount=((h.prize_value||0)/100).toFixed(2);window._winToken=_wTok;
                 showWinCelebration(window._winAmount,true);
               };
               var wb=document.getElementById('q-won-banner');if(wb)wb.appendChild(cb);
@@ -1495,6 +1495,7 @@ async function claimPrize(){
       btn.textContent='CLAIMED!';btn.style.background='linear-gradient(135deg,#15803d,var(--green))';
       window._winHuntId=currentHunt.id;
       window._winUserId=d.userId||null;
+      window._winToken=getToken(); // preserve the exact token that claimed
       window._winAmount=amount;
       try{localStorage.removeItem('fs_pending_claim');}catch(e){}
       if(d.already)showToast('You already claimed this prize!','success');
@@ -1606,6 +1607,10 @@ function selectPayoutMethod(method){
 async function submitPayoutRequest(){
   var errEl = document.getElementById('win-submit-error');
   if(errEl) errEl.textContent = '';
+  // Use the exact token that claimed the prize — avoids multi-account session
+  // conflicts where supaClient.auth.getSession() returns a stale session
+  var _payoutToken = window._winToken || getToken();
+
   // Use manually entered email if shown, otherwise use the pre-filled profile email
   var manualEl = document.getElementById('win-payout-dest');
   var prefilledEl = document.getElementById('win-prefilled-email');
@@ -1641,29 +1646,6 @@ async function submitPayoutRequest(){
       }
       // If no token or user lookup failed, use a placeholder — payout only needs the PayPal email
       if(!window._winUserId) window._winUserId = 'anonymous_' + Date.now();
-    }
-    // Refresh the token before payout — getToken() may hold a stale JWT
-    var _payoutToken = getToken();
-    try {
-      var _ps = await supaClient.auth.getSession();
-      if (_ps.data && _ps.data.session && _ps.data.session.access_token) {
-        _payoutToken = _ps.data.session.access_token;
-        localStorage.setItem('fs_token', _payoutToken);
-      }
-    } catch(e) { console.warn('[payout] token refresh failed, using cached'); }
-    if (!_payoutToken) {
-      // Last resort: try refresh token directly
-      try {
-        var _ref = localStorage.getItem('fs_refresh');
-        if (_ref) {
-          var _rr = await fetch(SB+'/auth/v1/token?grant_type=refresh_token', {
-            method:'POST', headers:{'apikey':KEY,'Content-Type':'application/json'},
-            body:JSON.stringify({refresh_token:_ref})
-          });
-          var _rd = await _rr.json();
-          if (_rd && _rd.access_token) { _payoutToken = _rd.access_token; localStorage.setItem('fs_token',_payoutToken); if(_rd.refresh_token) localStorage.setItem('fs_refresh',_rd.refresh_token); }
-        }
-      } catch(e) {}
     }
     var r = await fetch(API_BASE+'/api/payout-request',{
       method:'POST',
