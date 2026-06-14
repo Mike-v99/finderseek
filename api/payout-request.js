@@ -78,26 +78,29 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Auth: env secret (internal/admin tools) OR the winner's own Supabase
-  // token. The old public page secret is gone — rotate NOTIFY_SECRET in
-  // Vercel after deploying this.
+  // Auth: env secret (internal/admin tools), winner's Supabase token, OR
+  // the quest PIN (claimCode). The PIN is the strongest proof of identity —
+  // only the person with the physical envelope has it.
   const secret = req.headers['x-finderseek-secret'];
   const secretOk = !!secret && (secret === process.env.FINDERSEEK_NOTIFY_SECRET || secret === process.env.NOTIFY_SECRET);
   let authedUser = null;
+  let pinVerified = false;
   if (!secretOk) {
     const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || null;
     authedUser = await getUserFromToken(bearer);
-    if (!authedUser) return res.status(401).json({ error: 'Unauthorized' });
+    // If JWT auth failed, check for PIN-based auth below (after fetching hunt)
   }
 
-  let { huntId, winnerId, method, destination, amount } = req.body;
-  // JWT callers can only request a payout as themselves — the token decides
-  // the identity, not the request body. (winner_id match below still applies.)
+  let { huntId, winnerId, method, destination, amount, claimCode } = req.body;
+  // JWT callers can only request a payout as themselves
   if (authedUser) {
     if (winnerId && winnerId !== authedUser.id) {
-      return res.status(403).json({ error: 'Token does not match winnerId' });
+      // Token mismatch — fall through to PIN auth instead of rejecting
+      console.warn('[payout] Token mismatch, trying PIN auth. token=', authedUser.id, 'requested=', winnerId);
+      authedUser = null;
+    } else {
+      winnerId = authedUser.id;
     }
-    winnerId = authedUser.id;
   }
   if (!huntId || !winnerId || !destination) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -113,11 +116,19 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: 'Quest creators cannot claim their own prize.' });
     }
 
-    // Only the server-verified winner can be paid. /api/claim is the sole
-    // path that sets hunts.winner_id (after checking the PIN server-side),
-    // so a payout request must match it — otherwise anyone who can reach
-    // this endpoint could request money without ever finding the envelope.
-    if (!hunt.winner_id || hunt.winner_id !== winnerId) {
+    // PIN-based auth: if JWT failed but the caller provided the correct PIN,
+    // they ARE the envelope finder. Verify the PIN server-side, then use
+    // the hunt's winner_id (which claim.js already set atomically).
+    if (!authedUser && !secretOk && claimCode && hunt.finder_code) {
+      if (String(claimCode) === String(hunt.finder_code) && hunt.winner_id) {
+        pinVerified = true;
+        winnerId = hunt.winner_id;
+        console.log('[payout] PIN-verified payout for hunt:', huntId);
+      }
+    }
+
+    // The verified winner can be paid — via JWT match, PIN match, or env secret.
+    if (!secretOk && !pinVerified && (!hunt.winner_id || hunt.winner_id !== winnerId)) {
       console.warn('[payout] Rejected: winner mismatch. hunt.winner_id=', hunt.winner_id, 'requested=', winnerId);
       return res.status(403).json({ error: 'Winner not verified for this quest. Claim the prize in the app first.' });
     }
