@@ -1655,16 +1655,21 @@ async function loadCurrentUser(){
     // wipe per-user form data so we don't leak the previous user's draft/photo.
     try {
       var lastUserId = localStorage.getItem('fs_last_user_id');
-      // Returning from sign-in to fund the quest they just built? That draft
-      // is theirs — don't wipe it as a "different user". Check the captured
-      // flag (survives the loadCurrentUser/onAuthStateChange ordering race)
-      // OR the live flag (covers a no-reload sign-in).
+      var draftOwner = localStorage.getItem('fs_draft_owner');
+      // Only wipe when the saved draft was built by a DIFFERENT signed-in user.
+      // KEEP it when: no owner recorded (legacy draft), built anonymously
+      // ('anon' — claimable by whoever is here now), or built by THIS user.
+      // This stops the constant "start over" caused by a stale device account
+      // while still never showing one signed-in user's draft to another. The
+      // pending_auth flag is kept as extra safety for the guest-signs-in flow.
       var _continuingOwnQuest = _fsResumingOwnQuest || (function(){ try { return sessionStorage.getItem('fs_quest_pending_auth') === '1'; } catch(e){ return false; } })();
-      if (lastUserId && lastUserId !== session.user.id && !_continuingOwnQuest) {
+      var _draftIsAnothersUser = draftOwner && draftOwner !== 'anon' && draftOwner !== session.user.id;
+      if (_draftIsAnothersUser && !_continuingOwnQuest) {
         localStorage.removeItem('fs_newquest_form');
         localStorage.removeItem('fs_newquest_form_photo');
         localStorage.removeItem('fs_pending_quest');
         localStorage.removeItem('fs_newquest_abandon');
+        try { localStorage.removeItem('fs_draft_owner'); } catch(e){}
         // Also wipe in-memory state so the form doesn't restore from a stale window
         try { window._hsPhotoDataUrl = null; } catch(e){}
         try { _hsData = null; } catch(e){}
@@ -2609,6 +2614,10 @@ function saveFormState() {
       savedAt: Date.now(),
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
+    // Stamp WHO is building this draft, so loadCurrentUser() only wipes it
+    // when it truly belongs to a DIFFERENT signed-in user — not merely because
+    // the device last saw another account. 'anon' = built while not signed in.
+    try { localStorage.setItem('fs_draft_owner', (typeof currentUser !== 'undefined' && currentUser && currentUser.id) ? currentUser.id : 'anon'); } catch(e){}
     // Save photo — try localStorage first, fall back to sessionStorage
     // Photos can be 1-3MB so localStorage may fail silently on some devices
     if (window._hsPhotoDataUrl) {
