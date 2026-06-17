@@ -309,17 +309,22 @@ body::after {
 /* Quest list (expanded inside section) */
 .quest-list { max-height: 0; overflow: hidden; transition: max-height .35s ease; background: rgba(0,0,0,.2); }
 .section.open .quest-list { max-height: 4000px; }
-.quest-row { border-top: none; cursor: pointer; position: relative; height: 130px; overflow: hidden; display: block; border-radius: 12px; border: 1px solid rgba(74,222,128,.2); margin: 0 12px 8px; }
+.quest-row { border-top: none; cursor: pointer; position: relative; height: 130px; overflow: hidden; display: block; border-radius: 12px; border: 1px solid rgba(74,222,128,.38); margin: 0 12px 10px; box-shadow: 0 4px 14px rgba(0,0,0,.45); }
 .quest-row:active { opacity: .85; }
-.section-completed .quest-row { border-color: rgba(255,255,255,.06); }
-.section-scheduled .quest-row { border-color: rgba(96,165,250,.2); }
+.section-completed .quest-row { border-color: rgba(255,255,255,.14); }
+.section-scheduled .quest-row { border-color: rgba(251,191,36,.34); }
 .quest-row-map-bg { position: absolute; inset: 0; background: #0d1117; }
 .quest-row-map-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.quest-row-vignette { position: absolute; inset: 0; background: linear-gradient(to right, rgba(10,8,26,.92) 0%, rgba(10,8,26,.55) 45%, rgba(10,8,26,.15) 65%, rgba(10,8,26,.55) 85%, rgba(10,8,26,.8) 100%); }
-.quest-row-overlay  { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,8,26,.8) 0%, rgba(10,8,26,.1) 40%, rgba(10,8,26,.1) 60%, rgba(10,8,26,.85) 100%); }
-.quest-row-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; z-index: 2; background: var(--green); }
-.quest-row-accent.hot { background: var(--yellow); }
-.quest-row-content { position: absolute; inset: 0; padding: 12px 14px; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; }
+.quest-row-vignette { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to right, rgba(6,5,16,.97) 0%, rgba(6,5,16,.93) 44%, rgba(6,5,16,.45) 72%, rgba(6,5,16,.06) 90%, transparent 100%); }
+.quest-row-overlay  { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(6,5,16,.5) 0%, transparent 42%, transparent 60%, rgba(6,5,16,.62) 100%); }
+.quest-row-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 9px; z-index: 3; background: var(--green); color: var(--green); }
+.quest-row-accent::after { content: ''; position: absolute; left: 2px; top: 11px; width: 5px; height: 5px; border-radius: 50%; background: #0a081a; box-shadow: 0 0 0 2px currentColor; }
+.section-scheduled .quest-row-accent { background: #fbbf24; color: #fbbf24; }
+.section-completed .quest-row-accent { background: rgba(255,255,255,.5); color: rgba(255,255,255,.55); }
+.quest-row-qid { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .5px; font-weight: 600; padding: 2px 7px; border-radius: 6px; background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.4); color: #86efac; white-space: nowrap; }
+.section-scheduled .quest-row-qid { background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.4); color: #fcd34d; }
+.section-completed .quest-row-qid { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.72); }
+.quest-row-content { position: absolute; inset: 0; padding: 12px 14px 12px 20px; z-index: 4; display: flex; flex-direction: column; justify-content: space-between; }
 .quest-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .quest-row-title { font-size: 17px; color: #fff; font-weight: 600; line-height: 1.3; text-shadow: 0 1px 6px rgba(0,0,0,1); }
 .quest-row-city { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 2px; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
@@ -1022,11 +1027,14 @@ function renderQuestRow(q, status) {
     + mapHtml
     + '<div class="quest-row-vignette"></div>'
     + '<div class="quest-row-overlay"></div>'
-    + '<div class="quest-row-accent' + (isHot ? ' hot' : '') + '"></div>'
+    + '<div class="quest-row-accent"></div>'
     + '<div class="quest-row-content">'
       + '<div class="quest-row-top">'
         + '<div>'
-          + '<div class="quest-row-title">' + location + '</div>'
+          + '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">'
+            + '<div class="quest-row-title">' + location + '</div>'
+            + (q.quest_id ? '<span class="quest-row-qid">' + escapeHtml(q.quest_id) + '</span>' : '')
+          + '</div>'
           + '<div class="quest-row-city">' + escapeHtml(q.city || '') + (q.state_code ? ', ' + q.state_code : '') + '</div>'
         + '</div>'
         + '<div class="quest-row-prize' + (isHot ? ' hot' : '') + '">$' + prizeDollars + '</div>'
