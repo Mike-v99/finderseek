@@ -1826,43 +1826,43 @@ function hbSignOut(){
 })();
 </script>
 <style>
-#pull-refresh{position:fixed;top:0;left:50%;transform:translate(-50%,-52px);z-index:99999;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(13,11,24,.94);border:1px solid rgba(201,137,12,.45);box-shadow:0 4px 16px rgba(0,0,0,.55);opacity:0;pointer-events:none;margin-top:env(safe-area-inset-top,0px);}
-#pull-refresh.pr-snap{transition:transform .28s cubic-bezier(.22,1,.36,1),opacity .28s ease;}
-#pull-refresh .pr-arrow{width:17px;height:17px;color:#f5c842;transition:transform .18s ease;}
-#pull-refresh .pr-spin{display:none;width:18px;height:18px;border:2px solid rgba(245,200,66,.25);border-top-color:#f5c842;border-radius:50%;animation:pr-rot .7s linear infinite;}
-#pull-refresh.pr-loading .pr-arrow{display:none;}
-#pull-refresh.pr-loading .pr-spin{display:block;}
+#pr-well{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:0;overflow:hidden;background:#1a1b21;display:flex;align-items:center;justify-content:center;z-index:0;will-change:height;}
+.pr-spinner{position:relative;width:22px;height:22px;animation:pr-rot .8s linear infinite;}
+.pr-spinner i{position:absolute;top:50%;left:50%;width:2px;height:6px;margin:-3px 0 0 -1px;background:#d6d9e0;border-radius:1px;}
 @keyframes pr-rot{to{transform:rotate(360deg);}}
 </style>
-<div id="pull-refresh" aria-hidden="true">
-  <svg class="pr-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="6 13 12 19 18 13"></polyline></svg>
-  <div class="pr-spin"></div>
+<div id="pr-well" aria-hidden="true">
+  <div class="pr-spinner">
+    <i style="transform:rotate(0deg) translateY(-8px);opacity:1"></i>
+    <i style="transform:rotate(45deg) translateY(-8px);opacity:.85"></i>
+    <i style="transform:rotate(90deg) translateY(-8px);opacity:.72"></i>
+    <i style="transform:rotate(135deg) translateY(-8px);opacity:.6"></i>
+    <i style="transform:rotate(180deg) translateY(-8px);opacity:.48"></i>
+    <i style="transform:rotate(225deg) translateY(-8px);opacity:.38"></i>
+    <i style="transform:rotate(270deg) translateY(-8px);opacity:.3"></i>
+    <i style="transform:rotate(315deg) translateY(-8px);opacity:.22"></i>
+  </div>
 </div>
 <script>
 (function(){
-  var el = document.getElementById('pull-refresh');
+  var well = document.getElementById('pr-well');
   var page = document.querySelector('.page');
-  if(!el || !page) return;
-  var arrow = el.querySelector('.pr-arrow');
+  if(!well || !page) return;
   var startY = 0, pulling = false, dist = 0, refreshing = false;
-  var THRESHOLD = 70, MAX = 112, HIDE = -52, HOLD = 64;
+  var THRESHOLD = 70, MAX = 120, HOLD = 58;
   function bodyTop(){ return document.body.scrollTop || 0; }
   function anim(on){
     page.style.transition = on ? 'transform .3s cubic-bezier(.22,1,.36,1)' : 'none';
-    el.classList.toggle('pr-snap', on);
+    well.style.transition = on ? 'height .3s cubic-bezier(.22,1,.36,1)' : 'none';
   }
   function setPull(d){
     page.style.transform = d > 0 ? 'translateY(' + d + 'px)' : '';
-    el.style.transform = 'translate(-50%,' + (HIDE + d + 18) + 'px)';
-    el.style.opacity = String(Math.min(1, d / THRESHOLD));
-    if(arrow) arrow.style.transform = d >= THRESHOLD ? 'rotate(180deg)' : 'rotate(0deg)';
+    well.style.height = d + 'px';
   }
   function reset(animate){
     anim(animate);
     page.style.transform = '';
-    el.style.transform = 'translate(-50%,' + HIDE + 'px)';
-    el.style.opacity = '0';
-    if(arrow) arrow.style.transform = 'rotate(0deg)';
+    well.style.height = '0px';
     dist = 0;
   }
   document.addEventListener('touchstart', function(e){
@@ -1886,13 +1886,10 @@ function hbSignOut(){
   function doRefresh(){
     refreshing = true;
     anim(true);
-    el.classList.add('pr-loading');
     page.style.transform = 'translateY(' + HOLD + 'px)';
-    el.style.transform = 'translate(-50%,' + (HIDE + HOLD + 18) + 'px)';
-    el.style.opacity = '1';
+    well.style.height = HOLD + 'px';
     var done = function(){
       setTimeout(function(){
-        el.classList.remove('pr-loading');
         reset(true);
         setTimeout(function(){ refreshing = false; }, 340);
       }, 450);
