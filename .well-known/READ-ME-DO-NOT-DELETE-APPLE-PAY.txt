@@ -1,0 +1,41 @@
+============================================================
+  DO NOT DELETE, RENAME, MOVE, OR EDIT
+  apple-developer-merchantid-domain-association
+============================================================
+
+This /.well-known/ directory contains the Apple Pay
+merchant-domain-association file:
+
+    apple-developer-merchantid-domain-association
+
+WHY IT MATTERS
+--------------
+That file is how Apple verifies finderseek.com is allowed to take
+Apple Pay payments. It is REQUIRED for Apple Pay to work in BOTH:
+
+  - the native iOS app (the in-app webview loads the live verified
+    site, so it behaves like Safari), and
+  - Safari / mobile web.
+
+If this file is deleted, renamed, moved out of /.well-known/, or its
+contents are changed in ANY way, Apple Pay silently stops working
+EVERYWHERE -- Quest Masters can no longer fund quests with Apple Pay.
+
+DO NOT EDIT THE ASSOCIATION FILE ITSELF
+---------------------------------------
+The association file must contain ONLY the exact verification token
+issued by Apple -- nothing else. You CANNOT add comments or notes
+inside it; doing so corrupts the token and breaks verification.
+That is why this warning lives in a SEPARATE file.
+
+IF YOU EVER NEED TO REGENERATE IT
+---------------------------------
+Re-download the current file from the Apple Developer portal:
+  Certificates, Identifiers & Profiles
+    -> your Merchant ID
+      -> Merchant Domains
+Place the exact file back at:
+    /.well-known/apple-developer-merchantid-domain-association
+Then re-verify the domain in the Apple Developer portal.
+
+Keep this file here as a reminder. It is safe to serve publicly.
