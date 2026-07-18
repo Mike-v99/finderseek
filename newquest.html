@@ -1873,14 +1873,71 @@ function closeEmailGate(){
   }, 350);
 }
 
+
+// Shared native Sign in with Apple (v1.2 binary and later).
+// Uses the @capacitor-community/apple-sign-in plugin: native Face ID sheet,
+// no browser, no redirect. Returns the same shape as fsNativeGoogleSignIn.
+// Old binaries lack the plugin, so callers fall back to the webview OAuth flow.
+function fsHasNativeApple(){
+  return !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SignInWithApple);
+}
+async function fsNativeAppleSignIn(){
+  var SIA = window.Capacitor.Plugins.SignInWithApple;
+  if (!SIA) throw new Error('SignInWithApple plugin not found');
+  var auth = await SIA.authorize({
+    clientId: 'com.finderseek.app',
+    redirectURI: 'https://www.finderseek.com/auth-callback.html',
+    scopes: 'email name'
+  });
+  var identityToken = auth && auth.response && auth.response.identityToken;
+  if (!identityToken) throw new Error('No identity token received from Apple');
+  var res = await supaClient.auth.signInWithIdToken({ provider: 'apple', token: identityToken });
+  if (res.error) throw res.error;
+  if (res.data && res.data.session) {
+    localStorage.setItem('fs_token', res.data.session.access_token);
+    if (res.data.session.refresh_token) localStorage.setItem('fs_refresh', res.data.session.refresh_token);
+  }
+  return res.data;
+}
+function fsIsAppleCancel(e){
+  var m = ((e && (e.message || e.code)) || '').toString().toLowerCase();
+  return m.indexOf('cancel') !== -1 || m.indexOf('1001') !== -1;
+}
+
 async function signInWithAppleGate(){
   try {
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
-    if (isNativeApp) {
-      // Native app: get the OAuth URL from Supabase, then load it
-      // directly in the webview (not in an external browser).
+    if (isNativeApp && fsHasNativeApple()) {
+      // v1.2+ binary: native Apple sheet with Face ID. No browser, no redirect.
+      var authData;
+      try {
+        authData = await fsNativeAppleSignIn();
+      } catch(appleErr) {
+        if (fsIsAppleCancel(appleErr)) { sessionStorage.removeItem('fs_quest_pending_auth'); return; }
+        throw appleErr;
+      }
+      if (authData && authData.session) {
+        currentUser = authData.user;
+        var siEl = document.getElementById('eg-signed-in');
+        var siEmail = document.getElementById('eg-signed-in-email');
+        if (siEl) siEl.style.display = 'block';
+        if (siEmail && authData.user) siEmail.textContent = authData.user.email || '';
+        showToast('\u2713 Signed in as ' + (authData.user && authData.user.email ? authData.user.email : 'Apple account'), 'success');
+        setTimeout(function() { closeEmailGate(); }, 1000);
+        // Resume quest creation, same as the native Google path.
+        sessionStorage.removeItem('fs_quest_pending_auth');
+        setTimeout(function() {
+          var overlay = document.getElementById('ai-loading');
+          if (overlay) overlay.style.display = 'flex';
+          saveFormState();
+          createQuest();
+        }, 1400);
+      }
+    } else if (isNativeApp) {
+      // Old binary without the plugin: get the OAuth URL from Supabase, then
+      // load it directly in the webview (not in an external browser).
       // The entire auth flow stays inside the app.
       localStorage.setItem('fs_magic_return', 'newquest.html');
       var { data, error } = await supaClient.auth.signInWithOAuth({
@@ -1892,7 +1949,7 @@ async function signInWithAppleGate(){
       });
       if (error) throw error;
       if (data && data.url) {
-        // Load directly in webview — stays inside the app, no Safari bounce
+        // Load directly in webview, stays inside the app, no Safari bounce
         window.location.href = data.url;
       }
     } else {
@@ -3712,10 +3769,10 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   }
 
   // ── Apple Pay (PayPal JS SDK applepay component) ──────────────────────────
-  // Renders ONLY where Apple Pay on the Web exists: Safari on iPhone/iPad/Mac.
-  // window.ApplePaySession is undefined in the Capacitor app webview, so the
-  // in-app experience is untouched. Same order create + capture pipeline as
-  // the PayPal buttons via _finalizePaidOrder.
+  // Renders wherever Apple Pay on the Web exists: Safari on iPhone/iPad/Mac
+  // AND the Capacitor app webview (the app loads the verified domain, so
+  // window.ApplePaySession is available in-app too). Same order create +
+  // capture pipeline as the PayPal buttons via _finalizePaidOrder.
   try {
     var apContainer = document.getElementById('applepay-button-container');
     if (apContainer) { apContainer.style.display = 'none'; apContainer.innerHTML = ''; }
@@ -4384,7 +4441,7 @@ document.addEventListener('click', function(e) {
 
 
 // ── HIDING SPOT DETAILS MODAL ────────────────────────────────
-var _hsData = { location: '', startingPoint: '', clues: [] };
+var _hsData = { location: '', startingPoint: '', clues: [], category: '', subcategory: '' };
 var _hsCurrent = 0; // 0 = location, 1..N = clue index
 
 // Scoped element getter — always finds elements within the active modal sheet,
@@ -4416,6 +4473,181 @@ var HS_ACTIONS = [
   { id:'turn',  emoji:'🔄', label:'Turn around' },
 ];
 
+
+// ── Guided clue builder: location bank ─────────────────────────────
+// Quest Masters pick a Category then a Subcategory. Each subcategory
+// carries ready-made observation questions (seekers answer them on-site
+// to unlock the next clue) and hint ideas that fill the hint field.
+// Keep bank strings free of quotes and apostrophes: they are injected
+// into HTML attributes as-is.
+var FS_LOC_BANK = {
+  'Park': {
+    'Baseball field': {
+      q: ['How many fields are at this park?','How many light poles surround this field?','How many rows of bleachers are on the home side?','What color are the dugout roofs?','How many benches are inside the home dugout?','What number is posted on the outfield fence?','What material is the backstop made of?','How many gates lead onto the field?','What color is the scoreboard?'],
+      h: ['Behind the third base dugout','At the base of the foul pole','Under the home side bleachers'] },
+    'Dog park': {
+      q: ['How many gates lead into the dog park?','How many benches are inside the fence?','How many water stations do you see?','What color is the main gate?','How many trash cans are inside the fence?','How many trees are inside the fenced area?','What is the first word on the rules sign?','How many agility obstacles are there?'],
+      h: ['By the double entry gate','Under the bench closest to the water station','At the rules sign near the entrance'] },
+    'Soccer field': {
+      q: ['How many goals are on this field?','How many fields are side by side?','How many corner flags do you count?','What color are the goal nets?','How many benches line the sideline?','How many light poles surround the fields?','How many bleacher sections are there?'],
+      h: ['Behind the far goal','Under the sideline bench','At the corner flag nearest the parking lot'] },
+    'Basketball court': {
+      q: ['How many hoops are on this court?','How many courts are here?','What color is the court surface?','How many benches are beside the court?','Do the hoops have chain nets or rope nets?','How many light poles are around the court?','How many three point lines are painted?'],
+      h: ['Behind the backboard pole','Under the courtside bench','At the fence corner by the court'] },
+    'Walking trail': {
+      q: ['How many benches are along this stretch?','What color are the trail markers?','How many trash cans are on this loop?','How many wooden posts mark the trailhead?','What distance is listed on the trail sign?','How many bridges does the trail cross?','How many picnic tables are near the trailhead?'],
+      h: ['At the trailhead sign','Under the first bench on the loop','By the footbridge railing'] },
+    'Playground': {
+      q: ['How many slides are on the playground?','How many swings are there?','What color is the tallest slide?','How many benches face the playground?','How many climbing structures are there?','What is the playground surface made of?','How many shade covers are overhead?'],
+      h: ['Behind the tallest slide','Under the bench facing the swings','At the edge of the mulch near the sign'] },
+    'Pavilion or picnic area': {
+      q: ['How many picnic tables are under the pavilion?','How many support posts hold up the roof?','How many grills are nearby?','What color is the pavilion roof?','How many trash cans are by the pavilion?','How many lights or fans are mounted overhead?'],
+      h: ['Under the corner picnic table','Behind the pavilion support post','By the grill nearest the pavilion'] },
+    'Pond or lake': {
+      q: ['How many benches face the water?','How many fishing signs do you see?','What color is the railing by the water?','How many trees line the bank on this side?','How many bird boxes or duck houses do you see?'],
+      h: ['Under the bench facing the water','At the base of the railing','By the fishing sign'] }
+  },
+  'Shopping center': {
+    'Grocery store front': {
+      q: ['How many cart corrals are in the lot?','How many sets of sliding doors are at the entrance?','What color is the store name sign?','How many light poles are in the front lot?','How many benches are outside the entrance?','How many propane cages or ice boxes are out front?','How many handicap spaces face the doors?'],
+      h: ['By the cart return closest to the doors','Behind the ice machine','At the light pole nearest the entrance'] },
+    'Strip mall storefronts': {
+      q: ['How many storefronts are in this row?','How many benches line the sidewalk?','What color are the awnings?','How many planters are along the walkway?','How many trash cans are on the sidewalk?','What is the suite number of the corner store?','How many pillars support the walkway cover?'],
+      h: ['Behind the brick pillar at the walkway','In the planter by the corner store','Under the bench between storefronts'] },
+    'Big box store': {
+      q: ['How many entrance doors does the store have?','How many cart corrals are in the lot?','How many light poles are in the front lot?','What color is the curb by the entrance?','How many bollards guard the entrance?','How many stacks of seasonal items are out front?'],
+      h: ['By the garden center gate','At the bollard nearest the entrance','Behind the cart corral at the end of the row'] },
+    'Parking lot': {
+      q: ['How many light poles are in this lot?','How many handicap spaces are in the front row?','How many cart corrals are there?','What letter or number marks this row?','How many trees are planted in the islands?','How many speed bumps cross the main lane?'],
+      h: ['At the base of the row marker sign','By the island tree closest to the road','Under the light pole at the lot corner'] },
+    'Gas station corner': {
+      q: ['How many fuel pumps are there?','How many air and vacuum stations are there?','What is the price of regular on the sign?','How many trash cans are between the pumps?','What color is the canopy trim?','How many propane cages are outside?'],
+      h: ['By the air pump station','Behind the propane cage','At the corner of the canopy'] }
+  },
+  'Church': {
+    'Main entrance': {
+      q: ['How many doors are at the main entrance?','How many steps lead to the doors?','How many columns frame the entrance?','What color are the front doors?','How many light fixtures flank the doors?','How many flower pots are by the entrance?'],
+      h: ['Behind the column by the doors','In the flower bed at the steps','By the light fixture at the entrance'] },
+    'Sign or marquee': {
+      q: ['What is the first word on the marquee?','How many lines of text are on the sign?','What color is the sign border?','How many bushes surround the sign?','How many lights point at the sign?'],
+      h: ['At the base of the marquee sign','In the bushes behind the sign','By the sign spotlight'] },
+    'Parking lot': {
+      q: ['How many handicap spaces are near the entrance?','How many light poles are in the lot?','How many islands have trees?','How many crosswalk stripes cross the main lane?'],
+      h: ['Under the light pole nearest the doors','At the island tree','By the crosswalk sign'] },
+    'Garden or courtyard': {
+      q: ['How many benches are in the courtyard?','How many planters are there?','What is the first word on the dedication plaque?','How many statues or crosses do you see?','How many stepping stones cross the garden?'],
+      h: ['Under the courtyard bench','Behind the statue','By the dedication plaque'] },
+    'Playground': {
+      q: ['How many slides are there?','How many swings are there?','How many benches face the playground?','What color is the play structure?','What is the playground surface made of?'],
+      h: ['Behind the slide','Under the bench facing the swings','At the playground sign'] }
+  },
+  'Restaurant': {
+    'Entrance': {
+      q: ['How many doors are at the entrance?','How many benches are outside the doors?','What color is the entrance awning?','How many planters flank the doors?','How many light fixtures are by the entrance?','What is the first word on the hours sign?'],
+      h: ['Under the bench by the doors','In the planter at the entrance','Behind the hours sign'] },
+    'Patio or outdoor seating': {
+      q: ['How many tables are on the patio?','How many umbrellas do you count?','What color are the patio chairs?','How many string light strands cross overhead?','How many planter boxes edge the patio?','How many heaters or fans are on the patio?'],
+      h: ['Under the corner patio table','By the patio railing post','Behind the planter box at the edge'] },
+    'Drive through': {
+      q: ['How many menu boards are in the drive through?','How many lanes does the drive through have?','What color is the clearance bar?','How many speaker posts are there?','How many arrows are painted on the pavement?'],
+      h: ['By the menu board','At the clearance bar post','Behind the drive through sign'] },
+    'Parking lot': {
+      q: ['How many light poles are in the lot?','How many handicap spaces face the entrance?','How many curb stops are painted?','How many trees are in the islands?','What letter or number marks the closest row?'],
+      h: ['At the light pole nearest the doors','By the island tree','Under the row sign'] },
+    'Landscaping': {
+      q: ['How many bushes line the front walkway?','How many trees are planted out front?','What color are the flowers in the beds?','How many landscape lights edge the path?','How many decorative rocks border the beds?'],
+      h: ['In the mulch bed by the walkway','Behind the largest bush','At the base of the front tree'] }
+  },
+  'Office building': {
+    'Main entrance': {
+      q: ['How many glass doors are at the entrance?','How many flag poles are out front?','How many steps lead to the doors?','How many bollards line the entrance?','What is the building number by the doors?','How many light fixtures frame the entrance?'],
+      h: ['By the flag pole base','Behind the bollard at the doors','At the building number sign'] },
+    'Courtyard or plaza': {
+      q: ['How many benches are in the plaza?','How many planters are there?','How many trees grow in the plaza?','What is the first word on the fountain plaque?','How many bike racks are there?','How many tables are in the seating area?'],
+      h: ['Under the plaza bench','Behind the large planter','By the bike rack'] },
+    'Parking garage or lot': {
+      q: ['How many levels does the garage have?','What color marks the level you are on?','How many handicap spaces are on this level?','How many elevator doors are in the lobby?','How many light poles are in the surface lot?'],
+      h: ['By the stairwell door','At the level sign','Under the first light pole'] },
+    'Landscaping': {
+      q: ['How many trees line the front sidewalk?','How many bushes edge the building?','What color are the flowers by the sign?','How many landscape lights line the path?'],
+      h: ['In the bed by the monument sign','Behind the corner bush','At the base of the sidewalk tree'] }
+  },
+  'Other': {
+    'General outdoor spot': {
+      q: [],
+      h: ['Behind the largest tree','Under the nearest bench','By the main sign'] }
+  }
+};
+// Questions that work at almost any location. Always appended to the
+// subcategory list in the browse panel.
+var FS_GENERAL_QS = [
+  'How many light poles can you count from here?',
+  'How many benches are within sight?',
+  'How many trash cans do you see?',
+  'What color is the nearest bench?',
+  'How many trees are planted along this stretch?',
+  'How many parking spaces are in the closest row?',
+  'What is the first word on the nearest sign?',
+  'How many steps lead up to the entrance?',
+  'What color is the nearest fire hydrant?',
+  'How many flags are on the flag pole?'
+];
+function fsLocCats(){ return Object.keys(FS_LOC_BANK); }
+function fsLocSubs(cat){ return FS_LOC_BANK[cat] ? Object.keys(FS_LOC_BANK[cat]) : []; }
+function fsLocEntry(){
+  var c = _hsData.category, sc = _hsData.subcategory;
+  return (c && sc && FS_LOC_BANK[c] && FS_LOC_BANK[c][sc]) ? FS_LOC_BANK[c][sc] : null;
+}
+function fsLocQs(){ var e = fsLocEntry(); return (e && e.q) || []; }
+function fsLocHints(){ var e = fsLocEntry(); return (e && e.h) || []; }
+
+// Category dropdown on the location page
+function fsCatToggle(){
+  var l = hsEl('fs-cat-list'); if (!l) return;
+  var sub = hsEl('fs-sub-list'); if (sub) sub.style.display = 'none';
+  l.style.display = (l.style.display === 'none' || !l.style.display) ? 'block' : 'none';
+}
+function fsCatPick(i){
+  var cat = fsLocCats()[i]; if (!cat) return;
+  if (_hsData.category !== cat) { _hsData.category = cat; _hsData.subcategory = ''; }
+  saveFormState();
+  renderHsModal();
+}
+function fsSubToggle(){
+  if (!_hsData.category) { showToast('Pick a category first', 'error'); return; }
+  var l = hsEl('fs-sub-list'); if (!l) return;
+  var cat = hsEl('fs-cat-list'); if (cat) cat.style.display = 'none';
+  l.style.display = (l.style.display === 'none' || !l.style.display) ? 'block' : 'none';
+}
+function fsSubPick(i){
+  var sub = fsLocSubs(_hsData.category)[i]; if (!sub) return;
+  _hsData.subcategory = sub;
+  saveFormState();
+  renderHsModal();
+}
+
+// Question bank on clue pages
+function fsQBToggle(){
+  var l = hsEl('fs-qb-list'); if (!l) return;
+  l.style.display = (l.style.display === 'none' || !l.style.display) ? 'block' : 'none';
+}
+function fsQBPick(i){
+  var q = (window._fsQBAll || [])[i]; if (!q) return;
+  var qEl = hsEl('hs-q-cur');
+  if (qEl) { qEl.value = q; hsApplyFilled(qEl); }
+  if (_hsData.clues[_hsCurrent - 1]) _hsData.clues[_hsCurrent - 1].question = q;
+  saveFormState();
+  var l = hsEl('fs-qb-list'); if (l) l.style.display = 'none';
+  var aEl = hsEl('hs-a-cur'); if (aEl) setTimeout(function(){ aEl.focus(); }, 50);
+}
+function fsHintPick(i){
+  var h = fsLocHints()[i]; if (!h) return;
+  var hEl = hsEl('hs-hint-cur');
+  if (hEl) { hEl.value = h; hsApplyFilled(hEl); }
+  if (_hsData.clues[_hsCurrent - 1]) _hsData.clues[_hsCurrent - 1].hint = h;
+  saveFormState();
+}
+
 var _mapOpenedFromStep = false;
 
 function openHsModalFromStep() {
@@ -4432,6 +4664,8 @@ function openHsModal() {
     // Restore saved hs data if it exists
     if (fs.hsData) {
       _hsData = fs.hsData;
+      if (typeof _hsData.category === 'undefined') _hsData.category = '';
+      if (typeof _hsData.subcategory === 'undefined') _hsData.subcategory = '';
     }
     // Restore placeName
     if (fs.placeName) selectedPlaceName = fs.placeName;
@@ -4461,6 +4695,7 @@ function closeHsModal() {
   
   // Validate hiding spot data before proceeding to schedule
   if (!selectedLat || !selectedLng) { showToast('Set the hiding spot location on the map', 'error'); return; }
+  if (!_hsData.category || !_hsData.subcategory) { showToast('Pick a Location Type (category and spot)', 'error'); return; }
   if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter the exact hiding spot description', 'error'); return; }
   if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
   
@@ -4647,7 +4882,38 @@ function renderHsModal() {
       '</div>';
 
     var mapsLinkHtml = '';
-    panel.innerHTML = mapPickerHtml + mapsLinkHtml +
+
+    // Location Type: category + subcategory. Drives the hint ideas and the
+    // ready-made question bank on the clue pages.
+    var catVal = _hsData.category || '';
+    var subVal = _hsData.subcategory || '';
+    var LT_CHK = '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">\u2713</span>';
+    var LT_REQ = '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> \u00b7 required</span>';
+    var ddBtn = 'width:100%;padding:14px 16px;background:rgba(232,168,32,.10);border:1.5px solid rgba(232,168,32,.45);border-radius:12px;min-height:52px;box-sizing:border-box;font-size:17px;color:#fff;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
+    var ddList = 'display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch;';
+    var ddItem = 'padding:13px 16px;font-size:16px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;touch-action:manipulation;';
+    var chev = '<svg style="flex-shrink:0;pointer-events:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>';
+    var catItems = fsLocCats().map(function(c, i){
+      return '<div onclick="fsCatPick(' + i + ')" class="hs-drop-item' + (c === catVal ? ' hs-drop-sel' : '') + '" style="' + ddItem + '"><span>' + c + '</span>' + (c === catVal ? '<span style="color:#4ade80;">\u2713</span>' : '') + '</div>';
+    }).join('');
+    var subItems = fsLocSubs(catVal).map(function(sc, i){
+      return '<div onclick="fsSubPick(' + i + ')" class="hs-drop-item' + (sc === subVal ? ' hs-drop-sel' : '') + '" style="' + ddItem + '"><span>' + sc + '</span>' + (sc === subVal ? '<span style="color:#4ade80;">\u2713</span>' : '') + '</div>';
+    }).join('');
+    var subDim = catVal ? '' : 'opacity:.45;';
+    var locTypeHtml =
+      '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Location Type' + (catVal && subVal ? LT_CHK : LT_REQ) + '</div>' +
+      '<div style="font-size:13px;color:rgba(184,196,208,.55);margin-bottom:8px;">Unlocks ready made questions and hint ideas for your clues</div>' +
+      '<div style="position:relative;margin-bottom:10px;">' +
+        '<div onclick="fsCatToggle()" style="' + ddBtn + '"><span>' + (catVal ? catVal : 'Pick a category') + '</span>' + (catVal ? '<span style="color:#4ade80;font-size:15px;font-weight:500;margin-left:auto;margin-right:10px;">\u2713</span>' : '') + chev + '</div>' +
+        '<div id="fs-cat-list" style="' + ddList + '">' + catItems + '</div>' +
+      '</div>' +
+      '<div style="position:relative;margin-bottom:4px;' + subDim + '">' +
+        '<div onclick="fsSubToggle()" style="' + ddBtn + '"><span>' + (subVal ? subVal : 'Pick a spot type') + '</span>' + (subVal ? '<span style="color:#4ade80;font-size:15px;font-weight:500;margin-left:auto;margin-right:10px;">\u2713</span>' : '') + chev + '</div>' +
+        '<div id="fs-sub-list" style="' + ddList + '">' + subItems + '</div>' +
+      '</div>' +
+      '<div style="height:1px;background:rgba(255,255,255,.08);margin:18px 0;"></div>';
+
+    panel.innerHTML = mapPickerHtml + mapsLinkHtml + locTypeHtml +
             '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> — required</span>') + '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80" onclick="this.focus()">' + (_hsData.location||'') + '</textarea>' +
 
@@ -4706,10 +4972,44 @@ var aDone    = (cl2.answer||'').trim().length > 0;
 var CK = '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>';
 var fieldsOpacity = actionObj ? '1' : '0.3';
 var fieldsPointer = actionObj ? 'auto' : 'none';
+// Hint idea chips from the picked location type. Tap to fill the hint box.
+var hintIdeas = fsLocHints();
+var hintChipsHtml = '';
+if (!isFinal2 && hintIdeas.length) {
+  hintChipsHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">' +
+    hintIdeas.map(function(hh, i){
+      return '<div onclick="fsHintPick(' + i + ')" style="padding:7px 12px;background:rgba(232,168,32,.10);border:1px solid rgba(232,168,32,.3);border-radius:20px;font-size:13px;color:#f5c842;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' + hh + '</div>';
+    }).join('') + '</div>';
+}
+
+// Browse questions: ready made questions for the picked spot type plus
+// general questions that work anywhere. Tap one to fill the question box.
+var subQs = fsLocQs();
+window._fsQBAll = subQs.concat(FS_GENERAL_QS);
+var qbBtnHtml = '';
+if (!isFinal2) {
+  var qbLabel = _hsData.subcategory ? ('\ud83d\udccb Browse ' + _hsData.subcategory + ' questions') : '\ud83d\udccb Browse ready made questions';
+  var qbItems = '';
+  window._fsQBAll.forEach(function(qq, i){
+    if (subQs.length && i === subQs.length) {
+      qbItems += '<div style="padding:8px 16px;font-size:11px;letter-spacing:1px;color:rgba(232,168,32,.6);background:rgba(232,168,32,.06);">WORKS ANYWHERE</div>';
+    }
+    qbItems += '<div onclick="fsQBPick(' + i + ')" class="hs-drop-item" style="padding:12px 16px;font-size:15px;color:#fff;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' + qq + '</div>';
+  });
+  var qbHint = _hsData.subcategory ? '' :
+    '<div style="padding:10px 16px;font-size:12px;color:rgba(184,196,208,.5);">Pick a Location Type on the first page for questions tailored to your spot</div>';
+  qbBtnHtml =
+    '<div style="position:relative;margin-top:8px;">' +
+      '<div onclick="fsQBToggle()" style="width:100%;padding:12px 14px;background:rgba(232,168,32,.08);border:1.5px dashed rgba(232,168,32,.4);border-radius:10px;box-sizing:border-box;font-size:15px;color:#f5c842;font-family:inherit;cursor:pointer;text-align:center;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">' + qbLabel + '</div>' +
+      '<div id="fs-qb-list" style="display:none;position:absolute;left:0;right:0;bottom:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.6);max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch;">' + qbHint + qbItems + '</div>' +
+    '</div>';
+}
+
 var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
   '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
   '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Hint / keyword</div>' +
   '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '" maxlength="100">' + (cl2.hint||'') + '</textarea>' +
+  hintChipsHtml +
   (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
     '<div style="margin-top:10px;">' +
       '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-top:10px;margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
@@ -4717,7 +5017,8 @@ var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + f
         '<div style="flex:3;position:relative;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" maxlength="80" value="' + (cl2.question||'') + '"/></div>' +
         '<div style="flex:1;position:relative;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" maxlength="30" value="' + (cl2.answer||'') + '"/></div>' +
       '</div>' +
-      '<div class="hs-hint" style="margin-top:6px;">AI writes the riddle · you set Q&A</div>' +
+      qbBtnHtml +
+      '<div class="hs-hint" style="margin-top:6px;">Pick a ready made question or write your own · you set the answer</div>' +
     '</div>'
   ) +
 '</div>';
@@ -4736,7 +5037,7 @@ var nav = hsEl('hs-nav');
 // Final page (cur === total): question/answer not required (it's the reveal).
 function isHsPageComplete() {
 if (cur === 0) {
-return !!((_hsData.location||'').trim()) && !!((_hsData.startingPoint||'').trim()) && !!locationConfirmed;
+return !!((_hsData.location||'').trim()) && !!((_hsData.startingPoint||'').trim()) && !!locationConfirmed && !!_hsData.category && !!_hsData.subcategory;
 }
 var clue = _hsData.clues[cur - 1] || {};
 var isFinal = (cur === total);

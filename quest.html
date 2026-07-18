@@ -1530,6 +1530,37 @@ var _selectedPayoutMethod=null;
 
 
 // ── Shared native Google Sign-In (same flow that works in newquest.html) ──
+
+// Shared native Sign in with Apple (v1.2 binary and later).
+// Uses the @capacitor-community/apple-sign-in plugin: native Face ID sheet,
+// no browser, no redirect. Returns the same shape as fsNativeGoogleSignIn.
+// Old binaries lack the plugin, so callers fall back to the webview OAuth flow.
+function fsHasNativeApple(){
+  return !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SignInWithApple);
+}
+async function fsNativeAppleSignIn(){
+  var SIA = window.Capacitor.Plugins.SignInWithApple;
+  if (!SIA) throw new Error('SignInWithApple plugin not found');
+  var auth = await SIA.authorize({
+    clientId: 'com.finderseek.app',
+    redirectURI: 'https://www.finderseek.com/auth-callback.html',
+    scopes: 'email name'
+  });
+  var identityToken = auth && auth.response && auth.response.identityToken;
+  if (!identityToken) throw new Error('No identity token received from Apple');
+  var res = await supaClient.auth.signInWithIdToken({ provider: 'apple', token: identityToken });
+  if (res.error) throw res.error;
+  if (res.data && res.data.session) {
+    localStorage.setItem('fs_token', res.data.session.access_token);
+    if (res.data.session.refresh_token) localStorage.setItem('fs_refresh', res.data.session.refresh_token);
+  }
+  return res.data;
+}
+function fsIsAppleCancel(e){
+  var m = ((e && (e.message || e.code)) || '').toString().toLowerCase();
+  return m.indexOf('cancel') !== -1 || m.indexOf('1001') !== -1;
+}
+
 async function fsNativeGoogleSignIn(){
   var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
   if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
@@ -1569,6 +1600,11 @@ async function claimSignIn(provider){
     if(fsIsNativeApp()&&provider==='google'){
       var authData=await fsNativeGoogleSignIn();
       if(authData&&authData.session){msg.textContent='\u2713 Signed in!';setTimeout(function(){window.location.href=returnUrl;},600);}
+    }else if(fsIsNativeApp()&&provider==='apple'&&fsHasNativeApple()){
+      var appleData;
+      try{ appleData=await fsNativeAppleSignIn(); }
+      catch(appleErr){ if(fsIsAppleCancel(appleErr))return; throw appleErr; }
+      if(appleData&&appleData.session){msg.textContent='\u2713 Signed in!';setTimeout(function(){window.location.href=returnUrl;},600);}
     }else if(fsIsNativeApp()){
       localStorage.setItem('fs_magic_return',returnUrl);
       var{data,error}=await supaClient.auth.signInWithOAuth({provider:provider,options:{redirectTo:'https://www.finderseek.com/auth-callback.html?from_app=1&return_to='+encodeURIComponent(returnUrl),skipBrowserRedirect:true}});
@@ -1595,6 +1631,14 @@ async function winSignInSocial(provider){
     if (fsIsNativeApp() && provider === 'google') {
       var authData = await fsNativeGoogleSignIn();
       if (authData && authData.session) {
+        msg.textContent = '\u2713 Signed in! Resuming your claim\u2026';
+        setTimeout(function(){ window.location.href = returnUrl; }, 600);
+      }
+    } else if (fsIsNativeApp() && provider === 'apple' && fsHasNativeApple()) {
+      var appleData;
+      try { appleData = await fsNativeAppleSignIn(); }
+      catch(appleErr) { if (fsIsAppleCancel(appleErr)) return; throw appleErr; }
+      if (appleData && appleData.session) {
         msg.textContent = '\u2713 Signed in! Resuming your claim\u2026';
         setTimeout(function(){ window.location.href = returnUrl; }, 600);
       }

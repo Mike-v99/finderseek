@@ -748,6 +748,37 @@ function fsIsNativeApp(){
   return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
 
+// Shared native Sign in with Apple (v1.2 binary and later).
+// Uses the @capacitor-community/apple-sign-in plugin: native Face ID sheet,
+// no browser, no redirect. Returns the same shape as fsNativeGoogleSignIn.
+// Old binaries lack the plugin, so callers fall back to the webview OAuth flow.
+function fsHasNativeApple(){
+  return !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SignInWithApple);
+}
+async function fsNativeAppleSignIn(){
+  var SIA = window.Capacitor.Plugins.SignInWithApple;
+  if (!SIA) throw new Error('SignInWithApple plugin not found');
+  var auth = await SIA.authorize({
+    clientId: 'com.finderseek.app',
+    redirectURI: 'https://www.finderseek.com/auth-callback.html',
+    scopes: 'email name'
+  });
+  var identityToken = auth && auth.response && auth.response.identityToken;
+  if (!identityToken) throw new Error('No identity token received from Apple');
+  var res = await supaClient.auth.signInWithIdToken({ provider: 'apple', token: identityToken });
+  if (res.error) throw res.error;
+  if (res.data && res.data.session) {
+    localStorage.setItem('fs_token', res.data.session.access_token);
+    if (res.data.session.refresh_token) localStorage.setItem('fs_refresh', res.data.session.refresh_token);
+  }
+  return res.data;
+}
+function fsIsAppleCancel(e){
+  var m = ((e && (e.message || e.code)) || '').toString().toLowerCase();
+  return m.indexOf('cancel') !== -1 || m.indexOf('1001') !== -1;
+}
+
+
 async function gateSocial(provider){
   try {
     if(!localStorage.getItem('fs_magic_return')){
@@ -764,9 +795,22 @@ async function gateSocial(provider){
         showToast('✓ Signed in as ' + (authData.user && authData.user.email ? authData.user.email : 'Google account'), 'success');
         setTimeout(function(){ window.location.href = 'profile.html'; }, 600);
       }
+    } else if (isNativeApp && provider === 'apple' && fsHasNativeApple()) {
+      // v1.2+ binary: native Apple sheet with Face ID. No browser, no redirect.
+      var appleData;
+      try {
+        appleData = await fsNativeAppleSignIn();
+      } catch(appleErr) {
+        if (fsIsAppleCancel(appleErr)) return;
+        throw appleErr;
+      }
+      if (appleData && appleData.session) {
+        showToast('\u2713 Signed in as ' + (appleData.user && appleData.user.email ? appleData.user.email : 'Apple account'), 'success');
+        setTimeout(function(){ window.location.href = 'profile.html'; }, 600);
+      }
     } else if (isNativeApp) {
-      // Native Apple: get the OAuth URL, then load it directly in the
-      // webview (not in an external browser). Stays inside the app.
+      // Old binary without the plugin: get the OAuth URL, then load it
+      // directly in the webview (not in an external browser). Stays inside the app.
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: provider,
         options: {

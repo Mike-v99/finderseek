@@ -105,9 +105,14 @@ export default async function handler(req, res) {
   console.log('[generate-clues] RESOLVED:', JSON.stringify({ resolvedCity, resolvedStreet, resolvedPlaceName, cleanLocation }));
 
   const startPoint = startingPoint || (hsData && hsData.startingPoint) || '';
+  // Location type from the guided clue builder, e.g. "Baseball field (Park)".
+  const locSetting = (hsData && hsData.subcategory)
+    ? `${hsData.subcategory}${hsData.category ? ' (' + hsData.category + ')' : ''}`
+    : (hsData && hsData.category) || '';
   const locationRiddlePrompt = `Write a 2-3 sentence location clue in ${persona || 'pirate'} persona voice.
 
 Location: "${cleanLocation}"
+${locSetting ? 'Type of spot: "' + locSetting + '", use this to flavor the imagery, but do not name the exact hiding subcategory outright.' : ''}
 ${startPoint ? 'Starting point: "' + startPoint + '" — Include this starting point in the riddle so seekers know exactly where to begin when they arrive.' : ''}
 
 Sentence 1: Name the place, street, and city ONCE each. No repeating any detail.
@@ -128,7 +133,7 @@ Return ONLY the sentences, nothing else.`;
     const pos = parseInt(singleClue.position, 10) || 1;
     const clueHint = clues[pos - 1] || {};
     const isFinal = pos === totalClues;
-    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, resolvedSearchAddress, resolvedCity, startingPoint);
+    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, resolvedSearchAddress, resolvedCity, startingPoint, locSetting);
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -180,7 +185,7 @@ Return ONLY the sentences, nothing else.`;
     const cluePromises = Array.from({ length: totalClues }, (_, i) => {
       const clueHint = clues[i] || {};
       const isFinal = i === totalClues - 1;
-      const prompt = buildCluePrompt(clueHint, i + 1, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, city);
+      const prompt = buildCluePrompt(clueHint, i + 1, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, city, startingPoint, locSetting);
       return fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
@@ -212,7 +217,7 @@ Return ONLY the sentences, nothing else.`;
   }
 }
 
-function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city, startingPoint) {
+function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city, startingPoint, locSetting) {
   const action = clueHint.action || '';
   const hint = clueHint.hint || '';
   const question = clueHint.question || '';
@@ -221,6 +226,7 @@ function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeNam
   if (isFinal) {
     return `You are writing the FINAL clue for FinderSeek, a real-money quest app.
 Style: ${styleHint}
+${locSetting ? 'Setting: "' + locSetting + '"' : ''}
 Hiding spot description: "${hint}"
 Write ONE sentence: a dramatic rhyming riddle in the persona voice that builds maximum suspense — the seeker is inches away.
 Do NOT write a question — the final clue has no Q&A.
@@ -241,6 +247,7 @@ Return ONLY a JSON object: {"number": ${position}, "text": "riddle sentence here
 
   return `You are writing clue #${position} of ${total} for FinderSeek, a real-money quest app.
 Style: ${styleHint}
+${locSetting ? 'Setting: "' + locSetting + '", ground the imagery in this kind of spot.' : ''}
 Action: "${action}" — the seeker must physically do this
 Hint/keyword from Quest Master: "${hint}"
 Question to ask seeker: "${question}"
