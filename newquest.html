@@ -5157,15 +5157,14 @@ function renderHsModal() {
       '</div>' +
       '<div style="height:1px;background:rgba(255,255,255,.08);margin:18px 0;"></div>';
 
-    if (catVal && !FS_LOC_BANK[catVal]) {
-      var spotFull = (typeof questSpot !== 'undefined' && questSpot) ? questSpot : subVal;
-      locTypeHtml = '<div style="border:1px solid rgba(232,168,32,.3);border-radius:14px;background:rgba(232,168,32,.05);padding:12px 14px;margin-bottom:14px;">' +
-        '<div style="font-size:17px;color:rgba(184,196,208,.85);line-height:1.5;">Quest Area: <span style="color:#f5c842;font-weight:500;">' + catVal + '</span></div>' +
-        (spotFull ? '<div style="font-size:17px;color:rgba(184,196,208,.85);line-height:1.5;">Spot: <span style="color:#f5c842;font-weight:500;">' + spotFull + '</span></div>' : '') +
-        '<div style="font-size:12px;color:rgba(184,196,208,.45);margin-top:4px;">Set on step 1</div></div>';
+    var lockedMode = !!(catVal && !FS_LOC_BANK[catVal]);
+    if (lockedMode) {
+      locTypeHtml = '';
     }
     panel.innerHTML = mapPickerHtml + mapsLinkHtml + locTypeHtml +
-            '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> — required</span>') + '</div>' +
+            (lockedMode
+              ? '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;"><div style="font-size:17px;color:#fff;font-weight:500;">Hiding Spot' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;">· required</span>') + '</div><div style="font-size:14px;color:#f5c842;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + catVal + '</div></div>'
+              : '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;">· required</span>') + '</div>') +
       '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80" onclick="this.focus()">' + (_hsData.location||'') + '</textarea>' +
 
   '<div style="height:22px;"></div>' +
