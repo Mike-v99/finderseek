@@ -446,21 +446,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Quest Area / Hiding Spot / Starting Point -->
 <div style="display:flex;gap:10px;">
-  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-area-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area</span>
   </button>
-  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-spot-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Hiding Spot</span>
   </button>
 </div>
 <div id="qa-desc-wrap" style="display:none;">
-  <div style="font-size:14px;color:rgba(184,196,208,.75);margin-bottom:6px;">Hiding spot description</div>
-  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:16px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <div style="font-size:15px;color:#fff;margin-bottom:6px;">Hiding spot description</div>
+  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:17px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
 </div>
 <div id="qa-start-row" style="display:none;">
-  <button class="qa-btn" id="qa-start-btn" onclick="openQaSheet('start')" style="width:calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-start-btn" onclick="openQaSheet('start')" style="width:calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-start-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Starting Point</span>
   </button>
@@ -877,7 +877,7 @@ function syncQaButtons(){
     if (!btn) return;
     btn.style.background = on ? 'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))' : 'rgba(232,168,32,.09)';
     btn.style.borderColor = on ? '#e8a820' : 'rgba(232,168,32,.5)';
-    btn.style.color = on ? '#fff' : '#f5c842';
+    btn.style.color = '#fff';
   }
   if (aLbl) aLbl.textContent = questArea || 'Quest Area';
   fill(aBtn, !!questArea);
@@ -927,6 +927,17 @@ function typeCustomPin(v){
   try { saveFormState(); } catch(e){}
 }
 
+function fsFlashMissing(id){
+  try {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    el.classList.remove('field-invalid');
+    void el.offsetWidth;
+    el.classList.add('field-invalid');
+    setTimeout(function(){ el.classList.remove('field-invalid'); }, 1800);
+  } catch(e){}
+}
 function goStep(n) {
   // ── Validate current step before moving forward ──────────
   if (n === 2) n = (currentStep > 2 ? 1 : 3); // step 2 removed; map old targets
@@ -939,14 +950,14 @@ function goStep(n) {
       var pinWrap = document.querySelector('#step1 .code-wrap');
       if (pinWrap && pinWrap.parentElement) { pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk ? 'field-valid' : 'field-invalid'); }
       if (!pinOk) { showToast('Generate or enter your 6-digit PIN first', 'error'); return; }
-      if (!questArea) { showToast('Pick a Quest Area', 'error'); return; }
-      if (!questSpot) { showToast('Pick a Hiding Spot', 'error'); return; }
-      if (!(questDesc||'').trim()) { showToast('Add a short hiding spot description', 'error'); return; }
-      if (!questStart) { showToast('Pick a Starting Point', 'error'); return; }
+      if (!questArea) { fsFlashMissing('qa-area-btn'); showToast('Pick a Quest Area', 'error'); return; }
+      if (!questSpot) { fsFlashMissing('qa-spot-btn'); showToast('Pick a Hiding Spot', 'error'); return; }
+      if (!(questDesc||'').trim()) { fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description', 'error'); return; }
+      if (!questStart) { fsFlashMissing('qa-start-btn'); showToast('Pick a Starting Point', 'error'); return; }
       var photoOk = !!window._hsPhotoDataUrl;
       var photoSec = document.getElementById('photo-section-s1');
       if (photoSec) { photoSec.classList.remove('field-valid','field-invalid'); photoSec.classList.add(photoOk ? 'field-valid' : 'field-invalid'); }
-      if (!photoOk) { showToast('Take a photo of the hiding spot', 'error'); return; }
+      if (!photoOk) { fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot', 'error'); return; }
     }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
