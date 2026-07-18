@@ -351,6 +351,29 @@ body{padding-top:env(safe-area-inset-top,0px);}
 }
 </style>
 
+
+<style>
+.qa-sheet-back{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:960;opacity:0;pointer-events:none;transition:opacity .25s;}
+.qa-sheet-back.open{opacity:1;pointer-events:auto;}
+.qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:961;background:#141020;border-top:2px solid #e8a820;border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;}
+.qa-sheet.open{transform:translateY(0);}
+.qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
+.qa-sheet h3{font-size:17px;color:#f5c842;font-weight:400;padding:6px 18px 2px;margin:0;}
+.qa-note{font-size:11px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
+.qa-pillwrap{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+.qa-pill{padding:9px 14px;border-radius:20px;border:1.5px solid rgba(232,168,32,.35);background:rgba(232,168,32,.07);font-size:14px;color:#f5ead8;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
+.qa-pill.sel{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-weight:500;border-color:#e8a820;}
+.qa-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 30px;}
+.qa-list.qa-grid{display:grid;grid-template-columns:1fr 1fr;padding:6px 8px 30px;align-content:start;}
+.qa-list.qa-grid .qa-idea{padding:13px 10px;font-size:14px;}
+.qa-list.qa-grid .qa-idea:nth-child(odd){border-right:1px solid rgba(255,255,255,.05);}
+.qa-idea{padding:14px 18px;font-size:15px;color:#f5ead8;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;}
+.qa-idea:active{background:rgba(232,168,32,.12);}
+.qa-chk{color:#4ade80;}
+.qa-obj{color:#f5c842;font-weight:500;}
+.qa-prompt{padding:22px 18px;font-size:14px;color:rgba(184,196,208,.55);text-align:center;line-height:1.5;}
+@media (prefers-reduced-motion: reduce){.qa-sheet{transition:none;}.qa-sheet-back{transition:none;}}
+</style>
 </head>
 <body>
 <div class="status-strip" aria-hidden="true"></div>
@@ -360,7 +383,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
     <a href="javascript:void(0)" onclick="location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:28px;font-weight:500;color:#e8a820;text-align:left;padding-left:4px;">1 <span style="font-size:17px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
+    <div style="font-size:23px;font-weight:500;color:#fff;text-align:left;padding-left:4px;">Quest <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Creation</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -376,27 +399,32 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow:hidden;">
 
-<!-- Heading + bouncy step circles -->
-<div style="text-align:center;">
-  <div style="font-size:30px;font-weight:500;color:#ffffff;margin-bottom:14px;">Hide the Treasure</div>
-  <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;padding:0 4px;">
-    <div class="hs-step-2" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#38bdf8;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">1</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">Write Down</div>
-    </div>
-    <div class="hs-step-3" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#6366f1;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">2</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">In Envelope</div>
-    </div>
-    <div class="hs-step-4" style="text-align:center;flex:1;">
-      <div style="width:32px;height:32px;border-radius:50%;background:#4ade80;color:#fff;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;">3</div>
-      <div style="font-size:15px;line-height:1.4;color:#fff;white-space:nowrap;">Hiding Spot</div>
-    </div>
+<!-- Prize -->
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
+    <div style="font-size:15px;letter-spacing:2px;color:#b8c4d0;">PRIZE</div>
+    <div style="font-size:20px;font-weight:400;color:#4ade80;"><span id="prize-display">$30</span> <span style="font-size:12px;color:rgba(74,222,128,.5);">to the winner</span></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;" id="prize-grid">
+    <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
+    <div class="prize-chip" onclick="selPrize(20,this)" data-val="20" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$20</div>
+    <div class="prize-chip active" onclick="selPrize(30,this)" data-val="30" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$30</div>
+    <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
+    <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
+    <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
   </div>
 </div>
 
 <!-- PIN section -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
+  <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:rgba(184,196,208,.7);margin-bottom:10px;flex-wrap:wrap;">
+    <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:10px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span>
+    <span style="opacity:.4;">&#8250;</span>
+    <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:10px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span>
+    <span style="opacity:.4;">&#8250;</span>
+    <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#4ade80;color:#04150a;font-size:10px;font-weight:500;align-items:center;justify-content:center;">3</span> <span style="color:#f5ead8;">Hide it</span>
+  </div>
   <div class="code-wrap" style="margin-bottom:12px;">
     <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
     <div id="c2" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
@@ -405,28 +433,55 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="c5" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
     <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
   </div>
-  <div style="display:flex;justify-content:center;">
-    <button id="gen-code-btn" onclick="genCode()" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 24px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;margin:0 auto;">
+  <div style="display:flex;gap:10px;">
+    <button id="gen-code-btn" onclick="genCode()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       New PIN
     </button>
+    <button id="custom-pin-btn" onclick="toggleCustomPin()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">&#9998; Custom PIN</button>
     <button id="save-code-btn" style="display:none;"></button>
   </div>
+  <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:19px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
+</div>
+
+<!-- Quest Area / Hiding Spot / Starting Point -->
+<div style="display:flex;gap:10px;">
+  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+    <span class="qa-lbl" id="qa-area-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area</span>
+  </button>
+  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+    <span class="qa-lbl" id="qa-spot-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Hiding Spot</span>
+  </button>
+</div>
+<div id="qa-hint" style="font-size:12px;color:rgba(184,196,208,.55);line-height:1.5;">Pick your quest area. The Hiding Spot button appears once you do.</div>
+<div id="qa-desc-wrap" style="display:none;">
+  <div style="font-size:13px;color:rgba(184,196,208,.75);margin-bottom:6px;">Hiding spot description <span style="color:#4ade80;font-size:11px;">editable</span></div>
+  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:15px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+</div>
+<div id="qa-start-row" style="display:none;">
+  <button class="qa-btn" id="qa-start-btn" onclick="openQaSheet('start')" style="width:calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+    <span class="qa-lbl" id="qa-start-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Starting Point</span>
+  </button>
+  <div id="qa-start-hint" style="font-size:12px;color:rgba(184,196,208,.55);margin-top:6px;line-height:1.5;">Where seekers begin the hunt. Pick one, zero typing.</div>
 </div>
 
 <!-- Photo section -->
 <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
-  <div style="font-size:25px;font-weight:400;color:#ffffff;text-align:center;margin-bottom:4px;">Capture the Hiding Spot</div>
-  <div style="font-size:13px;color:rgba(232,168,32,.7);text-align:center;margin-bottom:10px;letter-spacing:.5px;">— required</div>
-  <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:18px 12px;text-align:center;cursor:pointer;" onclick="openPhotoChoice()">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 9px;"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M16 7l-1.5-3h-5L8 7"/><circle cx="12" cy="14" r="3"/></svg>
-    <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:3px;">Add photo</div>
-    <div style="font-size:17px;color:rgba(255,255,255,.28);">Camera or library</div>
+  <div style="font-size:17px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo <span style="font-size:12px;color:rgba(232,168,32,.7);letter-spacing:.5px;">required</span></div>
+  <div style="font-size:12px;color:rgba(184,196,208,.5);margin-bottom:10px;">Only the winner sees this, as proof of the spot.</div>
+  <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:14px 12px;text-align:center;margin-bottom:10px;">
+    <div style="font-size:14px;color:rgba(255,255,255,.35);">&#128247; No photo yet</div>
   </div>
-  <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;position:relative;">
+  <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;position:relative;margin-bottom:10px;">
     <img id="hs-photo-img" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center;display:block;"/>
-    <button onclick="clearHsPhoto()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">✕</button>
-    <button onclick="openPhotoChoice()" style="width:100%;padding:9px;background:rgba(255,255,255,.04);border:none;border-top:1px solid rgba(255,255,255,.07);color:#b8c4d0;font-size:17px;font-family:inherit;cursor:pointer;">Change photo</button>
+    <button onclick="clearHsPhoto()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">&#10005;</button>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
+    <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
   </div>
 </div>
 
@@ -436,61 +491,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <div class="step-footer">
-    <button onclick="goStep(2)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;pointer-events:none;">Next →</button>
+    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;pointer-events:none;">Next →</button>
   </div>
-</div>
-
-<div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
-    <div style="width:36px;height:36px;flex-shrink:0;"></div>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
-      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
-        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
-          <svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
-        <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
-      </div>
-    </div>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 14px 8px;">
-    <div style="text-align:center;padding:16px 0 28px;position:relative;">
-      <div style="font-size:15px;letter-spacing:2px;color:#b8c4d0;margin-bottom:12px;">PRIZE AMOUNT</div>
-      <div style="position:relative;display:inline-block;">
-        <div style="position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.18),transparent 70%);pointer-events:none;"></div>
-        <div id="prize-display" style="font-size:96px;font-weight:200;background:linear-gradient(135deg,#22c55e,#4ade80,#d4ffda,#4ade80,#22c55e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 3s linear infinite;line-height:1;position:relative;">$30</div>
-      </div>
-      <div style="font-size:15px;color:rgba(74,222,128,.45);margin-top:8px;letter-spacing:1px;">TAP AMOUNT BELOW TO CHANGE</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;" id="prize-grid">
-
-      <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
-      <div class="prize-chip" onclick="selPrize(20,this)" data-val="20" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$20</div>
-      <div class="prize-chip active" onclick="selPrize(30,this)" data-val="30" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$30</div>
-      <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
-      <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
-      <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:14px 6px;border-radius:13px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
-    </div>
-    <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:20px;"></div>
-    <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
-    <div style="display:flex;gap:10px;">
-      <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:14px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);"><div style="font-size:30px;font-weight:200;color:#fff;line-height:1;">4</div><div style="font-size:14px;color:#fff;opacity:.5;letter-spacing:.5px;text-transform:uppercase;">Quick</div></div>
-      <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:14px 4px;text-align:center;cursor:pointer;"><div style="font-size:30px;font-weight:200;color:#60a5fa;line-height:1;">5</div><div style="font-size:14px;color:#60a5fa;letter-spacing:.5px;text-transform:uppercase;">Standard</div></div>
-      <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:14px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);"><div style="font-size:30px;font-weight:200;color:#fff;line-height:1;">6</div><div style="font-size:14px;color:#fff;opacity:.5;letter-spacing:.5px;text-transform:uppercase;">Adventure</div></div>
-    </div>
-    <div style="height:12px;"></div>
-  </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">← Back</button><button onclick="goStep(3)" class="step-next-btn">Next →</button></div>
 </div>
 
 <div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
     <div style="width:36px;height:36px;flex-shrink:0;"></div>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">3</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -505,6 +513,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
+    <div style="font-size:20px;font-weight:400;color:#fff;margin-bottom:10px;" id="clues-header">CLUES · <span id="clues-count">5</span></div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <div class="clue-btn" onclick="selClue(4,this)" data-clue="4" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:11px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);"><div style="font-size:24px;font-weight:200;color:#fff;line-height:1;">4</div><div style="font-size:12px;color:#fff;opacity:.5;letter-spacing:.5px;text-transform:uppercase;">Quick</div></div>
+      <div class="clue-btn active" onclick="selClue(5,this)" data-clue="5" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1.5px solid #60a5fa;background:rgba(96,165,250,.08);padding:11px 4px;text-align:center;cursor:pointer;"><div style="font-size:24px;font-weight:200;color:#60a5fa;line-height:1;">5</div><div style="font-size:12px;color:#60a5fa;letter-spacing:.5px;text-transform:uppercase;">Standard</div></div>
+      <div class="clue-btn" onclick="selClue(6,this)" data-clue="6" style="flex:1;flex-direction:column;justify-content:center;gap:2px;border-radius:13px;border:1px solid rgba(255,255,255,.1);padding:11px 4px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);"><div style="font-size:24px;font-weight:200;color:#fff;line-height:1;">6</div><div style="font-size:12px;color:#fff;opacity:.5;letter-spacing:.5px;text-transform:uppercase;">Adventure</div></div>
+    </div>
     <div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:12px;">CLUE STYLE</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;margin-bottom:16px;">
       <div class="persona-card selected" data-persona="pirate" onclick="selPersona(this)" style="padding:24px 4px;text-align:center;cursor:pointer;background:rgba(232,168,32,.12);"><div class="persona-name" style="font-size:20px;font-weight:500;color:#e8a820;">Pirate</div></div>
@@ -532,7 +546,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="preview-emoji" style="display:none;">🏴‍☠️</div>
     <div style="height:12px;"></div>
   </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(2)">← Back</button><button onclick="openHsModalFromStep()" class="step-next-btn">Next →</button></div>
+  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">← Back</button><button onclick="openHsModalFromStep()" class="step-next-btn">Next →</button></div>
 </div>
 
 <!-- STEP 5: Schedule -->
@@ -540,7 +554,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step5" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
     <div style="width:36px;height:36px;flex-shrink:0;"></div>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">5</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">4</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -765,25 +779,177 @@ var PERSONA_SAMPLES = {
   investigator: {emoji:'🔍', label:'DETECTIVE STYLE · SAMPLE CLUE', text:'"Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won\'t find itself."'}
 };
 
+var QA_DATA = {"Local Park": {"starts": ["Main entrance", "Parking lot", "Playground", "Pavilion", "Flag pole", "Trailhead"], "objects": ["Bench", "Tree", "Sign", "Rock", "Picnic table", "Pavilion", "Bleachers", "Flag pole", "Bush", "Fallen log"]}, "Beach": {"starts": ["Beach entrance", "Parking lot", "Lifeguard stand", "Boardwalk start", "Pier entrance", "Beach shelter"], "objects": ["Lifeguard stand", "Driftwood", "Dune fence", "Pier post", "Jetty", "Boardwalk", "Bench", "Sign", "Flag pole", "Bike rack"]}, "Downtown City Center": {"starts": ["Main square", "Fountain", "Bus stop", "Clock tower", "Public art", "Information kiosk"], "objects": ["Bench", "Planter", "Statue", "Fountain", "Clock tower", "Bus shelter", "Sign", "Light pole", "Bike rack", "Stairs"]}, "Botanical Garden": {"starts": ["Garden entrance", "Visitor center", "Fountain", "Gazebo", "Rose garden", "Pond"], "objects": ["Bench", "Planter", "Gazebo", "Trellis", "Fountain", "Statue", "Garden bed", "Bridge", "Gate post", "Rock"]}, "College Campus": {"starts": ["Main quad", "Library steps", "Student union", "Bell tower", "Fountain", "Stadium gate"], "objects": ["Bench", "Statue", "Fountain", "Flag pole", "Bell tower", "Planter", "Bike rack", "Stairs", "Picnic table", "Plaque"]}, "Nature Trail": {"starts": ["Trailhead", "Parking lot", "Trail map board", "Footbridge", "Overlook", "Rest stop bench"], "objects": ["Trail marker", "Trailhead board", "Tree", "Rock", "Fallen log", "Bridge", "Boardwalk", "Overlook rail", "Bench", "Stairs"]}, "Public Library Grounds": {"starts": ["Front entrance", "Parking lot", "Book drop", "Reading garden", "Flag pole", "Courtyard"], "objects": ["Bench", "Book drop", "Little free library", "Sign", "Planter", "Flag pole", "Garden bed", "Bike rack", "Sculpture", "Community board"]}, "Museum Courtyard": {"starts": ["Courtyard gate", "Ticket kiosk", "Fountain", "Sculpture", "Main sign", "Cafe patio"], "objects": ["Bench", "Fountain", "Sculpture", "Planter", "Column", "Gate post", "Sign", "Stairs", "Garden bed", "Bike rack"]}, "Church": {"starts": ["Main entrance", "Parking lot", "Marquee sign", "Playground", "Courtyard", "Fellowship hall doors"], "objects": ["Column", "Marquee sign", "Cross monument", "Bench", "Statue", "Flag pole", "Picnic table", "Planter", "Playground border", "Bell tower"]}, "Waterfront Harbor": {"starts": ["Harbor sign", "Parking lot", "Boat launch", "Overlook", "Picnic shelter", "Marina office"], "objects": ["Pier post", "Beacon", "Marina rack", "Bench", "Boardwalk", "Sign", "Overlook rail", "Rock", "Flag pole", "Driftwood"]}, "Restaurant": {"starts": ["Front doors", "Parking lot", "Patio gate", "Monument sign", "Drive through entrance", "Front walkway"], "objects": ["Bench", "Patio table", "Planter", "Menu board", "Monument sign", "Awning post", "Bush", "Tree", "Bike rack", "Sign"]}, "Historical District": {"starts": ["District arch", "Visitor center", "Statue", "Courtyard", "Walking tour sign", "Fountain"], "objects": ["Plaque", "Statue", "Street lamp", "Hitching post", "Cannon display", "Bench", "Fountain", "Planter", "Fence", "Cornerstone"]}, "Community Rec Center": {"starts": ["Main entrance", "Parking lot", "Basketball courts", "Ball fields", "Pavilion", "Playground"], "objects": ["Basketball hoop", "Bleachers", "Dugout", "Scoreboard", "Batting cage", "Tennis gate", "Picnic table", "Playground border", "Bench", "Flag pole"]}, "Office Building": {"starts": ["Main entrance", "Visitor parking", "Flag pole", "Plaza", "Fountain", "Monument sign"], "objects": ["Bollard", "Flag pole", "Bench", "Planter", "Fountain", "Sculpture", "Directory pylon", "Monument sign", "Bike rack", "Tree"]}, "River Trail Greenway": {"starts": ["Trailhead", "Parking lot", "Canoe launch", "Overlook shelter", "Fishing platform", "Trail bridge"], "objects": ["Trail marker", "Bench", "Bridge", "Fishing platform", "Canoe launch", "Boardwalk", "Overlook rail", "Rock", "Garden bed", "Trailhead board"]}, "Shopping District": {"starts": ["Main entrance", "Parking lot", "Directory sign", "Fountain plaza", "Food court doors", "Plaza clock"], "objects": ["Planter", "Bench", "Cart corral", "Storefront pillar", "Directory pylon", "Fountain", "Awning post", "Sign", "Bike rack", "Monument sign"]}, "Sports Fields Complex": {"starts": ["Complex entrance", "Parking lot", "Concession stand", "Field one gate", "Scoreboard", "Pavilion"], "objects": ["Dugout", "Backstop", "Foul pole", "Bleachers", "Scoreboard", "Batting cage", "Soccer goal", "Fence", "Picnic table", "Light pole"]}, "Courthouse Square": {"starts": ["Courthouse steps", "Gazebo", "Fountain", "Flag pole", "Veterans memorial", "Clock tower"], "objects": ["Veterans memorial", "Statue", "Gazebo", "Fountain", "Clock tower", "Bench", "Flag pole", "Bandstand", "Planter", "Plaque"]}, "Neighborhood Streets": {"starts": ["Entrance marker", "Pocket park", "Community garden", "Bus stop", "Bulletin board", "Common area"], "objects": ["Bench", "Street lamp", "Community board", "Little free library", "Bus shelter", "Playground border", "Tree", "Sign", "Planter", "Flag pole"]}, "State or National Park": {"starts": ["Park entrance", "Visitor center", "Trailhead", "Campground sign", "Picnic area", "Overlook"], "objects": ["Trail marker", "Visitor center", "Campground sign", "Tree", "Rock", "Fallen log", "Overlook rail", "Pavilion", "Bridge", "Flag pole"]}};
+var OBJ_LIB = {"Bench": ["under the end of the seat", "taped to the frame underneath", "behind the backrest corner", "at the base of a leg", "behind the dedication plaque"], "Tree": ["at the base under loose leaves", "in the fork at eye level", "inside a knothole", "behind the trunk on the far side", "under exposed roots"], "Sign": ["behind the sign post", "at the base of the post", "in the landscaping at the base", "tucked behind the panel edge"], "Rock": ["in a large crack", "behind the biggest boulder", "in the gap between two rocks", "under the overhanging edge"], "Light pole": ["behind the base", "at the edge of the base cover", "in the landscaping around the pole"], "Planter": ["under the rim edge", "behind the planter", "in the gap against the wall", "at the corner of the box"], "Picnic table": ["taped under the seat", "under the table top center", "at the base of a leg", "under the bench end"], "Fence": ["behind a corner post", "in the gap at the gate hinge", "at the base of an end post", "behind a rail joint"], "Flag pole": ["at the base", "in the landscaping around the base", "behind the dedication plaque"], "Bush": ["inside the dense branches", "at the base under the mulch", "behind the largest bush"], "Fountain": ["at the rim base", "behind the back edge", "under the nearest bench"], "Statue": ["in the nook of the base", "behind the base", "at the plaque"], "Kiosk": ["behind the kiosk", "at the base", "behind the panel edge"], "Bleachers": ["under the end seat", "behind the support frame", "under the third row edge"], "Bike rack": ["behind the rack", "at the base of an end loop", "under the rack edge"], "Pavilion": ["at a corner post", "under a picnic table inside", "behind a support column"], "Bridge": ["under the rail end", "at the base of a post", "behind the end support"], "Boardwalk": ["under the edge", "at the step end", "behind a rail post"], "Stairs": ["under the bottom step edge", "at the handrail end", "behind the side wall"], "Garden bed": ["at the border edge", "in the sign holder", "under the edge of a border stone"], "Drinking fountain": ["behind the base", "under the basin edge"], "Gazebo": ["in a corner", "behind a column", "under the bench inside"], "Trellis": ["under the post", "in the corner lattice", "at the base"], "Trailhead board": ["behind the map board", "at the base of the kiosk", "under the bench beside it"], "Trail marker": ["behind the marker post", "at the base", "in the rocks beside it"], "Fallen log": ["under loose bark", "under the end", "in the hollow center"], "Overlook rail": ["behind a railing post", "at the rail end", "under the platform edge"], "Column": ["behind the base", "at the corner", "in the recessed ledge beside it"], "Plaque": ["behind the marker", "at the base", "in the landscaping in front"], "Lifeguard stand": ["behind the base", "at the ramp edge"], "Driftwood": ["under a large piece above the tide line", "wedged beneath the end"], "Dune fence": ["at the foot of a post", "in the railing gap", "behind the end post"], "Pier post": ["at the base above the sand", "behind the post on the land side"], "Jetty": ["in the rocks above the water line", "in a crevice between stones"], "Dugout": ["behind the third base dugout", "under the dugout bench", "at the dugout gate post"], "Backstop": ["behind the post padding", "at the base of the frame"], "Foul pole": ["at the base", "in the fence corner beside it"], "Scoreboard": ["behind the support post", "at the base"], "Batting cage": ["at the gate post", "behind the frame corner"], "Soccer goal": ["under the sandbag anchor", "behind the net anchor"], "Cart corral": ["behind the frame", "at the base of the end rail"], "Storefront pillar": ["behind the pillar", "at the base", "in the gap against the wall"], "Book drop": ["behind the box", "at the base"], "Little free library": ["behind the box", "under the base ledge"], "Marquee sign": ["behind the sign base", "in the bushes behind it", "at the spotlight base"], "Cross monument": ["behind the base", "at the plaque", "in the flower bed at the base"], "Menu board": ["behind the post", "at the base"], "Patio table": ["under the corner table", "at the base of the umbrella pole", "under the table edge"], "Awning post": ["at the support base", "behind the post"], "Monument sign": ["behind the base", "in the bed in front", "at the corner of the base"], "Hitching post": ["at the old post base", "behind the post"], "Cannon display": ["behind the display base", "at the wheel base"], "Basketball hoop": ["at the base of the pole", "behind the pole padding"], "Tennis gate": ["behind the gate post", "at the base of the fence corner"], "Bollard": ["behind the bollard", "at the base", "between two bollards"], "Directory pylon": ["behind the pylon", "at the base"], "Sculpture": ["behind the base", "at the plaque stand", "in the landscaping at the base"], "Fishing platform": ["at the rail end", "under the platform edge", "behind the corner post"], "Canoe launch": ["behind the launch sign", "at the ramp edge post"], "Clock tower": ["at the base", "in the alcove at the base"], "Bus shelter": ["under the bench", "behind the shelter panel", "at the base of the frame"], "Playground border": ["under the border timber end", "at the corner of the border", "behind the playground sign"], "Bell tower": ["at the base", "behind the corner"], "Veterans memorial": ["behind the memorial base", "at the wreath stand", "in the border planting"], "Bandstand": ["under the step edge", "behind a support post"], "Marina rack": ["behind the kayak rack", "at the base of the rack"], "Beacon": ["at the light beacon base", "behind the base on the land side"], "Visitor center": ["in the exterior landscaping", "behind the entrance sign", "under the porch bench"], "Campground sign": ["behind the sign post", "at the base"], "Community board": ["behind the bulletin board", "at the base post"], "Street lamp": ["at the base", "behind the historic base"], "Gate post": ["behind the post", "at the hinge side base", "in the landscaping beside it"], "Cornerstone": ["at the historic corner stone", "behind the foundation edge"]};
+
+// ── Step 1 Quest Area state ────────────────────────────────────────
+var questArea = '', questSpot = '', questStart = '', questDesc = '';
+var _qaMode = 'area', _qaPill = '';
+
+function qaEl(id){ return document.getElementById(id); }
+function openQaSheet(mode){
+  if (mode !== 'area' && !questArea) { showToast('Pick a Quest Area first', 'error'); return; }
+  _qaMode = mode;
+  var pills = qaEl('qa-sheet-pills');
+  if (mode === 'area'){
+    qaEl('qa-sheet-title').textContent = 'Quest Area';
+    qaEl('qa-sheet-note').textContent = '20 AREAS \u00b7 PICK WHERE YOUR QUEST LIVES';
+    pills.style.display = 'none';
+    var listEl = qaEl('qa-sheet-list');
+    listEl.className = 'qa-list qa-grid';
+    listEl.innerHTML = Object.keys(QA_DATA).map(function(t, i){
+      return '<div class="qa-idea" onclick="pickQaArea('+i+')"><span>'+t+'</span>'+(t===questArea?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+    }).join('');
+    listEl.scrollTop = 0;
+  } else if (mode === 'spot'){
+    qaEl('qa-sheet-title').textContent = 'Hiding Spot \u00b7 ' + questArea;
+    qaEl('qa-sheet-note').textContent = 'TAP WHAT YOU ARE HIDING NEAR';
+    _qaPill = questSpot ? questSpot.split(' - ')[0] : '';
+    pills.style.display = '';
+    renderQaPills();
+    renderQaDetails();
+  } else {
+    qaEl('qa-sheet-title').textContent = 'Starting Point \u00b7 ' + questArea;
+    qaEl('qa-sheet-note').textContent = 'WHERE SEEKERS BEGIN THE HUNT';
+    pills.style.display = 'none';
+    var l2 = qaEl('qa-sheet-list');
+    l2.className = 'qa-list';
+    l2.innerHTML = ((QA_DATA[questArea]||{}).starts||[]).map(function(t, i){
+      return '<div class="qa-idea" onclick="pickQaStart('+i+')"><span>'+t+'</span>'+(t===questStart?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+    }).join('');
+    l2.scrollTop = 0;
+  }
+  qaEl('qa-sheet').classList.add('open');
+  qaEl('qa-sheet-back').classList.add('open');
+}
+function renderQaPills(){
+  var objs = (QA_DATA[questArea]||{}).objects||[];
+  qaEl('qa-sheet-pills').innerHTML = objs.map(function(o, i){
+    return '<div class="qa-pill'+(o===_qaPill?' sel':'')+'" onclick="pickQaPill('+i+')">'+o+'</div>';
+  }).join('');
+}
+function pickQaPill(i){
+  _qaPill = ((QA_DATA[questArea]||{}).objects||[])[i] || '';
+  renderQaPills();
+  renderQaDetails();
+}
+function renderQaDetails(){
+  var listEl = qaEl('qa-sheet-list');
+  listEl.className = 'qa-list';
+  if (!_qaPill){
+    listEl.innerHTML = '<div class="qa-prompt">Tap an object above to see its hiding spots</div>';
+    return;
+  }
+  var dets = OBJ_LIB[_qaPill]||[];
+  listEl.innerHTML = dets.map(function(d, i){
+    var full = _qaPill + ' - ' + d;
+    return '<div class="qa-idea" onclick="pickQaDetail('+i+')"><span><span class="qa-obj">'+_qaPill+'</span> - '+d+'</span>'+(full===questSpot?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+  }).join('');
+  listEl.scrollTop = 0;
+}
+function pickQaArea(i){
+  var a = Object.keys(QA_DATA)[i]; if (!a) return;
+  if (questArea !== a){
+    questArea = a; questSpot = ''; questDesc = ''; questStart = ''; _qaPill = '';
+  }
+  syncQaButtons();
+  closeQaSheet(); saveFormState(); checkStep1Complete();
+}
+function pickQaDetail(i){
+  var d = (OBJ_LIB[_qaPill]||[])[i]; if (!d) return;
+  questSpot = _qaPill + ' - ' + d;
+  questDesc = questSpot;
+  syncQaButtons();
+  closeQaSheet(); saveFormState(); checkStep1Complete();
+}
+function pickQaStart(i){
+  var st = ((QA_DATA[questArea]||{}).starts||[])[i]; if (!st) return;
+  questStart = st;
+  syncQaButtons();
+  closeQaSheet(); saveFormState(); checkStep1Complete();
+}
+// Repaint the step 1 buttons and fields from state (also used on restore)
+function syncQaButtons(){
+  var aBtn = qaEl('qa-area-btn'), aLbl = qaEl('qa-area-lbl');
+  var sBtn = qaEl('qa-spot-btn'), sLbl = qaEl('qa-spot-lbl');
+  var stRow = qaEl('qa-start-row'), stLbl = qaEl('qa-start-lbl'), stBtn = qaEl('qa-start-btn');
+  var dWrap = qaEl('qa-desc-wrap'), dInp = qaEl('qa-desc');
+  var hint = qaEl('qa-hint');
+  if (!aBtn) return;
+  function fill(btn, on){
+    if (!btn) return;
+    btn.style.background = on ? 'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))' : 'rgba(232,168,32,.09)';
+    btn.style.borderColor = on ? '#e8a820' : 'rgba(232,168,32,.5)';
+    btn.style.color = on ? '#fff' : '#f5c842';
+  }
+  if (aLbl) aLbl.textContent = questArea || 'Quest Area';
+  fill(aBtn, !!questArea);
+  if (sBtn) sBtn.style.display = questArea ? 'flex' : 'none';
+  if (sLbl) sLbl.textContent = questSpot || 'Hiding Spot';
+  fill(sBtn, !!questSpot);
+  if (dWrap) dWrap.style.display = questSpot ? '' : 'none';
+  if (dInp && dInp.value !== (questDesc||'')) dInp.value = questDesc || '';
+  if (stRow) stRow.style.display = questSpot ? '' : 'none';
+  if (stLbl) stLbl.textContent = questStart || 'Starting Point';
+  fill(stBtn, !!questStart);
+  if (hint){
+    if (!questArea) hint.textContent = 'Pick your quest area. The Hiding Spot button appears once you do.';
+    else if (!questSpot) hint.textContent = 'Now pick the exact hiding spot for ' + questArea.toLowerCase() + '.';
+    else hint.textContent = 'Edit the description below if your spot needs more detail.';
+  }
+}
+function closeQaSheet(){
+  qaEl('qa-sheet').classList.remove('open');
+  qaEl('qa-sheet-back').classList.remove('open');
+}
+
+// ── Custom PIN ─────────────────────────────────────────────────────
+function toggleCustomPin(){
+  var inp = document.getElementById('custom-pin-input');
+  if (!inp) return;
+  var showing = inp.style.display !== 'none';
+  inp.style.display = showing ? 'none' : 'block';
+  if (!showing){
+    inp.value = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return (document.getElementById(id)||{}).textContent||''; }).join('');
+    setTimeout(function(){ inp.focus(); }, 60);
+  }
+}
+function typeCustomPin(v){
+  var digits = (v||'').replace(/\D/g,'').slice(0,6);
+  var inp = document.getElementById('custom-pin-input');
+  if (inp && inp.value !== digits) inp.value = digits;
+  for (var i = 1; i <= 6; i++){
+    var el = document.getElementById('c'+i);
+    if (el) el.textContent = digits[i-1] || '';
+  }
+  if (digits.length === 6){
+    var photoSec = document.getElementById('photo-section-s1');
+    if (photoSec) { photoSec.style.opacity = '1'; photoSec.style.pointerEvents = 'auto'; }
+  }
+  try { checkStep1Complete(); } catch(e){}
+  try { saveFormState(); } catch(e){}
+}
+
 function goStep(n) {
   // ── Validate current step before moving forward ──────────
+  if (n === 2) n = (currentStep > 2 ? 1 : 3); // step 2 removed; map old targets
   if (n > currentStep) {
-    if (currentStep === 1 && n === 2) {
+    if (currentStep === 1) {
+      var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
+      if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
       var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
       var pinOk = !codeDigits.some(function(d){ return !d || d === ''; });
-      var photoOk = !!window._hsPhotoDataUrl;
       var pinWrap = document.querySelector('#step1 .code-wrap');
       if (pinWrap && pinWrap.parentElement) { pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk ? 'field-valid' : 'field-invalid'); }
+      if (!pinOk) { showToast('Generate or enter your 6-digit PIN first', 'error'); return; }
+      if (!questArea) { showToast('Pick a Quest Area', 'error'); return; }
+      if (!questSpot) { showToast('Pick a Hiding Spot', 'error'); return; }
+      if (!(questDesc||'').trim()) { showToast('Add a short hiding spot description', 'error'); return; }
+      if (!questStart) { showToast('Pick a Starting Point', 'error'); return; }
+      var photoOk = !!window._hsPhotoDataUrl;
       var photoSec = document.getElementById('photo-section-s1');
       if (photoSec) { photoSec.classList.remove('field-valid','field-invalid'); photoSec.classList.add(photoOk ? 'field-valid' : 'field-invalid'); }
-      if (!pinOk) { showToast('Generate your 6-digit secret code first', 'error'); return; }
       if (!photoOk) { showToast('Take a photo of the hiding spot', 'error'); return; }
-    }
-    if (currentStep === 2 && n === 3) {
-      var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
-      var prizeGrid = document.getElementById('prize-grid');
-      if (prizeGrid) { prizeGrid.classList.remove('field-valid','field-invalid'); prizeGrid.classList.add(prizeOk ? 'field-valid' : 'field-invalid'); }
-      if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
     }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
@@ -1079,7 +1245,9 @@ function clearHsPhoto() {
 function checkStep1Complete(){
   var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return (document.getElementById(id)||{}).textContent||''; });
   var codeOk = codeDigits.every(function(d){ return d.trim() !== ''; });
-  var photoOk = !!window._hsPhotoDataUrl;
+  var photoOk = !!window._hsPhotoDataUrl
+    && !!(selectedPrizeVal && selectedPrizeVal >= 1)
+    && !!questArea && !!questSpot && !!(questDesc||'').trim() && !!questStart;
   var btn = document.getElementById('step1-next-btn');
   if (btn) {
     if (codeOk && photoOk) {
@@ -2662,6 +2830,7 @@ function saveFormState() {
       lat: selectedLat, lng: selectedLng,
       step: currentStep,
       hsData: _hsData,
+      questArea: questArea, questSpot: questSpot, questStart: questStart, questDesc: questDesc,
       locationConfirmed: locationConfirmed,
       selectedAddress: typeof selectedAddress !== 'undefined' ? selectedAddress : '',
       placeName: selectedPlaceName || '',
@@ -2737,6 +2906,12 @@ function restoreFormState() {
     }
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
+    if (s.questArea) questArea = s.questArea;
+    if (s.questSpot) questSpot = s.questSpot;
+    if (s.questStart) questStart = s.questStart;
+    if (typeof s.questDesc === 'string') questDesc = s.questDesc;
+    try { syncQaButtons(); } catch(e){}
+    if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
     if (s.hsData) _hsData = s.hsData;
     // Restore photo — check localStorage first, then sessionStorage fallback
     var savedPhoto = localStorage.getItem(FORM_KEY + '_photo') || sessionStorage.getItem(FORM_KEY + '_photo');
@@ -4651,6 +4826,15 @@ function fsHintPick(i){
 var _mapOpenedFromStep = false;
 
 function openHsModalFromStep() {
+  // Step 1 picks seed the hiding details so nothing is typed twice.
+  try {
+    if (questDesc && !((_hsData.location||'').trim())) _hsData.location = questDesc;
+    if (questStart && !((_hsData.startingPoint||'').trim())) _hsData.startingPoint = questStart;
+    if (questArea) {
+      _hsData.category = questArea;
+      _hsData.subcategory = questSpot ? questSpot.split(' - ')[0] : questArea;
+    }
+  } catch(e){}
   // Save current step state then open hs-modal directly (skips old step 4)
   saveFormState();
   _mapOpenedFromStep = false;
@@ -4913,6 +5097,9 @@ function renderHsModal() {
       '</div>' +
       '<div style="height:1px;background:rgba(255,255,255,.08);margin:18px 0;"></div>';
 
+    if (catVal && !FS_LOC_BANK[catVal]) {
+      locTypeHtml = '<div style="font-size:13px;color:rgba(184,196,208,.7);margin-bottom:14px;padding:11px 13px;border:1px solid rgba(232,168,32,.3);border-radius:12px;background:rgba(232,168,32,.05);">Quest Area: <span style=\"color:#f5c842;\">' + catVal + '</span>' + (subVal ? ' \u00b7 Spot: <span style=\"color:#f5c842;\">' + subVal + '</span>' : '') + ' <span style=\"font-size:11px;color:rgba(184,196,208,.45);\">(set on step 1)</span></div>';
+    }
     panel.innerHTML = mapPickerHtml + mapsLinkHtml + locTypeHtml +
             '<div style="font-size:17px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> — required</span>') + '</div>' +
       '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80" onclick="this.focus()">' + (_hsData.location||'') + '</textarea>' +
@@ -5262,7 +5449,7 @@ if (window.speechSynthesis) window.speechSynthesis.cancel();
 _hsCurrent = _hsClueCount;
 var sheet = document.querySelector(".hs-modal-sheet");
 sheet.innerHTML =
-'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
+'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">3 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div><div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
 '<div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
 '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
 '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
@@ -5441,7 +5628,7 @@ function hbSignOut(){
 <div class="hs-modal-overlay" id="hs-modal-overlay" onclick="hsModalBgClose(event)">
   <div class="hs-modal-sheet">
     <div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;">
-      <div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">4 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 5</span></div>
+      <div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">3 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div>
       <div style="font-size:17px;color:rgba(255,255,255,.4);text-align:center;">Hiding Spot</div>
       <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openHamburger();">
         <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
@@ -5566,5 +5753,14 @@ function hbSignOut(){
   window._fsLegacyBinary = fsLegacyBinary;
 })();
 </script>
+
+<div class="qa-sheet-back" id="qa-sheet-back" onclick="closeQaSheet()"></div>
+<div class="qa-sheet" id="qa-sheet">
+  <div class="qa-grab"></div>
+  <h3 id="qa-sheet-title">Quest Area</h3>
+  <div class="qa-note" id="qa-sheet-note"></div>
+  <div class="qa-pillwrap" id="qa-sheet-pills" style="display:none;"></div>
+  <div class="qa-list" id="qa-sheet-list"></div>
+</div>
 </body>
 </html>

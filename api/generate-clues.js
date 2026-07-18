@@ -133,7 +133,7 @@ Return ONLY the sentences, nothing else.`;
     const pos = parseInt(singleClue.position, 10) || 1;
     const clueHint = clues[pos - 1] || {};
     const isFinal = pos === totalClues;
-    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, resolvedSearchAddress, resolvedCity, startingPoint, locSetting);
+    const sPrompt = buildCluePrompt(clueHint, pos, totalClues, isFinal, styleHint, resolvedPlaceName, resolvedSearchAddress, resolvedCity, startingPoint, locSetting, locationText);
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -185,7 +185,7 @@ Return ONLY the sentences, nothing else.`;
     const cluePromises = Array.from({ length: totalClues }, (_, i) => {
       const clueHint = clues[i] || {};
       const isFinal = i === totalClues - 1;
-      const prompt = buildCluePrompt(clueHint, i + 1, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, city, startingPoint, locSetting);
+      const prompt = buildCluePrompt(clueHint, i + 1, totalClues, isFinal, styleHint, resolvedPlaceName, searchAddress, city, startingPoint, locSetting, locationText);
       return fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
@@ -217,7 +217,7 @@ Return ONLY the sentences, nothing else.`;
   }
 }
 
-function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city, startingPoint, locSetting) {
+function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeName, address, city, startingPoint, locSetting, exactSpot) {
   const action = clueHint.action || '';
   const hint = clueHint.hint || '';
   const question = clueHint.question || '';
@@ -227,6 +227,7 @@ function buildCluePrompt(clueHint, position, total, isFinal, styleHint, placeNam
     return `You are writing the FINAL clue for FinderSeek, a real-money quest app.
 Style: ${styleHint}
 ${locSetting ? 'Setting: "' + locSetting + '"' : ''}
+${exactSpot ? 'The exact hiding spot: "' + exactSpot + '". The final clue MUST clearly lead the seeker to this exact spot, in character.' : ''}
 Hiding spot description: "${hint}"
 Write ONE sentence: a dramatic rhyming riddle in the persona voice that builds maximum suspense — the seeker is inches away.
 Do NOT write a question — the final clue has no Q&A.
