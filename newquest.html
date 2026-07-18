@@ -355,20 +355,22 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <style>
 .qa-sheet-back{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:22000;opacity:0;pointer-events:none;transition:opacity .25s;}
 .qa-sheet-back.open{opacity:1;pointer-events:auto;}
-.qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#141020;border-top:2px solid #e8a820;border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;}
+.qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);}
 .qa-sheet.open{transform:translateY(0);}
 .qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
-.qa-sheet h3{font-size:19px;color:#f5c842;font-weight:400;padding:6px 18px 2px;margin:0;}
+.qa-sheet h3{font-size:20px;color:#fff;font-weight:500;padding:8px 18px 2px;margin:0;}
+.qa-hsub{color:#f5c842;font-weight:400;font-size:17px;}
 .qa-note{font-size:13px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
-.qa-pillwrap{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
-.qa-pill{padding:9px 14px;border-radius:20px;border:1.5px solid rgba(232,168,32,.35);background:rgba(232,168,32,.07);font-size:16px;color:#fff;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
-.qa-pill.sel{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-weight:500;border-color:#e8a820;}
-.qa-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 30px;}
-.qa-list.qa-grid{display:grid;grid-template-columns:1fr 1fr;padding:6px 8px 30px;align-content:start;}
-.qa-list.qa-grid .qa-idea{padding:13px 10px;font-size:16px;}
-.qa-list.qa-grid .qa-idea:nth-child(odd){border-right:1px solid rgba(255,255,255,.05);}
-.qa-idea{padding:14px 18px;font-size:17px;color:#fff;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;}
-.qa-idea:active{background:rgba(232,168,32,.12);}
+.qa-pillwrap{display:flex;flex-wrap:wrap;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.qa-pill{padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);font-size:16px;color:#fff;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;}
+.qa-pill.sel{border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;font-weight:400;padding:11.5px 15.5px;}
+.qa-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 34px;}
+.qa-list.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 34px;align-content:start;}
+.qa-list.qa-grid .qa-idea{padding:15px 10px;font-size:16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);justify-content:center;text-align:center;}
+.qa-list.qa-grid .qa-idea.qa-on{border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;padding:14.5px 9.5px;}
+.qa-idea{padding:16px 18px;font-size:17px;color:#fff;border-bottom:1px solid rgba(255,255,255,.06);line-height:1.4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;}
+.qa-idea:active{background:rgba(255,255,255,.05);}
+.qa-arrow{color:rgba(255,255,255,.22);font-size:20px;line-height:1;flex-shrink:0;}
 .qa-chk{color:#4ade80;}
 .qa-obj{color:#f5c842;font-weight:500;}
 .qa-prompt{padding:22px 18px;font-size:16px;color:rgba(184,196,208,.55);text-align:center;line-height:1.5;}
@@ -811,30 +813,32 @@ function openQaSheet(mode){
   _qaMode = mode;
   var pills = qaEl('qa-sheet-pills');
   if (mode === 'area'){
-    qaEl('qa-sheet-title').textContent = 'Quest Area';
-    qaEl('qa-sheet-note').textContent = '20 AREAS \u00b7 PICK WHERE YOUR QUEST LIVES';
+    qaEl('qa-sheet-title').innerHTML = 'Quest Area';
+    qaEl('qa-sheet-note').textContent = 'PICK WHERE YOUR QUEST LIVES';
     pills.style.display = 'none';
     var listEl = qaEl('qa-sheet-list');
     listEl.className = 'qa-list qa-grid';
     listEl.innerHTML = Object.keys(QA_DATA).map(function(t, i){
-      return '<div class="qa-idea" onclick="pickQaArea('+i+')"><span>'+t+'</span>'+(t===questArea?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+      var on = t === questArea;
+      return '<div class="qa-idea'+(on?' qa-on':'')+'" onclick="pickQaArea('+i+')"><span>'+t+'</span></div>';
     }).join('');
     listEl.scrollTop = 0;
   } else if (mode === 'spot'){
-    qaEl('qa-sheet-title').textContent = 'Hiding Spot \u00b7 ' + questArea;
+    qaEl('qa-sheet-title').innerHTML = 'Hiding Spot <span class="qa-hsub">\u00b7 ' + questArea + '</span>';
     qaEl('qa-sheet-note').textContent = 'TAP WHAT YOU ARE HIDING NEAR';
     _qaPill = questSpot ? questSpot.split(' - ')[0] : '';
     pills.style.display = '';
     renderQaPills();
     renderQaDetails();
   } else {
-    qaEl('qa-sheet-title').textContent = 'Starting Point \u00b7 ' + questArea;
+    qaEl('qa-sheet-title').innerHTML = 'Starting Point <span class="qa-hsub">\u00b7 ' + questArea + '</span>';
     qaEl('qa-sheet-note').textContent = 'WHERE SEEKERS BEGIN THE HUNT';
     pills.style.display = 'none';
     var l2 = qaEl('qa-sheet-list');
     l2.className = 'qa-list';
     l2.innerHTML = ((QA_DATA[questArea]||{}).starts||[]).map(function(t, i){
-      return '<div class="qa-idea" onclick="pickQaStart('+i+')"><span>'+t+'</span>'+(t===questStart?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+      var on = t === questStart;
+      return '<div class="qa-idea" onclick="pickQaStart('+i+')"><span>'+t+'</span>'+(on?'<span class="qa-chk">\u2713</span>':'<span class="qa-arrow">\u203a</span>')+'</div>';
     }).join('');
     l2.scrollTop = 0;
   }
@@ -862,7 +866,9 @@ function renderQaDetails(){
   var dets = OBJ_LIB[_qaPill]||[];
   listEl.innerHTML = dets.map(function(d, i){
     var full = _qaPill + ' - ' + d;
-    return '<div class="qa-idea" onclick="pickQaDetail('+i+')"><span><span class="qa-obj">'+_qaPill+'</span> - '+d+'</span>'+(full===questSpot?'<span class="qa-chk">\u2713</span>':'')+'</div>';
+    var label = d.charAt(0).toUpperCase() + d.slice(1);
+    var on = full === questSpot;
+    return '<div class="qa-idea" onclick="pickQaDetail('+i+')"><span>'+label+'</span>'+(on?'<span class="qa-chk">\u2713</span>':'<span class="qa-arrow">\u203a</span>')+'</div>';
   }).join('');
   listEl.scrollTop = 0;
 }
