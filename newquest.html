@@ -358,20 +358,20 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:961;background:#141020;border-top:2px solid #e8a820;border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;}
 .qa-sheet.open{transform:translateY(0);}
 .qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
-.qa-sheet h3{font-size:17px;color:#f5c842;font-weight:400;padding:6px 18px 2px;margin:0;}
-.qa-note{font-size:11px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
+.qa-sheet h3{font-size:18px;color:#f5c842;font-weight:400;padding:6px 18px 2px;margin:0;}
+.qa-note{font-size:12px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
 .qa-pillwrap{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
-.qa-pill{padding:9px 14px;border-radius:20px;border:1.5px solid rgba(232,168,32,.35);background:rgba(232,168,32,.07);font-size:14px;color:#f5ead8;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
+.qa-pill{padding:9px 14px;border-radius:20px;border:1.5px solid rgba(232,168,32,.35);background:rgba(232,168,32,.07);font-size:15px;color:#f5ead8;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
 .qa-pill.sel{background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-weight:500;border-color:#e8a820;}
 .qa-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 30px;}
 .qa-list.qa-grid{display:grid;grid-template-columns:1fr 1fr;padding:6px 8px 30px;align-content:start;}
-.qa-list.qa-grid .qa-idea{padding:13px 10px;font-size:14px;}
+.qa-list.qa-grid .qa-idea{padding:13px 10px;font-size:15px;}
 .qa-list.qa-grid .qa-idea:nth-child(odd){border-right:1px solid rgba(255,255,255,.05);}
-.qa-idea{padding:14px 18px;font-size:15px;color:#f5ead8;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;}
+.qa-idea{padding:14px 18px;font-size:16px;color:#f5ead8;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;}
 .qa-idea:active{background:rgba(232,168,32,.12);}
 .qa-chk{color:#4ade80;}
 .qa-obj{color:#f5c842;font-weight:500;}
-.qa-prompt{padding:22px 18px;font-size:14px;color:rgba(184,196,208,.55);text-align:center;line-height:1.5;}
+.qa-prompt{padding:22px 18px;font-size:15px;color:rgba(184,196,208,.55);text-align:center;line-height:1.5;}
 @media (prefers-reduced-motion: reduce){.qa-sheet{transition:none;}.qa-sheet-back{transition:none;}}
 </style>
 </head>
@@ -383,7 +383,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <div id="step1" class="step-page" style="display:flex;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
     <a href="javascript:void(0)" onclick="location.href='index.html'" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="font-size:23px;font-weight:500;color:#fff;text-align:left;padding-left:4px;">Quest <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Creation</span></div>
+    <div style="font-size:24px;font-weight:500;color:#fff;text-align:left;padding-left:4px;">Quest <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Creation</span></div>
     <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
       <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
         <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -402,23 +402,23 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Prize -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
-    <div style="font-size:15px;letter-spacing:2px;color:#b8c4d0;">PRIZE</div>
-    <div style="font-size:20px;font-weight:400;color:#4ade80;"><span id="prize-display">$30</span> <span style="font-size:12px;color:rgba(74,222,128,.5);">to the winner</span></div>
+    <div style="font-size:16px;letter-spacing:2px;color:#b8c4d0;">PRIZE</div>
+    <div style="font-size:21px;font-weight:400;color:#4ade80;"><span id="prize-display">$30</span></div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;" id="prize-grid">
-    <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
-    <div class="prize-chip" onclick="selPrize(20,this)" data-val="20" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$20</div>
-    <div class="prize-chip active" onclick="selPrize(30,this)" data-val="30" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$30</div>
-    <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
-    <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
-    <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
+    <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
+    <div class="prize-chip" onclick="selPrize(20,this)" data-val="20" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$20</div>
+    <div class="prize-chip active" onclick="selPrize(30,this)" data-val="30" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$30</div>
+    <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
+    <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
+    <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
   </div>
 </div>
 
 <!-- PIN section -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
-  <div style="font-size:17px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
-  <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:rgba(184,196,208,.7);margin-bottom:10px;flex-wrap:wrap;">
+  <div style="font-size:18px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:rgba(184,196,208,.7);margin-bottom:10px;flex-wrap:wrap;">
     <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:10px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span>
     <span style="opacity:.4;">&#8250;</span>
     <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:10px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span>
@@ -434,54 +434,51 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <div id="c6" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
   </div>
   <div style="display:flex;gap:10px;">
-    <button id="gen-code-btn" onclick="genCode()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
+    <button id="gen-code-btn" onclick="genCode()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       New PIN
     </button>
-    <button id="custom-pin-btn" onclick="toggleCustomPin()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">&#9998; Custom PIN</button>
+    <button id="custom-pin-btn" onclick="toggleCustomPin()" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.8);font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">&#9998; Custom PIN</button>
     <button id="save-code-btn" style="display:none;"></button>
   </div>
-  <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:19px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
+  <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
 </div>
 
 <!-- Quest Area / Hiding Spot / Starting Point -->
 <div style="display:flex;gap:10px;">
-  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-area-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area</span>
   </button>
-  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-spot-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Hiding Spot</span>
   </button>
 </div>
-<div id="qa-hint" style="font-size:12px;color:rgba(184,196,208,.55);line-height:1.5;">Pick your quest area. The Hiding Spot button appears once you do.</div>
 <div id="qa-desc-wrap" style="display:none;">
-  <div style="font-size:13px;color:rgba(184,196,208,.75);margin-bottom:6px;">Hiding spot description <span style="color:#4ade80;font-size:11px;">editable</span></div>
-  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:15px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <div style="font-size:14px;color:rgba(184,196,208,.75);margin-bottom:6px;">Hiding spot description</div>
+  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:16px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
 </div>
 <div id="qa-start-row" style="display:none;">
-  <button class="qa-btn" id="qa-start-btn" onclick="openQaSheet('start')" style="width:calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+  <button class="qa-btn" id="qa-start-btn" onclick="openQaSheet('start')" style="width:calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
     <span class="qa-lbl" id="qa-start-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Starting Point</span>
   </button>
-  <div id="qa-start-hint" style="font-size:12px;color:rgba(184,196,208,.55);margin-top:6px;line-height:1.5;">Where seekers begin the hunt. Pick one, zero typing.</div>
 </div>
 
 <!-- Photo section -->
 <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
-  <div style="font-size:17px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo <span style="font-size:12px;color:rgba(232,168,32,.7);letter-spacing:.5px;">required</span></div>
-  <div style="font-size:12px;color:rgba(184,196,208,.5);margin-bottom:10px;">Only the winner sees this, as proof of the spot.</div>
+  <div style="font-size:18px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo</div>
   <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:14px 12px;text-align:center;margin-bottom:10px;">
-    <div style="font-size:14px;color:rgba(255,255,255,.35);">&#128247; No photo yet</div>
+    <div style="font-size:15px;color:rgba(255,255,255,.35);">&#128247; No photo yet</div>
   </div>
   <div id="photo-preview-s1" style="display:none;border-radius:11px;overflow:hidden;position:relative;margin-bottom:10px;">
     <img id="hs-photo-img" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center;display:block;"/>
     <button onclick="clearHsPhoto()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">&#10005;</button>
   </div>
   <div style="display:flex;gap:10px;">
-    <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
-    <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
+    <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
+    <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
   </div>
 </div>
 
@@ -491,7 +488,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <div class="step-footer">
-    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;pointer-events:none;">Next →</button>
+    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;">Next →</button>
   </div>
 </div>
 
@@ -1250,13 +1247,9 @@ function checkStep1Complete(){
     && !!questArea && !!questSpot && !!(questDesc||'').trim() && !!questStart;
   var btn = document.getElementById('step1-next-btn');
   if (btn) {
-    if (codeOk && photoOk) {
-      btn.style.opacity = '1';
-      btn.style.pointerEvents = 'auto';
-    } else {
-      btn.style.opacity = '.4';
-      btn.style.pointerEvents = 'none';
-    }
+    // Always tappable so goStep can toast exactly what is still missing.
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = (codeOk && photoOk) ? '1' : '.4';
   }
 }
 function genCode(){
