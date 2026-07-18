@@ -1,0 +1,13 @@
+# Keep internal docs in the repo, but OUT of the public deploy so they're
+# never served at finderseek.com/<file>.
+#
+# IMPORTANT: if you ALREADY have a .vercelignore, add these lines to it
+# instead of replacing your existing file.
+
+MASTER_LIST.md
+CONTINUATION_PROMPT.md
+
+# Your docs/ folder (schema SQL, internal notes) shouldn't be public either.
+# These are reference-only and not needed at runtime. Remove this line only if
+# something in docs/ is actually served/linked by the site.
+docs/
