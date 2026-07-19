@@ -138,9 +138,10 @@ Return ONLY the sentences, nothing else.`;
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, messages: [{ role: 'user', content: sPrompt }] })
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 400, messages: [{ role: 'user', content: sPrompt }] })
       });
       const d = await r.json();
+      if (d.error) return res.status(500).json({ error: d.error.message || 'AI error' });
       const raw = d.content?.[0]?.text || '';
       const clue = JSON.parse(raw.replace(/```json|```/g, '').trim().match(/\{[\s\S]*\}/)?.[0] || raw);
       return res.status(200).json({ clue });
@@ -153,9 +154,10 @@ Return ONLY the sentences, nothing else.`;
     const lrRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 200, messages: [{ role: 'user', content: locationRiddlePrompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 200, messages: [{ role: 'user', content: locationRiddlePrompt }] })
     });
     const lrData = await lrRes.json();
+    if (lrData.error) throw new Error('AI error: ' + (lrData.error.message || JSON.stringify(lrData.error)));
     let location_riddle = lrData.content?.[0]?.text?.trim() || '';
     console.log('[generate-clues] RAW RIDDLE:', location_riddle);
 
@@ -189,8 +191,9 @@ Return ONLY the sentences, nothing else.`;
       return fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, messages: [{ role: 'user', content: prompt }] })
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 300, messages: [{ role: 'user', content: prompt }] })
       }).then(r => r.json()).then(d => {
+        if (d.error) throw new Error(d.error.message || 'AI error');
         const raw = d.content?.[0]?.text || '';
         try {
           const jsonStr = raw.replace(/```json|```/g, '').trim().match(/\{[\s\S]*\}/)?.[0] || raw;
@@ -204,11 +207,20 @@ Return ONLY the sentences, nothing else.`;
         number: i + 1,
         text: clueHint.hint || 'Clue ' + (i + 1),
         question: clueHint.question || '',
-        answer: clueHint.answer || ''
+        answer: clueHint.answer || '',
+        _err: e.message
       }));
     });
 
     const generatedClues = await Promise.all(cluePromises);
+    // If every clue errored or came back blank, the AI backend is down. Fail
+    // loudly so the app shows an error instead of an empty preview.
+    const allBlank = generatedClues.every(c => !(c.text || '').trim() || c._err);
+    if (allBlank) {
+      const firstErr = (generatedClues.find(c => c._err) || {})._err || 'empty AI response';
+      throw new Error('Clue generation failed: ' + firstErr);
+    }
+    generatedClues.forEach(c => { delete c._err; });
     return res.status(200).json({ clues: generatedClues, location_riddle });
 
   } catch(e) {
