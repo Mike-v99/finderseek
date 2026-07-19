@@ -2876,6 +2876,7 @@ loadCurrentUser();
 const FORM_KEY = 'fs_newquest_form';
 
 function saveFormState() {
+  if (window._fsRestoring) return;
   try {
     var state = {
       prize: selectedPrizeVal || 30,
@@ -2918,6 +2919,12 @@ function saveFormState() {
 }
 
 function restoreFormState() {
+  window._fsRestoring = true;
+  try { restoreFormStateInner(); } catch(e) { console.warn('[FS] restore failed', e); }
+  window._fsRestoring = false;
+  try { saveFormState(); } catch(e){}
+}
+function restoreFormStateInner() {
   try {
     var raw = localStorage.getItem(FORM_KEY);
     if (!raw) {
@@ -2927,6 +2934,13 @@ function restoreFormState() {
       return;
     }
     var s = JSON.parse(raw);
+    // Quest Area picks restore before anything that can trigger a save.
+    if (s.questArea) questArea = s.questArea;
+    if (s.questSpot) questSpot = s.questSpot;
+    if (s.questStart) questStart = s.questStart;
+    if (typeof s.questDesc === 'string') questDesc = s.questDesc;
+    try { syncQaButtons(); } catch(e){}
+    if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
     if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) selPrize(s.prize, pc); }
     if (s.clueCount) { selectedClue = parseInt(s.clueCount) || 5; var cb = document.querySelector('.clue-btn[data-clue="'+s.clueCount+'"]'); if (cb) selClue(s.clueCount, cb); }
     if (s.duration) { var db = document.querySelector('.dur-btn[data-dur="'+s.duration+'"]'); if (db) selDur(s.duration, db); }
@@ -2966,12 +2980,6 @@ function restoreFormState() {
     }
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
-    if (s.questArea) questArea = s.questArea;
-    if (s.questSpot) questSpot = s.questSpot;
-    if (s.questStart) questStart = s.questStart;
-    if (typeof s.questDesc === 'string') questDesc = s.questDesc;
-    try { syncQaButtons(); } catch(e){}
-    if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
     if (s.hsData) _hsData = s.hsData;
     // Restore photo — check localStorage first, then sessionStorage fallback
     var savedPhoto = localStorage.getItem(FORM_KEY + '_photo') || sessionStorage.getItem(FORM_KEY + '_photo');
