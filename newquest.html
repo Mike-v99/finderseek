@@ -490,7 +490,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 <div id="qa-desc-wrap" style="display:none;">
   <div style="font-size:15px;color:#fff;margin-bottom:6px;">Hiding spot description</div>
-  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:17px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();fsQaMirror();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:17px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
 </div>
 
 <!-- Photo section -->
@@ -872,20 +872,23 @@ function renderQaDetails(){
   }).join('');
   listEl.scrollTop = 0;
 }
+function fsQaMirror(){
+  try { localStorage.setItem('fs_qa_state', JSON.stringify({a:questArea, s:questSpot, st:questStart, d:questDesc})); } catch(e){}
+}
 function pickQaArea(i){
   var a = Object.keys(QA_DATA)[i]; if (!a) return;
   if (questArea !== a){
     questArea = a; questSpot = ''; questDesc = ''; questStart = ''; _qaPill = '';
   }
   syncQaButtons();
-  closeQaSheet(); saveFormState(); checkStep1Complete();
+  closeQaSheet(); saveFormState(); fsQaMirror(); checkStep1Complete();
 }
 function pickQaDetail(i){
   var d = (OBJ_LIB[_qaPill]||[])[i]; if (!d) return;
   questSpot = _qaPill + ' - ' + d;
   questDesc = questSpot;
   syncQaButtons();
-  closeQaSheet(); saveFormState(); checkStep1Complete();
+  closeQaSheet(); saveFormState(); fsQaMirror(); checkStep1Complete();
 }
 function pickQaStart(i){
   var st = ((QA_DATA[questArea]||{}).starts||[])[i]; if (!st) return;
@@ -895,7 +898,7 @@ function pickQaStart(i){
   if (sp) { sp.value = st; try { hsApplyFilled(sp); } catch(e){} }
   try { var _ov = document.getElementById('hs-modal-overlay'); if (_ov && _ov.classList.contains('open')) renderHsModal(); } catch(e){}
   syncQaButtons();
-  closeQaSheet(); saveFormState(); checkStep1Complete();
+  closeQaSheet(); saveFormState(); fsQaMirror(); checkStep1Complete();
 }
 // Repaint the step 1 buttons and fields from state (also used on restore)
 function syncQaButtons(){
@@ -1189,7 +1192,7 @@ function fsTypeClue(text){
     if (i >= text.length){ clearInterval(_psType); out.textContent = text; }
   }, 16);
 }
-function selPersona(el) {
+function selPersona(el, skipSave) {
   document.querySelectorAll('.persona-card').forEach(function(c){ c.classList.remove('selected'); });
   el.classList.add('selected');
   var persona = el.dataset.persona;
@@ -1203,7 +1206,7 @@ function selPersona(el) {
     var st=document.getElementById('ps-stag'); if(st) st.textContent = PERSONA_TAGS[persona] || '';
     fsTypeClue(sample.text);
   }
-  saveFormState();
+  if (!skipSave) saveFormState();
 }
 // Mirror the audio playing state onto the equalizer bars
 setInterval(function(){
@@ -1212,7 +1215,7 @@ setInterval(function(){
 }, 250);
 // Paint the default or restored persona into the stage on load
 setTimeout(function(){
-  try { var sc = document.querySelector('.persona-card.selected'); if (sc) selPersona(sc); } catch(e){}
+  try { var sc = document.querySelector('.persona-card.selected'); if (sc) selPersona(sc, true); } catch(e){}
 }, 120);
 
 function updateSummary() {
@@ -2939,6 +2942,15 @@ function restoreFormStateInner() {
     if (s.questSpot) questSpot = s.questSpot;
     if (s.questStart) questStart = s.questStart;
     if (typeof s.questDesc === 'string') questDesc = s.questDesc;
+    try {
+      var qm = JSON.parse(localStorage.getItem('fs_qa_state') || 'null');
+      if (qm){
+        if (!questArea && qm.a) questArea = qm.a;
+        if (!questSpot && qm.s) questSpot = qm.s;
+        if (!questStart && qm.st) questStart = qm.st;
+        if (!questDesc && typeof qm.d === 'string') questDesc = qm.d;
+      }
+    } catch(e){}
     try { syncQaButtons(); } catch(e){}
     if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
     if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) selPrize(s.prize, pc); }
@@ -3028,6 +3040,7 @@ function clearFormState() {
     sessionStorage.removeItem(FORM_KEY + '_photo');
     localStorage.removeItem('fs_pending_quest');
     localStorage.removeItem('fs_newquest_abandon');
+    localStorage.removeItem('fs_qa_state');
     selectedLat = null; selectedLng = null; selectedPlaceName = null;
     window._staticMapUrl = null; window._hsPhotoDataUrl = null;
     _hsData = { location: '', startingPoint: '', clues: [] }; locationConfirmed = false;
@@ -5176,8 +5189,8 @@ function renderHsModal() {
       '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80" onclick="this.focus()">' + (_hsData.location||'') + '</textarea>' +
 
   '<div style="height:22px;"></div>' +
-  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:22px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:17px;color:#fff;font-weight:500;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;"> — required</span>') + '</div></div></div>' +
-  '<div onclick="openQaSheet(\'start\')" style="display:flex;align-items:center;gap:8px;width:calc(50% - 5px);margin-bottom:8px;padding:13px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:' + (_hsData.startingPoint ? 'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))' : 'rgba(232,168,32,.09)') + ';color:#fff;font-size:17px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (_hsData.startingPoint || 'Pick a Starting Point') + '</span></div>' +
+  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:22px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:17px;color:#fff;font-weight:500;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:14px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:13px;color:rgba(239,68,68,.55);font-weight:400;"> · required</span>') + '</div></div></div>' +
+  '<div onclick="openQaSheet(\'start\')" style="display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;margin-bottom:8px;padding:13px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:' + (_hsData.startingPoint ? 'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))' : 'rgba(232,168,32,.09)') + ';color:#fff;font-size:17px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (_hsData.startingPoint || 'Pick a Starting Point') + '</span></div>' +
   '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="Pick above or type your own" maxlength="120" onclick="this.focus()">' + (_hsData.startingPoint||'') + '</textarea>';
 
 setTimeout(function() {
