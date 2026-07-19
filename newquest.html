@@ -375,6 +375,30 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .qa-obj{color:#f5c842;font-weight:500;}
 .qa-prompt{padding:22px 18px;font-size:16px;color:rgba(184,196,208,.55);text-align:center;line-height:1.5;}
 @media (prefers-reduced-motion: reduce){.qa-sheet{transition:none;}.qa-sheet-back{transition:none;}}
+.cb-trail{display:flex;align-items:center;gap:0;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.cb-trail::-webkit-scrollbar{display:none;}
+.cb-stop{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
+.cb-dot{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb-dot.cb-done-dot{border-color:#e8a820;background:rgba(232,168,32,.12);color:#f5c842;}
+.cb-dot.cb-cur{border:1.5px solid #e8a820;background:linear-gradient(135deg,#c9890c,#e8a820);color:#0a0800;font-weight:500;}
+.cb-dot.cb-flag,.cb-dot.cb-flag2{border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.08);color:#4ade80;font-size:14px;}
+.cb-lbl{font-size:10px;color:rgba(184,196,208,.55);max-width:56px;text-align:center;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cb-seg{width:20px;height:0;border-top:2px dashed rgba(232,168,32,.35);margin:0 4px;flex-shrink:0;transform:translateY(-9px);}
+.cb-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 14px;}
+.cb-label{font-size:18px;color:#fff;font-weight:500;margin:16px 0 10px;}
+.cb-ok{color:#4ade80;font-size:15px;margin-left:6px;}
+.cb-pills{display:flex;flex-wrap:wrap;gap:10px;}
+.cb-qopt{display:block;width:100%;text-align:left;margin-top:10px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:#fff;font-size:16px;font-family:inherit;cursor:pointer;line-height:1.45;-webkit-tap-highlight-color:transparent;}
+.cb-qopt.sel{border:1.5px solid #e8a820;background:rgba(232,168,32,.1);color:#f5c842;padding:13.5px;}
+.cb-qopt.cb-custom{border-style:dashed;color:rgba(184,196,208,.8);}
+.cb-qopt.cb-custom.sel{color:#f5c842;}
+.cb-inp{width:100%;margin-top:10px;padding:14px;border-radius:12px;border:1.5px solid rgba(255,255,255,.15);background:rgba(0,0,0,.3);color:#fff;font-size:18px;font-family:inherit;outline:none;box-sizing:border-box;}
+.cb-inp:focus{border-color:#e8a820;}
+.cb-final{margin-top:14px;border:1px dashed rgba(74,222,128,.4);background:rgba(74,222,128,.05);border-radius:14px;padding:12px 14px;font-size:15px;color:#a7e8c0;line-height:1.55;}
+.cb-final b{color:#4ade80;font-weight:500;}
+.cb-add{flex:1;padding:15px 8px;border-radius:26px;border:1.5px solid rgba(232,168,32,.55);background:rgba(232,168,32,.08);color:#f5c842;font-size:15px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb-done{flex:1;padding:15px 8px;border-radius:26px;border:none;background:linear-gradient(135deg,#15803d,#4ade80);color:#04150a;font-size:15px;font-weight:500;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb-add:disabled,.cb-done:disabled{opacity:.35;}
 </style>
 <style>
 .ps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -900,6 +924,89 @@ function pickQaStart(i){
   syncQaButtons();
   closeQaSheet(); saveFormState(); fsQaMirror(); checkStep1Complete();
 }
+
+// ── Clue builder (add as you go) ───────────────────────────────────
+var CB_QLIB = {"Bench": ["How many benches are within sight?", "What color is this bench?", "What is written on the bench plaque?"], "Tree": ["How many trees line this stretch?", "How many trunks does the big tree split into?", "What is posted on or near the tree?"], "Sign": ["What is the first word on the sign?", "How many words are on the sign?", "What color is the sign border?"], "Rock": ["How many large rocks are in this group?", "What color is the biggest rock?", "How many rocks border the path?"], "Light pole": ["How many light poles can you count?", "How many lights are on this pole?", "What number is on the pole tag?"], "Planter": ["How many planters are along the walkway?", "What color are the flowers?", "How many bushes are in this planter?"], "Picnic table": ["How many picnic tables are here?", "How many seats does this table have?", "What material is the table made of?"], "Fence": ["How many fence posts can you count?", "What color is the fence?", "How many rails does the fence have?"], "Flag pole": ["How many flags are on the pole?", "How many bolts anchor the pole base?", "What is on the plaque at the base?"], "Bush": ["How many bushes are in this row?", "What color are the flowers on the bush?", "How many bushes circle the sign?"], "Fountain": ["How many tiers does the fountain have?", "How many jets or spouts do you count?", "What is on the fountain plaque?"], "Statue": ["What is the statue of?", "What is the first word on the statue plaque?", "How many statues do you see?"], "Kiosk": ["How many panels does the kiosk have?", "What is the first word on the kiosk?", "How many posts hold the kiosk up?"], "Bleachers": ["How many rows do the bleachers have?", "How many bleacher sections are there?", "What color are the bleachers?"], "Bike rack": ["How many bike loops does the rack have?", "How many bikes fit in this rack?", "What color is the bike rack?"], "Pavilion": ["How many support posts hold the roof?", "How many tables are under the pavilion?", "What color is the pavilion roof?"], "Bridge": ["How many rails does the bridge have?", "How many posts hold up the bridge?", "How many planks span the bridge?"], "Boardwalk": ["How many steps lead onto the boardwalk?", "How many rail posts line this stretch?", "What material is the boardwalk?"], "Stairs": ["How many steps are in this staircase?", "How many handrails does it have?", "What material are the steps?"], "Garden bed": ["How many garden beds are here?", "What color are the border stones?", "How many plants are in this bed?"], "Drinking fountain": ["How many spouts does the fountain have?", "What color is the drinking fountain?", "How many basins does it have?"], "Gazebo": ["How many sides does the gazebo have?", "How many posts hold up the gazebo?", "What color is the gazebo roof?"], "Trellis": ["How many posts hold the trellis?", "What grows on the trellis?", "How many cross beams do you count?"], "Trailhead board": ["How many maps are on the board?", "What is the first word on the board?", "How many posts hold the board?"], "Trail marker": ["What number is on the trail marker?", "What color is the marker blaze?", "How many markers can you see from here?"], "Fallen log": ["How many fallen logs are nearby?", "How many cut ends does the log show?", "What grows on top of the log?"], "Overlook rail": ["How many rail posts line the overlook?", "How many rails run between posts?", "What can you see from the overlook?"], "Column": ["How many columns are in this row?", "What material are the columns?", "How many steps sit between the columns?"], "Plaque": ["What is the first word on the plaque?", "What year is on the plaque?", "How many lines of text are on it?"], "Lifeguard stand": ["What number is on the lifeguard stand?", "What color is the stand?", "How many steps lead up the stand?"], "Driftwood": ["How many big pieces of driftwood are here?", "How many branches does the largest piece have?", "What color is the driftwood?"], "Dune fence": ["How many fence posts can you count?", "How many slats are between two posts?", "What color is the dune fence?"], "Pier post": ["How many posts hold this section?", "How many boards make up the deck edge?", "What number is painted on the post?"], "Jetty": ["How many big rocks make the top row?", "How far does the jetty reach in steps?", "What color are the jetty rocks?"], "Dugout": ["How many benches are in the dugout?", "What is painted on the dugout wall?", "How many openings does the dugout have?"], "Backstop": ["How many poles hold the backstop?", "How tall is the backstop in fence sections?", "What color is the backstop padding?"], "Foul pole": ["What color is the foul pole?", "How many braces support the pole?", "What number is on the nearby fence?"], "Scoreboard": ["How many number slots does the scoreboard show?", "What is the top word on the scoreboard?", "How many posts hold the scoreboard?"], "Batting cage": ["How many cages are in this row?", "How many posts frame the cage?", "What color is the cage netting?"], "Soccer goal": ["How many goals are on this field?", "How many sandbags anchor this goal?", "What color is the goal net?"], "Cart corral": ["How many cart corrals are in the lot?", "How many carts fit in this corral?", "What store name is on the corral?"], "Storefront pillar": ["How many pillars support the walkway?", "What material is the pillar?", "What suite number is closest to it?"], "Book drop": ["How many slots does the book drop have?", "What color is the book drop?", "What is the first word on it?"], "Little free library": ["How many shelves are inside?", "What color is the little library?", "How many books can you count inside?"], "Marquee sign": ["What is the first word on the marquee?", "How many lines of text are on it?", "How many lights point at the sign?"], "Cross monument": ["How tall is the cross in your hand widths?", "What is on the plaque at the base?", "What material is the cross?"], "Menu board": ["How many combo meals are pictured?", "What number is the first combo?", "How many panels does the board have?"], "Patio table": ["How many tables are on the patio?", "How many chairs are at this table?", "What color are the umbrellas?"], "Awning post": ["How many posts hold the awning?", "What color is the awning?", "How many stripes does the awning have?"], "Monument sign": ["What is the first word on the sign?", "How many lines of text are on it?", "What material is the sign base?"], "Hitching post": ["How many hitching posts are in the row?", "How many rings are on this post?", "What material is the post?"], "Cannon display": ["How many wheels does the cannon have?", "What year is on the display plaque?", "How many cannonballs are stacked?"], "Basketball hoop": ["How many hoops are on this court?", "Do the hoops have chain or rope nets?", "How many courts are here?"], "Tennis gate": ["How many courts are behind this gate?", "What color is the court surface?", "How many gates lead into the courts?"], "Bollard": ["How many bollards guard the entrance?", "What color are the bollards?", "How many are chained together?"], "Directory pylon": ["How many listings are on the directory?", "What is the top name on the directory?", "How many sides does the pylon have?"], "Sculpture": ["What is the sculpture of?", "What is the first word on its plaque?", "What material is the sculpture?"], "Fishing platform": ["How many rail posts edge the platform?", "How many rod holders do you count?", "What is posted on the platform sign?"], "Canoe launch": ["How many lanes does the launch have?", "What is the first word on the launch sign?", "How many posts mark the launch?"], "Clock tower": ["What time shows on the clock?", "How many clock faces does it have?", "How many levels does the tower have?"], "Bus shelter": ["How many seats are in the shelter?", "How many glass panels does it have?", "What route number is posted?"], "Playground border": ["How many timbers make this border side?", "What is the playground surface made of?", "How many slides can you see?"], "Bell tower": ["How many bells can you see?", "How many levels does the tower have?", "What is at the very top of the tower?"], "Veterans memorial": ["How many names or panels do you count?", "What year is on the memorial?", "How many flags surround it?"], "Bandstand": ["How many posts hold the bandstand roof?", "How many steps lead up to it?", "What color is the bandstand roof?"], "Marina rack": ["How many kayaks fit in the rack?", "How many levels does the rack have?", "What color is the rack frame?"], "Beacon": ["What color is the beacon light?", "How many legs support the beacon?", "What number is on the beacon?"], "Visitor center": ["How many doors are at the entrance?", "How many windows face the front?", "What are the first words on the sign?"], "Campground sign": ["What is the campground name on the sign?", "How many posts hold the sign?", "What number is on the sign?"], "Community board": ["How many notices are pinned up?", "How many panels does the board have?", "What is the first word on the header?"], "Street lamp": ["How many street lamps line this block?", "How many lights are on this lamp?", "What number is on the lamp post?"], "Gate post": ["How many hinges are on the gate?", "What color is the gate?", "How many posts frame the gate?"], "Cornerstone": ["What year is carved on the cornerstone?", "What is the first word on the stone?", "How many lines are carved on it?"]};
+var CB_MIN = 3, CB_MAX = 7;
+var CB_DEFAULT_OBJECTS = ['Bench','Tree','Sign','Light pole','Planter','Fence','Rock','Flag pole'];
+function cbEsc(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function cbObjects(){
+  var o = (QA_DATA[questArea]||{}).objects;
+  return (o && o.length) ? o : CB_DEFAULT_OBJECTS;
+}
+function cbUserClues(){
+  if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
+  while (_hsData.clues.length && _hsData.clues[_hsData.clues.length-1] && _hsData.clues[_hsData.clues.length-1].auto){
+    _hsData.clues.pop();
+  }
+  if (!_hsData.clues.length) _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  return _hsData.clues;
+}
+function cbClueDone(c){ return !!(c && c.obj && (c.question||'').trim() && (c.answer||'').trim()); }
+function cbAllDone(){ return cbUserClues().every(cbClueDone); }
+function cbSyncCounts(){ _hsClueCount = cbUserClues().length + 1; selectedClue = _hsClueCount; }
+function cbPickObj(i){
+  var o = cbObjects()[i]; if (!o) return;
+  var idx = _hsCurrent - 1, c = _hsData.clues[idx];
+  if (!c || c.obj !== o){
+    _hsData.clues[idx] = { obj:o, question:'', answer:'', hint:o, action:'find', customQ:false };
+  }
+  saveFormState(); renderHsModal();
+}
+function cbPickQ(i){
+  var idx = _hsCurrent - 1, c = _hsData.clues[idx];
+  if (!c || !c.obj) return;
+  c.question = (CB_QLIB[c.obj]||[])[i] || ''; c.customQ = false;
+  c.hint = c.obj; c.action = 'find';
+  saveFormState(); renderHsModal();
+  setTimeout(function(){ var a = hsEl('cb-ans'); if (a) a.focus(); }, 60);
+}
+function cbCustomQ(){
+  var idx = _hsCurrent - 1, c = _hsData.clues[idx];
+  if (!c || !c.obj) return;
+  c.customQ = true; c.question = '';
+  saveFormState(); renderHsModal();
+  setTimeout(function(){ var q = hsEl('cb-cq'); if (q) q.focus(); }, 60);
+}
+function cbInput(kind, v){
+  var idx = _hsCurrent - 1, c = _hsData.clues[idx];
+  if (!c) return;
+  if (kind === 'a') c.answer = v; else c.question = v;
+  cbSyncFooter();
+}
+function cbFooterHtml(){
+  var n = cbUserClues().length;
+  var curDone = cbClueDone(_hsData.clues[_hsCurrent-1]);
+  var canAdd = curDone && n < CB_MAX;
+  var canDone = cbAllDone() && n >= CB_MIN;
+  return '<button class="hs-nav-back" onclick="hsGoTo(' + (_hsCurrent-1) + ')">\u2190</button>' +
+    '<button class="cb-add" ' + (canAdd?'':'disabled') + ' onclick="cbAddClue()">+ Add clue (' + n + '/' + CB_MAX + ')</button>' +
+    '<button class="cb-done" ' + (canDone?'':'disabled') + ' onclick="cbComplete()">Quest complete</button>';
+}
+function cbSyncFooter(){
+  if (window._cbNavEl) window._cbNavEl.innerHTML = cbFooterHtml();
+}
+function cbAddClue(){
+  saveHsPanel();
+  if (!cbClueDone(_hsData.clues[_hsCurrent-1])) { showToast('Finish this clue first', 'error'); return; }
+  if (cbUserClues().length >= CB_MAX) { showToast('Maximum ' + CB_MAX + ' clues', 'error'); return; }
+  _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  cbSyncCounts();
+  _hsCurrent = _hsData.clues.length;
+  saveFormState(); renderHsModal();
+}
+function cbComplete(){
+  saveHsPanel();
+  var uc = cbUserClues();
+  if (!cbAllDone()) { showToast('Finish every clue first, tap a dot to jump back', 'error'); return; }
+  if (uc.length < CB_MIN) { showToast('Add at least ' + CB_MIN + ' clues', 'error'); return; }
+  _hsData.clues.push({ obj:'', question:'', answer:'', hint: (_hsData.location || 'the hiding spot'), action:'find', auto:true });
+  _hsClueCount = _hsData.clues.length;
+  selectedClue = _hsClueCount;
+  saveFormState();
+  hsGenerateAndPreview();
+}
+
 // Repaint the step 1 buttons and fields from state (also used on restore)
 function syncQaButtons(){
   var aBtn = qaEl('qa-area-btn'), aLbl = qaEl('qa-area-lbl');
@@ -4935,8 +5042,16 @@ function openHsModal() {
     // Restore placeName
     if (fs.placeName) selectedPlaceName = fs.placeName;
   } catch(e){}
-  // Init clues array if needed
-  while (_hsData.clues.length < _hsClueCount) _hsData.clues.push({ hint:'', question:'', answer:'', action:'' });
+  // New builder: strip any auto final from a previous pass, migrate old
+  // drafts (clues without obj keep their question and answer), never pad.
+  if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
+  _hsData.clues = _hsData.clues.filter(function(c){ return c && !c.auto; });
+  _hsData.clues = _hsData.clues.filter(function(c){
+    return c && (c.obj || (c.question||'').trim() || (c.answer||'').trim());
+  });
+  _hsData.clues.forEach(function(c){ if (!c.action) c.action = 'find'; if (!c.hint) c.hint = c.obj || ''; });
+  if (!_hsData.clues.length) _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  cbSyncCounts();
   _hsCurrent = 0;
   renderHsModal();
   document.getElementById('hs-modal-overlay').classList.add('open');
@@ -4964,16 +5079,15 @@ function closeHsModal() {
   if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter the exact hiding spot description', 'error'); return; }
   if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
   
-  // Validate all clues have hint text, action, and question/answer
-  for (var i = 0; i < _hsClueCount; i++) {
+  // Every user clue needs its object, question, and answer; the auto
+  // final clue only needs its hint (the hiding spot description).
+  for (var i = 0; i < _hsData.clues.length; i++) {
     var clue = _hsData.clues[i];
-    var isFinal = i === _hsClueCount - 1;
-    if (!clue || !clue.hint || clue.hint.trim() === '') { showToast('Clue ' + (i+1) + ' needs a hint description', 'error'); return; }
-    if (!clue.action) { showToast('Clue ' + (i+1) + ' needs an action selected', 'error'); return; }
-    if (!isFinal) {
-      if (!clue.question || clue.question.trim() === '') { showToast('Clue ' + (i+1) + ' needs a question', 'error'); return; }
-      if (!clue.answer || clue.answer.trim() === '') { showToast('Clue ' + (i+1) + ' needs an answer', 'error'); return; }
+    if (clue && clue.auto) {
+      if (!(clue.hint||'').trim()) { showToast('Missing hiding spot for the final clue', 'error'); return; }
+      continue;
     }
+    if (!cbClueDone(clue)) { showToast('Clue ' + (i+1) + ' is not finished', 'error'); return; }
   }
   
   document.getElementById('hs-modal-overlay').classList.remove('open');
@@ -4995,22 +5109,15 @@ function saveHsPanel() {
     if (sp) { _hsData.startingPoint = sp.value; hsApplyFilled(sp); }
   } else {
     var idx = _hsCurrent - 1;
-    // Make sure the clues array is large enough — guards against state where
-    // _hsData was restored with a smaller clues array than the current
-    // _hsClueCount, which would silently throw on .hint assignment.
     if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
     while (_hsData.clues.length <= idx) {
-      _hsData.clues.push({ hint:'', question:'', answer:'', action:'' });
+      _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
     }
-    if (!_hsData.clues[idx]) _hsData.clues[idx] = { hint:'', question:'', answer:'', action:'' };
-    var h = hsEl('hs-hint-cur');
-    var q = hsEl('hs-q-cur');
-    var a = hsEl('hs-a-cur');
-    var s = hsEl('hs-action-sel');
-    if (h) { _hsData.clues[idx].hint = h.value; hsApplyFilled(h); }
-    if (q) { _hsData.clues[idx].question = q.value; hsApplyFilled(q); }
-    if (a) { _hsData.clues[idx].answer = a.value; hsApplyFilled(a); }
-    if (s && s.value) _hsData.clues[idx].action = s.value;
+    var c = _hsData.clues[idx];
+    var a = hsEl('cb-ans'); if (a) c.answer = a.value;
+    var cq = hsEl('cb-cq'); if (cq && c.customQ) c.question = cq.value;
+    c.hint = c.obj || c.hint || '';
+    c.action = c.action || 'find';
   }
 }
 
@@ -5029,15 +5136,10 @@ function hsGoTo(idx) {
       if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter a description of the exact hiding spot', 'error'); return; }
       if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
     } else {
-      // Re-read DOM directly in case iOS didn't fire change events before tap
-      var _sel = hsEl('hs-action-sel');
-      if (_sel && _sel.value) { if (!_hsData.clues[_hsCurrent-1]) _hsData.clues[_hsCurrent-1] = {}; _hsData.clues[_hsCurrent-1].action = _sel.value; }
       var cl = (_hsData.clues && _hsData.clues[_hsCurrent - 1]) || {};
-      var isFinal = _hsCurrent === _hsClueCount;
-      if (!cl.hint || cl.hint.trim() === '') { showToast('Enter a hint for clue ' + _hsCurrent, 'error'); return; }
-      if (!cl.action) { showToast('Pick an action for clue ' + _hsCurrent, 'error'); return; }
-      if (!isFinal && (!cl.question || cl.question.trim() === '')) { showToast('Enter a question for clue ' + _hsCurrent, 'error'); return; }
-      if (!isFinal && (!cl.answer || cl.answer.trim() === '')) { showToast('Enter an answer for clue ' + _hsCurrent, 'error'); return; }
+      if (!cl.obj) { showToast('Pick what clue ' + _hsCurrent + ' is about', 'error'); return; }
+      if (!(cl.question||'').trim()) { showToast('Pick or write a question for clue ' + _hsCurrent, 'error'); return; }
+      if (!(cl.answer||'').trim()) { showToast('Enter the answer for clue ' + _hsCurrent, 'error'); return; }
     }
   }
   _hsCurrent = idx;
@@ -5199,103 +5301,43 @@ setTimeout(function() {
 }, 0);
 
 } else {
-var cl2 = _hsData.clues[cur-1] || {};
-var isFinal2 = cur === total;
-var hintPhs = ['Light poles on the left facing the store','Walk towards the pharmacy','Entrance — something used for chimneys','Behind the brick pillar at the entrance','Base of the oak tree near the exit','Under the green bench by the cart return'];
-var qPhs = ['How many light poles?','How many drive through lanes?','What is used for chimneys?','What color is the mat?','What type of tree?','What color is the bench?'];
-var aPhs = ['4','2','brick','black','oak','green'];
-var ph = hintPhs[cur-1] || 'Specific landmark or feature here';
-var selAction = cl2.action || '';
-var actionObj = selAction ? HS_ACTIONS.find(function(a){ return a.id === selAction; }) : null;
+var _uc = cbUserClues();
+if (cur - 1 >= _uc.length) { _hsCurrent = _uc.length; cur = _hsCurrent; }
+var cl2 = _uc[cur-1] || {};
+cbSyncCounts();
 
-// Pick Action — custom div dropdown (replaces <select> which Chrome blocks when styled).
-// A hidden input#hs-action-sel tracks the value so saveHsPanel / hsGoTo read it unchanged.
-var actionPickHtml =
-  '<input type="hidden" id="hs-action-sel" value="' + selAction + '">' +
-  '<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">' +
-    '<div style="flex:1;position:relative;" id="hs-drop-wrap">' +
-      // Trigger button
-      '<div id="hs-drop-btn" onclick="hsDropToggle()" style="width:100%;padding:16px 18px;background:rgba(232,168,32,.15);border:2px solid #e8a820;border-radius:12px;min-height:56px;box-sizing:border-box;font-size:20px;color:#fff;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">' +
-        '<span id="hs-drop-label">' + (actionObj ? actionObj.emoji + ' ' + actionObj.label : (isFinal2 ? 'Final Action' : 'Pick Action')) + '</span>' +
-        (actionObj ? '<span style="color:#4ade80;font-size:16px;font-weight:500;margin-right:28px;">✓</span>' : '') +
-        '<svg style="flex-shrink:0;pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
-      '</div>' +
-      // Dropdown list — hidden by default
-      '<div id="hs-drop-list" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);">' +
-        HS_ACTIONS.map(function(a){
-          var isSelected = a.id === selAction;
-          return '<div onclick="hsDropPick(\'' + a.id + '\')" class="hs-drop-item' + (isSelected ? ' hs-drop-sel' : '') + '" style="padding:14px 18px;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' +
-            '<span>' + a.emoji + ' ' + a.label + '</span>' +
-            (isSelected ? '<span style="color:#4ade80;">✓</span>' : '') +
-          '</div>';
-        }).join('') +
-      '</div>' +
-    '</div>' +
-    '<div style="width:54px;height:54px;border-radius:10px;background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">' +
-      '<div style="font-size:10px;color:rgba(232,168,32,.6);letter-spacing:1px;">CLUE</div>' +
-      '<div style="font-size:26px;color:#e8a820;font-weight:500;line-height:1;">' + cur + (isFinal2 ? '★' : '') + '</div>' +
-    '</div>' +
-  '</div>';
+var trail = '<div class="cb-trail">' +
+  '<div class="cb-stop"><div class="cb-dot cb-flag" onclick="hsGoTo(0)">\u2691</div><div class="cb-lbl">Start</div></div>';
+_uc.forEach(function(cc, i){
+  var cls = (i === cur-1) ? ' cb-cur' : (cbClueDone(cc) ? ' cb-done-dot' : '');
+  trail += '<div class="cb-seg"></div><div class="cb-stop"><div class="cb-dot' + cls + '" onclick="hsGoTo(' + (i+1) + ')">' + (i+1) + '</div><div class="cb-lbl">' + (cc.obj || 'clue') + '</div></div>';
+});
+trail += '<div class="cb-seg"></div><div class="cb-stop"><div class="cb-dot cb-flag2">\u2714</div><div class="cb-lbl">Treasure</div></div></div>';
 
-// Fields — shown fully if action picked, dimmed if not
-var hintDone = (cl2.hint||'').trim().length > 0;
-var qDone    = (cl2.question||'').trim().length > 0;
-var aDone    = (cl2.answer||'').trim().length > 0;
-var CK = '<span style="color:#4ade80;font-size:15px;margin-left:5px;font-weight:500;">✓</span>';
-var fieldsOpacity = actionObj ? '1' : '0.3';
-var fieldsPointer = actionObj ? 'auto' : 'none';
-// Hint idea chips from the picked location type. Tap to fill the hint box.
-var hintIdeas = fsLocHints();
-var hintChipsHtml = '';
-if (!isFinal2 && hintIdeas.length) {
-  hintChipsHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">' +
-    hintIdeas.map(function(hh, i){
-      return '<div onclick="fsHintPick(' + i + ')" style="padding:7px 12px;background:rgba(232,168,32,.10);border:1px solid rgba(232,168,32,.3);border-radius:20px;font-size:13px;color:#f5c842;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' + hh + '</div>';
-    }).join('') + '</div>';
+var pillsHtml = cbObjects().map(function(o, i){
+  return '<div class="qa-pill' + (cl2.obj === o ? ' sel' : '') + '" onclick="cbPickObj(' + i + ')">' + o + '</div>';
+}).join('');
+
+var qsHtml = '';
+if (cl2.obj){
+  qsHtml = '<div class="cb-label">Question seekers must answer' + ((cl2.question||'').trim() ? '<span class="cb-ok">\u2713</span>' : '') + '</div>' +
+    (CB_QLIB[cl2.obj]||[]).map(function(q, i){
+      return '<button class="cb-qopt' + (!cl2.customQ && cl2.question === q ? ' sel' : '') + '" onclick="cbPickQ(' + i + ')">' + q + '</button>';
+    }).join('') +
+    '<button class="cb-qopt cb-custom' + (cl2.customQ ? ' sel' : '') + '" onclick="cbCustomQ()">\u270E Write my own question</button>' +
+    (cl2.customQ ? '<input class="cb-inp" id="cb-cq" maxlength="80" placeholder="Type your question" value="' + cbEsc(cl2.question) + '" oninput="cbInput(\'q\', this.value)"/>' : '');
 }
-
-// Browse questions: ready made questions for the picked spot type plus
-// general questions that work anywhere. Tap one to fill the question box.
-var subQs = fsLocQs();
-window._fsQBAll = subQs.concat(FS_GENERAL_QS);
-var qbBtnHtml = '';
-if (!isFinal2) {
-  var qbLabel = _hsData.subcategory ? ('\ud83d\udccb Browse ' + _hsData.subcategory + ' questions') : '\ud83d\udccb Browse ready made questions';
-  var qbItems = '';
-  window._fsQBAll.forEach(function(qq, i){
-    if (subQs.length && i === subQs.length) {
-      qbItems += '<div style="padding:8px 16px;font-size:11px;letter-spacing:1px;color:rgba(232,168,32,.6);background:rgba(232,168,32,.06);">WORKS ANYWHERE</div>';
-    }
-    qbItems += '<div onclick="fsQBPick(' + i + ')" class="hs-drop-item" style="padding:12px 16px;font-size:15px;color:#fff;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);-webkit-tap-highlight-color:transparent;touch-action:manipulation;">' + qq + '</div>';
-  });
-  var qbHint = _hsData.subcategory ? '' :
-    '<div style="padding:10px 16px;font-size:12px;color:rgba(184,196,208,.5);">Pick a Location Type on the first page for questions tailored to your spot</div>';
-  qbBtnHtml =
-    '<div style="position:relative;margin-top:8px;">' +
-      '<div onclick="fsQBToggle()" style="width:100%;padding:12px 14px;background:rgba(232,168,32,.08);border:1.5px dashed rgba(232,168,32,.4);border-radius:10px;box-sizing:border-box;font-size:15px;color:#f5c842;font-family:inherit;cursor:pointer;text-align:center;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">' + qbLabel + '</div>' +
-      '<div id="fs-qb-list" style="display:none;position:absolute;left:0;right:0;bottom:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.6);max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch;">' + qbHint + qbItems + '</div>' +
-    '</div>';
+var ansHtml = '';
+if ((cl2.question||'').trim() || cl2.customQ){
+  ansHtml = '<div class="cb-label">Correct answer' + ((cl2.answer||'').trim() ? '<span class="cb-ok">\u2713</span>' : '') + '</div>' +
+    '<input class="cb-inp" id="cb-ans" maxlength="30" placeholder="What you count or see, e.g. 4" value="' + cbEsc(cl2.answer) + '" oninput="cbInput(\'a\', this.value)"/>';
 }
-
-var fieldsHtml = '<div style="opacity:' + fieldsOpacity + ';pointer-events:' + fieldsPointer + ';transition:opacity .2s;">' +
-  '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Keywords / hint for AI' + (hintDone ? CK : '') + '</div>' +
-  '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-bottom:5px;">Hint / keyword</div>' +
-  '<textarea class="hs-ta" id="hs-hint-cur" rows="2" placeholder="e.g. ' + ph + '" maxlength="100">' + (cl2.hint||'') + '</textarea>' +
-  hintChipsHtml +
-  (isFinal2 ? '<div class="hs-hint gold" style="margin-top:6px;">Final clue · photo reveals alongside · no Q&A</div>' :
-    '<div style="margin-top:10px;">' +
-      '<div style="font-size:14px;color:rgba(184,196,208,.55);margin-top:10px;margin-bottom:5px;">Q&A — seeker answers to unlock' + (qDone && aDone ? CK : '') + '</div>' +
-      '<div class="hs-qa">' +
-        '<div style="flex:3;position:relative;"><input type="text" class="hs-inp" id="hs-q-cur" placeholder="e.g. ' + (qPhs[cur-1]||'Question?') + '" maxlength="80" value="' + (cl2.question||'') + '"/></div>' +
-        '<div style="flex:1;position:relative;"><input type="text" class="hs-inp" id="hs-a-cur" placeholder="' + (aPhs[cur-1]||'ans') + '" maxlength="30" value="' + (cl2.answer||'') + '"/></div>' +
-      '</div>' +
-      qbBtnHtml +
-      '<div class="hs-hint" style="margin-top:6px;">Pick a ready made question or write your own · you set the answer</div>' +
-    '</div>'
-  ) +
-'</div>';
-
-panel.innerHTML = actionPickHtml + fieldsHtml;
+panel.innerHTML = trail +
+  '<div class="cb-card">' +
+    '<div class="cb-label" style="margin-top:0;">Clue ' + cur + ' is about a \u2026</div>' +
+    '<div class="cb-pills">' + pillsHtml + '</div>' + qsHtml + ansHtml +
+  '</div>' +
+  '<div class="cb-final">\u2728 The final reveal clue is added automatically from your hiding spot: <b>' + cbEsc(_hsData.location || 'set it on the first page') + '</b></div>';
 
 // Select wired via inline onchange
 
@@ -5311,30 +5353,20 @@ function isHsPageComplete() {
 if (cur === 0) {
 return !!((_hsData.location||'').trim()) && !!((_hsData.startingPoint||'').trim()) && !!locationConfirmed && !!_hsData.category && !!_hsData.subcategory;
 }
-var clue = _hsData.clues[cur - 1] || {};
-var isFinal = (cur === total);
-if (!(clue.hint||'').trim()) return false;
-if (!clue.action) return false;
-if (!isFinal) {
-if (!(clue.question||'').trim()) return false;
-if (!(clue.answer||'').trim()) return false;
-}
-return true;
+return cbClueDone(_hsData.clues[cur - 1]);
 }
 var pageReady = isHsPageComplete();
 // allDone is still useful as a sanity check for the final "Generate Clues" button —
 // user might be on page 0 but have filled everything via direct nav.
-var allDone = _hsData.location.trim() && locationConfirmed && _hsData.clues.slice(0,total).every(function(cl, i){ var isFin = i === total-1; return (cl.hint||'').trim() && cl.action && (isFin || ((cl.question||'').trim() && (cl.answer||'').trim())); });
+var allDone = _hsData.location.trim() && locationConfirmed && cbAllDone();
 var disabledAttr = pageReady ? '' : ' disabled';
-if (cur === total) {
-nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
-'<button class="hs-nav-next" onclick="hsGenerateAndPreview()"' + disabledAttr + '>Generate Clues ✨</button>';
-} else if (cur === 0) {
+if (cur === 0) {
 nav.innerHTML = '<button class="hs-nav-back" onclick="hsBackToStep3()">← Back</button>' +
 '<button class="hs-nav-next" onclick="hsGoTo(1)"' + disabledAttr + '>Next Clue →</button>';
+window._cbNavEl = null;
 } else {
-nav.innerHTML = '<button class="hs-nav-back" onclick="hsGoTo(' + (cur-1) + ')">← Back</button>' +
-'<button class="hs-nav-next" onclick="hsGoTo(' + (cur+1) + ')"' + disabledAttr + '>Next Clue →</button>';
+nav.innerHTML = cbFooterHtml();
+window._cbNavEl = nav;
 }
 
 // Live-revalidate as the user types so the Next button enables/disables in real time.
