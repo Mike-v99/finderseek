@@ -810,7 +810,7 @@ var currentStep = 1;
 var weekendSelected = false;
 var selectedClue = 5;
 var selectedDur = 2;
-var selectedPrizeVal = 25;
+var selectedPrizeVal = 30;
 
 var PERSONA_SAMPLES = {
   pirate: {emoji:'🏴‍☠️', label:'PIRATE STYLE · SAMPLE CLUE', text:'"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."'},
@@ -1327,7 +1327,7 @@ setTimeout(function(){
 
 function updateSummary() {
   var prizeEl = document.querySelector('.prize-chip.active');
-  var prize = prizeEl ? prizeEl.dataset.val : '25';
+  var prize = prizeEl ? prizeEl.dataset.val : '30';
   var clue = selectedClue || 5;
   var clueLabels = {4:'4 · Quick', 5:'5 · Standard', 6:'6 · Adventure'};
   var persona = document.querySelector('.persona-card.selected');
@@ -1689,6 +1689,9 @@ function updateSpotCount(el) {
 }
 
 function updateMiniSummary() {
+  // The active chip is what the user sees; treat it as the source of truth
+  var pchip = document.querySelector('.prize-chip.active');
+  if (pchip && pchip.dataset.val) selectedPrizeVal = parseInt(pchip.dataset.val, 10);
   var prize = selectedPrizeVal || 30;
   var clue = selectedClue || 5;
   var clueLabels = {4:'4 · Quick', 5:'5 · Standard', 6:'6 · Adventure'};
@@ -3060,7 +3063,7 @@ function restoreFormStateInner() {
     } catch(e){}
     try { syncQaButtons(); } catch(e){}
     if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
-    if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) selPrize(s.prize, pc); }
+    if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) { selPrize(parseInt(s.prize,10), pc); } else { var pd = document.querySelector('.prize-chip[data-val="30"]'); if (pd) selPrize(30, pd); } }
     if (s.clueCount) { selectedClue = parseInt(s.clueCount) || 5; var cb = document.querySelector('.clue-btn[data-clue="'+s.clueCount+'"]'); if (cb) selClue(s.clueCount, cb); }
     if (s.duration) { var db = document.querySelector('.dur-btn[data-dur="'+s.duration+'"]'); if (db) selDur(s.duration, db); }
     if (s.weekendSelected && !weekendSelected) toggleWeekend();
