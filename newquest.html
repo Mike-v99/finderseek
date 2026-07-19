@@ -693,7 +693,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   </div>
   <div class="step-footer">
-    <button class="step-back-btn" onclick="goStep(3)">← Back</button>
+    <button class="step-back-btn" onclick="schedBack()">← Back</button>
     <button id="btn-preview" onclick="startTheQuest()" style="flex:1;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;opacity:.4;pointer-events:none;">Select a window →</button>
     <button id="btn-create" onclick="createQuest()" style="display:none;"></button>
   </div>
@@ -5013,6 +5013,25 @@ function fsHintPick(i){
 
 var _mapOpenedFromStep = false;
 
+// Back from Schedule reopens the clue builder (Clue Style sits behind it)
+function schedBack() {
+  goStep(3);
+  openHsModalFromStep();
+}
+
+// Rebuild the modal sheet base structure if it was left showing the
+// loading spinner or the preview (recovers renderHsModal targets)
+function hsRebuildSheet() {
+  var sheet = document.querySelector('.hs-modal-sheet');
+  if (!sheet) return;
+  sheet.innerHTML =
+'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="font-size:28px;font-weight:500;color:#e8a820;padding-left:2px;">3 <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div><div style="font-size:24px;font-weight:500;color:#fff;text-align:center;">Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span></div><div></div></div>' +
+'<div style="flex-shrink:0;"><div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div></div>' +
+'<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
+'<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
+'<div class="hs-nav" id="hs-nav"></div>';
+}
+
 function openHsModalFromStep() {
   // Step 1 picks seed the hiding details so nothing is typed twice.
   try {
@@ -5053,6 +5072,7 @@ function openHsModal() {
   if (!_hsData.clues.length) _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
   cbSyncCounts();
   _hsCurrent = 0;
+  if (!document.getElementById('hs-panel') || !document.getElementById('hs-action-area')) hsRebuildSheet();
   renderHsModal();
   document.getElementById('hs-modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -5090,6 +5110,17 @@ function closeHsModal() {
     if (!cbClueDone(clue)) { showToast('Clue ' + (i+1) + ' is not finished', 'error'); return; }
   }
   
+  // Clues must be AI generated and confirmed before Schedule. If this close
+  // was reached without a confirmed preview, run generation instead.
+  if (!window._hsGenConfirmed) {
+    var needsGen = false;
+    for (var g = 0; g < _hsData.clues.length; g++) {
+      var gc = _hsData.clues[g];
+      if (gc && !gc.auto && !(gc.generatedText || '').trim()) { needsGen = true; break; }
+    }
+    if (needsGen) { hsGenerateAndPreview(); return; }
+  }
+  
   document.getElementById('hs-modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
   var hs = document.getElementById('hiding-spot');
@@ -5099,7 +5130,7 @@ function closeHsModal() {
   goStep(5);
 }
 
-function hsModalBgClose(e) { if (e.target === document.getElementById('hs-modal-overlay')) closeHsModal(); }
+function hsModalBgClose(e) { /* Background taps no longer close the builder; they were skipping the AI preview. Use the Back button or Quest complete. */ }
 
 function saveHsPanel() {
   if (_hsCurrent === 0) {
@@ -5394,6 +5425,7 @@ var _generatedClues = null;
 var _generatedLocationRiddle = null;
 
 async function hsGenerateAndPreview() {
+window._hsGenConfirmed = false;
 saveHsPanel();
 var sheet = document.querySelector('.hs-modal-sheet');
 if (!sheet) return;
@@ -5586,6 +5618,7 @@ _hsData.clues[i].answer = _hsData.clues[i].answer || cl.answer || "";
 });
 }
 _hsData.locationRiddle = _generatedLocationRiddle || "";
+window._hsGenConfirmed = true;
 closeHsModal();
 // Save immediately after confirming so refresh preserves everything
 saveFormState();
