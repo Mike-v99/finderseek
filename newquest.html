@@ -454,13 +454,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
   </div>
-  <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow:hidden;">
-
-<!-- Prize -->
+  <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
+<!-- Prize + How it works -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;">
-  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
-    <div style="font-size:16px;letter-spacing:2px;color:#b8c4d0;">PRIZE</div>
-    <div style="font-size:21px;font-weight:400;color:#4ade80;"><span id="prize-display">$30</span></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div style="font-size:16px;letter-spacing:2px;color:#b8c4d0;">PRIZE <span style="font-size:19px;font-weight:400;color:#4ade80;letter-spacing:0;margin-left:6px;" id="prize-display">$30</span></div>
+    <div class="s1-hiw-pill" onclick="openS1Sheet('hiw')"><b>How it works</b><span style="color:#e8a820;font-size:13px;margin-left:6px;">&#9662;</span></div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;" id="prize-grid">
     <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:17px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
@@ -472,6 +471,71 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 </div>
 
+<!-- Location map -->
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
+  <div style="font-size:16px;letter-spacing:2px;color:#b8c4d0;padding:12px 14px 8px;">LOCATION</div>
+  <div style="position:relative;height:220px;background:#0e0c16;">
+    <div id="s1-map" style="position:absolute;inset:0;"></div>
+    <div class="s1-srch-wrap">
+      <div class="s1-srch">
+        <span style="opacity:.6;">&#8981;</span>
+        <input id="s1-search" type="text" placeholder="Search park, address, landmark..." autocomplete="off" oninput="s1SearchInput(this.value)" onfocus="s1SearchInput(this.value)"/>
+        <button id="s1-search-clear" onclick="s1ClearSearch()" style="display:none;background:none;border:none;color:rgba(255,255,255,.55);font-size:15px;cursor:pointer;padding:2px 4px;">&#10005;</button>
+      </div>
+      <div id="s1-preds" class="s1-preds"></div>
+    </div>
+    <div class="s1-snapchip" id="s1-snapchip" style="display:none;">
+      <div class="s1-sc-top">&#128204; Pin moved. Looks like <b id="s1-snap-name"></b></div>
+      <div class="s1-sc-btns">
+        <div class="s1-sc-yes" onclick="s1SnapYes()">Use this place</div>
+        <div class="s1-sc-no" onclick="s1SnapNo()">Keep address only</div>
+      </div>
+      <div class="s1-sc-hint">Tip: searching by name gives your quest the best AI clues</div>
+    </div>
+  </div>
+  <div style="padding:10px 14px;">
+    <button onclick="openAreaSuggest()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#10022; Quest Area Suggestions</button>
+  </div>
+</div>
+
+<!-- Clue Style -->
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 0 12px;">
+  <div style="font-size:16px;letter-spacing:2px;color:#b8c4d0;padding:0 14px 10px;">CLUE STYLE</div>
+  <div class="s1-prow" id="s1-prow">
+    <div class="persona-card s1-pcard selected" data-persona="pirate" onclick="selPersona(this)"><span class="s1-pe">&#127988;&#8205;&#9760;&#65039;</span><span class="s1-pn persona-name">Pirate</span></div>
+    <div class="persona-card s1-pcard" data-persona="poetic" onclick="selPersona(this)"><span class="s1-pe">&#127800;</span><span class="s1-pn persona-name">Poetic</span></div>
+    <div class="persona-card s1-pcard" data-persona="insults" onclick="selPersona(this)"><span class="s1-pe">&#129324;</span><span class="s1-pn persona-name">Insults</span></div>
+    <div class="persona-card s1-pcard" data-persona="sarcastic" onclick="selPersona(this)"><span class="s1-pe">&#128527;</span><span class="s1-pn persona-name">Sarcastic</span></div>
+    <div class="persona-card s1-pcard" data-persona="hillbilly" onclick="selPersona(this)"><span class="s1-pe">&#129312;</span><span class="s1-pn persona-name">Hillbilly</span></div>
+    <div class="persona-card s1-pcard" data-persona="kid" onclick="selPersona(this)"><span class="s1-pe">&#129528;</span><span class="s1-pn persona-name">5 Yr Old</span></div>
+    <div class="persona-card s1-pcard" data-persona="grandma" onclick="selPersona(this)"><span class="s1-pe">&#128117;</span><span class="s1-pn persona-name">Grandma</span></div>
+    <div class="persona-card s1-pcard" data-persona="surfer" onclick="selPersona(this)"><span class="s1-pe">&#127940;</span><span class="s1-pn persona-name">Surfer</span></div>
+    <div class="persona-card s1-pcard" data-persona="investigator" onclick="selPersona(this)"><span class="s1-pe">&#128269;</span><span class="s1-pn persona-name">Detective</span></div>
+  </div>
+  <div id="preview-text" class="s1-ptype"></div>
+</div>
+
+  </div>
+
+  <div class="step-footer">
+    <button onclick="goStep(2)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;">Next →</button>
+  </div>
+</div>
+
+<div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
+  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
+    <div style="width:36px;height:36px;flex-shrink:0;"></div>
+    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span> <span style="margin-left:8px;font-size:20px;font-weight:500;">Hiding <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Spot</span></span></div>
+    <div style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
+      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
 <!-- PIN section -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
   <div style="font-size:18px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
@@ -501,6 +565,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
 </div>
 
+
 <!-- Quest Area / Hiding Spot / Starting Point -->
 <div style="display:flex;gap:10px;">
   <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:17px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
@@ -516,6 +581,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="font-size:15px;color:#fff;margin-bottom:6px;">Hiding spot description</div>
   <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();fsQaMirror();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:17px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
 </div>
+
 
 <!-- Photo section -->
 <div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
@@ -535,66 +601,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
 <input type="file" id="hs-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handleHsPhoto(this)"/>
-
   </div>
-
-  <div class="step-footer">
-    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;">Next →</button>
-  </div>
+  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">&#8592; Back</button><button onclick="s2Next()" id="step2-next-btn" class="step-next-btn">Next &#8594;</button></div>
 </div>
 
-<div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
-    <div style="width:36px;height:36px;flex-shrink:0;"></div>
-    <div style="font-size:17px;font-weight:400;color:#fff;text-align:left;padding-left:4px;"><span style="font-size:28px;font-weight:500;color:#e8a820;">2</span> <span style="font-size:16px;color:rgba(255,255,255,.25);font-weight:400;">of 4</span></div>
-    <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
-      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
-        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div id="hb-avatar-inner" style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
-          <svg id="hb-avatar-svg" width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;padding:8px 7px;">
-        <div style="width:16px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div style="width:11px;height:2px;background:linear-gradient(90deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);border-radius:1px;background-size:300% auto;animation:hbRingShim 8s linear infinite .7s;opacity:.7;"></div>
-      </div>
-    </div>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
-    <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:2px;">Who tells your story?</div>
-    <div style="font-size:15px;color:rgba(184,196,208,.7);margin-bottom:14px;">Every clue in your quest speaks with this voice.</div>
-    <div class="ps-grid">
-      <div class="ps-tile persona-card selected" data-persona="pirate" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127988;&#8205;&#9760;&#65039;</span><div class="persona-name ps-name">Pirate</div></div></div>
-      <div class="ps-tile persona-card" data-persona="poetic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127800;</span><div class="persona-name ps-name">Poetic</div></div></div>
-      <div class="ps-tile persona-card" data-persona="insults" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129324;</span><div class="persona-name ps-name">Insults</div></div></div>
-      <div class="ps-tile persona-card" data-persona="sarcastic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128527;</span><div class="persona-name ps-name">Sarcastic</div></div></div>
-      <div class="ps-tile persona-card" data-persona="hillbilly" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129312;</span><div class="persona-name ps-name">Hillbilly</div></div></div>
-      <div class="ps-tile persona-card" data-persona="kid" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129528;</span><div class="persona-name ps-name">5 Yr Old</div></div></div>
-      <div class="ps-tile persona-card" data-persona="grandma" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128117;</span><div class="persona-name ps-name">Grandma</div></div></div>
-      <div class="ps-tile persona-card" data-persona="surfer" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127940;</span><div class="persona-name ps-name">Surfer</div></div></div>
-      <div class="ps-tile persona-card" data-persona="investigator" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128269;</span><div class="persona-name ps-name">Detective</div></div></div>
-    </div>
-    <div class="ps-stage"><div class="ps-stage-in">
-      <div class="ps-shead">
-        <span class="ps-semoji" id="preview-emoji">&#127988;&#8205;&#9760;&#65039;</span>
-        <div class="ps-swho">
-          <div class="ps-sname" id="ps-sname">Pirate</div>
-          <div class="ps-stag" id="ps-stag">Salty sea captain energy</div>
-        </div>
-        <button id="persona-speak-btn" onclick="speakPersonaSample()" class="ps-speak">
-          <svg id="persona-speak-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        </button>
-      </div>
-      <div class="ps-eq" id="ps-eq"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div id="preview-label" style="display:none;"></div>
-      <div class="ps-stext" id="preview-text"></div>
-    </div></div>
-    <div style="height:12px;"></div>
-  </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">← Back</button><button onclick="openHsModalFromStep()" class="step-next-btn">Next →</button></div>
-</div>
-
-<!-- STEP 5: Schedule -->
 
 <div id="step5" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
   <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);">
@@ -813,13 +823,13 @@ var selectedDur = 2;
 var selectedPrizeVal = 30;
 
 var PERSONA_SAMPLES = {
-  pirate: {emoji:'🏴‍☠️', label:'PIRATE STYLE · SAMPLE CLUE', text:'"Arrr, ye scallywag! Head to Memorial Park on Westheimer — the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."'},
-  poetic: {emoji:'🌸', label:'POETIC STYLE · SAMPLE CLUE', text:'"Where morning light kisses ancient stone, and water speaks in silver tones — seek the place where elm trees lean, and find what rests unseen between."'},
+  pirate: {emoji:'🏴‍☠️', label:'PIRATE STYLE · SAMPLE CLUE', text:'"Arrr, ye scallywag! Head to Memorial Park on Westheimer, the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."'},
+  poetic: {emoji:'🌸', label:'POETIC STYLE · SAMPLE CLUE', text:'"Where morning light kisses ancient stone, and water speaks in silver tones, seek the place where elm trees lean, and find what rests unseen between."'},
   insults: {emoji:'🤬', label:'INSULTS STYLE · SAMPLE CLUE', text:'"Listen up, genius. The treasure is at Memorial Park. You know, that big green thing with trees? Or are you too busy being wrong to notice? East entrance. Go."'},
-  sarcastic: {emoji:'😏', label:'SARCASTIC STYLE · SAMPLE CLUE', text:'"Oh sure, it\'ll be SO hard to find. Just head to Memorial Park — you know, the most obvious place ever. East entrance. Try not to trip on your way."'},
+  sarcastic: {emoji:'😏', label:'SARCASTIC STYLE · SAMPLE CLUE', text:'"Oh sure, it\'ll be SO hard to find. Just head to Memorial Park, you know, the most obvious place ever. East entrance. Try not to trip on your way."'},
   hillbilly: {emoji:'🤠', label:'HILLBILLY STYLE · SAMPLE CLUE', text:'"Well shoot, y\'all better git yerself down to Memorial Park, near them big ol\' fountains by the east gate. Reckon the treasure\'s hidin\' right there, I tell ya what."'},
   kid: {emoji:'🧸', label:'5 YEAR OLD STYLE · SAMPLE CLUE', text:'"Ooooh go to the BIG park!! The one with the fountain that goes SPLASH!! It\'s sooooo fun there!! The treasure is hiding near the gate!! GO GO GO!!"'},
-  grandma: {emoji:'👵', label:'GRANDMA STYLE · SAMPLE CLUE', text:'"Oh sweetheart, you\'ll want to head over to Memorial Park, dear. You know the one — by Westheimer. The east entrance near the lovely fountain. Bundle up, it might be chilly!"'},
+  grandma: {emoji:'👵', label:'GRANDMA STYLE · SAMPLE CLUE', text:'"Oh sweetheart, you\'ll want to head over to Memorial Park, dear. You know the one, by Westheimer. The east entrance near the lovely fountain. Bundle up, it might be chilly!"'},
   surfer: {emoji:'🏄', label:'SURFER STYLE · SAMPLE CLUE', text:'"Duuude, shred your way over to Memorial Park, bro! Hang a left at the gnarly fountain near the east entrance, ya know? The treasure\'s like, totally waiting for you out there!"'},
   investigator: {emoji:'🔍', label:'DETECTIVE STYLE · SAMPLE CLUE', text:'"Evidence points to a single location: Memorial Park, east entrance. Subject was seen near the fountain at approximately 9 AM. Proceed with caution. The treasure won\'t find itself."'}
 };
@@ -1082,23 +1092,12 @@ function fsFlashMissing(id){
 }
 function goStep(n) {
   // ── Validate current step before moving forward ──────────
-  if (n === 2) n = (currentStep > 2 ? 1 : 3); // step 2 removed; map old targets
+  if (n === 3) n = 2; // persona page removed; Clue Style lives on step 1
   if (n > currentStep) {
     if (currentStep === 1) {
       var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
       if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
-      var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return document.getElementById(id).textContent; });
-      var pinOk = !codeDigits.some(function(d){ return !d || d === ''; });
-      var pinWrap = document.querySelector('#step1 .code-wrap');
-      if (pinWrap && pinWrap.parentElement) { pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk ? 'field-valid' : 'field-invalid'); }
-      if (!pinOk) { showToast('Generate or enter your 6-digit PIN first', 'error'); return; }
-      if (!questArea) { fsFlashMissing('qa-area-btn'); showToast('Pick a Quest Area', 'error'); return; }
-      if (!questSpot) { fsFlashMissing('qa-spot-btn'); showToast('Pick a Hiding Spot', 'error'); return; }
-      if (!(questDesc||'').trim()) { fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description', 'error'); return; }
-      var photoOk = !!window._hsPhotoDataUrl;
-      var photoSec = document.getElementById('photo-section-s1');
-      if (photoSec) { photoSec.classList.remove('field-valid','field-invalid'); photoSec.classList.add(photoOk ? 'field-valid' : 'field-invalid'); }
-      if (!photoOk) { fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot', 'error'); return; }
+      if (!selectedLat || !selectedLng) { showToast('Set your quest location on the map', 'error'); return; }
     }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
@@ -1111,6 +1110,14 @@ function goStep(n) {
   el.style.display = 'flex';
   el.scrollTop = 0;
   window.scrollTo(0,0);
+  if (n === 1 && typeof _s1Map !== 'undefined' && _s1Map) {
+    setTimeout(function(){
+      try {
+        google.maps.event.trigger(_s1Map, 'resize');
+        if (selectedLat && selectedLng) { _s1Map.setCenter({lat:selectedLat,lng:selectedLng}); if(_s1Marker)_s1Marker.setPosition({lat:selectedLat,lng:selectedLng}); }
+      } catch(e){}
+    }, 60);
+  }
   if (n === 4 || n === 5) {
     updateMiniSummary();
     // Re-enable schedule button if preset already chosen
@@ -1365,6 +1372,7 @@ function selPrize(val, el) {
   if (disp) disp.textContent = '$' + val;
   updPay(val);
   saveFormState();
+  try { checkStep1Complete(); } catch(e){}
 }
 
 function updDur(el){
@@ -1417,16 +1425,23 @@ function clearHsPhoto() {
 }
 
 function checkStep1Complete(){
-  var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return (document.getElementById(id)||{}).textContent||''; });
-  var codeOk = codeDigits.every(function(d){ return d.trim() !== ''; });
-  var photoOk = !!window._hsPhotoDataUrl
-    && !!(selectedPrizeVal && selectedPrizeVal >= 1)
-    && !!questArea && !!questSpot && !!(questDesc||'').trim();
+  var ok = !!(selectedPrizeVal && selectedPrizeVal >= 1) && !!(selectedLat && selectedLng);
   var btn = document.getElementById('step1-next-btn');
   if (btn) {
     // Always tappable so goStep can toast exactly what is still missing.
     btn.style.pointerEvents = 'auto';
-    btn.style.opacity = (codeOk && photoOk) ? '1' : '.4';
+    btn.style.opacity = ok ? '1' : '.4';
+  }
+  try { checkStep2Complete(); } catch(e){}
+}
+function checkStep2Complete(){
+  var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return (document.getElementById(id)||{}).textContent||''; });
+  var codeOk = codeDigits.every(function(d){ return d.trim() !== ''; });
+  var restOk = !!window._hsPhotoDataUrl && !!questArea && !!questSpot && !!(questDesc||'').trim();
+  var btn = document.getElementById('step2-next-btn');
+  if (btn) {
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = (codeOk && restOk) ? '1' : '.4';
   }
 }
 function genCode(){
@@ -3062,7 +3077,7 @@ function restoreFormStateInner() {
       }
     } catch(e){}
     try { syncQaButtons(); } catch(e){}
-    if (s.step === 2) s.step = 3; // step 2 removed; old drafts land on Clue Style
+    if (s.step === 3) s.step = 2; // persona page removed; old drafts land on Hiding Spot
     if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) { selPrize(parseInt(s.prize,10), pc); } else { var pd = document.querySelector('.prize-chip[data-val="30"]'); if (pd) selPrize(30, pd); } }
     if (s.clueCount) { selectedClue = parseInt(s.clueCount) || 5; var cb = document.querySelector('.clue-btn[data-clue="'+s.clueCount+'"]'); if (cb) selClue(s.clueCount, cb); }
     if (s.duration) { var db = document.querySelector('.dur-btn[data-dur="'+s.duration+'"]'); if (db) selDur(s.duration, db); }
@@ -3160,7 +3175,10 @@ function clearFormState() {
     var photoSec=document.getElementById('photo-section-s1'); if(photoSec){photoSec.style.opacity='.15';photoSec.style.pointerEvents='none';}
     var placeholder=document.getElementById('photo-placeholder-s1'); if(placeholder)placeholder.style.display='block';
     var preview=document.getElementById('photo-preview-s1'); if(preview)preview.style.display='none';
-    var nextBtn=document.getElementById('step1-next-btn'); if(nextBtn){nextBtn.style.opacity='.4';nextBtn.style.pointerEvents='none';}
+    var nextBtn=document.getElementById('step1-next-btn'); if(nextBtn){nextBtn.style.opacity='.4';nextBtn.style.pointerEvents='auto';}
+    var n2=document.getElementById('step2-next-btn'); if(n2){n2.style.opacity='.4';n2.style.pointerEvents='auto';}
+    var s1s=document.getElementById('s1-search'); if(s1s)s1s.value='';
+    try{ s1HideSnap(); }catch(e){}
   } catch(e){}
 }
 
@@ -5018,7 +5036,7 @@ var _mapOpenedFromStep = false;
 
 // Back from Schedule reopens the clue builder (Clue Style sits behind it)
 function schedBack() {
-  goStep(3);
+  goStep(2);
   openHsModalFromStep();
 }
 
@@ -5737,6 +5755,93 @@ function hbSignOut(){
 
 <!-- FULL SCREEN MAP MODAL -->
 
+<style id="s1-css">
+.s1-hiw-pill{display:flex;align-items:center;padding:7px 12px;border-radius:12px;background:linear-gradient(135deg,rgba(232,168,32,.10),rgba(232,168,32,.04));border:1px solid rgba(232,168,32,.28);cursor:pointer;font-size:13.5px;color:#f0e8d8;-webkit-tap-highlight-color:transparent;}
+.s1-hiw-pill b{font-weight:500;color:#f5c842;}
+.s1-srch-wrap{position:absolute;left:10px;right:10px;top:10px;z-index:6;}
+.s1-srch{display:flex;gap:8px;align-items:center;background:rgba(10,8,16,.9);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;}
+.s1-srch input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:15px;font-family:inherit;min-width:0;}
+.s1-srch input::placeholder{color:rgba(255,255,255,.4);}
+.s1-preds{display:none;margin-top:6px;background:rgba(12,10,20,.97);border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden;max-height:180px;overflow-y:auto;}
+.s1-preds.show{display:block;}
+.s1-pred{display:flex;gap:9px;align-items:center;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);}
+.s1-pred:last-child{border-bottom:none;}
+.s1-pred:active{background:rgba(232,168,32,.12);}
+.s1-pred .pm{font-size:14.5px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s1-pred .ps{font-size:12px;color:rgba(255,255,255,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s1-snapchip{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(10,8,16,.94);backdrop-filter:blur(8px);border:1px solid rgba(232,168,32,.45);border-radius:12px;padding:10px 12px;z-index:5;}
+.s1-sc-top{font-size:13.5px;color:rgba(255,255,255,.85);}
+.s1-sc-top b{color:#f5c842;font-weight:500;}
+.s1-sc-btns{display:flex;gap:8px;margin-top:8px;}
+.s1-sc-yes{flex:1;text-align:center;padding:9px;border-radius:9px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:13.5px;cursor:pointer;}
+.s1-sc-no{flex:1;text-align:center;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.7);font-size:13.5px;cursor:pointer;}
+.s1-sc-hint{font-size:11.5px;color:rgba(232,168,32,.75);margin-top:7px;text-align:center;}
+.s1-prow{display:flex;gap:10px;overflow-x:auto;padding:2px 14px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.s1-prow::-webkit-scrollbar{display:none;}
+.s1-pcard{flex:0 0 auto;width:86px;padding:12px 6px;border-radius:14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
+.s1-pcard.selected{border-color:#e8a820;background:rgba(232,168,32,.1);}
+.s1-pe{font-size:26px;}
+.s1-pn{font-size:14px;color:#fff;white-space:nowrap;}
+.s1-ptype{min-height:66px;font-size:14.5px;line-height:1.5;color:rgba(245,234,216,.9);background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 14px;margin:10px 14px 0;}
+.ps-caret{display:inline-block;width:2px;height:14px;background:#f5c842;margin-left:1px;animation:s1blink 1s steps(1) infinite;vertical-align:text-bottom;}
+@keyframes s1blink{50%{opacity:0;}}
+.s1-ovl{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:120;opacity:0;pointer-events:none;transition:opacity .25s;}
+.s1-ovl.open{opacity:1;pointer-events:auto;}
+.s1-sheet{position:fixed;left:0;right:0;bottom:0;background:#131019;border-radius:22px 22px 0 0;border-top:1px solid rgba(255,255,255,.1);padding:20px 18px calc(24px + env(safe-area-inset-bottom));z-index:121;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,1,.4,1);max-height:82vh;overflow-y:auto;}
+.s1-sheet.open{transform:translateY(0);}
+.s1-grab{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 16px;}
+.s1-sheet h2{font-size:20px;font-weight:500;margin:0 0 14px;color:#fff;}
+.s1-sheet h2 span{color:#f5c842;}
+.s1-hiwstep{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.s1-hiwstep .n{width:26px;height:26px;border-radius:50%;background:rgba(232,168,32,.15);color:#f5c842;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:500;}
+.s1-hiwstep .t{font-size:14.5px;color:rgba(255,255,255,.8);line-height:1.45;}
+.s1-hiwstep .t b{color:#fff;font-weight:500;}
+.s1-stepchip{padding:6px 11px;border-radius:14px;background:rgba(232,168,32,.09);border:1px solid rgba(232,168,32,.3);font-size:12.5px;color:#f5c842;}
+.s1-steparw{color:rgba(255,255,255,.3);font-size:12px;}
+.s1-cluevs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.s1-cv{padding:12px;border-radius:12px;font-size:13px;line-height:1.4;}
+.s1-cv.bad{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);color:#fca5a5;}
+.s1-cv.good{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);color:#86efac;}
+.s1-cv .cvt{font-size:11px;letter-spacing:1.5px;margin-bottom:6px;opacity:.8;}
+.s1-venue{display:flex;gap:12px;padding:13px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);margin-bottom:10px;cursor:pointer;align-items:center;-webkit-tap-highlight-color:transparent;}
+.s1-venue:active{border-color:#e8a820;background:rgba(232,168,32,.08);}
+.s1-venue .ve{font-size:26px;}
+.s1-venue .vt{flex:1;min-width:0;}
+.s1-venue .vn{font-size:15.5px;font-weight:500;color:#fff;}
+.s1-venue .vd{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s1-venue .dist{font-size:12.5px;color:#e8a820;flex-shrink:0;}
+</style>
+<div class="s1-ovl" id="s1-ovl" onclick="closeS1Sheets()"></div>
+<div class="s1-sheet" id="s1-sh-hiw">
+  <div class="s1-grab"></div>
+  <h2>How <span>FinderSeek</span> works</h2>
+  <div class="s1-hiwstep"><div class="n">1</div><div class="t"><b>Hide the treasure.</b> Write your PIN on a slip of paper, seal it in an envelope, and hide it somewhere public and concealable.</div></div>
+  <div class="s1-hiwstep"><div class="n">2</div><div class="t"><b>Build the trail.</b> Pick objects a seeker will find on the way. Each one asks a question with exactly one answer.</div></div>
+  <div class="s1-hiwstep"><div class="n">3</div><div class="t"><b>Seekers hunt.</b> Each correct answer unlocks the next clue. The last clue leads to your envelope.</div></div>
+  <div class="s1-hiwstep"><div class="n">4</div><div class="t"><b>Get found.</b> The winner enters the PIN, you get notified, prize claimed.</div></div>
+  <div style="font-size:12px;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin:16px 0 9px;">YOUR CREATION STEPS</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px;">
+    <span class="s1-stepchip">Prize</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">Location</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">Clue Style</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">PIN</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">Hiding Spot</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">Clues</span><span class="s1-steparw">&#8594;</span>
+    <span class="s1-stepchip">Schedule Quest</span>
+  </div>
+  <div class="s1-cluevs">
+    <div class="s1-cv bad"><div class="cvt">VAGUE</div>"Look near a bench by the trees"</div>
+    <div class="s1-cv good"><div class="cvt">SHARP</div>"3rd bench from the fountain. How many slats?"</div>
+  </div>
+  <div style="text-align:center;font-size:13.5px;color:rgba(255,255,255,.5);margin-top:6px;">Takes about 20 minutes and a lap around the park</div>
+</div>
+<div class="s1-sheet" id="s1-sh-areasug">
+  <div class="s1-grab"></div>
+  <h2>Quest Area <span>Suggestions</span></h2>
+  <div id="s1-areasug-list"><div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:14px;">Searching nearby...</div></div>
+  <div style="font-size:12.5px;color:rgba(255,255,255,.4);text-align:center;margin-top:8px;">Picking one moves the map pin there and sets the Quest Area type for your clues.</div>
+</div>
+
 <div class="map-modal-overlay" id="map-modal-overlay">
   <!-- Topbar with back + full-width search + location -->
   <div class="map-modal-topbar" style="position:relative;">
@@ -5915,5 +6020,253 @@ function hbSignOut(){
   <div class="qa-pillwrap" id="qa-sheet-pills" style="display:none;"></div>
   <div class="qa-list" id="qa-sheet-list"></div>
 </div>
+<script>
+// == Chunk 1: Quest Setup inline map, snap chip, search, area suggestions ==
+var _s1Map=null,_s1Marker=null,_s1Geocoder=null,_s1Preds=[],_s1SearchTimer=null,_s1SnapPlace=null;
+var S1_PIN_ICON_URL='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40"><text y="34" font-size="34" filter="drop-shadow(0 3px 8px rgba(0,0,0,.7))">\uD83D\uDCCD</text></svg>');
+var S1_AREA_MAP=[
+  [/state park|national (park|forest)|state forest/i,'State or National Park'],
+  [/botanical|arboretum/i,'Botanical Garden'],
+  [/library/i,'Public Library Grounds'],
+  [/museum/i,'Museum Courtyard'],
+  [/church|chapel|cathedral/i,'Church'],
+  [/university|college|campus/i,'College Campus'],
+  [/harbor|marina|boardwalk|pier/i,'Waterfront Harbor'],
+  [/beach/i,'Beach'],
+  [/trail|greenway/i,'Nature Trail'],
+  [/courthouse|city hall/i,'Courthouse Square'],
+  [/stadium|sports|ballpark|fields/i,'Sports Fields Complex'],
+  [/mall|shopping|market/i,'Shopping District'],
+  [/restaurant|cafe|grill|diner/i,'Restaurant'],
+  [/historic/i,'Historical District'],
+  [/rec center|recreation/i,'Community Rec Center'],
+  [/plaza|square|downtown/i,'Downtown City Center'],
+  [/river/i,'River Trail Greenway']
+];
+function s1AreaFor(name,types){
+  var n=(name||'');
+  for(var i=0;i<S1_AREA_MAP.length;i++){ if(S1_AREA_MAP[i][0].test(n)) return S1_AREA_MAP[i][1]; }
+  types=types||[];
+  if(types.indexOf('park')>=0) return 'Local Park';
+  if(types.indexOf('library')>=0) return 'Public Library Grounds';
+  if(types.indexOf('church')>=0||types.indexOf('place_of_worship')>=0) return 'Church';
+  if(types.indexOf('museum')>=0) return 'Museum Courtyard';
+  if(types.indexOf('university')>=0) return 'College Campus';
+  if(types.indexOf('restaurant')>=0||types.indexOf('cafe')>=0) return 'Restaurant';
+  if(types.indexOf('shopping_mall')>=0) return 'Shopping District';
+  if(types.indexOf('stadium')>=0) return 'Sports Fields Complex';
+  if(types.indexOf('city_hall')>=0||types.indexOf('courthouse')>=0) return 'Courthouse Square';
+  if(types.indexOf('natural_feature')>=0) return 'Nature Trail';
+  if(types.indexOf('tourist_attraction')>=0) return 'Downtown City Center';
+  return null;
+}
+function s1Dist(lat1,lng1,lat2,lng2){
+  var R=3958.8,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function initS1Map(lat,lng){
+  if(typeof google==='undefined'||!google.maps||!google.maps.Map){ setTimeout(function(){initS1Map(lat,lng);},150); return; }
+  var el=document.getElementById('s1-map'); if(!el||_s1Map) return;
+  _s1Map=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:15,disableDefaultUI:true,zoomControl:false,gestureHandling:'greedy',clickableIcons:false,styles:(typeof DARK_STYLES!=='undefined')?DARK_STYLES:[]});
+  _s1Marker=new google.maps.Marker({position:{lat:lat,lng:lng},map:_s1Map,draggable:true,icon:{url:S1_PIN_ICON_URL,scaledSize:new google.maps.Size(34,40),anchor:new google.maps.Point(17,40)}});
+  google.maps.event.addListener(_s1Marker,'dragend',function(){var p=_s1Marker.getPosition();s1SetLocation(p.lat(),p.lng(),{fromDrag:true});});
+  google.maps.event.addListener(_s1Map,'click',function(e){_s1Marker.setPosition(e.latLng);s1SetLocation(e.latLng.lat(),e.latLng.lng(),{fromDrag:true});});
+  // Paint restored state
+  if(selectedLat&&selectedLng){
+    var inp=document.getElementById('s1-search');
+    if(inp&&!inp.value) inp.value=selectedPlaceName||selectedAddress||'';
+  }
+}
+function s1BootMap(){
+  if(selectedLat&&selectedLng){ initS1Map(selectedLat,selectedLng); return; }
+  var fallback=function(){ initS1Map(29.7604,-95.3698); };
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      if(_s1Map) return;
+      initS1Map(pos.coords.latitude,pos.coords.longitude);
+    },fallback,{timeout:5000,maximumAge:600000});
+    setTimeout(function(){ if(!_s1Map) fallback(); },6000);
+  } else fallback();
+}
+function s1UpdateStatic(){
+  if(!selectedLat||!selectedLng) return;
+  window._staticMapUrl='https://maps.googleapis.com/maps/api/staticmap?center='+selectedLat+','+selectedLng+
+    '&zoom=18&size=600x400&scale=2&maptype=roadmap'+
+    '&style=feature:all|element:labels.text.fill|color:0x9ca3af'+
+    '&style=feature:all|element:labels.text.stroke|color:0x1f2937'+
+    '&style=feature:landscape|element:geometry|color:0x1f2937'+
+    '&style=feature:road|element:geometry|color:0x374151'+
+    '&style=feature:water|element:geometry|color:0x111827'+
+    '&style=feature:poi.park|element:geometry|color:0x14532d'+
+    '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|'+selectedLat+','+selectedLng+
+    '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
+}
+function s1SetLocation(lat,lng,opts){
+  opts=opts||{};
+  selectedLat=lat; selectedLng=lng; locationConfirmed=true;
+  s1UpdateStatic();
+  if(opts.placeName){ selectedPlaceName=opts.placeName; }
+  else if(!opts.keepName){ selectedPlaceName=null; }
+  try{
+    if(!_s1Geocoder)_s1Geocoder=new google.maps.Geocoder();
+    _s1Geocoder.geocode({location:{lat:lat,lng:lng}},function(r,st){
+      if(st==='OK'&&r[0]){
+        selectedAddress=r[0].formatted_address.replace(/, USA$/,'').replace(/\s\d{5}(-\d{4})?/,'').trim();
+        var inp=document.getElementById('s1-search');
+        if(inp&&!opts.placeName) inp.value=selectedAddress;
+      }
+      saveFormState();
+    });
+  }catch(e){}
+  if(opts.placeName){ var inp2=document.getElementById('s1-search'); if(inp2) inp2.value=opts.placeName; }
+  if(opts.fromDrag) s1NearbyCheck(lat,lng); else s1HideSnap();
+  saveFormState(); checkStep1Complete();
+}
+function s1NearbyCheck(lat,lng){
+  try{
+    if(typeof google==='undefined'||!google.maps.places) return;
+    var svc=new google.maps.places.PlacesService(_s1Map);
+    svc.nearbySearch({location:{lat:lat,lng:lng},radius:150,type:'park'},function(res,st){
+      var hit=(st==='OK'&&res&&res.length)?res[0]:null;
+      if(hit){ s1ShowSnap(hit); return; }
+      svc.nearbySearch({location:{lat:lat,lng:lng},radius:80,type:'point_of_interest'},function(res2,st2){
+        if(st2==='OK'&&res2&&res2.length&&res2[0].name) s1ShowSnap(res2[0]); else s1HideSnap();
+      });
+    });
+  }catch(e){ s1HideSnap(); }
+}
+function s1ShowSnap(place){
+  _s1SnapPlace=place;
+  var chip=document.getElementById('s1-snapchip'), nm=document.getElementById('s1-snap-name');
+  if(nm) nm.textContent=place.name;
+  if(chip) chip.style.display='block';
+}
+function s1HideSnap(){ var chip=document.getElementById('s1-snapchip'); if(chip) chip.style.display='none'; _s1SnapPlace=null; }
+function s1SnapYes(){
+  if(!_s1SnapPlace) return s1HideSnap();
+  var p=_s1SnapPlace;
+  selectedPlaceName=p.name;
+  var inp=document.getElementById('s1-search'); if(inp) inp.value=p.name;
+  var area=s1AreaFor(p.name,p.types);
+  if(area){ questArea=area; try{syncQaButtons();}catch(e){} try{fsQaMirror();}catch(e){} }
+  s1HideSnap(); saveFormState(); checkStep1Complete();
+}
+function s1SnapNo(){ s1HideSnap(); saveFormState(); }
+// -- Search box --
+function s1SearchInput(v){
+  var clr=document.getElementById('s1-search-clear'); if(clr) clr.style.display=v?'block':'none';
+  clearTimeout(_s1SearchTimer);
+  if(!v||v.length<3){ s1HidePreds(); return; }
+  _s1SearchTimer=setTimeout(function(){ s1FetchPreds(v); },250);
+}
+function s1FetchPreds(q){
+  try{
+    if(typeof google==='undefined'||!google.maps.places) return;
+    if(!_autocompleteService)_autocompleteService=new google.maps.places.AutocompleteService();
+    var bl=selectedLat||29.7604, bg=selectedLng||-95.3698;
+    _autocompleteService.getPlacePredictions({input:q,location:new google.maps.LatLng(bl,bg),radius:50000,componentRestrictions:{country:'us'},types:['establishment','geocode']},function(preds,st){
+      var box=document.getElementById('s1-preds');
+      if(!preds||!preds.length){ s1HidePreds(); return; }
+      _s1Preds=preds;
+      box.innerHTML=preds.slice(0,5).map(function(p,i){
+        var main=p.structured_formatting.main_text, sub=p.structured_formatting.secondary_text||'';
+        var ic=(p.types&&p.types.indexOf('park')>=0)?'\uD83C\uDF33':(p.types&&p.types.indexOf('street_address')>=0)?'\uD83C\uDFE0':'\uD83D\uDCCD';
+        return '<div class="s1-pred" onclick="s1PickPred('+i+')"><span>'+ic+'</span><div style="min-width:0;"><div class="pm">'+main+'</div><div class="ps">'+sub+'</div></div></div>';
+      }).join('');
+      box.classList.add('show');
+    });
+  }catch(e){}
+}
+function s1HidePreds(){ var b=document.getElementById('s1-preds'); if(b){b.classList.remove('show');b.innerHTML='';} }
+function s1PickPred(i){
+  var p=_s1Preds[i]; if(!p) return;
+  s1HidePreds();
+  var isPlace=p.types&&(p.types.indexOf('establishment')>=0||p.types.indexOf('point_of_interest')>=0||p.types.indexOf('park')>=0);
+  var gc=new google.maps.Geocoder();
+  gc.geocode({placeId:p.place_id},function(r,st){
+    if(st==='OK'&&r[0]){
+      var loc=r[0].geometry.location, lat=loc.lat(), lng=loc.lng();
+      if(_s1Map&&_s1Marker){ _s1Map.panTo({lat:lat,lng:lng}); _s1Map.setZoom(16); _s1Marker.setPosition({lat:lat,lng:lng}); }
+      var name=isPlace?p.structured_formatting.main_text:null;
+      s1SetLocation(lat,lng,name?{placeName:name}:{});
+      if(name){ var area=s1AreaFor(name,p.types); if(area){ questArea=area; try{syncQaButtons();}catch(e){} try{fsQaMirror();}catch(e){} } }
+      var inp=document.getElementById('s1-search'); if(inp) inp.blur();
+    }
+  });
+}
+function s1ClearSearch(){
+  var inp=document.getElementById('s1-search'); if(inp){inp.value='';inp.focus();}
+  var clr=document.getElementById('s1-search-clear'); if(clr) clr.style.display='none';
+  s1HidePreds();
+}
+// -- Sheets --
+function openS1Sheet(k){ document.getElementById('s1-ovl').classList.add('open'); document.getElementById('s1-sh-'+k).classList.add('open'); }
+function closeS1Sheets(){ document.getElementById('s1-ovl').classList.remove('open'); document.querySelectorAll('.s1-sheet').forEach(function(s){s.classList.remove('open');}); }
+// -- Quest Area Suggestions --
+function openAreaSuggest(){
+  openS1Sheet('areasug');
+  var list=document.getElementById('s1-areasug-list');
+  list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:14px;">Searching nearby...</div>';
+  var run=function(lat,lng){
+    try{
+      var svc=new google.maps.places.PlacesService(_s1Map||document.createElement('div'));
+      var all={},pending=3;
+      var finish=function(){
+        if(--pending>0) return;
+        var arr=Object.keys(all).map(function(k){return all[k];});
+        arr.forEach(function(p){ p._mi=s1Dist(lat,lng,p.geometry.location.lat(),p.geometry.location.lng()); });
+        arr.sort(function(a,b){return a._mi-b._mi;});
+        arr=arr.slice(0,6);
+        if(!arr.length){ list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:14px;">No spots found nearby. Try moving the pin first.</div>'; return; }
+        window._s1SugResults=arr;
+        list.innerHTML=arr.map(function(p,i){
+          var em=(p.types&&p.types.indexOf('park')>=0)?'\uD83C\uDF33':/trail/i.test(p.name)?'\uD83D\uDEB6':/plaza|square/i.test(p.name)?'\u26F2':'\uD83C\uDFDE\uFE0F';
+          var vd=(p.vicinity||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+          var nm=(p.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+          return '<div class="s1-venue" onclick="s1PickSuggestion('+i+')"><div class="ve">'+em+'</div><div class="vt"><div class="vn">'+nm+'</div><div class="vd">'+vd+'</div></div><div class="dist">'+p._mi.toFixed(1)+' mi</div></div>';
+        }).join('');
+      };
+      var collect=function(res,st){ if(st==='OK'&&res) res.forEach(function(p){ if(p.place_id&&p.name&&p.geometry) all[p.place_id]=p; }); finish(); };
+      svc.nearbySearch({location:{lat:lat,lng:lng},radius:8000,type:'park'},collect);
+      svc.nearbySearch({location:{lat:lat,lng:lng},radius:8000,keyword:'plaza'},collect);
+      svc.nearbySearch({location:{lat:lat,lng:lng},radius:8000,keyword:'trail'},collect);
+    }catch(e){ list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:14px;">Search unavailable. Check your connection.</div>'; }
+  };
+  if(selectedLat&&selectedLng){ run(selectedLat,selectedLng); }
+  else if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){ run(pos.coords.latitude,pos.coords.longitude); },function(){ run(29.7604,-95.3698); },{timeout:5000,maximumAge:600000});
+  } else run(29.7604,-95.3698);
+}
+function s1PickSuggestion(i){
+  var p=(window._s1SugResults||[])[i]; if(!p) return;
+  closeS1Sheets();
+  var lat=p.geometry.location.lat(), lng=p.geometry.location.lng();
+  if(_s1Map&&_s1Marker){ _s1Map.panTo({lat:lat,lng:lng}); _s1Map.setZoom(16); _s1Marker.setPosition({lat:lat,lng:lng}); }
+  s1SetLocation(lat,lng,{placeName:p.name});
+  var area=s1AreaFor(p.name,p.types);
+  if(area){ questArea=area; try{syncQaButtons();}catch(e){} try{fsQaMirror();}catch(e){} }
+  saveFormState(); checkStep1Complete();
+}
+// -- Step 2 gate --
+function s2Next(){
+  var codeDigits=['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el?el.textContent:''; });
+  var pinOk=!codeDigits.some(function(d){ return !d||d===''; });
+  var pinWrap=document.querySelector('#step2 .code-wrap');
+  if(pinWrap&&pinWrap.parentElement){ pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk?'field-valid':'field-invalid'); }
+  if(!pinOk){ showToast('Generate or enter your 6-digit PIN first','error'); return; }
+  if(!questArea){ fsFlashMissing('qa-area-btn'); showToast('Pick a Quest Area','error'); return; }
+  if(!questSpot){ fsFlashMissing('qa-spot-btn'); showToast('Pick a Hiding Spot','error'); return; }
+  if(!(questDesc||'').trim()){ fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description','error'); return; }
+  if(!window._hsPhotoDataUrl){ fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot','error'); return; }
+  openHsModalFromStep();
+}
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); });
+document.addEventListener('click',function(e){
+  var wrap=document.querySelector('.s1-srch-wrap');
+  if(wrap&&!wrap.contains(e.target)) s1HidePreds();
+});
+</script>
+
 </body>
 </html>
