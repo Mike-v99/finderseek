@@ -471,6 +471,60 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 </div>
 
+<div style="height:2px;"></div>
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 0;">
+  <div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;padding:0 14px 10px;">CLUE STYLE</div>
+  <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:2px;">Who tells your story?</div>
+  <div style="font-size:18px;color:rgba(184,196,208,.7);margin-bottom:14px;">Every clue in your quest speaks with this voice.</div>
+  <div class="ps-grid">
+    <div class="ps-tile persona-card selected" data-persona="pirate" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127988;&#8205;&#9760;&#65039;</span><div class="persona-name ps-name">Pirate</div></div></div>
+    <div class="ps-tile persona-card" data-persona="poetic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127800;</span><div class="persona-name ps-name">Poetic</div></div></div>
+    <div class="ps-tile persona-card" data-persona="insults" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129324;</span><div class="persona-name ps-name">Insults</div></div></div>
+    <div class="ps-tile persona-card" data-persona="sarcastic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128527;</span><div class="persona-name ps-name">Sarcastic</div></div></div>
+    <div class="ps-tile persona-card" data-persona="hillbilly" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129312;</span><div class="persona-name ps-name">Hillbilly</div></div></div>
+    <div class="ps-tile persona-card" data-persona="kid" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129528;</span><div class="persona-name ps-name">5 Yr Old</div></div></div>
+    <div class="ps-tile persona-card" data-persona="grandma" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128117;</span><div class="persona-name ps-name">Grandma</div></div></div>
+    <div class="ps-tile persona-card" data-persona="surfer" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127940;</span><div class="persona-name ps-name">Surfer</div></div></div>
+    <div class="ps-tile persona-card" data-persona="investigator" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128269;</span><div class="persona-name ps-name">Detective</div></div></div>
+  </div>
+  <div class="ps-stage"><div class="ps-stage-in">
+    <div class="ps-shead">
+      <span class="ps-semoji" id="preview-emoji">&#127988;&#8205;&#9760;&#65039;</span>
+      <div class="ps-swho">
+        <div class="ps-sname" id="ps-sname">Pirate</div>
+        <div class="ps-stag" id="ps-stag">Salty sea captain energy</div>
+      </div>
+      <button id="persona-speak-btn" onclick="speakPersonaSample()" class="ps-speak">
+        <svg id="persona-speak-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      </button>
+    </div>
+    <div class="ps-eq" id="ps-eq"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="preview-label" style="display:none;"></div>
+    <div class="ps-stext" id="preview-text"></div>
+  </div></div>
+  <div style="height:12px;"></div>
+</div>
+  </div>
+
+  <div class="step-footer">
+    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;">Next →</button>
+  </div>
+</div>
+
+<div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
+  <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
+    <a href="javascript:void(0)" onclick="goStep(1)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <div style="flex:1;font-size:25px;font-weight:500;color:#fff;">Quest <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Location</span></div>
+    <div style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
+      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
+        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
+        <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
 <!-- Location map -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:18px;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()"><b>&#10022; Suggestions</b></div></div>
@@ -502,58 +556,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 
 
-  </div>
 
-  <div class="step-footer">
-    <button onclick="goStep(3)" id="step1-next-btn" class="step-next-btn" style="opacity:.4;">Next →</button>
-  </div>
-</div>
 
-<div id="step3" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
-  <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:25;">
-    <a href="javascript:void(0)" onclick="goStep(1)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-    <div style="flex:1;font-size:25px;font-weight:500;color:#fff;">Clue <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Style</span></div>
-    <div style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();">
-      <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
-        <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
-        <div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-        </div>
-      </div>
-    </div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
-    <div style="font-size:26px;font-weight:400;color:#fff;margin-bottom:2px;">Who tells your story?</div>
-    <div style="font-size:18px;color:rgba(184,196,208,.7);margin-bottom:14px;">Every clue in your quest speaks with this voice.</div>
-    <div class="ps-grid">
-      <div class="ps-tile persona-card selected" data-persona="pirate" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127988;&#8205;&#9760;&#65039;</span><div class="persona-name ps-name">Pirate</div></div></div>
-      <div class="ps-tile persona-card" data-persona="poetic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127800;</span><div class="persona-name ps-name">Poetic</div></div></div>
-      <div class="ps-tile persona-card" data-persona="insults" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129324;</span><div class="persona-name ps-name">Insults</div></div></div>
-      <div class="ps-tile persona-card" data-persona="sarcastic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128527;</span><div class="persona-name ps-name">Sarcastic</div></div></div>
-      <div class="ps-tile persona-card" data-persona="hillbilly" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129312;</span><div class="persona-name ps-name">Hillbilly</div></div></div>
-      <div class="ps-tile persona-card" data-persona="kid" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#129528;</span><div class="persona-name ps-name">5 Yr Old</div></div></div>
-      <div class="ps-tile persona-card" data-persona="grandma" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128117;</span><div class="persona-name ps-name">Grandma</div></div></div>
-      <div class="ps-tile persona-card" data-persona="surfer" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127940;</span><div class="persona-name ps-name">Surfer</div></div></div>
-      <div class="ps-tile persona-card" data-persona="investigator" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#128269;</span><div class="persona-name ps-name">Detective</div></div></div>
-    </div>
-    <div class="ps-stage"><div class="ps-stage-in">
-      <div class="ps-shead">
-        <span class="ps-semoji" id="preview-emoji">&#127988;&#8205;&#9760;&#65039;</span>
-        <div class="ps-swho">
-          <div class="ps-sname" id="ps-sname">Pirate</div>
-          <div class="ps-stag" id="ps-stag">Salty sea captain energy</div>
-        </div>
-        <button id="persona-speak-btn" onclick="speakPersonaSample()" class="ps-speak">
-          <svg id="persona-speak-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        </button>
-      </div>
-      <div class="ps-eq" id="ps-eq"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div id="preview-label" style="display:none;"></div>
-      <div class="ps-stext" id="preview-text"></div>
-    </div></div>
-    <div style="height:12px;"></div>
-  </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">&#8592; Back</button><button onclick="goStep(2)" class="step-next-btn">Next &#8594;</button></div>
+  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">&#8592; Back</button><button onclick="s3Next()" id="step3-next-btn" class="step-next-btn" style="opacity:.4;">Next &#8594;</button></div>
 </div>
 
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
@@ -1126,7 +1132,6 @@ function goStep(n) {
     if (currentStep === 1) {
       var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
       if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
-      if (!selectedLat || !selectedLng) { showToast('Set your quest location on the map', 'error'); return; }
     }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
@@ -1139,7 +1144,7 @@ function goStep(n) {
   el.style.display = 'flex';
   el.scrollTop = 0;
   window.scrollTo(0,0);
-  if (n === 1 && typeof _s1Map !== 'undefined' && _s1Map) {
+  if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
         google.maps.event.trigger(_s1Map, 'resize');
@@ -1454,7 +1459,7 @@ function clearHsPhoto() {
 }
 
 function checkStep1Complete(){
-  var ok = !!(selectedPrizeVal && selectedPrizeVal >= 1) && !!(selectedLat && selectedLng);
+  var ok = !!(selectedPrizeVal && selectedPrizeVal >= 1);
   var btn = document.getElementById('step1-next-btn');
   if (btn) {
     // Always tappable so goStep can toast exactly what is still missing.
@@ -1462,6 +1467,18 @@ function checkStep1Complete(){
     btn.style.opacity = ok ? '1' : '.4';
   }
   try { checkStep2Complete(); } catch(e){}
+  try { checkStep3Complete(); } catch(e){}
+}
+function checkStep3Complete(){
+  var btn = document.getElementById('step3-next-btn');
+  if (btn) {
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = (selectedLat && selectedLng) ? '1' : '.4';
+  }
+}
+function s3Next(){
+  if (!selectedLat || !selectedLng) { showToast('Set your quest location on the map', 'error'); return; }
+  goStep(2);
 }
 function checkStep2Complete(){
   var codeDigits = ['c1','c2','c3','c4','c5','c6'].map(function(id){ return (document.getElementById(id)||{}).textContent||''; });
@@ -5807,7 +5824,7 @@ function hbSignOut(){
 .s1-mapbox-full #s1-full-btn{display:none;}
 .s1-mapbox-full #s1-gps-btn{bottom:calc(env(safe-area-inset-bottom,0px) + 92px);}
 .s1-mapbox-full .s1-snapchip{bottom:calc(env(safe-area-inset-bottom,0px) + 158px);}
-body.fs-mapfull #step1 > div:first-child{visibility:hidden;}
+body.fs-mapfull #step3 > div:first-child{visibility:hidden;}
 body.fs-mapfull .step-footer{display:none;}
 .s1-snapchip{position:absolute;left:10px;right:10px;bottom:72px;background:rgba(10,8,16,.94);backdrop-filter:blur(8px);border:1px solid rgba(232,168,32,.45);border-radius:12px;padding:10px 12px;z-index:5;}
 .s1-sc-top{font-size:20px;color:rgba(255,255,255,.85);}
