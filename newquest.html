@@ -363,6 +363,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @keyframes hs2ChipIn{0%{opacity:0;transform:translateY(14px) scale(.85);}60%{opacity:1;transform:translateY(-3px) scale(1.08);}100%{opacity:1;transform:none;}}
 @keyframes hs2Rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.hs2-acc-hd{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hs2-acc-t{flex:1;min-width:0;}
+.hs2-check{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);color:transparent;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:border-color .25s,background .25s,color .25s;}
+.hs2-check.done{border-color:#4ade80;background:rgba(74,222,128,.15);color:#4ade80;}
+.hs2-chev{flex-shrink:0;transition:transform .3s,color .3s;color:#8b8898;font-size:20px;line-height:1;}
+.hs2-card{transition:border-color .3s;}
+.hs2-card.openacc{border-color:rgba(232,168,32,.45)!important;}
+.hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
+.hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
+.hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
 .hs2-rise{animation:hs2Rise .5s ease-out both;}
 @keyframes hs2Pop{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
 .hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .6s cubic-bezier(.34,1.56,.64,1) forwards;}
@@ -590,8 +600,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
 <!-- Find your hiding spot section -->
-<div class="hs2-rise" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
-  <div style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#b8c4d0;white-space:nowrap;overflow:hidden;">GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
+<div class="hs2-rise hs2-card" id="hs2-card-0" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
+  <div class="hs2-acc-hd" onclick="hs2Acc(0)">
+    <div class="hs2-acc-t" style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#b8c4d0;white-space:nowrap;overflow:hidden;">GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
+    <span class="hs2-check" id="hs2-check-0">&#10003;</span><span class="hs2-chev">&#9662;</span>
+  </div>
+  <div class="hs2-acc-body">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
     <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
     <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
@@ -601,13 +615,19 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
   </div>
   <div style="position:relative;margin-top:12px;">
-    <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
+    <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." onblur="hs2AutoNext(0)" oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
   </div>
   <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
+  </div>
 </div>
 <!-- PIN section -->
-<div class="hs2-rise" style="animation-delay:.12s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
-  <div style="font-size:25px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
+<div class="hs2-rise hs2-card" id="hs2-card-1" style="animation-delay:.12s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
+  <div class="hs2-acc-hd" onclick="hs2Acc(1)">
+    <div class="hs2-acc-t" style="font-size:25px;color:#fff;font-weight:400;">Treasure PIN</div>
+    <span class="hs2-check" id="hs2-check-1">&#10003;</span><span class="hs2-chev">&#9662;</span>
+  </div>
+  <div class="hs2-acc-body">
+  <div style="height:8px;"></div>
   <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:18px;color:rgba(184,196,208,.85);margin-bottom:10px;flex-wrap:wrap;">
     <span class="hs2-chip" style="animation-delay:.05s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
     <span style="opacity:.4;">&#8250;</span>
@@ -632,12 +652,18 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button id="save-code-btn" style="display:none;"></button>
   </div>
   <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
+  </div>
 </div>
 
 
 <!-- Photo section -->
-<div id="photo-section-s1" class="hs2-rise" style="animation-delay:.24s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;transition:opacity .3s;">
-  <div style="font-size:25px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo</div>
+<div id="photo-section-s1" class="hs2-rise hs2-card" style="animation-delay:.24s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;transition:opacity .3s;">
+  <div class="hs2-acc-hd" onclick="hs2Acc(2)">
+    <div class="hs2-acc-t" style="font-size:25px;font-weight:400;color:#ffffff;">Hiding spot photo</div>
+    <span class="hs2-check" id="hs2-check-2">&#10003;</span><span class="hs2-chev">&#9662;</span>
+  </div>
+  <div class="hs2-acc-body">
+  <div style="height:6px;"></div>
   <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:14px 12px;text-align:center;margin-bottom:10px;">
     <div style="font-size:18px;color:rgba(255,255,255,.5);">&#128247; No photo yet</div>
   </div>
@@ -648,6 +674,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="display:flex;gap:10px;">
     <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
     <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
+  </div>
   </div>
 </div>
 
@@ -1147,7 +1174,7 @@ function hs2Objects(){
   return base.slice(0,20);
 }
 function hs2AreaLabel(){ return (typeof selectedPlaceName!=='undefined'&&selectedPlaceName)||questArea||'your quest area'; }
-function hs2Count(){ var d=document.getElementById('qa-desc'),c=document.getElementById('hs2-count'); if(d&&c) c.textContent=d.value.length+' / 200'; }
+function hs2Count(){ var d=document.getElementById('qa-desc'),c=document.getElementById('hs2-count'); if(d&&c) c.textContent=d.value.length+' / 200'; try{ hs2AccSync(); }catch(e){} }
 function hs2Sync(){
   var n=document.getElementById('hs2-area-name'); if(n) n.textContent=hs2AreaLabel();
   var d=document.getElementById('qa-desc'); if(d&&d.value!==(questDesc||'')) d.value=questDesc||'';
@@ -1162,10 +1189,41 @@ function hs2CloseSheets(){
 }
 function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
 function hs2WriteNow(){
+  hs2Open=0; hs2AccSync();
   var d=document.getElementById('qa-desc');
   if(d){ try{ d.focus(); var n=d.value.length; d.setSelectionRange(n,n); }catch(e){} }
   hs2CloseSheets();
   if(d){ setTimeout(function(){ try{ d.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){} },120); }
+}
+var hs2Open=0;
+var HS2_CARDS=['hs2-card-0','hs2-card-1','photo-section-s1'];
+function hs2AccStates(){
+  var pin=['c1','c2','c3','c4','c5','c6'].every(function(id){ var el=document.getElementById(id); return el&&el.textContent; });
+  return [ !!(questDesc||'').trim(), pin, !!window._hsPhotoDataUrl ];
+}
+function hs2AccSync(){
+  var st=hs2AccStates();
+  for(var i=0;i<3;i++){
+    var card=document.getElementById(HS2_CARDS[i]); if(!card) continue;
+    card.classList.toggle('openacc', hs2Open===i);
+    card.classList.toggle('closedacc', hs2Open!==i);
+    var ck=document.getElementById('hs2-check-'+i); if(ck) ck.classList.toggle('done', !!st[i]);
+  }
+}
+function hs2Acc(i){
+  hs2Open = (hs2Open===i) ? -1 : i;
+  hs2AccSync();
+  if(hs2Open===1){ try{ document.querySelectorAll('#step2 .hs2-chip').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
+}
+function hs2AutoNext(from){
+  var st=hs2AccStates();
+  if(st[from] && hs2Open===from){ hs2Open = from<2 ? from+1 : -1; }
+  hs2AccSync();
+}
+function hs2AccInit(){
+  var st=hs2AccStates();
+  hs2Open = !st[0]?0 : !st[1]?1 : !st[2]?2 : -1;
+  hs2AccSync();
 }
 function hs2OpenObjects(){
   var g=document.getElementById('hs2-obj-grid'); if(!g) return;
@@ -1304,7 +1362,7 @@ function goStep(n) {
   el.scrollTop = 0;
   window.scrollTo(0,0);
   if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 300); }
-  if (n === 2) { try{ hs2Sync(); }catch(e){} try{ document.querySelectorAll('#step2 .hs2-chip, #step2 .hs2-rise').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
+  if (n === 2) { try{ hs2Sync(); }catch(e){} try{ hs2AccInit(); }catch(e){} try{ document.querySelectorAll('#step2 .hs2-chip, #step2 .hs2-rise').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
   if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
@@ -1566,6 +1624,7 @@ function updateSummary() {
 
 function selPrize(val, el) {
   selectedPrizeVal = val;
+  hideToast();
   document.querySelectorAll('.prize-chip').forEach(function(c){
     c.style.borderColor='rgba(255,255,255,.1)'; c.style.borderWidth='1px';
     c.style.color='#fff'; c.style.background='rgba(255,255,255,.03)';
@@ -2264,6 +2323,7 @@ async function loadCurrentUser(){
 // ============================================================
 //  TOAST
 // ============================================================
+function hideToast(){ try{ clearTimeout(window._toastT); var t=document.getElementById('toast'); if(t) t.classList.remove('show'); }catch(e){} }
 function showToast(msg, type){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -6521,11 +6581,11 @@ function s2Next(){
   var pinOk=!codeDigits.some(function(d){ return !d||d===''; });
   var pinWrap=document.querySelector('#step2 .code-wrap');
   if(pinWrap&&pinWrap.parentElement){ pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk?'field-valid':'field-invalid'); }
-  if(!pinOk){ showToast('Generate or enter your 6-digit PIN first','error'); return; }
+  if(!pinOk){ hs2Open=1; hs2AccSync(); showToast('Generate or enter your 6-digit PIN first','error'); return; }
   if(!questArea){ showToast('Pick your quest location first','error'); return; }
-  if(!questSpot){ fsFlashMissing('hs2-sug-btn'); showToast('Pick your hiding spot object','error'); return; }
-  if(!(questDesc||'').trim()){ fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description','error'); return; }
-  if(!window._hsPhotoDataUrl){ fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot','error'); return; }
+  if(!questSpot){ hs2Open=0; hs2AccSync(); fsFlashMissing('hs2-sug-btn'); showToast('Pick your hiding spot object','error'); return; }
+  if(!(questDesc||'').trim()){ hs2Open=0; hs2AccSync(); fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description','error'); return; }
+  if(!window._hsPhotoDataUrl){ hs2Open=2; hs2AccSync(); fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot','error'); return; }
   openHsModalFromStep();
 }
 function s1Locate(){
@@ -6545,7 +6605,14 @@ function s1ToggleFull(){
   if(ic) ic.innerHTML=full?'<path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5"/>':'<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>';
   setTimeout(function(){ try{ google.maps.event.trigger(_s1Map,'resize'); if(selectedLat&&selectedLng)_s1Map.setCenter({lat:selectedLat,lng:selectedLng}); }catch(e){} },80);
 }
-document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); setTimeout(s1FitMap,600); setTimeout(function(){ try{ hs2Sync(); }catch(e){} },700); });
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); setTimeout(s1FitMap,600); setTimeout(function(){ try{ hs2Sync(); }catch(e){} try{ hs2AccInit(); }catch(e){} },700);
+  setTimeout(function(){
+    try{ var g=window.genCode; if(g&&!g._hs2w){ window.genCode=function(){ g(); setTimeout(function(){ try{hs2AutoNext(1);}catch(e){} },400); }; window.genCode._hs2w=1; } }catch(e){}
+    try{ var t=window.typeCustomPin; if(t&&!t._hs2w){ window.typeCustomPin=function(v){ t(v); if((v||'').length===6){ setTimeout(function(){ try{hs2AutoNext(1);}catch(e){} },250); } else { try{hs2AccSync();}catch(e){} } }; window.typeCustomPin._hs2w=1; } }catch(e){}
+    try{ var h=window.handleHsPhoto; if(h&&!h._hs2w){ window.handleHsPhoto=function(inp){ h(inp); var n=0,iv=setInterval(function(){ n++; if(window._hsPhotoDataUrl||n>25){ clearInterval(iv); try{hs2AutoNext(2);}catch(e){} } },300); }; window.handleHsPhoto._hs2w=1; } }catch(e){}
+    try{ var c=window.clearHsPhoto; if(c&&!c._hs2w){ window.clearHsPhoto=function(){ c(); try{hs2AccSync();}catch(e){} }; window.clearHsPhoto._hs2w=1; } }catch(e){}
+  },900);
+});
 document.addEventListener('click',function(e){
   var wrap=document.querySelector('.s1-srch-wrap');
   if(wrap&&!wrap.contains(e.target)) s1HidePreds();
