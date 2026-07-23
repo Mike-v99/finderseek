@@ -474,7 +474,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Location map -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()"><b>&#10022; Suggestions</b></div></div>
-  <div id="s1-mapbox" style="position:relative;height:380px;background:#0e0c16;">
+  <div id="s1-mapbox" style="position:relative;height:440px;background:#0e0c16;">
     <div id="s1-map" style="position:absolute;inset:0;"></div>
     <div class="s1-srch-wrap">
       <div class="s1-srch">
@@ -486,6 +486,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
     <button id="s1-gps-btn" onclick="s1Locate()" class="s1-mapbtn" style="right:12px;" aria-label="My location"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg></button>
     <button id="s1-full-btn" onclick="s1ToggleFull()" class="s1-mapbtn" style="left:12px;" aria-label="Full screen"><svg id="s1-full-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+    <button class="s1-full-x" onclick="s1ToggleFull()" aria-label="Close map">&#10005;</button>
+    <button class="s1-confirm-bar" onclick="s1ToggleFull()">&#10003; Confirm Location</button>
     <div class="s1-snapchip" id="s1-snapchip" style="display:none;">
       <div class="s1-sc-top">&#128204; Pin moved. Looks like <b id="s1-snap-name"></b></div>
       <div class="s1-sc-btns">
@@ -495,7 +497,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div class="s1-sc-hint">Tip: searching by name gives your quest the best AI clues</div>
     </div>
   </div>
-  <div style="height:8px;"></div>
 </div>
 
 
@@ -5796,7 +5797,15 @@ function hbSignOut(){
 .s1-pred .pm{font-size:18px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .s1-pred .ps{font-size:18px;color:rgba(255,255,255,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .s1-mapbtn{position:absolute;bottom:12px;width:46px;height:46px;border-radius:50%;background:rgba(10,8,16,.92);border:1px solid rgba(232,168,32,.45);color:#f5c842;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:7;-webkit-tap-highlight-color:transparent;}
-.s1-mapbox-full{position:fixed !important;inset:0 !important;z-index:250 !important;height:100dvh !important;border-radius:0 !important;}
+.s1-mapbox-full{position:fixed !important;inset:0 !important;z-index:300 !important;height:100dvh !important;border-radius:0 !important;}
+.s1-mapbox-full .s1-srch-wrap{top:calc(env(safe-area-inset-top,0px) + 12px);right:70px;}
+.s1-full-x{display:none;position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;width:48px;height:48px;border-radius:50%;background:rgba(10,8,16,.92);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:20px;align-items:center;justify-content:center;cursor:pointer;z-index:9;-webkit-tap-highlight-color:transparent;}
+.s1-mapbox-full .s1-full-x{display:flex;}
+.s1-confirm-bar{display:none;position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:9;padding:17px;border:none;border-radius:14px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:18px;font-weight:500;font-family:inherit;cursor:pointer;box-shadow:0 6px 24px rgba(232,168,32,.4);text-align:center;-webkit-tap-highlight-color:transparent;}
+.s1-mapbox-full .s1-confirm-bar{display:block;}
+.s1-mapbox-full #s1-full-btn{display:none;}
+.s1-mapbox-full #s1-gps-btn{bottom:calc(env(safe-area-inset-bottom,0px) + 92px);}
+.s1-mapbox-full .s1-snapchip{bottom:calc(env(safe-area-inset-bottom,0px) + 158px);}
 .s1-snapchip{position:absolute;left:10px;right:10px;bottom:72px;background:rgba(10,8,16,.94);backdrop-filter:blur(8px);border:1px solid rgba(232,168,32,.45);border-radius:12px;padding:10px 12px;z-index:5;}
 .s1-sc-top{font-size:20px;color:rgba(255,255,255,.85);}
 .s1-sc-top b{color:#f5c842;font-weight:500;}
