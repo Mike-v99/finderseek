@@ -361,9 +361,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
 .hs2-pill{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.03);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;}
 .hs2-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-@keyframes hs2ChipIn{0%{opacity:0;transform:translateY(8px) scale(.9);}60%{opacity:1;transform:translateY(-2px) scale(1.05);}100%{opacity:1;transform:none;}}
-.hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .5s cubic-bezier(.34,1.56,.64,1) forwards;}
-@media (prefers-reduced-motion: reduce){.hs2-chip{animation:none;opacity:1;}}
+@keyframes hs2ChipIn{0%{opacity:0;transform:translateY(14px) scale(.85);}60%{opacity:1;transform:translateY(-3px) scale(1.08);}100%{opacity:1;transform:none;}}
+@keyframes hs2Rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.hs2-rise{animation:hs2Rise .5s ease-out both;}
+@keyframes hs2Pop{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
+.hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .6s cubic-bezier(.34,1.56,.64,1) forwards;}
+@media (prefers-reduced-motion: reduce){.hs2-chip,.hs2-rise,.hs2-tile,.hs2-ex{animation:none;opacity:1;}}
 .hs2-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;max-height:74vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));}
 .hs2-sheet.open{transform:translateY(0);}
 .hs2-sh-title{font-size:25px;color:#fff;flex-shrink:0;margin-top:4px;}
@@ -371,10 +374,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-sh-sub{font-size:20px;color:#9a97a8;margin:6px 0 12px;flex-shrink:0;line-height:1.4;}
 .hs2-scroll{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
 .hs2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:20px;color:#cfcbdc;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;}
+.hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:20px;color:#cfcbdc;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;animation:hs2Pop .3s ease-out both;}
 .hs2-tile.on{border-color:#e8a820;background:rgba(232,168,32,.12);color:#f5c842;}
 .hs2-tile.hs2-custom{border-style:dashed;border-color:rgba(232,168,32,.5);color:#f5c842;}
-.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:20px;color:#e2dfea;line-height:1.5;margin-bottom:8px;}
+.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:20px;color:#e2dfea;line-height:1.5;margin-bottom:8px;animation:hs2Pop .3s ease-out both;}
 .hs2-nudge{flex-shrink:0;margin-top:8px;background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.35);border-radius:12px;padding:10px 12px;color:#d8b96a;font-size:20px;line-height:1.4;}
 .qa-sheet h3{font-size:20px;color:#fff;font-weight:500;padding:8px 18px 2px;margin:0;}
 .qa-hsub{color:#f5c842;font-weight:400;font-size:18px;}
@@ -476,13 +479,13 @@ body{padding-top:env(safe-area-inset-top,0px);}
 <!-- Prize + How it works -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">PRIZE <span style="font-size:20px;font-weight:400;color:#4ade80;letter-spacing:0;margin-left:6px;" id="prize-display">$30</span></div>
+    <div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">PRIZE <span style="font-size:20px;font-weight:400;color:#4ade80;letter-spacing:0;margin-left:6px;" id="prize-display"></span></div>
     <div class="s1-hiw-pill" onclick="openS1Sheet('hiw')"><b>How it works</b><span style="color:#e8a820;font-size:18px;margin-left:6px;">&#9662;</span></div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;" id="prize-grid">
     <div class="prize-chip" onclick="selPrize(10,this)" data-val="10" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$10</div>
     <div class="prize-chip" onclick="selPrize(20,this)" data-val="20" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$20</div>
-    <div class="prize-chip active" onclick="selPrize(30,this)" data-val="30" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1.5px solid #4ade80;color:#4ade80;background:rgba(74,222,128,.1);">$30</div>
+    <div class="prize-chip" onclick="selPrize(30,this)" data-val="30" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$30</div>
     <div class="prize-chip" onclick="selPrize(50,this)" data-val="50" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$50</div>
     <div class="prize-chip" onclick="selPrize(75,this)" data-val="75" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$75</div>
     <div class="prize-chip" onclick="selPrize(100,this)" data-val="100" style="padding:13px 2px;border-radius:12px;text-align:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#fff;background:rgba(255,255,255,.03);">$100</div>
@@ -587,26 +590,23 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
 <!-- Find your hiding spot section -->
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
+<div class="hs2-rise" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
   <div style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#b8c4d0;white-space:nowrap;overflow:hidden;">GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
     <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
     <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
   </div>
   <div style="display:flex;gap:10px;margin-top:12px;">
-    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Objects</button>
+    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Find Object</button>
     <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
   </div>
   <div style="position:relative;margin-top:12px;">
-    <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px 48px 12px 12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
-    <button id="hs2-mic-btn" onclick="hs2Mic()" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#cfcbdc;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-    </button>
+    <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
   </div>
   <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
 </div>
 <!-- PIN section -->
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
+<div class="hs2-rise" style="animation-delay:.12s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
   <div style="font-size:25px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
   <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:18px;color:rgba(184,196,208,.85);margin-bottom:10px;flex-wrap:wrap;">
     <span class="hs2-chip" style="animation-delay:.05s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
@@ -636,7 +636,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 
 <!-- Photo section -->
-<div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;transition:opacity .3s;">
+<div id="photo-section-s1" class="hs2-rise" style="animation-delay:.24s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;transition:opacity .3s;">
   <div style="font-size:25px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo</div>
   <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:14px 12px;text-align:center;margin-bottom:10px;">
     <div style="font-size:18px;color:rgba(255,255,255,.5);">&#128247; No photo yet</div>
@@ -907,7 +907,7 @@ var currentStep = 1;
 var weekendSelected = false;
 var selectedClue = 5;
 var selectedDur = 2;
-var selectedPrizeVal = 30;
+var selectedPrizeVal = 0;
 
 var PERSONA_SAMPLES = {
   pirate: {emoji:'🏴‍☠️', label:'PIRATE STYLE · SAMPLE CLUE', text:'"Arrr, ye scallywag! Head to Memorial Park on Westheimer, the east entrance near the great stone fountain holds yer first secret. X marks the spot... if ye dare."'},
@@ -1167,38 +1167,17 @@ function hs2WriteNow(){
   hs2CloseSheets();
   if(d){ setTimeout(function(){ try{ d.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){} },120); }
 }
-function hs2Mic(){
-  var d=document.getElementById('qa-desc'); if(!d) return;
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(SR){
-    try{
-      if(window._hs2Rec){ try{window._hs2Rec.stop();}catch(e){} window._hs2Rec=null; hs2MicUI(false); return; }
-      var r=new SR(); r.lang='en-US'; r.interimResults=false; r.continuous=false;
-      r.onresult=function(ev){
-        var t=(ev.results&&ev.results[0]&&ev.results[0][0])?ev.results[0][0].transcript:'';
-        if(t){ d.value=(d.value?d.value+' ':'')+t; questDesc=d.value; try{saveFormState();}catch(e){} try{fsQaMirror();}catch(e){} try{checkStep1Complete();}catch(e){} hs2Count(); }
-      };
-      r.onend=function(){ window._hs2Rec=null; hs2MicUI(false); };
-      r.onerror=function(){ window._hs2Rec=null; hs2MicUI(false); try{ d.focus(); }catch(e){} showToast('Use the mic key on your keyboard to dictate'); };
-      window._hs2Rec=r; hs2MicUI(true); r.start(); return;
-    }catch(e){}
-  }
-  try{ d.focus(); var n=d.value.length; d.setSelectionRange(n,n); }catch(e){}
-  showToast('Use the mic key on your keyboard to dictate');
-}
-function hs2MicUI(on){
-  var b=document.getElementById('hs2-mic-btn');
-  if(b){ b.style.borderColor=on?'#e8a820':'rgba(255,255,255,.15)'; b.style.color=on?'#f5c842':'#cfcbdc'; }
-}
 function hs2OpenObjects(){
   var g=document.getElementById('hs2-obj-grid'); if(!g) return;
   var objs=hs2Objects();
   var sub=document.getElementById('hs2-obj-sub'); if(sub) sub.textContent=objs.length+' objects that fit '+hs2AreaLabel()+'. Step 1 of 2.';
   var tiles=objs.map(function(o,i){
-    return '<div class="hs2-tile'+(o===questSpot?' on':'')+'" onclick="hs2PickObj('+i+')">'+o+'</div>';
+    return {c:'hs2-tile'+(o===questSpot?' on':''),f:'hs2PickObj('+i+')',t:o};
   });
-  tiles.splice(1,0,'<div class="hs2-tile hs2-custom" onclick="hs2ShowCustom()">+ Custom</div>');
-  g.innerHTML=tiles.join('');
+  tiles.splice(1,0,{c:'hs2-tile hs2-custom',f:'hs2ShowCustom()',t:'+ Custom'});
+  g.innerHTML=tiles.map(function(x,j){
+    return '<div class="'+x.c+'" style="animation-delay:'+(j*0.03).toFixed(2)+'s" onclick="'+x.f+'">'+x.t+'</div>';
+  }).join('');
   var r=document.getElementById('hs2-custom-row'); if(r) r.style.display='none';
   hs2ShowSheet('hs2-obj-sheet');
 }
@@ -1263,7 +1242,7 @@ function hs2OpenExamples(){
   var t=document.getElementById('hs2-ex-obj'); if(t) t.textContent=questSpot||'your hiding spot';
   var list=document.getElementById('hs2-ex-list');
   var items=questSpot?hs2Examples(questSpot):HS2_GENERAL;
-  if(list) list.innerHTML=items.map(function(s){ return '<div class="hs2-ex">'+s+'</div>'; }).join('');
+  if(list) list.innerHTML=items.map(function(s,j){ return '<div class="hs2-ex" style="animation-delay:'+(j*0.04).toFixed(2)+'s">'+s+'</div>'; }).join('');
   hs2ShowSheet('hs2-ex-sheet');
 }
 
@@ -1311,7 +1290,7 @@ function goStep(n) {
   if (n > currentStep) {
     if (currentStep === 1) {
       var prizeOk = selectedPrizeVal && selectedPrizeVal >= 1;
-      if (!prizeOk) { showToast('Select a prize amount', 'error'); return; }
+      if (!prizeOk) { showToast('Select Prize Amount', 'error'); return; }
     }
   }
   // Step 4 → 5: soft validation only, validateQuestForm catches at submit
@@ -1325,7 +1304,7 @@ function goStep(n) {
   el.scrollTop = 0;
   window.scrollTo(0,0);
   if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 300); }
-  if (n === 2) { try{ hs2Sync(); }catch(e){} try{ document.querySelectorAll('#step2 .hs2-chip').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
+  if (n === 2) { try{ hs2Sync(); }catch(e){} try{ document.querySelectorAll('#step2 .hs2-chip, #step2 .hs2-rise').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
   if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
@@ -3247,7 +3226,7 @@ function saveFormState() {
   if (window._fsRestoring) return;
   try {
     var state = {
-      prize: selectedPrizeVal || 30,
+      prize: selectedPrizeVal || 0,
       clueCount: selectedClue || 5,
       duration: selectedDur || 2,
       weekendSelected: weekendSelected,
@@ -3317,7 +3296,7 @@ function restoreFormStateInner() {
       }
     } catch(e){}
     try { syncQaButtons(); } catch(e){}
-    if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) { selPrize(parseInt(s.prize,10), pc); } else { var pd = document.querySelector('.prize-chip[data-val="30"]'); if (pd) selPrize(30, pd); } }
+    if (s.prize) { var pc = document.querySelector('.prize-chip[data-val="'+s.prize+'"]'); if (pc) { selPrize(parseInt(s.prize,10), pc); } }
     if (s.clueCount) { selectedClue = parseInt(s.clueCount) || 5; var cb = document.querySelector('.clue-btn[data-clue="'+s.clueCount+'"]'); if (cb) selClue(s.clueCount, cb); }
     if (s.duration) { var db = document.querySelector('.dur-btn[data-dur="'+s.duration+'"]'); if (db) selDur(s.duration, db); }
     if (s.weekendSelected && !weekendSelected) toggleWeekend();
@@ -6041,14 +6020,14 @@ body.fs-mapfull .step-footer{display:none;}
 .s1-sheet{position:fixed;left:0;right:0;bottom:0;background:#131019;border-radius:22px 22px 0 0;border-top:1px solid rgba(255,255,255,.1);padding:20px 18px calc(24px + env(safe-area-inset-bottom));z-index:121;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,1,.4,1);max-height:82vh;overflow-y:auto;}
 .s1-sheet.open{transform:translateY(0);}
 .s1-grab{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 16px;}
-.s1-sheet h2{font-size:25px;font-weight:500;margin:0 0 14px;color:#fff;}
+.s1-sheet h2{font-size:30px;font-weight:500;margin:0 0 14px;color:#fff;}
 .s1-sheet h2 span{color:#f5c842;}
 .s1-hiwstep{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
-.s1-hiwstep .n{width:26px;height:26px;border-radius:50%;background:rgba(232,168,32,.15);color:#f5c842;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:500;}
-.s1-hiwstep .t{font-size:18px;color:rgba(255,255,255,.8);line-height:1.45;}
+.s1-hiwstep .n{width:30px;height:30px;border-radius:50%;background:rgba(232,168,32,.15);color:#f5c842;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0;font-weight:500;}
+.s1-hiwstep .t{font-size:23px;color:rgba(255,255,255,.8);line-height:1.45;}
 .s1-hiwstep .t b{color:#fff;font-weight:500;}
-.s1-stepchip{padding:6px 11px;border-radius:14px;background:rgba(232,168,32,.09);border:1px solid rgba(232,168,32,.3);font-size:18px;color:#f5c842;}
-.s1-steparw{color:rgba(255,255,255,.3);font-size:18px;}
+.s1-stepchip{padding:6px 11px;border-radius:14px;background:rgba(232,168,32,.09);border:1px solid rgba(232,168,32,.3);font-size:23px;color:#f5c842;}
+.s1-steparw{color:rgba(255,255,255,.3);font-size:23px;}
 .s1-cluevs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
 .s1-cv{padding:12px;border-radius:12px;font-size:18px;line-height:1.4;}
 .s1-cv.bad{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);color:#fca5a5;}
@@ -6070,7 +6049,7 @@ body.fs-mapfull .step-footer{display:none;}
   <div class="s1-hiwstep"><div class="n">2</div><div class="t"><b>Build the trail.</b> Pick objects a seeker will find on the way. Each one asks a question with exactly one answer.</div></div>
   <div class="s1-hiwstep"><div class="n">3</div><div class="t"><b>Seekers hunt.</b> Each correct answer unlocks the next clue. The last clue leads to your envelope.</div></div>
   <div class="s1-hiwstep"><div class="n">4</div><div class="t"><b>Get found.</b> The winner enters the PIN, you get notified, prize claimed.</div></div>
-  <div style="font-size:18px;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin:16px 0 9px;">YOUR CREATION STEPS</div>
+  <div style="font-size:23px;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin:16px 0 9px;">YOUR CREATION STEPS</div>
   <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px;">
     <span class="s1-stepchip">Prize</span><span class="s1-steparw">&#8594;</span>
     <span class="s1-stepchip">Location</span><span class="s1-steparw">&#8594;</span>
