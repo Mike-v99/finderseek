@@ -1136,7 +1136,7 @@ function goStep(n) {
   el.style.display = 'flex';
   el.scrollTop = 0;
   window.scrollTo(0,0);
-  if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); }
+  if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 300); }
   if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
@@ -6149,7 +6149,11 @@ function s1FitMap(){
   try{
     var f=document.querySelector('#step3 .step-footer');
     var wrap=document.getElementById('s3-content');
-    if(f&&wrap){ wrap.style.paddingBottom=(f.offsetHeight+10)+'px'; }
+    if(f&&wrap){
+      var h=f.offsetHeight;
+      if(!h||h<60){h=104;}
+      wrap.style.paddingBottom=(h+22)+'px';
+    }
     if(_s1Map){ google.maps.event.trigger(_s1Map,'resize'); }
   }catch(e){}
 }
