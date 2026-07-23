@@ -676,7 +676,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="hs2-sh-title">Examples for <span class="hs2-gold" id="hs2-ex-obj">your object</span></div>
   <div class="hs2-sh-sub">Real examples for reference. Notice how each one says which one, near what, and where on it.</div>
   <div class="hs2-scroll" id="hs2-ex-list"></div>
-  <div class="hs2-nudge">Now write yours the same way, in your own words.</div>
+  <div class="hs2-nudge" onclick="hs2WriteNow()" style="cursor:pointer;">Now write yours the same way, in your own words. &#8594; Tap here to start.</div>
 </div>
 <div id="hs2-how-sheet" class="hs2-sheet">
   <div class="qa-grab"></div>
@@ -1161,6 +1161,12 @@ function hs2CloseSheets(){
   ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
 }
 function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
+function hs2WriteNow(){
+  var d=document.getElementById('qa-desc');
+  if(d){ try{ d.focus(); var n=d.value.length; d.setSelectionRange(n,n); }catch(e){} }
+  hs2CloseSheets();
+  if(d){ setTimeout(function(){ try{ d.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){} },120); }
+}
 function hs2Mic(){
   var d=document.getElementById('qa-desc'); if(!d) return;
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1177,7 +1183,7 @@ function hs2Mic(){
       window._hs2Rec=r; hs2MicUI(true); r.start(); return;
     }catch(e){}
   }
-  try{ d.focus(); }catch(e){}
+  try{ d.focus(); var n=d.value.length; d.setSelectionRange(n,n); }catch(e){}
   showToast('Use the mic key on your keyboard to dictate');
 }
 function hs2MicUI(on){
