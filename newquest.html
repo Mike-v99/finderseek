@@ -599,7 +599,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="position:relative;margin-top:12px;">
     <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px 48px 12px 12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
-    <button onclick="hs2Mic()" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#cfcbdc;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">
+    <button id="hs2-mic-btn" onclick="hs2Mic()" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#cfcbdc;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
     </button>
   </div>
@@ -1161,7 +1161,29 @@ function hs2CloseSheets(){
   ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
 }
 function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
-function hs2Mic(){ var d=document.getElementById('qa-desc'); if(d){ try{ d.focus(); }catch(e){} } }
+function hs2Mic(){
+  var d=document.getElementById('qa-desc'); if(!d) return;
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){
+    try{
+      if(window._hs2Rec){ try{window._hs2Rec.stop();}catch(e){} window._hs2Rec=null; hs2MicUI(false); return; }
+      var r=new SR(); r.lang='en-US'; r.interimResults=false; r.continuous=false;
+      r.onresult=function(ev){
+        var t=(ev.results&&ev.results[0]&&ev.results[0][0])?ev.results[0][0].transcript:'';
+        if(t){ d.value=(d.value?d.value+' ':'')+t; questDesc=d.value; try{saveFormState();}catch(e){} try{fsQaMirror();}catch(e){} try{checkStep1Complete();}catch(e){} hs2Count(); }
+      };
+      r.onend=function(){ window._hs2Rec=null; hs2MicUI(false); };
+      r.onerror=function(){ window._hs2Rec=null; hs2MicUI(false); try{ d.focus(); }catch(e){} showToast('Use the mic key on your keyboard to dictate'); };
+      window._hs2Rec=r; hs2MicUI(true); r.start(); return;
+    }catch(e){}
+  }
+  try{ d.focus(); }catch(e){}
+  showToast('Use the mic key on your keyboard to dictate');
+}
+function hs2MicUI(on){
+  var b=document.getElementById('hs2-mic-btn');
+  if(b){ b.style.borderColor=on?'#e8a820':'rgba(255,255,255,.15)'; b.style.color=on?'#f5c842':'#cfcbdc'; }
+}
 function hs2OpenObjects(){
   var g=document.getElementById('hs2-obj-grid'); if(!g) return;
   var objs=hs2Objects();
@@ -1196,8 +1218,9 @@ function hs2Examples(obj){
   var o=obj.toLowerCase(), out=[], ords=['2nd','3rd','4th'], sides=['left','right'];
   function lm(i){ return lms[i%lms.length]; }
   function det(i){ return dets[i%dets.length]; }
+  var tails=[', sealed in a ziplock so it stays dry',', in a small magnetic key box',', wrapped in a sandwich bag',', about knee height and out of sight from the path',', at ground level under the mulch',', on the side away from foot traffic'];
   for(var i=0;out.length<20&&i<80;i++){
-    var p=i%6, s, d=det(out.length), l2=lm(i+3)===lm(i)?lm(i+4):lm(i+3);
+    var p=i%6, s, d=det(out.length)+(i%2===0?tails[(i/2)%6|0]:''), l2=lm(i+3)===lm(i)?lm(i+4):lm(i+3);
     if(p===0) s='The '+o+' closest to the '+lm(i)+', '+d;
     else if(p===1) s='The '+ords[i%3]+' '+o+' to the '+sides[i%2]+' of the '+lm(i+1)+', '+d;
     else if(p===2) s='The '+o+' directly facing the '+lm(i+2)+', '+d;
@@ -1208,11 +1231,33 @@ function hs2Examples(obj){
   }
   return out;
 }
+var HS2_GENERAL=[
+ "The 3rd bench to the left of the main fountain when you walk in the front entrance, envelope taped under the middle slat",
+ "The big oak directly behind the playground swings, in a ziplock tucked inside the knothole at chest height",
+ "The light pole closest to the parking lot exit, magnetic key box stuck to the base plate on the street side",
+ "The picnic table nearest the restroom building, taped underneath the bench seat on the side facing the pond",
+ "The welcome sign at the main entrance, in a sandwich bag under the mulch at the left post",
+ "The water fountain by the basketball courts, envelope in a ziplock wedged behind the base on the fence side",
+ "The 2nd planter to the right of the front doors, tucked just under the rim on the wall side",
+ "The flag pole in front of the building, under the edge of the base cover on the shady side",
+ "The bike rack at the side entrance, zip-tied in a bag to the last loop, down low near the ground",
+ "The bleachers on the third base side of field one, taped under the end of the second row seat",
+ "The gazebo in the center of the square, under the bench inside, back right corner",
+ "The footbridge on the walking trail, in a magnetic box under the handrail at the far end",
+ "The largest rock in the landscaping by the marquee sign, envelope in a ziplock wedged in the gap behind it",
+ "The tree stump beside the trailhead map board, tucked under loose bark on the back side",
+ "The statue in the courtyard, behind the base plaque, about ankle height",
+ "The fence corner where the dog park gate meets the path, taped low on the inside of the corner post",
+ "The stairs at the overlook, in a bag tucked under the bottom step edge, left side",
+ "The little free library on the corner of the community garden, taped under the base ledge",
+ "The bus shelter across from the ball fields, in a ziplock behind the bench leg on the glass side",
+ "The dedication plaque at the garden entrance, in a sandwich bag under the border stone directly in front"
+];
 function hs2OpenExamples(){
-  if(!questSpot){ hs2OpenObjects(); return; }
-  var t=document.getElementById('hs2-ex-obj'); if(t) t.textContent=questSpot;
+  var t=document.getElementById('hs2-ex-obj'); if(t) t.textContent=questSpot||'your hiding spot';
   var list=document.getElementById('hs2-ex-list');
-  if(list) list.innerHTML=hs2Examples(questSpot).map(function(s){ return '<div class="hs2-ex">'+s+'</div>'; }).join('');
+  var items=questSpot?hs2Examples(questSpot):HS2_GENERAL;
+  if(list) list.innerHTML=items.map(function(s){ return '<div class="hs2-ex">'+s+'</div>'; }).join('');
   hs2ShowSheet('hs2-ex-sheet');
 }
 
