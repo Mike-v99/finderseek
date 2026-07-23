@@ -359,7 +359,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);}
 .qa-sheet.open{transform:translateY(0);}
 .qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
-.hs2-pill{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:999px;border:1.5px solid rgba(232,168,32,.55);background:rgba(232,168,32,.08);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;}
+.hs2-pill{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:12px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.03);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;}
 .hs2-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @keyframes hs2ChipIn{0%{opacity:0;transform:translateY(8px) scale(.9);}60%{opacity:1;transform:translateY(-2px) scale(1.05);}100%{opacity:1;transform:none;}}
 .hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .5s cubic-bezier(.34,1.56,.64,1) forwards;}
@@ -368,14 +368,14 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-sheet.open{transform:translateY(0);}
 .hs2-sh-title{font-size:25px;color:#fff;flex-shrink:0;margin-top:4px;}
 .hs2-gold{background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hs2-sh-sub{font-size:18px;color:#9a97a8;margin:6px 0 12px;flex-shrink:0;line-height:1.4;}
+.hs2-sh-sub{font-size:20px;color:#9a97a8;margin:6px 0 12px;flex-shrink:0;line-height:1.4;}
 .hs2-scroll{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
 .hs2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:18px;color:#cfcbdc;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;}
+.hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:20px;color:#cfcbdc;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;}
 .hs2-tile.on{border-color:#e8a820;background:rgba(232,168,32,.12);color:#f5c842;}
 .hs2-tile.hs2-custom{border-style:dashed;border-color:rgba(232,168,32,.5);color:#f5c842;}
-.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:18px;color:#e2dfea;line-height:1.5;margin-bottom:8px;}
-.hs2-nudge{flex-shrink:0;margin-top:8px;background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.35);border-radius:12px;padding:10px 12px;color:#d8b96a;font-size:18px;line-height:1.4;}
+.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:20px;color:#e2dfea;line-height:1.5;margin-bottom:8px;}
+.hs2-nudge{flex-shrink:0;margin-top:8px;background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.35);border-radius:12px;padding:10px 12px;color:#d8b96a;font-size:20px;line-height:1.4;}
 .qa-sheet h3{font-size:20px;color:#fff;font-weight:500;padding:8px 18px 2px;margin:0;}
 .qa-hsub{color:#f5c842;font-weight:400;font-size:18px;}
 .qa-note{font-size:18px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
@@ -588,13 +588,21 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
 <!-- Find your hiding spot section -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
-  <div style="font-size:25px;letter-spacing:1.5px;color:#b8c4d0;line-height:1.35;">NOW GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
-  <div style="font-size:18px;color:#9a97a8;margin-top:8px;line-height:1.5;">Your quest area is <span id="hs2-area-name" style="color:#f5c842;">your quest area</span>. Scout it out, pick one object, and hide the envelope there.</div>
-  <div style="display:flex;gap:10px;margin-top:12px;">
-    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()">&#10022; <span id="hs2-obj-lbl">Suggestions</span></button>
-    <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()">&#9998; Examples</button>
+  <div style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#b8c4d0;white-space:nowrap;overflow:hidden;">GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
+    <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
+    <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
   </div>
-  <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;margin-top:12px;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Objects</button>
+    <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
+  </div>
+  <div style="position:relative;margin-top:12px;">
+    <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px 48px 12px 12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
+    <button onclick="hs2Mic()" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#cfcbdc;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+  </div>
   <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
 </div>
 <!-- PIN section -->
@@ -624,7 +632,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button id="save-code-btn" style="display:none;"></button>
   </div>
   <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
-  <div style="font-size:18px;color:#9a97a8;margin-top:10px;">Seekers enter this PIN to claim the prize.</div>
 </div>
 
 
@@ -642,7 +649,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
     <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
   </div>
-  <div style="font-size:18px;color:#9a97a8;margin-top:10px;">Seekers see this photo blurred. It slowly sharpens during the quest.</div>
 </div>
 
 <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
@@ -660,8 +666,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="hs2-scroll">
     <div id="hs2-obj-grid" class="hs2-grid"></div>
     <div id="hs2-custom-row" style="display:none;gap:8px;margin-top:10px;">
-      <input id="hs2-custom-input" type="text" maxlength="30" placeholder="Name your object..." style="flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;box-sizing:border-box;min-width:0;"/>
-      <button onclick="hs2SaveCustom()" style="padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">Use</button>
+      <input id="hs2-custom-input" type="text" maxlength="30" placeholder="Name your object..." style="flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:20px;font-family:inherit;outline:none;box-sizing:border-box;min-width:0;"/>
+      <button onclick="hs2SaveCustom()" style="padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:20px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">Use</button>
     </div>
   </div>
 </div>
@@ -671,6 +677,24 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="hs2-sh-sub">Real examples for reference. Notice how each one says which one, near what, and where on it.</div>
   <div class="hs2-scroll" id="hs2-ex-list"></div>
   <div class="hs2-nudge">Now write yours the same way, in your own words.</div>
+</div>
+<div id="hs2-how-sheet" class="hs2-sheet">
+  <div class="qa-grab"></div>
+  <div class="hs2-sh-title">How <span class="hs2-gold">hiding</span> works</div>
+  <div class="hs2-scroll" style="margin-top:10px;">
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+      <span style="background:#38bdf8;color:#04222e;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;flex-shrink:0;">1</span>
+      <div style="font-size:20px;line-height:1.5;color:#cfcbdc;"><span style="color:#fff;">Write the PIN down</span> on paper. Seekers must enter this 6-digit PIN in the app to claim the prize, so it is the proof they truly found it.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+      <span style="background:#6366f1;color:#0b0b2e;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;flex-shrink:0;">2</span>
+      <div style="font-size:20px;line-height:1.5;color:#cfcbdc;"><span style="color:#fff;">Seal it in the envelope</span> and hide it at the object you described. Your private description settles any disputes.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <span style="background:#4ade80;color:#04150a;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;flex-shrink:0;">3</span>
+      <div style="font-size:20px;line-height:1.5;color:#cfcbdc;"><span style="color:#fff;">Snap the hiding spot photo.</span> Seekers see it heavily blurred, and it slowly sharpens as the quest goes on, one more nudge toward the prize.</div>
+    </div>
+  </div>
 </div>
 
 
@@ -1126,29 +1150,27 @@ function hs2AreaLabel(){ return (typeof selectedPlaceName!=='undefined'&&selecte
 function hs2Count(){ var d=document.getElementById('qa-desc'),c=document.getElementById('hs2-count'); if(d&&c) c.textContent=d.value.length+' / 200'; }
 function hs2Sync(){
   var n=document.getElementById('hs2-area-name'); if(n) n.textContent=hs2AreaLabel();
-  var l=document.getElementById('hs2-obj-lbl'); if(l) l.textContent=questSpot||'Suggestions';
-  var sug=document.getElementById('hs2-sug-btn');
-  if(sug){
-    sug.style.background=questSpot?'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))':'rgba(232,168,32,.08)';
-    sug.style.borderColor=questSpot?'#e8a820':'rgba(232,168,32,.55)';
-  }
   var d=document.getElementById('qa-desc'); if(d&&d.value!==(questDesc||'')) d.value=questDesc||'';
   hs2Count();
 }
 function hs2ShowSheet(id){
   var back=document.getElementById('hs2-back'); if(back) back.classList.add('open');
-  ['hs2-obj-sheet','hs2-ex-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.toggle('open', s===id); });
+  ['hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.toggle('open', s===id); });
 }
 function hs2CloseSheets(){
-  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
+  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
 }
+function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
+function hs2Mic(){ var d=document.getElementById('qa-desc'); if(d){ try{ d.focus(); }catch(e){} } }
 function hs2OpenObjects(){
   var g=document.getElementById('hs2-obj-grid'); if(!g) return;
   var objs=hs2Objects();
   var sub=document.getElementById('hs2-obj-sub'); if(sub) sub.textContent=objs.length+' objects that fit '+hs2AreaLabel()+'. Step 1 of 2.';
-  g.innerHTML=objs.map(function(o,i){
+  var tiles=objs.map(function(o,i){
     return '<div class="hs2-tile'+(o===questSpot?' on':'')+'" onclick="hs2PickObj('+i+')">'+o+'</div>';
-  }).join('')+'<div class="hs2-tile hs2-custom" onclick="hs2ShowCustom()">+ Custom</div>';
+  });
+  tiles.splice(1,0,'<div class="hs2-tile hs2-custom" onclick="hs2ShowCustom()">+ Custom</div>');
+  g.innerHTML=tiles.join('');
   var r=document.getElementById('hs2-custom-row'); if(r) r.style.display='none';
   hs2ShowSheet('hs2-obj-sheet');
 }
