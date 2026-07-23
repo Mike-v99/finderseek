@@ -518,9 +518,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
   <div style="flex:1;overflow-y:auto;padding:14px 14px 8px;">
 <!-- Location map -->
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:18px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()"><b>&#10022; Suggestions</b></div></div>
-  <div id="s1-mapbox" style="position:relative;height:440px;background:#0e0c16;">
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:6px;">
+  <div style="padding:12px 14px 10px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">PICK QUEST LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()" style="width:fit-content;margin-top:10px;"><b>&#10022; Suggestions</b></div></div>
+  <div id="s1-mapbox" style="position:relative;height:calc(100dvh - 340px);min-height:380px;background:#0e0c16;">
     <div id="s1-map" style="position:absolute;inset:0;"></div>
     <div class="s1-srch-wrap">
       <div class="s1-srch">
