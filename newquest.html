@@ -516,7 +516,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
   </div>
-  <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:14px 14px calc(104px + env(safe-area-inset-bottom, 0px));">
+  <div id="s3-content" style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:14px 14px 104px;">
 <!-- Location map -->
 <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
   <div style="flex-shrink:0;padding:12px 14px 10px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">PICK QUEST LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()" style="width:fit-content;margin-top:10px;"><b>&#10022; Suggestions</b></div></div>
@@ -1136,6 +1136,7 @@ function goStep(n) {
   el.style.display = 'flex';
   el.scrollTop = 0;
   window.scrollTo(0,0);
+  if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); }
   if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
@@ -6144,6 +6145,15 @@ function initS1Map(lat,lng){
     if(inp&&!inp.value) inp.value=selectedPlaceName||selectedAddress||'';
   }
 }
+function s1FitMap(){
+  try{
+    var f=document.querySelector('#step3 .step-footer');
+    var wrap=document.getElementById('s3-content');
+    if(f&&wrap){ wrap.style.paddingBottom=(f.offsetHeight+10)+'px'; }
+    if(_s1Map){ google.maps.event.trigger(_s1Map,'resize'); }
+  }catch(e){}
+}
+window.addEventListener('resize',function(){ setTimeout(s1FitMap,50); });
 function s1BootMap(){
   if(selectedLat&&selectedLng){ initS1Map(selectedLat,selectedLng); return; }
   var fallback=function(){ initS1Map(29.7604,-95.3698); };
@@ -6362,7 +6372,7 @@ function s1ToggleFull(){
   if(ic) ic.innerHTML=full?'<path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5"/>':'<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>';
   setTimeout(function(){ try{ google.maps.event.trigger(_s1Map,'resize'); if(selectedLat&&selectedLng)_s1Map.setCenter({lat:selectedLat,lng:selectedLng}); }catch(e){} },80);
 }
-document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); });
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); setTimeout(s1FitMap,600); });
 document.addEventListener('click',function(e){
   var wrap=document.querySelector('.s1-srch-wrap');
   if(wrap&&!wrap.contains(e.target)) s1HidePreds();
