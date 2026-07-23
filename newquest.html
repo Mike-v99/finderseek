@@ -516,7 +516,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
   </div>
-  <div id="s3-content" style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:14px 14px 104px;">
+  <div id="s3-content" style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:14px 14px calc(118px + env(safe-area-inset-bottom,0px));">
 <!-- Location map -->
 <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
   <div style="flex-shrink:0;padding:12px 14px 10px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">PICK QUEST LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()" style="width:fit-content;margin-top:10px;"><b>&#10022; Suggestions</b></div></div>
@@ -6145,14 +6145,14 @@ function initS1Map(lat,lng){
     if(inp&&!inp.value) inp.value=selectedPlaceName||selectedAddress||'';
   }
 }
-function s1FitMap(){
+function s1FitMap(){ /* FS_MAP_GAP_V2 */
   try{
     var f=document.querySelector('#step3 .step-footer');
     var wrap=document.getElementById('s3-content');
-    if(f&&wrap){
-      var h=f.offsetHeight;
-      if(!h||h<60){h=104;}
-      wrap.style.paddingBottom=(h+22)+'px';
+    if(f&&wrap&&f.offsetHeight>0){
+      var target=f.offsetHeight+22;
+      var cur=parseFloat(getComputedStyle(wrap).paddingBottom)||0;
+      if(target>cur){ wrap.style.paddingBottom=target+'px'; }
     }
     if(_s1Map){ google.maps.event.trigger(_s1Map,'resize'); }
   }catch(e){}
