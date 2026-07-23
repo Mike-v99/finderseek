@@ -472,7 +472,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 
 <!-- Location map -->
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:18px;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">LOCATION</div><div class="s1-hiw-pill" onclick="openAreaSuggest()"><b>&#10022; Suggestions</b></div></div>
   <div id="s1-mapbox" style="position:relative;height:440px;background:#0e0c16;">
     <div id="s1-map" style="position:absolute;inset:0;"></div>
@@ -5806,6 +5806,8 @@ function hbSignOut(){
 .s1-mapbox-full #s1-full-btn{display:none;}
 .s1-mapbox-full #s1-gps-btn{bottom:calc(env(safe-area-inset-bottom,0px) + 92px);}
 .s1-mapbox-full .s1-snapchip{bottom:calc(env(safe-area-inset-bottom,0px) + 158px);}
+body.fs-mapfull #step1 > div:first-child{visibility:hidden;}
+body.fs-mapfull .step-footer{display:none;}
 .s1-snapchip{position:absolute;left:10px;right:10px;bottom:72px;background:rgba(10,8,16,.94);backdrop-filter:blur(8px);border:1px solid rgba(232,168,32,.45);border-radius:12px;padding:10px 12px;z-index:5;}
 .s1-sc-top{font-size:20px;color:rgba(255,255,255,.85);}
 .s1-sc-top b{color:#f5c842;font-weight:500;}
@@ -6310,6 +6312,7 @@ function s1Locate(){
 function s1ToggleFull(){
   var box=document.getElementById('s1-mapbox'); if(!box) return;
   var full=box.classList.toggle('s1-mapbox-full');
+  document.body.classList.toggle('fs-mapfull',full);
   document.body.style.overflow=full?'hidden':'';
   var ic=document.getElementById('s1-full-ic');
   if(ic) ic.innerHTML=full?'<path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5"/>':'<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>';
