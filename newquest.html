@@ -489,7 +489,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button class="s1-full-x" onclick="s1ToggleFull()" aria-label="Close map">&#10005;</button>
     <button class="s1-confirm-bar" onclick="s1ToggleFull()">&#10003; Confirm Location</button>
     <div class="s1-snapchip" id="s1-snapchip" style="display:none;">
-      <div class="s1-sc-top">&#128204; Pin moved. Looks like <b id="s1-snap-name"></b></div>
+      <button onclick="s1SnapNo()" style="position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.75);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent;">&#10005;</button>
+      <div class="s1-sc-top" style="padding-right:34px;">&#128204; Pin moved. Looks like <b id="s1-snap-name"></b></div>
       <div class="s1-sc-btns">
         <div class="s1-sc-yes" onclick="s1SnapYes()">Use this place</div>
         <div class="s1-sc-no" onclick="s1SnapNo()">Keep address only</div>
@@ -6202,16 +6203,20 @@ function s1SearchInput(v){
 function s1FetchPreds(q){
   try{
     if(typeof google==='undefined'||!google.maps.places) return;
-    if(!_autocompleteService)_autocompleteService=new google.maps.places.AutocompleteService();
     var bl=selectedLat||29.7604, bg=selectedLng||-95.3698;
-    _autocompleteService.getPlacePredictions({input:q,location:new google.maps.LatLng(bl,bg),radius:50000,componentRestrictions:{country:'us'},types:['establishment','geocode']},function(preds,st){
+    var svc=new google.maps.places.PlacesService(_s1Map||document.createElement('div'));
+    svc.textSearch({query:q,location:new google.maps.LatLng(bl,bg),radius:30000},function(res,st){
       var box=document.getElementById('s1-preds');
-      if(!preds||!preds.length){ s1HidePreds(); return; }
-      _s1Preds=preds;
-      box.innerHTML=preds.slice(0,5).map(function(p,i){
-        var main=p.structured_formatting.main_text, sub=p.structured_formatting.secondary_text||'';
-        var ic=(p.types&&p.types.indexOf('park')>=0)?'\uD83C\uDF33':(p.types&&p.types.indexOf('street_address')>=0)?'\uD83C\uDFE0':'\uD83D\uDCCD';
-        return '<div class="s1-pred" onclick="s1PickPred('+i+')"><span>'+ic+'</span><div style="min-width:0;"><div class="pm">'+main+'</div><div class="ps">'+sub+'</div></div></div>';
+      if(st!=='OK'||!res||!res.length){ s1HidePreds(); return; }
+      res.forEach(function(p){ try{ p._mi=s1Dist(bl,bg,p.geometry.location.lat(),p.geometry.location.lng()); }catch(e){ p._mi=9999; } });
+      res.sort(function(a,b){return a._mi-b._mi;});
+      _s1Preds=res.slice(0,6);
+      box.innerHTML=_s1Preds.map(function(p,i){
+        var nm=(p.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+        var ad=(p.formatted_address||'').replace(/, USA$/,'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+        var ic=(p.types&&p.types.indexOf('park')>=0)?'🌳':'📍';
+        var di=(p._mi<200)?(' · '+p._mi.toFixed(1)+' mi'):'';
+        return '<div class="s1-pred" onclick="s1PickPred('+i+')"><span>'+ic+'</span><div style="min-width:0;"><div class="pm">'+nm+di+'</div><div class="ps">'+ad+'</div></div></div>';
       }).join('');
       box.classList.add('show');
     });
@@ -6219,20 +6224,16 @@ function s1FetchPreds(q){
 }
 function s1HidePreds(){ var b=document.getElementById('s1-preds'); if(b){b.classList.remove('show');b.innerHTML='';} }
 function s1PickPred(i){
-  var p=_s1Preds[i]; if(!p) return;
+  var p=_s1Preds[i]; if(!p||!p.geometry) return;
   s1HidePreds();
-  var isPlace=p.types&&(p.types.indexOf('establishment')>=0||p.types.indexOf('point_of_interest')>=0||p.types.indexOf('park')>=0);
-  var gc=new google.maps.Geocoder();
-  gc.geocode({placeId:p.place_id},function(r,st){
-    if(st==='OK'&&r[0]){
-      var loc=r[0].geometry.location, lat=loc.lat(), lng=loc.lng();
-      if(_s1Map&&_s1Marker){ _s1Map.panTo({lat:lat,lng:lng}); _s1Map.setZoom(16); _s1Marker.setPosition({lat:lat,lng:lng}); }
-      var name=isPlace?p.structured_formatting.main_text:null;
-      s1SetLocation(lat,lng,name?{placeName:name}:{});
-      if(name){ var area=s1AreaFor(name,p.types); if(area){ questArea=area; try{syncQaButtons();}catch(e){} try{fsQaMirror();}catch(e){} } }
-      var inp=document.getElementById('s1-search'); if(inp) inp.blur();
-    }
-  });
+  var lat=p.geometry.location.lat(), lng=p.geometry.location.lng();
+  if(p.formatted_address) selectedAddress=p.formatted_address.replace(/, USA$/,'');
+  if(_s1Map&&_s1Marker){ _s1Map.panTo({lat:lat,lng:lng}); _s1Map.setZoom(16); _s1Marker.setPosition({lat:lat,lng:lng}); }
+  var isAddr=p.types&&(p.types.indexOf('street_address')>=0||p.types.indexOf('premise')>=0||p.types.indexOf('route')>=0);
+  var name=isAddr?null:p.name;
+  s1SetLocation(lat,lng,name?{placeName:name}:{});
+  if(name){ var area=s1AreaFor(name,p.types); if(area){ questArea=area; try{syncQaButtons();}catch(e){} try{fsQaMirror();}catch(e){} } }
+  var inp=document.getElementById('s1-search'); if(inp) inp.blur();
 }
 function s1ClearSearch(){
   var inp=document.getElementById('s1-search'); if(inp){inp.value='';inp.focus();}
