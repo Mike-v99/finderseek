@@ -359,6 +359,23 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .qa-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;height:68vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);}
 .qa-sheet.open{transform:translateY(0);}
 .qa-grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:10px auto 6px;flex-shrink:0;}
+.hs2-pill{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 4px;border-radius:999px;border:1.5px solid rgba(232,168,32,.55);background:rgba(232,168,32,.08);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;}
+.hs2-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@keyframes hs2ChipIn{0%{opacity:0;transform:translateY(8px) scale(.9);}60%{opacity:1;transform:translateY(-2px) scale(1.05);}100%{opacity:1;transform:none;}}
+.hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+@media (prefers-reduced-motion: reduce){.hs2-chip{animation:none;opacity:1;}}
+.hs2-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;max-height:74vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));}
+.hs2-sheet.open{transform:translateY(0);}
+.hs2-sh-title{font-size:25px;color:#fff;flex-shrink:0;margin-top:4px;}
+.hs2-gold{background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hs2-sh-sub{font-size:18px;color:#9a97a8;margin:6px 0 12px;flex-shrink:0;line-height:1.4;}
+.hs2-scroll{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+.hs2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:18px;color:#cfcbdc;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;}
+.hs2-tile.on{border-color:#e8a820;background:rgba(232,168,32,.12);color:#f5c842;}
+.hs2-tile.hs2-custom{border-style:dashed;border-color:rgba(232,168,32,.5);color:#f5c842;}
+.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:18px;color:#e2dfea;line-height:1.5;margin-bottom:8px;}
+.hs2-nudge{flex-shrink:0;margin-top:8px;background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.35);border-radius:12px;padding:10px 12px;color:#d8b96a;font-size:18px;line-height:1.4;}
 .qa-sheet h3{font-size:20px;color:#fff;font-weight:500;padding:8px 18px 2px;margin:0;}
 .qa-hsub{color:#f5c842;font-weight:400;font-size:18px;}
 .qa-note{font-size:18px;letter-spacing:1px;color:rgba(184,196,208,.5);padding:0 18px 10px;border-bottom:1px solid rgba(255,255,255,.08);}
@@ -552,7 +569,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 
   </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(1)">&#8592; Back</button><button onclick="s3Next()" id="step3-next-btn" class="step-next-btn" style="opacity:.4;">Next &#8594;</button></div>
+  <div class="step-footer"><button onclick="s3Next()" id="step3-next-btn" class="step-next-btn" style="opacity:.4;">Next &#8594;</button></div>
 </div>
 
 <div id="step2" class="step-page" style="display:none;flex-direction:column;min-height:100dvh;">
@@ -569,15 +586,26 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
+<!-- Find your hiding spot section -->
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
+  <div style="font-size:25px;letter-spacing:1.5px;color:#b8c4d0;line-height:1.35;">NOW GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
+  <div style="font-size:18px;color:#9a97a8;margin-top:8px;line-height:1.5;">Your quest area is <span id="hs2-area-name" style="color:#f5c842;">your quest area</span>. Scout it out, pick one object, and hide the envelope there.</div>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()">&#10022; <span id="hs2-obj-lbl">Suggestions</span></button>
+    <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()">&#9998; Examples</button>
+  </div>
+  <textarea id="qa-desc" rows="3" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;margin-top:12px;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
+</div>
 <!-- PIN section -->
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;">
   <div style="font-size:25px;color:#fff;font-weight:400;margin-bottom:8px;">Treasure PIN</div>
   <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:18px;color:rgba(184,196,208,.85);margin-bottom:10px;flex-wrap:wrap;">
-    <span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span>
+    <span class="hs2-chip" style="animation-delay:.05s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
     <span style="opacity:.4;">&#8250;</span>
-    <span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span>
+    <span class="hs2-chip" style="animation-delay:.3s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span></span>
     <span style="opacity:.4;">&#8250;</span>
-    <span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#4ade80;color:#04150a;font-size:12px;font-weight:500;align-items:center;justify-content:center;">3</span> <span style="color:#f5ead8;">Hide it</span>
+    <span class="hs2-chip" style="animation-delay:.55s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#4ade80;color:#04150a;font-size:12px;font-weight:500;align-items:center;justify-content:center;">3</span> <span style="color:#f5ead8;">Hide it</span></span>
   </div>
   <div class="code-wrap" style="margin-bottom:12px;">
     <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
@@ -596,28 +624,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button id="save-code-btn" style="display:none;"></button>
   </div>
   <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
-</div>
-
-
-<!-- Quest Area / Hiding Spot / Starting Point -->
-<div style="display:flex;gap:10px;">
-  <button class="qa-btn" id="qa-area-btn" onclick="openQaSheet('area')" style="flex:0 0 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
-    <span class="qa-lbl" id="qa-area-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area</span>
-  </button>
-  <button class="qa-btn" id="qa-spot-btn" onclick="openQaSheet('spot')" style="display:none;flex:0 0 calc(50% - 5px);min-width:0;align-items:center;gap:8px;padding:14px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:rgba(232,168,32,.09);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
-    <span class="qa-lbl" id="qa-spot-lbl" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Hiding Spot</span>
-  </button>
-</div>
-<div id="qa-desc-wrap" style="display:none;">
-  <div style="font-size:25px;color:#fff;margin-bottom:6px;">Hiding spot description</div>
-  <textarea id="qa-desc" rows="2" oninput="questDesc=this.value;saveFormState();fsQaMirror();checkStep1Complete();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;"></textarea>
+  <div style="font-size:18px;color:#9a97a8;margin-top:10px;">Seekers enter this PIN to claim the prize.</div>
 </div>
 
 
 <!-- Photo section -->
-<div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;opacity:.15;pointer-events:none;transition:opacity .3s;">
+<div id="photo-section-s1" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;transition:opacity .3s;">
   <div style="font-size:25px;font-weight:400;color:#ffffff;margin-bottom:2px;">Hiding spot photo</div>
   <div id="photo-placeholder-s1" style="border:1.5px dashed rgba(255,255,255,.14);border-radius:11px;padding:14px 12px;text-align:center;margin-bottom:10px;">
     <div style="font-size:18px;color:rgba(255,255,255,.5);">&#128247; No photo yet</div>
@@ -630,12 +642,35 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button onclick="document.getElementById('hs-camera-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128247; Camera</button>
     <button onclick="document.getElementById('hs-photo-input').click()" style="flex:1;padding:13px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:rgba(245,234,216,.85);font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">&#128444; Photo library</button>
   </div>
+  <div style="font-size:18px;color:#9a97a8;margin-top:10px;">Seekers see this photo blurred. It slowly sharpens during the quest.</div>
 </div>
 
 <input type="file" id="hs-photo-input" accept="image/*" style="display:none;" onchange="handleHsPhoto(this)"/>
 <input type="file" id="hs-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handleHsPhoto(this)"/>
   </div>
-  <div class="step-footer"><button class="step-back-btn" onclick="goStep(3)">&#8592; Back</button><button onclick="s2Next()" id="step2-next-btn" class="step-next-btn">Next &#8594;</button></div>
+  <div class="step-footer"><button onclick="s2Next()" id="step2-next-btn" class="step-next-btn">Next &#8594;</button></div>
+</div>
+
+<!-- Hiding spot object + examples sheets -->
+<div id="hs2-back" class="qa-sheet-back" onclick="hs2CloseSheets()"></div>
+<div id="hs2-obj-sheet" class="hs2-sheet">
+  <div class="qa-grab"></div>
+  <div class="hs2-sh-title">Pick your <span class="hs2-gold">object</span></div>
+  <div class="hs2-sh-sub" id="hs2-obj-sub">Objects that fit your area. Step 1 of 2.</div>
+  <div class="hs2-scroll">
+    <div id="hs2-obj-grid" class="hs2-grid"></div>
+    <div id="hs2-custom-row" style="display:none;gap:8px;margin-top:10px;">
+      <input id="hs2-custom-input" type="text" maxlength="30" placeholder="Name your object..." style="flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:18px;font-family:inherit;outline:none;box-sizing:border-box;min-width:0;"/>
+      <button onclick="hs2SaveCustom()" style="padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;">Use</button>
+    </div>
+  </div>
+</div>
+<div id="hs2-ex-sheet" class="hs2-sheet">
+  <div class="qa-grab"></div>
+  <div class="hs2-sh-title">Examples for <span class="hs2-gold" id="hs2-ex-obj">your object</span></div>
+  <div class="hs2-sh-sub">Real examples for reference. Notice how each one says which one, near what, and where on it.</div>
+  <div class="hs2-scroll" id="hs2-ex-list"></div>
+  <div class="hs2-nudge">Now write yours the same way, in your own words.</div>
 </div>
 
 
@@ -732,7 +767,6 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   </div>
   <div class="step-footer">
-    <button class="step-back-btn" onclick="schedBack()">← Back</button>
     <button id="btn-preview" onclick="startTheQuest()" style="flex:1;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;opacity:.4;pointer-events:none;">Select a window →</button>
     <button id="btn-create" onclick="createQuest()" style="display:none;"></button>
   </div>
@@ -1081,6 +1115,86 @@ function closeQaSheet(){
   qaEl('qa-sheet-back').classList.remove('open');
 }
 
+// ── Chunk 2: hiding spot objects + examples ────────────────────────
+var HS2_FILL = ["Bench","Tree","Sign","Rock","Planter","Light pole","Bush","Bike rack","Picnic table","Fence","Stairs","Garden bed","Flag pole","Drinking fountain","Fountain","Statue","Plaque","Bollard","Gazebo","Bridge"];
+function hs2Objects(){
+  var base=((QA_DATA[questArea]||{}).objects||[]).slice();
+  for(var i=0;i<HS2_FILL.length&&base.length<20;i++){ if(base.indexOf(HS2_FILL[i])<0) base.push(HS2_FILL[i]); }
+  return base.slice(0,20);
+}
+function hs2AreaLabel(){ return (typeof selectedPlaceName!=='undefined'&&selectedPlaceName)||questArea||'your quest area'; }
+function hs2Count(){ var d=document.getElementById('qa-desc'),c=document.getElementById('hs2-count'); if(d&&c) c.textContent=d.value.length+' / 200'; }
+function hs2Sync(){
+  var n=document.getElementById('hs2-area-name'); if(n) n.textContent=hs2AreaLabel();
+  var l=document.getElementById('hs2-obj-lbl'); if(l) l.textContent=questSpot||'Suggestions';
+  var sug=document.getElementById('hs2-sug-btn');
+  if(sug){
+    sug.style.background=questSpot?'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))':'rgba(232,168,32,.08)';
+    sug.style.borderColor=questSpot?'#e8a820':'rgba(232,168,32,.55)';
+  }
+  var d=document.getElementById('qa-desc'); if(d&&d.value!==(questDesc||'')) d.value=questDesc||'';
+  hs2Count();
+}
+function hs2ShowSheet(id){
+  var back=document.getElementById('hs2-back'); if(back) back.classList.add('open');
+  ['hs2-obj-sheet','hs2-ex-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.toggle('open', s===id); });
+}
+function hs2CloseSheets(){
+  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
+}
+function hs2OpenObjects(){
+  var g=document.getElementById('hs2-obj-grid'); if(!g) return;
+  var objs=hs2Objects();
+  var sub=document.getElementById('hs2-obj-sub'); if(sub) sub.textContent=objs.length+' objects that fit '+hs2AreaLabel()+'. Step 1 of 2.';
+  g.innerHTML=objs.map(function(o,i){
+    return '<div class="hs2-tile'+(o===questSpot?' on':'')+'" onclick="hs2PickObj('+i+')">'+o+'</div>';
+  }).join('')+'<div class="hs2-tile hs2-custom" onclick="hs2ShowCustom()">+ Custom</div>';
+  var r=document.getElementById('hs2-custom-row'); if(r) r.style.display='none';
+  hs2ShowSheet('hs2-obj-sheet');
+}
+function hs2PickObj(i){ var o=hs2Objects()[i]; if(o) hs2SetObj(o); }
+function hs2ShowCustom(){
+  var r=document.getElementById('hs2-custom-row');
+  if(r){ r.style.display='flex'; var i=document.getElementById('hs2-custom-input'); if(i){ i.value=''; try{i.focus();}catch(e){} } }
+}
+function hs2SaveCustom(){
+  var i=document.getElementById('hs2-custom-input'); var v=(i&&i.value||'').trim();
+  if(!v){ showToast('Name your object first','error'); return; }
+  hs2SetObj(v);
+}
+function hs2SetObj(o){
+  questSpot=o;
+  try{saveFormState();}catch(e){} try{fsQaMirror();}catch(e){} try{checkStep1Complete();}catch(e){}
+  hs2Sync(); hs2OpenExamples();
+}
+function hs2Examples(obj){
+  var lms=((QA_DATA[questArea]||{}).starts||['Main entrance','Parking lot','Playground','Restrooms']).map(function(s){return s.toLowerCase();});
+  var dets=(OBJ_LIB[obj]||[]).slice();
+  if(!dets.length) dets=['envelope taped underneath in a ziplock','in a small magnetic box on the frame','tucked at the base out of sight','zip-tied low on the back side','under a flat rock right beside it'];
+  var o=obj.toLowerCase(), out=[], ords=['2nd','3rd','4th'], sides=['left','right'];
+  function lm(i){ return lms[i%lms.length]; }
+  function det(i){ return dets[i%dets.length]; }
+  for(var i=0;out.length<20&&i<80;i++){
+    var p=i%6, s, d=det(out.length), l2=lm(i+3)===lm(i)?lm(i+4):lm(i+3);
+    if(p===0) s='The '+o+' closest to the '+lm(i)+', '+d;
+    else if(p===1) s='The '+ords[i%3]+' '+o+' to the '+sides[i%2]+' of the '+lm(i+1)+', '+d;
+    else if(p===2) s='The '+o+' directly facing the '+lm(i+2)+', '+d;
+    else if(p===3) s='The only '+o+' between the '+lm(i)+' and the '+l2+', '+d;
+    else if(p===4) s='The '+o+' farthest from the '+lm(i+2)+', '+d;
+    else s='Standing at the '+lm(i)+', the first '+o+' on your '+sides[i%2]+', '+d;
+    if(out.indexOf(s)<0) out.push(s);
+  }
+  return out;
+}
+function hs2OpenExamples(){
+  if(!questSpot){ hs2OpenObjects(); return; }
+  var t=document.getElementById('hs2-ex-obj'); if(t) t.textContent=questSpot;
+  var list=document.getElementById('hs2-ex-list');
+  if(list) list.innerHTML=hs2Examples(questSpot).map(function(s){ return '<div class="hs2-ex">'+s+'</div>'; }).join('');
+  hs2ShowSheet('hs2-ex-sheet');
+}
+
+
 // ── Custom PIN ─────────────────────────────────────────────────────
 function toggleCustomPin(){
   var inp = document.getElementById('custom-pin-input');
@@ -1138,6 +1252,7 @@ function goStep(n) {
   el.scrollTop = 0;
   window.scrollTo(0,0);
   if (n === 3) { setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 30); setTimeout(function(){ try{ s1FitMap(); }catch(e){} }, 300); }
+  if (n === 2) { try{ hs2Sync(); }catch(e){} try{ document.querySelectorAll('#step2 .hs2-chip').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
   if (n === 3 && typeof _s1Map !== 'undefined' && _s1Map) {
     setTimeout(function(){
       try {
@@ -3223,7 +3338,7 @@ function clearFormState() {
     // Reset step1 UI
     ['c1','c2','c3','c4','c5','c6'].forEach(function(id){ var el=document.getElementById(id); if(el)el.textContent=''; });
     var saveBtn=document.getElementById('save-code-btn'); if(saveBtn)saveBtn.style.display='none';
-    var photoSec=document.getElementById('photo-section-s1'); if(photoSec){photoSec.style.opacity='.15';photoSec.style.pointerEvents='none';}
+    var photoSec=document.getElementById('photo-section-s1'); if(photoSec){photoSec.style.opacity='1';photoSec.style.pointerEvents='auto';}
     var placeholder=document.getElementById('photo-placeholder-s1'); if(placeholder)placeholder.style.display='block';
     var preview=document.getElementById('photo-preview-s1'); if(preview)preview.style.display='none';
     var nextBtn=document.getElementById('step1-next-btn'); if(nextBtn){nextBtn.style.opacity='.4';nextBtn.style.pointerEvents='auto';}
@@ -6355,8 +6470,8 @@ function s2Next(){
   var pinWrap=document.querySelector('#step2 .code-wrap');
   if(pinWrap&&pinWrap.parentElement){ pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk?'field-valid':'field-invalid'); }
   if(!pinOk){ showToast('Generate or enter your 6-digit PIN first','error'); return; }
-  if(!questArea){ fsFlashMissing('qa-area-btn'); showToast('Pick a Quest Area','error'); return; }
-  if(!questSpot){ fsFlashMissing('qa-spot-btn'); showToast('Pick a Hiding Spot','error'); return; }
+  if(!questArea){ showToast('Pick your quest location first','error'); return; }
+  if(!questSpot){ fsFlashMissing('hs2-sug-btn'); showToast('Pick your hiding spot object','error'); return; }
   if(!(questDesc||'').trim()){ fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description','error'); return; }
   if(!window._hsPhotoDataUrl){ fsFlashMissing('photo-section-s1'); showToast('Take a photo of the hiding spot','error'); return; }
   openHsModalFromStep();
@@ -6378,7 +6493,7 @@ function s1ToggleFull(){
   if(ic) ic.innerHTML=full?'<path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5"/>':'<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>';
   setTimeout(function(){ try{ google.maps.event.trigger(_s1Map,'resize'); if(selectedLat&&selectedLng)_s1Map.setCenter({lat:selectedLat,lng:selectedLng}); }catch(e){} },80);
 }
-document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); setTimeout(s1FitMap,600); });
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,400); setTimeout(s1FitMap,600); setTimeout(function(){ try{ hs2Sync(); }catch(e){} },700); });
 document.addEventListener('click',function(e){
   var wrap=document.querySelector('.s1-srch-wrap');
   if(wrap&&!wrap.contains(e.target)) s1HidePreds();
