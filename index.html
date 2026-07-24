@@ -372,9 +372,9 @@ body::after {
 
 
 
-.el { opacity: 0; transform: translateY(20px); transition: opacity .6s cubic-bezier(0.22,1,0.36,1), transform .6s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
-.el.from-left { transform: translateX(-24px) translateY(0); }
-.el.from-right { transform: translateX(24px) translateY(0); }
+.el { opacity: 0; transform: translateY(30px); transition: opacity .55s cubic-bezier(0.22,1,0.36,1), transform .55s cubic-bezier(0.3,1.3,0.45,1); will-change: opacity, transform; }
+.el.from-left { transform: translateX(-64px) translateY(0); }
+.el.from-right { transform: translateX(64px) translateY(0); }
 .el.from-scale { transform: scale(.7); }
 .el.show { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
 
@@ -587,12 +587,12 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </a>
       <a class="btn-cta btn-hide el from-right" data-d="475" href="newquest.html?from=app">
         <span class="btn-cta-icon" style="color:#d0e4f0;">+</span>
-        <span class="btn-cta-label">START QUEST</span>
+        <span class="btn-cta-label">CREATE QUEST</span>
       </a>
     </div>
 
     <!-- FILTER BUTTONS -->
-    <div class="filter-btns-wrap el from-scale" data-d="575">
+    <div class="filter-btns-wrap el" data-d="575">
       <div class="filter-btns">
         <button class="filter-btn saved" id="filter-saved" onclick="applyFilter('saved')">
           <div class="pin-circle">
@@ -616,7 +616,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   </div>
 
   <!-- SEARCH -->
-  <div class="search-row el from-right" data-d="675" id="search-row">
+  <div class="search-row el" data-d="675" id="search-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Search quests..." oninput="filterQuests(this.value)" id="quest-search-input"/>
@@ -645,7 +645,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div class="sections" id="quest-sections">
-    <div class="section section-active el from-left open" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
+    <div class="section section-active el open" data-d="750" id="sec-active" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -662,7 +662,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-    <div class="section section-scheduled el from-right" data-d="825" id="sec-scheduled" onclick="this.classList.toggle('open')">
+    <div class="section section-scheduled el" data-d="825" id="sec-scheduled" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -679,7 +679,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
       </div>
     </div>
 
-    <div class="section section-completed el from-left" data-d="900" id="sec-completed" onclick="this.classList.toggle('open')">
+    <div class="section section-completed el" data-d="900" id="sec-completed" onclick="this.classList.toggle('open')">
       <div class="section-accent"></div>
       <div class="section-body">
         <div class="section-left">
@@ -841,6 +841,14 @@ window.addEventListener('DOMContentLoaded', function() {
   triggerFlyIn();
   loadQuests();
   loadHeroAuth();
+});
+
+// Replay fly-in when returning to home via back navigation (bfcache restore)
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) {
+    document.querySelectorAll('.el').forEach(function(el) { el.classList.remove('show'); });
+    triggerFlyIn();
+  }
 });
 
 async function loadHeroAuth() {
