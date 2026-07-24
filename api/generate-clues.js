@@ -28,6 +28,11 @@ export default async function handler(req, res) {
 
   if (!clueCount) return res.status(400).json({ error: 'Missing clueCount' });
 
+  // Regeneration cap: initial generation sends regenCount 0; re-rolls send 1..3.
+  // Anything past 3 is rejected server-side so replayed network calls cannot drain API credits.
+  const regenCount = parseInt(req.body.regenCount || 0, 10);
+  if (regenCount > 3) return res.status(429).json({ error: 'Regeneration limit reached (3 per quest)' });
+
   console.log('[generate-clues] INPUT:', JSON.stringify({
     city, searchAddress, placeName, neighborhood,
     description: description?.substring(0,80),

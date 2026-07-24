@@ -180,6 +180,29 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, generated: Object.keys(results).length, results, errors });
   }
 
+  // ── Preview mode: on-demand persona audio, cached by content hash, no DB write ──
+  // Auth required (same gate as above). Client falls back to device TTS on 401.
+  if (mode === 'preview') {
+    if (!text) return res.status(400).json({ error: 'Missing text' });
+    if (text.length > 400) return res.status(400).json({ error: 'Text too long for preview' });
+    try {
+      const personaKey = (persona || 'alloy').toLowerCase();
+      const { voice, speed } = PERSONA_VOICE[personaKey] || DEFAULT_VOICE;
+      // Content-addressed cache: identical text + voice never generates twice
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha1').update(voice + '|' + speed + '|' + text).digest('hex');
+      const storagePath = `clue-audio/previews/${hash}.mp3`;
+      const publicUrl = `${SB_URL}/storage/v1/object/public/${storagePath}`;
+      const head = await fetch(publicUrl, { method: 'HEAD' });
+      if (head.ok) return res.status(200).json({ success: true, audioUrl: publicUrl, cached: true });
+      const audioUrl = await generateAndStore(text, voice, speed, storagePath, 'tts-1');
+      return res.status(200).json({ success: true, audioUrl, cached: false });
+    } catch(err) {
+      console.error('[tts] preview error:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   // ── Single clue audio ──
   if (!text || !clueId) {
     return res.status(400).json({ error: 'Missing text or clueId' });
