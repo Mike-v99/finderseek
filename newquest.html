@@ -415,7 +415,15 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .cb3-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;}
 .cb3-lbl{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.45);font-weight:500;}
 .cb3-lblrow{display:flex;justify-content:space-between;align-items:center;}
-.cb3-qm{width:24px;height:24px;border-radius:50%;background:rgba(232,168,32,.12);border:1px solid rgba(232,168,32,.4);color:#e8a820;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.cb3-qm{width:32px;height:32px;border-radius:50%;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;animation:fsHelpPulse 3s ease-in-out infinite;}
+.cb3-starttrail .cb3-tlabel{font-size:25px;}
+.cb3-startcard .cb3-lbl{font-size:25px;color:#ffffff;}
+.cb3-startcard .cb3-sublbl{font-size:25px;}
+.cb3-startcard .cb3-dd .cb3-dv{font-size:25px;}
+.cb3-startcard .cb3-exact{font-size:25px;}
+.cb3-startcard .cb3-editline{font-size:25px;}
+.gm-style-cc div{background:rgba(13,11,24,.8)!important;}
+.gm-style-cc a,.gm-style-cc span,.gm-style-cc button{color:#b8c4d0!important;}
 .cb3-dd{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 15px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(232,168,32,.4);cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .cb3-dd .cb3-dv{font-size:16px;color:#f5c842;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .cb3-dd .cb3-da{color:#e8a820;font-size:14px;flex-shrink:0;}
@@ -708,7 +716,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <div style="height:2px;"></div>
 <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 0;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 14px 10px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">VOICE &amp; TEXT STYLE</div><button onclick="openS1Sheet('voices')" style="width:36px;height:36px;border-radius:50%;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.4);color:#f5c842;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent;">?</button></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 14px 10px;"><div style="font-size:25px;letter-spacing:2px;color:#b8c4d0;">VOICE &amp; TEXT STYLE</div><button onclick="openS1Sheet('voices')" class="hs2-help-pulse" style="width:32px;height:32px;border-radius:50%;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.7);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent;">?</button></div>
   <div class="ps-grid">
     <div class="ps-tile persona-card selected" data-persona="pirate" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127988;&#8205;&#9760;&#65039;</span><div class="persona-name ps-name">Pirate</div></div></div>
     <div class="ps-tile persona-card" data-persona="poetic" onclick="selPersona(this)"><div class="ps-in"><span class="ps-emoji">&#127800;</span><div class="persona-name ps-name">Poetic</div></div></div>
@@ -6355,9 +6363,9 @@ function renderHsModal() {
     var spDone = !!spName;
     var sdDone = !!((_hsData.startDesc || '').trim());
     panel.innerHTML =
-      '<div class="cb3-au1" style="flex-shrink:0;">' + cb3TrailHtml() +
+      '<div class="cb3-au1 cb3-starttrail" style="flex-shrink:0;">' + cb3TrailHtml() +
         '<div class="cb3-tlabel"><b>START</b> \u00b7 where every seeker begins</div></div>' +
-      '<div class="cb3-card cb3-au2" style="flex-shrink:0;">' +
+      '<div class="cb3-card cb3-au2 cb3-startcard" style="flex-shrink:0;">' +
         '<div class="cb3-lblrow" style="margin:0 0 12px;"><div class="cb3-lbl">STARTING POINT</div><div class="cb3-qm" onclick="cb3StartHelp()">?</div></div>' +
         '<div class="cb3-dd' + (spDone ? ' ok' : '') + '" id="cb3-sp-dd" onclick="cb3OpenStartSheet()">' +
           '<div class="cb3-dv" id="cb3-sp-val">' + (spDone ? (_hsData.startCustom ? '\u270E ' : '') + cbEsc(spName) : 'Pick a Starting Point') + '</div>' +
