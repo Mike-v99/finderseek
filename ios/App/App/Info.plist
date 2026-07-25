@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>FinderSeek uses the microphone so you can dictate quest descriptions and clues instead of typing.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>FinderSeek converts your speech to text to fill in quest descriptions and clues.</string>
 	<key>GCSupportsGameMode</key>
 	<false/>
 	<key>LSSupportsGameMode</key>

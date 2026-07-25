@@ -383,6 +383,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .cb3-dd:not(.ok) .cb3-da{color:#fff;}
 .cb3-ddchip:not(.ok){border-color:rgba(255,255,255,.9);background:rgba(255,255,255,.06);color:#fff;animation:fsSugPulse 2.4s ease-in-out infinite;}
 .cb3-ddchip:not(.ok) .cb3-da{color:#fff;}
+.fs-mic{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(18,16,28,.85);color:#f5c842;font-size:19px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0;z-index:5;}
+.fs-mic.rec{border-color:#ef4444;color:#ef4444;animation:fsMicPulse 1.2s ease-in-out infinite;}
+@keyframes fsMicPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5);}50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}}
 .hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
 .hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
@@ -7598,6 +7601,108 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(s1BootMap,40
 document.addEventListener('click',function(e){
   var wrap=document.querySelector('.s1-srch-wrap');
   if(wrap&&!wrap.contains(e.target)) s1HidePreds();
+});
+</script>
+
+<script>
+/* FinderSeek voice input (mic) */
+var _fsMicActive = null;
+function fsMicSupport(){
+  try{
+    if (window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() && Capacitor.Plugins && Capacitor.Plugins.SpeechRecognition) return 'native';
+  }catch(e){}
+  if (window.SpeechRecognition || window.webkitSpeechRecognition) return 'web';
+  return '';
+}
+function fsMicAttach(fieldId){
+  var sup = fsMicSupport(); if (!sup) return;
+  var f = document.getElementById(fieldId); if (!f) return;
+  if (f.dataset.mic === '1') return;
+  f.dataset.mic = '1';
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;';
+  f.parentNode.insertBefore(wrap, f);
+  wrap.appendChild(f);
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.id = 'fs-mic-' + fieldId;
+  b.className = 'fs-mic';
+  b.innerHTML = '\uD83C\uDFA4';
+  b.onclick = function(ev){ ev.preventDefault(); ev.stopPropagation(); fsMicToggle(fieldId); };
+  wrap.appendChild(b);
+}
+function fsMicSetRec(fieldId, on){
+  var b = document.getElementById('fs-mic-' + fieldId);
+  if (b) b.classList.toggle('rec', !!on);
+}
+function fsMicWrite(fieldId, txt){
+  var f = document.getElementById(fieldId); if (!f || !_fsMicActive) return;
+  var base = _fsMicActive.base;
+  var v = base + (base && txt ? ' ' : '') + txt;
+  var max = parseInt(f.getAttribute('maxlength') || '0', 10);
+  if (max) v = v.slice(0, max);
+  f.value = v;
+  try { f.dispatchEvent(new Event('input', {bubbles:true})); } catch(e){}
+}
+function fsMicStop(){
+  var a = _fsMicActive; if (!a) return;
+  _fsMicActive = null;
+  fsMicSetRec(a.fieldId, false);
+  if (a.native) {
+    try { Capacitor.Plugins.SpeechRecognition.stop(); } catch(e){}
+    try { Capacitor.Plugins.SpeechRecognition.removeAllListeners(); } catch(e){}
+  } else if (a.rec) {
+    try { a.rec.onend = null; a.rec.stop(); } catch(e){}
+  }
+}
+function fsMicToggle(fieldId){
+  if (_fsMicActive) { var same = _fsMicActive.fieldId === fieldId; fsMicStop(); if (same) return; }
+  var sup = fsMicSupport(); if (!sup) return;
+  var f = document.getElementById(fieldId); if (!f) return;
+  var lang = (navigator.language || 'en-US');
+  if (sup === 'native') {
+    var SR = Capacitor.Plugins.SpeechRecognition;
+    _fsMicActive = { fieldId: fieldId, base: (f.value || '').trim(), native: true };
+    fsMicSetRec(fieldId, true);
+    var perm = SR.requestPermissions ? SR.requestPermissions() : (SR.requestPermission ? SR.requestPermission() : Promise.resolve({}));
+    Promise.resolve(perm).then(function(p){
+      var st = (p && (p.speechRecognition || p.permission)) || '';
+      if (st && st !== 'granted') { fsMicStop(); showToast('Microphone access needed. Enable it in Settings.', 'error'); return null; }
+      if (SR.removeAllListeners) SR.removeAllListeners();
+      SR.addListener('partialResults', function(d){
+        if (d && d.matches && d.matches.length) fsMicWrite(fieldId, d.matches[0]);
+      });
+      SR.addListener('listeningState', function(d){
+        if (d && d.status === 'stopped' && _fsMicActive && _fsMicActive.fieldId === fieldId) fsMicStop();
+      });
+      return SR.start({ language: lang, partialResults: true, popup: false });
+    }).catch(function(){ fsMicStop(); showToast('Voice input could not start', 'error'); });
+  } else {
+    var Ctor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec;
+    try { rec = new Ctor(); } catch(e){ return; }
+    rec.lang = lang; rec.interimResults = true; rec.continuous = false;
+    _fsMicActive = { fieldId: fieldId, base: (f.value || '').trim(), native: false, rec: rec };
+    fsMicSetRec(fieldId, true);
+    rec.onresult = function(e){
+      var t = '';
+      for (var i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      fsMicWrite(fieldId, t.trim());
+    };
+    rec.onerror = function(e){ fsMicStop(); if (e && e.error === 'not-allowed') showToast('Microphone access needed', 'error'); };
+    rec.onend = function(){ if (_fsMicActive && _fsMicActive.fieldId === fieldId) fsMicStop(); };
+    try { rec.start(); } catch(e){ fsMicStop(); }
+  }
+}
+function fsMicSync(){
+  ['cb3-sp-desc','qa-desc','cb3-exact'].forEach(fsMicAttach);
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(fsMicSync, 300);
+  try {
+    var _fsOrigRender = renderHsModal;
+    renderHsModal = function(){ _fsOrigRender.apply(this, arguments); try{ fsMicSync(); }catch(e){} };
+  } catch(e){}
 });
 </script>
 
