@@ -373,7 +373,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-card.closedacc.doneacc{border-color:rgba(74,222,128,.6)!important;}
 .hs2-chev{flex-shrink:0;transition:transform .3s,color .3s;color:#8b8898;font-size:20px;line-height:1;}
 .hs2-card{transition:border-color .3s;}
-.hs2-card.openacc{border-color:rgba(232,168,32,.45)!important;}
+.hs2-card.openacc{border-color:rgba(255,255,255,.55)!important;}
+@keyframes fsHelpPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,.45);}50%{box-shadow:0 0 0 7px rgba(232,168,32,0);}}
+.hs2-help-pulse{animation:fsHelpPulse 3s ease-in-out infinite;}
+@keyframes fsSugPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.35);}70%{box-shadow:0 0 0 7px rgba(255,255,255,0);}100%{box-shadow:0 0 0 0 rgba(255,255,255,0);}}
+#hs2-sug-btn.needspick{border:1.5px solid rgba(255,255,255,.9)!important;animation:fsSugPulse 2.4s ease-in-out infinite;}
 .hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
 .hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
@@ -842,16 +846,16 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="hs2-acc-body">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
     <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
-    <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
+    <button onclick="hs2OpenHow()" class="hs2-help-pulse" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#fff;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
   </div>
   <div style="display:flex;gap:10px;margin-top:12px;">
-    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Find Object</button>
+    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> <span id="hs2-sug-lbl">Find Object</span></button>
     <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
   </div>
   <div style="position:relative;margin-top:12px;">
     <textarea id="qa-desc" rows="5" maxlength="200" placeholder="Describe your hiding spot... Where exactly? In front or behind? Next to what?" oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:25px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
   </div>
-  <div id="qa-ex-ref" style="display:none;margin-top:6px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);font-size:17px;line-height:1.45;color:rgba(255,255,255,.45);font-style:italic;"></div>
+  <div id="qa-ex-ref" style="display:none;margin-top:6px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);font-size:17px;line-height:1.45;color:#fff;font-style:italic;"></div>
   <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
   <div style="display:flex;justify-content:flex-end;margin-top:12px;"><button class="hs2-complete" onclick="hs2Complete(0)">Complete &#10003;</button></div>
   </div>
@@ -1413,10 +1417,17 @@ function hs2Objects(){
 }
 function hs2AreaLabel(){ return (typeof selectedPlaceName!=='undefined'&&selectedPlaceName)||questArea||'your quest area'; }
 function hs2Count(){ var d=document.getElementById('qa-desc'),c=document.getElementById('hs2-count'); if(d&&c) c.textContent=d.value.length+' / 200'; try{ hs2AccSync(); }catch(e){} }
+function hs2SugSync(){
+  var b=document.getElementById('hs2-sug-btn'); if(!b) return;
+  var l=document.getElementById('hs2-sug-lbl');
+  var name=(questSpot||'').split(' - ')[0];
+  if(l) l.textContent=name||'Find Object';
+  b.classList.toggle('needspick', !name);
+}
 function hs2Sync(){
   var n=document.getElementById('hs2-area-name'); if(n) n.textContent=hs2AreaLabel();
   var d=document.getElementById('qa-desc'); if(d&&d.value!==(questDesc||'')) d.value=questDesc||'';
-  hs2Count();
+  hs2Count(); try{ hs2SugSync(); }catch(e){}
 }
 function hs2ShowSheet(id){
   var back=document.getElementById('hs2-back'); if(back) back.classList.add('open');
@@ -4119,6 +4130,7 @@ function initMap(lat, lng) {
   _map = new google.maps.Map(mapEl, {
     center: { lat: lat, lng: lng },
     zoom: 15,
+    keyboardShortcuts: false,
     disableDefaultUI: true,
     zoomControl: false,
     gestureHandling: 'greedy',
@@ -5164,6 +5176,7 @@ function initModalMap(lat, lng) {
   _modalMap = new google.maps.Map(document.getElementById('map-modal-container'), {
     center: {lat: lat, lng: lng},
     zoom: 15,
+    keyboardShortcuts: false,
     disableDefaultUI: true,
     zoomControl: false,
     gestureHandling: 'greedy',
@@ -7241,7 +7254,7 @@ function s1Dist(lat1,lng1,lat2,lng2){
 function initS1Map(lat,lng){
   if(typeof google==='undefined'||!google.maps||!google.maps.Map){ setTimeout(function(){initS1Map(lat,lng);},150); return; }
   var el=document.getElementById('s1-map'); if(!el||_s1Map) return;
-  _s1Map=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:15,disableDefaultUI:true,zoomControl:false,gestureHandling:'greedy',clickableIcons:false,styles:(typeof DARK_STYLES!=='undefined')?DARK_STYLES:[]});
+  _s1Map=new google.maps.Map(el,{center:{lat:lat,lng:lng},zoom:15,keyboardShortcuts:false,disableDefaultUI:true,zoomControl:false,gestureHandling:'greedy',clickableIcons:false,styles:(typeof DARK_STYLES!=='undefined')?DARK_STYLES:[]});
   _s1Marker=new google.maps.Marker({position:{lat:lat,lng:lng},map:_s1Map,draggable:true,icon:{url:S1_PIN_ICON_URL,scaledSize:new google.maps.Size(34,40),anchor:new google.maps.Point(17,40)}});
   google.maps.event.addListener(_s1Marker,'dragend',function(){var p=_s1Marker.getPosition();s1SetLocation(p.lat(),p.lng(),{fromDrag:true});});
   google.maps.event.addListener(_s1Map,'click',function(e){_s1Marker.setPosition(e.latLng);s1SetLocation(e.latLng.lat(),e.latLng.lng(),{fromDrag:true});});
