@@ -151,7 +151,7 @@ body.kb-up /* bottom-nav removed */
 @supports(padding-bottom:env(safe-area-inset-bottom)){/* bottom-nav removed */.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
 
 /* Toast & loader */
-.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(–cream);font-size:18px;font-weight:400;z-index:9999;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;}
+.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(–cream);font-size:18px;font-weight:400;z-index:23500;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
 .toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
@@ -259,7 +259,8 @@ body.kb-up /* bottom-nav removed */
 .gold{color:#e8a820;}
 
 /* ── STEP NAVIGATION FOOTER ────────────────────────────────── */
-.step-footer{padding:16px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,.95) 70%, rgba(10,8,16,0) 100%);position:fixed;bottom:0;left:0;right:0;display:flex;gap:10px;align-items:center;z-index:100;max-width:480px;margin:0 auto;}
+.step-page>div[style*="overflow-y:auto"]{padding-bottom:120px !important;}
+.step-footer{padding:16px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top, rgba(10,8,16,1) 0%, rgba(10,8,16,1) 55%, rgba(10,8,16,0) 100%);position:fixed;bottom:0;left:0;right:0;display:flex;gap:10px;align-items:center;z-index:100;max-width:480px;margin:0 auto;}
 .step-next-btn{flex:1;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:500;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:linear-gradient(135deg,#b45309,#c9890c,#e8a820);color:#fff;box-shadow:0 6px 28px rgba(201,137,12,.35);transition:transform .15s,opacity .2s;-webkit-tap-highlight-color:transparent;}
 .step-next-btn:active{transform:scale(.98);}
 .step-next-btn:disabled{opacity:.4;pointer-events:none;}
@@ -365,8 +366,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 @keyframes hs2Rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 .hs2-acc-hd{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .hs2-acc-t{flex:1;min-width:0;}
-.hs2-complete{padding:12px 24px;border-radius:12px;border:1px solid rgba(74,222,128,.55);background:rgba(74,222,128,.1);color:#4ade80;font-size:20px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hs2-complete{padding:12px 24px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.06);color:#fff;font-size:20px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .2s,border-color .2s,background .2s;}
+.hs2-card.userdone .hs2-complete{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.1);color:#4ade80;}
 .hs2-complete:active{transform:scale(.97);}
+#save-code-btn{display:none !important;}
 .hs2-card.closedacc.doneacc{border-color:rgba(74,222,128,.6)!important;}
 .hs2-chev{flex-shrink:0;transition:transform .3s,color .3s;color:#8b8898;font-size:20px;line-height:1;}
 .hs2-card{transition:border-color .3s;}
@@ -376,11 +379,206 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
 .hs2-rise{animation:hs2Rise .5s ease-out both;}
 @keyframes hs2Pop{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
-.hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2ChipIn .9s cubic-bezier(.34,1.56,.64,1) forwards, hs2ChipBob 2.6s ease-in-out infinite;}
+.hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2SpringPop .6s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes hs2SpringPop{0%{opacity:0;transform:scale(.3);}70%{opacity:1;transform:scale(1.12);}100%{opacity:1;transform:scale(1);}}
+@keyframes hs2SepIn{to{opacity:.4;}}
+#fs-pin-card .code-digit{opacity:0;animation:hs2SpringPop .5s cubic-bezier(.34,1.56,.64,1) .7s forwards;}
 @keyframes hs2ChipBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-@media (prefers-reduced-motion: reduce){.hs2-chip,.hs2-rise,.hs2-tile,.hs2-ex{animation:none;opacity:1;}}
+@media (prefers-reduced-motion: reduce){.hs2-chip,.hs2-rise,.hs2-tile,.hs2-ex,#fs-pin-card .code-digit{animation:none;opacity:1;}}
 .hs2-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;max-height:74vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));}
 .hs2-sheet.open{transform:translateY(0);}
+/* cb3: rebranded clue builder (Stage 1: Start Location) */
+.hs2-sheet.cb3-spring{transition:transform .38s cubic-bezier(.32,1.4,.5,1);}
+.cb3-back-circ{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-trail{display:flex;align-items:center;gap:0;padding:6px 2px 0;overflow-x:auto;scrollbar-width:none;justify-content:center;}
+.cb3-trail::-webkit-scrollbar{display:none;}
+.cb3-tdot{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.55);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;user-select:none;}
+.cb3-tdot.start{font-size:17px;}
+.cb3-tdot.on{border-color:#e8a820;background:rgba(232,168,32,.15);color:#f5c842;box-shadow:0 0 14px rgba(232,168,32,.25);}
+.cb3-tdot.done:after{content:'\2713';position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:#4ade80;color:#08130b;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.cb3-tdot.lastd.done:after{right:auto;left:-4px;}
+.cb3-dx{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:#ef4444;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer;z-index:2;}
+.cb3-tline{flex:0 0 auto;width:18px;height:2px;background:rgba(255,255,255,.12);transition:background .4s;}
+.cb3-tline.fill{background:rgba(232,168,32,.55);}
+@keyframes cb3LineFill{from{background:rgba(255,255,255,.12);}to{background:rgba(232,168,32,.55);}}
+.cb3-tline.justfill{animation:cb3LineFill .45s ease;}
+@keyframes cb3PopIn{0%{transform:scale(0);}60%{transform:scale(1.3);}100%{transform:scale(1);}}
+.cb3-tdot.justdone:after{animation:cb3PopIn .38s cubic-bezier(.34,1.56,.64,1);}
+@keyframes cb3DotPop{0%{transform:scale(0);}60%{transform:scale(1.25);}100%{transform:scale(1);}}
+.cb3-tdot.pop{animation:cb3DotPop .4s cubic-bezier(.34,1.56,.64,1) backwards;}
+.cb3-tlabel{font-size:13px;letter-spacing:1.5px;color:rgba(255,255,255,.35);text-align:center;margin-top:6px;}
+.cb3-tlabel b{color:#f5c842;font-weight:500;letter-spacing:1.5px;}
+.cb3-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;}
+.cb3-lbl{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.45);font-weight:500;}
+.cb3-lblrow{display:flex;justify-content:space-between;align-items:center;}
+.cb3-qm{width:24px;height:24px;border-radius:50%;background:rgba(232,168,32,.12);border:1px solid rgba(232,168,32,.4);color:#e8a820;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.cb3-dd{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 15px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(232,168,32,.4);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-dd .cb3-dv{font-size:16px;color:#f5c842;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.cb3-dd .cb3-da{color:#e8a820;font-size:14px;flex-shrink:0;}
+.cb3-sublbl{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:9px;line-height:1.45;}
+.cb3-exact{width:100%;box-sizing:border-box;padding:12px 13px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:16px;font-family:inherit;outline:none;resize:none;min-height:64px;line-height:1.45;}
+.cb3-exact:focus{border-color:#e8a820;}
+.cb3-exact::placeholder{color:rgba(255,255,255,.28);}
+.cb3-editline{display:none;width:100%;box-sizing:border-box;margin-top:10px;padding:11px 13px;border-radius:11px;background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.25);color:rgba(255,255,255,.9);font-size:15px;font-family:inherit;outline:none;}
+.cb3-editline.show{display:block;}
+.cb3-editline:focus{border-color:#e8a820;background:rgba(232,168,32,.09);}
+.cb3-dd.ok{border-color:rgba(74,222,128,.55);}
+.cb3-dd.ok .cb3-dv,.cb3-dd.ok .cb3-da{color:#4ade80;}
+.cb3-editline.ok{border-color:rgba(74,222,128,.5);color:#4ade80;}
+.cb3-exact.ok{border-color:rgba(74,222,128,.5);color:#4ade80;}
+@keyframes cb3OkPulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45);}100%{box-shadow:0 0 0 14px rgba(74,222,128,0);}}
+.cb3-dd.ok,.cb3-editline.ok,.cb3-exact.ok{animation:cb3OkPulse .55s ease-out;}
+.cb3-mapslot{flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:0 2px;}
+.cb3-mapslot img{max-width:100%;max-height:100%;object-fit:contain;border-radius:16px;border:1px solid rgba(232,168,32,.3);display:block;animation:cb3MapFloat 5s ease-in-out infinite;}
+@keyframes cb3MapFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+@keyframes cb3CardUp{from{transform:translateY(22px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.cb3-au1{animation:cb3CardUp .45s cubic-bezier(.22,1,.36,1) backwards;}
+.cb3-au2{animation:cb3CardUp .5s cubic-bezier(.22,1,.36,1) .07s backwards;}
+.cb3-au3{animation:cb3CardUp .55s cubic-bezier(.22,1,.36,1) .14s backwards;}
+@keyframes cb3SlideR{from{transform:translateX(46px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes cb3SlideL{from{transform:translateX(-46px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.cb3-next{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:17px;font-weight:500;font-family:inherit;box-shadow:0 6px 24px rgba(232,168,32,.3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s;}
+.cb3-next:active{transform:scale(.97);}
+.cb3-helpx{padding:13px 14px;border-radius:13px;background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.25);margin-bottom:9px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.9);}
+.cb3-helpx .cb3-hxl{font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:5px;}
+.cb3-gotit{margin-top:6px;text-align:center;padding:13px;border-radius:12px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-lmgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cb3-lm{padding:12px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:15px;color:rgba(255,255,255,.88);cursor:pointer;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;}
+.cb3-lm:active{border-color:#e8a820;background:rgba(232,168,32,.1);}
+.cb3-lm.own{justify-content:center;border-style:dashed;border-color:rgba(232,168,32,.45);color:rgba(232,168,32,.9);}
+.cb3-sh-title{font-size:20px;font-weight:500;color:#fff;margin:4px 0;}
+.cb3-sh-title span{color:#f5c842;}
+.cb3-sh-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;}
+/* cb3 Stage 2: clue page template */
+.hs-modal-sheet{position:relative;}
+.hs-modal-header{position:relative;z-index:41;}
+.cb3-stepn{display:inline-flex;width:17px;height:17px;border-radius:50%;background:rgba(232,168,32,.18);border:1px solid rgba(232,168,32,.5);color:#f5c842;font-size:10.5px;align-items:center;justify-content:center;margin-right:7px;vertical-align:-3px;font-weight:600;}
+.cb3-cluebox{border-radius:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);overflow:hidden;}
+.cb3-cbhead{display:flex;justify-content:space-between;align-items:center;padding:10px 13px 0;}
+.cb3-ddchip{display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:9px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.4);color:#f5c842;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-ddchip .cb3-da{font-size:11px;color:#e8a820;}
+.cb3-tapedit{font-size:13px;color:#e8a820;cursor:pointer;padding:4px 8px;border-radius:8px;-webkit-tap-highlight-color:transparent;}
+.cb3-tapedit.editing{background:rgba(232,168,32,.15);color:#f5c842;}
+.cb3-cbtext{padding:11px 14px 14px;font-size:17px;line-height:1.55;color:rgba(255,255,255,.92);outline:none;min-height:74px;}
+.cb3-cbtext[contenteditable="true"]{background:rgba(232,168,32,.05);}
+.cb3-cbtext:empty:before{content:'Pick a style, then choose an example';color:rgba(255,255,255,.3);}
+.cb3-objtok{color:#f5c842;border-bottom:1.5px dashed rgba(232,168,32,.7);cursor:pointer;font-weight:500;}
+.cb3-anslbl{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.45);font-weight:500;margin:16px 0 9px;}
+.cb3-anslbl span{color:rgba(232,168,32,.8);letter-spacing:0;font-weight:400;text-transform:none;}
+.cb3-ans{width:100%;box-sizing:border-box;padding:13px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:16px;font-family:inherit;outline:none;}
+.cb3-ans:focus{border-color:#e8a820;}
+.cb3-ans::placeholder{color:rgba(255,255,255,.3);}
+.cb3-cluebox.ok{border-color:rgba(74,222,128,.5);}
+.cb3-cluebox.ok .cb3-cbtext{color:#4ade80;}
+.cb3-cluebox.ok .cb3-objtok{color:#4ade80;border-bottom-color:rgba(74,222,128,.7);}
+.cb3-ddchip.ok{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.1);color:#4ade80;}
+.cb3-ddchip.ok .cb3-da{color:#4ade80;}
+.cb3-ans.ok{border-color:rgba(74,222,128,.5);color:#4ade80;}
+.cb3-cluebox.ok,.cb3-ddchip.ok,.cb3-ans.ok{animation:cb3OkPulse .55s ease-out;}
+.cb3-patgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.cb3-patc{padding:13px 12px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-patc.sel{border-color:#e8a820;background:rgba(232,168,32,.08);}
+.cb3-patc .cb3-ph{font-size:15px;font-weight:500;color:#fff;}
+.cb3-patc.sel .cb3-ph{color:#f5c842;}
+.cb3-patc .cb3-pd{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:4px;line-height:1.35;}
+.cb3-ex{padding:13px 14px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);margin-bottom:9px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.88);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cb3-ex:active{border-color:#e8a820;background:rgba(232,168,32,.1);}
+.cb3-ex.own{border-style:dashed;border-color:rgba(232,168,32,.45);color:rgba(232,168,32,.9);text-align:center;}
+.cb3-add{flex:1;padding:15px;border-radius:14px;border:1px solid rgba(232,168,32,.5);background:rgba(232,168,32,.07);color:#f5c842;font-size:16px;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s;}
+.cb3-add:disabled{opacity:.35;}
+.cb3-add:active:not(:disabled){transform:scale(.96);}
+.cb3-done{flex:1;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:16px;font-weight:500;font-family:inherit;box-shadow:0 6px 24px rgba(232,168,32,.3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s;}
+.cb3-done:active{transform:scale(.96);}
+@keyframes cb3ShimSweep{to{background-position:-200% center;}}
+.cb3-done.shimmer{background:linear-gradient(110deg,#c9890c 20%,#e8a820 35%,#ffe9a8 50%,#e8a820 65%,#c9890c 80%);background-size:200% auto;animation:cb3ShimSweep 2s linear infinite;}
+.cb3-dd,.cb3-lm,.cb3-patc,.cb3-ex,.cb3-ddchip,.cb3-gotit,.cb3-qm,.cb3-tapedit{transition:transform .12s;}
+.cb3-dd:active,.cb3-lm:active,.cb3-patc:active,.cb3-ex:active,.cb3-ddchip:active,.cb3-gotit:active,.cb3-qm:active,.cb3-tapedit:active{transform:scale(.96);}
+/* cb3 Stage 3: AI loading + Quest Preview */
+.cb3p-load{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;}
+.cb3p-compass{width:86px;height:86px;border-radius:50%;border:3px solid rgba(232,168,32,.2);position:relative;margin-bottom:26px;animation:cb3pBob 2.4s ease-in-out infinite;}
+.cb3p-compass:before{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid transparent;border-top-color:#e8a820;animation:cb3pSpin 1s linear infinite;}
+.cb3p-needle{position:absolute;left:50%;top:50%;width:4px;height:34px;margin:-30px 0 0 -2px;border-radius:2px;background:linear-gradient(#f5c842,#e8a820);transform-origin:50% 88%;animation:cb3pSwing 2s ease-in-out infinite;}
+.cb3p-dotc{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#f5c842;}
+@keyframes cb3pSpin{to{transform:rotate(360deg);}}
+@keyframes cb3pSwing{0%,100%{transform:rotate(-24deg);}50%{transform:rotate(28deg);}}
+@keyframes cb3pBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.cb3p-ltitle{font-size:22px;font-weight:400;color:#fff;margin-bottom:10px;}
+.cb3p-lline{font-size:17px;color:#d0c48f;min-height:54px;line-height:1.5;max-width:300px;transition:opacity .3s;}
+.cb3p-lbar{width:210px;height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:24px;overflow:hidden;}
+.cb3p-lbar div{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,#c9890c,#f5c842);transition:width .9s cubic-bezier(.3,.7,.4,1);}
+.cb3p-ldots{display:flex;gap:6px;margin-top:22px;}
+.cb3p-ldots div{width:8px;height:8px;border-radius:50%;background:#e8a820;animation:cb3pLp 1.4s ease-in-out infinite;}
+.cb3p-ldots div:nth-child(2){animation-delay:.2s;}
+.cb3p-ldots div:nth-child(3){animation-delay:.4s;}
+@keyframes cb3pLp{0%,100%{opacity:.25;}50%{opacity:1;}}
+.cb3p-sub{text-align:center;font-size:13px;letter-spacing:1.5px;color:rgba(255,255,255,.4);padding:10px 0 0;flex-shrink:0;}
+.cb3p-wrap{flex:1;overflow-y:auto;padding:12px 14px 8px;display:flex;flex-direction:column;gap:12px;}
+.cb3p-card{border-radius:14px;padding:14px;animation:cb3CardUp .5s cubic-bezier(.22,1,.36,1) backwards;}
+.cb3p-card.riddle{background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.25);}
+.cb3p-card.clue{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);}
+.cb3p-card.final{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.25);}
+.cb3p-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;gap:8px;}
+.cb3p-label{font-size:15px;letter-spacing:1.5px;font-weight:500;color:rgba(232,168,32,.85);}
+.cb3p-card.clue .cb3p-label{color:rgba(184,196,208,.8);}
+.cb3p-card.final .cb3p-label{color:rgba(74,222,128,.8);}
+.cb3p-btns{display:flex;gap:7px;align-items:center;flex-shrink:0;}
+.cb3p-play{width:32px;height:32px;border-radius:50%;background:rgba(232,168,32,.12);border:1px solid rgba(232,168,32,.4);color:#e8a820;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent;}
+.cb3p-play:active{transform:scale(.9);}
+.cb3p-play.on{background:rgba(232,168,32,.3);animation:cb3pPulse 1s ease-in-out infinite;}
+.cb3p-play.busy{opacity:.5;}
+@keyframes cb3pPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,.4);}50%{box-shadow:0 0 0 8px rgba(232,168,32,0);}}
+.cb3p-edit{font-size:13px;color:#e8a820;cursor:pointer;padding:5px 9px;border-radius:8px;transition:transform .12s;-webkit-tap-highlight-color:transparent;}
+.cb3p-edit:active{transform:scale(.94);}
+.cb3p-edit.editing{background:rgba(232,168,32,.15);color:#f5c842;}
+.cb3p-text{font-size:17px;line-height:1.6;color:#fff;outline:none;border-radius:9px;}
+.cb3p-text[contenteditable="true"]{background:rgba(232,168,32,.06);padding:8px 10px;border:1px dashed rgba(232,168,32,.4);}
+.cb3p-q{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px 12px;font-size:16px;color:#b8c4d0;margin-top:10px;line-height:1.5;}
+.cb3p-hint{margin-top:9px;font-size:16px;color:rgba(232,168,32,.75);line-height:1.5;}
+.cb3p-hint b{color:rgba(232,168,32,.95);font-weight:500;letter-spacing:.5px;}
+.cb3p-ans{margin-top:7px;font-size:16px;color:rgba(184,196,208,.45);}
+.cb3p-ans span{color:rgba(74,222,128,.75);}
+.cb3p-regen{align-self:center;display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);color:#b8c4d0;font-size:15px;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent;animation:cb3CardUp .5s cubic-bezier(.22,1,.36,1) backwards;}
+.cb3p-regen:active{transform:scale(.95);}
+.cb3p-regen.dim{opacity:.35;}
+.cb3p-foot{display:flex;gap:9px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);}
+.cb3p-editbtn{flex:1;padding:15px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#b8c4d0;font-size:16px;font-family:inherit;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent;}
+.cb3p-editbtn:active{transform:scale(.96);}
+.cb3p-savebtn{flex:2;padding:15px;border-radius:14px;border:none;background:linear-gradient(110deg,#c9890c 20%,#e8a820 35%,#ffe9a8 50%,#e8a820 65%,#c9890c 80%);background-size:200% auto;animation:cb3ShimSweep 2.2s linear infinite;color:#fff;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;box-shadow:0 6px 24px rgba(232,168,32,.3);transition:transform .12s;-webkit-tap-highlight-color:transparent;}
+.cb3p-savebtn:active{transform:scale(.96);}
+/* cb3 Stage 4: Schedule Quest rebrand */
+.cb3s-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;}
+.cb3s-lbl{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.45);font-weight:500;margin-bottom:10px;}
+.cb3s-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:18px;border-bottom:1px solid rgba(255,255,255,.05);}
+.cb3s-row:last-child{border-bottom:none;padding-bottom:2px;}
+.cb3s-k{display:flex;align-items:center;gap:9px;color:#b8c4d0;}
+.cb3s-v{color:#fff;font-weight:400;max-width:180px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cb3s-v.money{color:#4ade80;font-weight:500;}
+.cb3s-preset{border-radius:14px;border:1px solid rgba(232,168,32,.4);background:rgba(232,168,32,.05);padding:18px 10px;cursor:pointer;text-align:center;transition:transform .12s,border-color .2s,background .2s;-webkit-tap-highlight-color:transparent;}
+.cb3s-preset:active{transform:scale(.96);}
+.cb3s-preset .cb3s-pt{font-size:20px;font-weight:500;color:#f5c842;}
+.cb3s-preset .cb3s-ps{font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;}
+.cb3s-preset.sel{border-color:rgba(74,222,128,.6);background:rgba(74,222,128,.08);animation:cb3OkPulse .55s ease-out;}
+.cb3s-preset.sel .cb3s-pt{color:#4ade80;}
+.cb3s-infobar{border-radius:14px;padding:16px 18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:border-color .25s;}
+.cb3s-infobar.set{border-color:rgba(74,222,128,.4);}
+.cb3s-infomain{font-size:20px;color:#fff;line-height:1.4;}
+.cb3s-infomain b{color:#4ade80;font-weight:500;}
+.cb3s-infosub{font-size:17px;color:#b8c4d0;line-height:1.5;margin-top:5px;}
+.cb3s-dlbl{font-size:17px;color:#b8c4d0;margin-bottom:6px;}
+.cb3s-dinput{width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(232,168,32,.4);border-radius:10px;padding:12px;font-size:18px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;}
+.cb3s-dinput:focus{border-color:#e8a820;}
+.cb3s-dinput.ok{border-color:rgba(74,222,128,.5);color:#4ade80;}
+.cb3s-dmsg{font-size:17px;color:rgba(255,255,255,.55);line-height:1.5;margin-top:10px;min-height:26px;}
+.cb3s-dmsg.err{color:#f87171;}
+.cb3s-dmsg.good{color:#4ade80;}
+.cb3-gotit.dis{opacity:.35;pointer-events:none;}
+.cb3s-schedbtn{flex:1;padding:16px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);color:#fff;font-size:22px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:.3px;opacity:.35;pointer-events:none;transition:transform .12s;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.cb3s-schedbtn:active{transform:scale(.97);}
+.cb3s-schedbtn.cb3s-on{opacity:1;pointer-events:auto;background:linear-gradient(110deg,#15803d 25%,#1fb457 42%,#3bd47c 50%,#1fb457 58%,#15803d 75%);background-size:200% auto;animation:cb3ShimSweep 2.8s linear infinite;box-shadow:0 6px 24px rgba(34,197,94,.35);}
+
+
+
+
 .hs2-sh-title{font-size:25px;color:#fff;flex-shrink:0;margin-top:4px;}
 .hs2-gold{background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hs2-sh-sub{font-size:20px;color:#9a97a8;margin:6px 0 12px;flex-shrink:0;line-height:1.4;}
@@ -601,33 +799,18 @@ body{padding-top:env(safe-area-inset-top,0px);}
     </div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;padding:14px 16px 8px;gap:12px;overflow-y:auto;">
-<!-- Find your hiding spot section -->
-<div class="hs2-rise hs2-card" id="hs2-card-0" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
-  <div class="hs2-acc-hd" onclick="hs2Acc(0)">
-    <div class="hs2-acc-t" style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#b8c4d0;white-space:nowrap;overflow:hidden;">GO FIND YOUR <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HIDING SPOT</span></div>
+<!-- PIN card: moved above hiding spot so the code gets written down before heading out -->
+<div id="fs-pin-card" class="hs2-rise hs2-card" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
+  <div class="hs2-acc-hd" onclick="hs2Acc(2)">
+    <div class="hs2-acc-t" style="font-size:25px;font-weight:400;color:#ffffff;">Treasure PIN</div>
     <span class="hs2-chev">&#9662;</span>
   </div>
   <div class="hs2-acc-body">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
-    <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
-    <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
-  </div>
-  <div style="display:flex;gap:10px;margin-top:12px;">
-    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Find Object</button>
-    <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
-  </div>
-  <div style="position:relative;margin-top:12px;">
-    <textarea id="qa-desc" rows="5" maxlength="200" placeholder="Describe your hiding spot..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:25px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
-  </div>
-  <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
-  <div style="font-size:18px;color:#d8b96a;margin-top:8px;line-height:1.45;">Quest area entrances are good for starting points or the prize hiding spot.</div>
-  <div style="font-size:25px;color:#fff;font-weight:400;margin:18px 0 10px;">Treasure PIN</div>
+  <div style="height:10px;"></div>
   <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:18px;color:rgba(184,196,208,.85);margin-bottom:10px;flex-wrap:wrap;">
-    <span class="hs2-chip" style="animation-delay:.05s,1.3s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
-    <span style="opacity:.4;">&#8250;</span>
-    <span class="hs2-chip" style="animation-delay:.3s,1.6s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span></span>
-    <span style="opacity:.4;">&#8250;</span>
-    <span class="hs2-chip" style="animation-delay:.55s,1.9s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#4ade80;color:#04150a;font-size:12px;font-weight:500;align-items:center;justify-content:center;">3</span> <span style="color:#f5ead8;">Hide it</span></span>
+    <span class="hs2-chip" style="animation-delay:.05s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
+    <span style="opacity:0;animation:hs2SepIn .3s ease .3s forwards;">&#8250;</span>
+    <span class="hs2-chip" style="animation-delay:.35s;"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:12px;font-weight:500;align-items:center;justify-content:center;">2</span> <span style="color:#f5ead8;">Seal in envelope</span></span>
   </div>
   <div class="code-wrap" style="margin-bottom:12px;">
     <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
@@ -646,6 +829,30 @@ body{padding-top:env(safe-area-inset-top,0px);}
     <button id="save-code-btn" style="display:none;"></button>
   </div>
   <input type="text" id="custom-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" oninput="typeCustomPin(this.value)" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #e8a820;background:rgba(0,0,0,.4);color:#fff;font-size:20px;letter-spacing:8px;text-align:center;font-family:inherit;outline:none;box-sizing:border-box;"/>
+  <div style="display:flex;justify-content:flex-end;margin-top:12px;"><button class="hs2-complete" onclick="hs2Complete(2)">Complete &#10003;</button></div>
+  </div>
+</div>
+
+<!-- Find your hiding spot section -->
+<div class="hs2-rise hs2-card" id="hs2-card-0" style="animation-delay:0s;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
+  <div class="hs2-acc-hd" onclick="hs2Acc(0)">
+    <div class="hs2-acc-t" style="font-size:min(20px,5.2vw);letter-spacing:.5px;color:#ffffff;white-space:nowrap;overflow:hidden;">GO FIND YOUR HIDING SPOT</div>
+    <span class="hs2-chev">&#9662;</span>
+  </div>
+  <div class="hs2-acc-body">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
+    <div style="font-size:18px;color:#cfcbdc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Quest Area = <span id="hs2-area-name" style="color:#f5c842;">your quest area</span></div>
+    <button onclick="hs2OpenHow()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(232,168,32,.06);color:#f5c842;font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;">?</button>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button id="hs2-sug-btn" class="hs2-pill" onclick="hs2OpenObjects()"><span style="color:#f5c842;">&#10022;</span> Find Object</button>
+    <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
+  </div>
+  <div style="position:relative;margin-top:12px;">
+    <textarea id="qa-desc" rows="5" maxlength="200" placeholder="Describe your hiding spot... Where exactly? In front or behind? Next to what?" oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:25px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
+  </div>
+  <div id="qa-ex-ref" style="display:none;margin-top:6px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);font-size:17px;line-height:1.45;color:rgba(255,255,255,.45);font-style:italic;"></div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:18px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
   <div style="display:flex;justify-content:flex-end;margin-top:12px;"><button class="hs2-complete" onclick="hs2Complete(0)">Complete &#10003;</button></div>
   </div>
 </div>
@@ -682,6 +889,59 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
 <!-- Hiding spot object + examples sheets -->
 <div id="hs2-back" class="qa-sheet-back" onclick="hs2CloseSheets()"></div>
+<div id="cb3-start-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title" id="cb3-lm-title">Start at the <span>...which landmark?</span></div>
+  <div class="cb3-sh-sub" id="cb3-start-sub">Landmarks for your Quest Area.</div>
+  <div class="hs2-scroll"><div id="cb3-start-grid" class="cb3-lmgrid"></div></div>
+</div>
+<div id="cb3-starthelp-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Starting <span>Point</span></div>
+  <div class="cb3-helpx"><div class="cb3-hxl">GOOD STARTING POINTS</div>Quest area entrances are good for starting points or the prize hiding spot.</div>
+  <div class="cb3-helpx"><div class="cb3-hxl">ONE START, MANY CLUES</div>📍 Every clue page after this is built the same way: walk somewhere, find an object, answer a question. Add 2 to 7 clues.</div>
+  <div class="cb3-helpx"><div class="cb3-hxl">QUEST LENGTH</div>The quest length depends on how far the hiding spot is from the Starting Point. Close together makes a quick quest. Far apart makes a longer adventure.</div>
+  <div class="cb3-gotit" onclick="cb3CloseSheets()">Got it</div>
+</div>
+<div id="cb3-ob-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Find <span>which object?</span></div>
+  <div class="cb3-sh-sub" id="cb3-ob-sub">Objects for your area. Bolted beats portable.</div>
+  <div class="hs2-scroll"><div id="cb3-ob-grid" class="cb3-lmgrid"></div></div>
+</div>
+<div id="cb3-pat-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Pick a clue <span>style</span></div>
+  <div class="cb3-sh-sub">Then choose from 8 ready examples</div>
+  <div class="hs2-scroll"><div id="cb3-pat-grid" class="cb3-patgrid"></div></div>
+</div>
+<div id="cb3-ex-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title" id="cb3-ex-title">Pick an <span>example</span></div>
+  <div class="cb3-sh-sub">Tap one, then edit it to match your spot</div>
+  <div class="hs2-scroll" id="cb3-ex-list"></div>
+</div>
+<div id="cb3-exact-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Object <span>Exact Location</span></div>
+  <div class="cb3-sh-sub">The park may have 12 benches. Seekers must find YOURS on the first try. Name a neighbor landmark, a color, a count, or a position.</div>
+  <div class="cb3-helpx"><div class="cb3-hxl">EXAMPLE 1</div>the green bench nearest the fountain, third one from the main entrance</div>
+  <div class="cb3-helpx"><div class="cb3-hxl">EXAMPLE 2</div>the tall oak directly behind the swings, the only tree with a bench under it</div>
+  <div class="cb3-helpx"><div class="cb3-hxl">EXAMPLE 3</div>the metal sign at the dog park gate, the one with the red leash symbol</div>
+  <div class="cb3-gotit" onclick="cb3CloseSheets()">Got it</div>
+</div>
+<div id="cb3s-date-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Custom <span>dates</span></div>
+  <div class="cb3-sh-sub">Max 7 days long · Max 30 days ahead</div>
+  <div style="display:flex;gap:10px;align-items:flex-end;">
+    <div style="flex:1;"><div class="cb3s-dlbl">START</div><input class="cb3s-dinput" id="custom-start" type="date" oninput="updateCustomDates()"/></div>
+    <div style="color:#b8c4d0;font-size:18px;padding-bottom:14px;">→</div>
+    <div style="flex:1;"><div class="cb3s-dlbl">END</div><input class="cb3s-dinput" id="custom-end" type="date" oninput="updateCustomDates()"/></div>
+  </div>
+  <div class="cb3s-dmsg" id="custom-date-msg"></div>
+  <div class="cb3-gotit dis" id="cb3s-setdates" onclick="cb3sApplyCustom()">Set dates</div>
+</div>
 <div id="hs2-obj-sheet" class="hs2-sheet">
   <div class="qa-grab"></div>
   <div class="hs2-sh-title">Pick your <span class="hs2-gold">object</span></div>
@@ -744,66 +1004,33 @@ body{padding-top:env(safe-area-inset-top,0px);}
       <div style="width:20px;height:7px;border-radius:4px;background:#e8a820;"></div>
     </div>
 
-<!-- Mini summary from steps 1-3 -->
-<div id="mini-summary" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:14px;">
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:18px;color:#b8c4d0;">Prize</div>
-    <div id="ms-prize" style="font-size:18px;color:#4ade80;font-weight:400;">$25</div>
-  </div>
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:18px;color:#b8c4d0;">Clues</div>
-    <div id="ms-clues" style="font-size:18px;color:#b8c4d0;">5 · Standard</div>
-  </div>
-  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:18px;color:#b8c4d0;">Style</div>
-    <div id="ms-style" style="font-size:18px;color:#b8c4d0;">Pirate</div>
-  </div>
-  <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:18px;color:#b8c4d0;">Location</div>
-    <div id="ms-location" style="font-size:18px;color:#b8c4d0;max-width:160px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
+<!-- YOUR QUEST summary -->
+<div id="mini-summary" class="cb3s-card" style="margin-bottom:12px;">
+  <div class="cb3s-lbl">YOUR QUEST</div>
+  <div class="cb3s-row"><div class="cb3s-k">💰 Prize</div><div class="cb3s-v money" id="ms-prize">$25</div></div>
+  <div class="cb3s-row"><div class="cb3s-k">🧩 Clues</div><div class="cb3s-v" id="ms-clues">4 · Pirate voice</div></div>
+  <div class="cb3s-row"><div class="cb3s-k">📍 Location</div><div class="cb3s-v" id="ms-location">—</div></div>
+  <div class="cb3s-row"><div class="cb3s-k">💎 Hiding spot</div><div class="cb3s-v" id="ms-hspot">Set ✓</div></div>
+</div>
+
+<!-- Pick a window -->
+<div class="cb3s-card" style="margin-bottom:12px;">
+  <div class="cb3s-lbl">PICK A WINDOW</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+    <div class="preset-btn cb3s-preset" data-preset="montue" onclick="selPreset('montue',this)"><div class="cb3s-pt">Mon to Tue</div><div class="cb3s-ps">2 day quest</div></div>
+    <div class="preset-btn cb3s-preset" data-preset="wedfri" onclick="selPreset('wedfri',this)"><div class="cb3s-pt">Wed to Fri</div><div class="cb3s-ps">3 day quest</div></div>
+    <div class="preset-btn cb3s-preset" data-preset="weekend" onclick="selPreset('weekend',this)"><div class="cb3s-pt">Weekend</div><div class="cb3s-ps">Sat + Sun</div></div>
+    <div class="preset-btn cb3s-preset" data-preset="custom" onclick="selPreset('custom',this)"><div class="cb3s-pt">Custom</div><div class="cb3s-ps">Pick your dates</div></div>
   </div>
 </div>
 
-<div style="font-size:25px;font-weight:400;color:#fff;margin-bottom:10px;">SCHEDULE QUEST</div>
-
-<!-- 2x2 preset grid -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-  <div class="preset-btn" data-preset="montue" onclick="selPreset('montue',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Mon – Tue</div>
-  </div>
-  <div class="preset-btn" data-preset="wedfri" onclick="selPreset('wedfri',this)" style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:rgba(255,255,255,.6);">Wed – Fri</div>
-  </div>
-  <div class="preset-btn" data-preset="weekend" onclick="selPreset('weekend',this)" style="border-radius:14px;border:1.5px solid rgba(45,212,191,.3);background:rgba(45,212,191,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:#2dd4bf;">Weekend</div>
-  </div>
-  <div class="preset-btn" data-preset="custom" onclick="selPreset('custom',this)" style="border-radius:14px;border:1.5px solid rgba(167,139,250,.3);background:rgba(167,139,250,.05);padding:22px 10px;cursor:pointer;text-align:center;">
-    <div style="font-size:25px;font-weight:400;color:#a78bfa;">Custom</div>
-  </div>
+<!-- Info bar: updates on selection -->
+<div id="preset-infobar" class="cb3s-infobar" style="margin-bottom:8px;">
+  <div id="preset-info-main" class="cb3s-infomain">Select a window above</div>
+  <div id="preset-info-sub" class="cb3s-infosub">Your quest goes live at the start of the window and ends when a seeker finds the treasure or time runs out. Quest hours: 9:00 AM to 9:00 PM</div>
 </div>
 
-<!-- Info bar — updates based on selection -->
-<div id="preset-infobar" style="border-radius:14px;padding:20px 20px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-  <div id="preset-info-main" style="font-size:20px;color:#fff;margin-bottom:6px;line-height:1.4;">Select a window above</div>
-  <div id="preset-info-sub" style="font-size:18px;color:#b8c4d0;line-height:1.5;">Your quest will run during this window</div>
-</div>
 
-<!-- Custom date picker — hidden until custom selected -->
-<div id="custom-picker" style="display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px 18px;margin-bottom:8px;">
-  <div style="font-size:18px;letter-spacing:1.5px;color:rgba(167,139,250,.6);margin-bottom:12px;">PICK YOUR DATES · MAX 7 DAYS · MAX 30 DAYS AHEAD</div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-    <div style="flex:1;">
-      <div style="font-size:18px;color:#b8c4d0;margin-bottom:6px;">START DATE</div>
-      <input id="custom-start" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:18px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
-    </div>
-    <div style="color:#b8c4d0;font-size:18px;margin-top:18px;">→</div>
-    <div style="flex:1;">
-      <div style="font-size:18px;color:#b8c4d0;margin-bottom:6px;">END DATE</div>
-      <input id="custom-end" type="date" oninput="updateCustomDates()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:12px 12px;font-size:18px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none;color-scheme:dark;"/>
-    </div>
-  </div>
-  <div id="custom-date-msg" style="font-size:18px;color:rgba(167,139,250,.7);line-height:1.5;"></div>
-</div>
 
 <!-- Hidden compat fields -->
 <input type="hidden" id="dur-slider" value="48"/>
@@ -814,7 +1041,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   </div>
   <div class="step-footer">
-    <button id="btn-preview" onclick="startTheQuest()" style="flex:1;padding:15px;border-radius:30px;border:none;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);background-size:200% auto;color:#fff;font-size:25px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.3px;animation:questBtnPulse 2.5s ease-in-out infinite;opacity:.4;pointer-events:none;">Select a window →</button>
+    <button id="btn-preview" class="cb3s-schedbtn" onclick="startTheQuest()">Select a window →</button>
     <button id="btn-create" onclick="createQuest()" style="display:none;"></button>
   </div>
 </div>
@@ -1047,7 +1274,7 @@ function pickQaStart(i){
 
 // ── Clue builder (add as you go) ───────────────────────────────────
 var CB_QLIB = {"Bench": ["How many benches are within sight?", "What color is this bench?", "What is written on the bench plaque?"], "Tree": ["How many trees line this stretch?", "How many trunks does the big tree split into?", "What is posted on or near the tree?"], "Sign": ["What is the first word on the sign?", "How many words are on the sign?", "What color is the sign border?"], "Rock": ["How many large rocks are in this group?", "What color is the biggest rock?", "How many rocks border the path?"], "Light pole": ["How many light poles can you count?", "How many lights are on this pole?", "What number is on the pole tag?"], "Planter": ["How many planters are along the walkway?", "What color are the flowers?", "How many bushes are in this planter?"], "Picnic table": ["How many picnic tables are here?", "How many seats does this table have?", "What material is the table made of?"], "Fence": ["How many fence posts can you count?", "What color is the fence?", "How many rails does the fence have?"], "Flag pole": ["How many flags are on the pole?", "How many bolts anchor the pole base?", "What is on the plaque at the base?"], "Bush": ["How many bushes are in this row?", "What color are the flowers on the bush?", "How many bushes circle the sign?"], "Fountain": ["How many tiers does the fountain have?", "How many jets or spouts do you count?", "What is on the fountain plaque?"], "Statue": ["What is the statue of?", "What is the first word on the statue plaque?", "How many statues do you see?"], "Kiosk": ["How many panels does the kiosk have?", "What is the first word on the kiosk?", "How many posts hold the kiosk up?"], "Bleachers": ["How many rows do the bleachers have?", "How many bleacher sections are there?", "What color are the bleachers?"], "Bike rack": ["How many bike loops does the rack have?", "How many bikes fit in this rack?", "What color is the bike rack?"], "Pavilion": ["How many support posts hold the roof?", "How many tables are under the pavilion?", "What color is the pavilion roof?"], "Bridge": ["How many rails does the bridge have?", "How many posts hold up the bridge?", "How many planks span the bridge?"], "Boardwalk": ["How many steps lead onto the boardwalk?", "How many rail posts line this stretch?", "What material is the boardwalk?"], "Stairs": ["How many steps are in this staircase?", "How many handrails does it have?", "What material are the steps?"], "Garden bed": ["How many garden beds are here?", "What color are the border stones?", "How many plants are in this bed?"], "Drinking fountain": ["How many spouts does the fountain have?", "What color is the drinking fountain?", "How many basins does it have?"], "Gazebo": ["How many sides does the gazebo have?", "How many posts hold up the gazebo?", "What color is the gazebo roof?"], "Trellis": ["How many posts hold the trellis?", "What grows on the trellis?", "How many cross beams do you count?"], "Trailhead board": ["How many maps are on the board?", "What is the first word on the board?", "How many posts hold the board?"], "Trail marker": ["What number is on the trail marker?", "What color is the marker blaze?", "How many markers can you see from here?"], "Fallen log": ["How many fallen logs are nearby?", "How many cut ends does the log show?", "What grows on top of the log?"], "Overlook rail": ["How many rail posts line the overlook?", "How many rails run between posts?", "What can you see from the overlook?"], "Column": ["How many columns are in this row?", "What material are the columns?", "How many steps sit between the columns?"], "Plaque": ["What is the first word on the plaque?", "What year is on the plaque?", "How many lines of text are on it?"], "Lifeguard stand": ["What number is on the lifeguard stand?", "What color is the stand?", "How many steps lead up the stand?"], "Driftwood": ["How many big pieces of driftwood are here?", "How many branches does the largest piece have?", "What color is the driftwood?"], "Dune fence": ["How many fence posts can you count?", "How many slats are between two posts?", "What color is the dune fence?"], "Pier post": ["How many posts hold this section?", "How many boards make up the deck edge?", "What number is painted on the post?"], "Jetty": ["How many big rocks make the top row?", "How far does the jetty reach in steps?", "What color are the jetty rocks?"], "Dugout": ["How many benches are in the dugout?", "What is painted on the dugout wall?", "How many openings does the dugout have?"], "Backstop": ["How many poles hold the backstop?", "How tall is the backstop in fence sections?", "What color is the backstop padding?"], "Foul pole": ["What color is the foul pole?", "How many braces support the pole?", "What number is on the nearby fence?"], "Scoreboard": ["How many number slots does the scoreboard show?", "What is the top word on the scoreboard?", "How many posts hold the scoreboard?"], "Batting cage": ["How many cages are in this row?", "How many posts frame the cage?", "What color is the cage netting?"], "Soccer goal": ["How many goals are on this field?", "How many sandbags anchor this goal?", "What color is the goal net?"], "Cart corral": ["How many cart corrals are in the lot?", "How many carts fit in this corral?", "What store name is on the corral?"], "Storefront pillar": ["How many pillars support the walkway?", "What material is the pillar?", "What suite number is closest to it?"], "Book drop": ["How many slots does the book drop have?", "What color is the book drop?", "What is the first word on it?"], "Little free library": ["How many shelves are inside?", "What color is the little library?", "How many books can you count inside?"], "Marquee sign": ["What is the first word on the marquee?", "How many lines of text are on it?", "How many lights point at the sign?"], "Cross monument": ["How tall is the cross in your hand widths?", "What is on the plaque at the base?", "What material is the cross?"], "Menu board": ["How many combo meals are pictured?", "What number is the first combo?", "How many panels does the board have?"], "Patio table": ["How many tables are on the patio?", "How many chairs are at this table?", "What color are the umbrellas?"], "Awning post": ["How many posts hold the awning?", "What color is the awning?", "How many stripes does the awning have?"], "Monument sign": ["What is the first word on the sign?", "How many lines of text are on it?", "What material is the sign base?"], "Hitching post": ["How many hitching posts are in the row?", "How many rings are on this post?", "What material is the post?"], "Cannon display": ["How many wheels does the cannon have?", "What year is on the display plaque?", "How many cannonballs are stacked?"], "Basketball hoop": ["How many hoops are on this court?", "Do the hoops have chain or rope nets?", "How many courts are here?"], "Tennis gate": ["How many courts are behind this gate?", "What color is the court surface?", "How many gates lead into the courts?"], "Bollard": ["How many bollards guard the entrance?", "What color are the bollards?", "How many are chained together?"], "Directory pylon": ["How many listings are on the directory?", "What is the top name on the directory?", "How many sides does the pylon have?"], "Sculpture": ["What is the sculpture of?", "What is the first word on its plaque?", "What material is the sculpture?"], "Fishing platform": ["How many rail posts edge the platform?", "How many rod holders do you count?", "What is posted on the platform sign?"], "Canoe launch": ["How many lanes does the launch have?", "What is the first word on the launch sign?", "How many posts mark the launch?"], "Clock tower": ["What time shows on the clock?", "How many clock faces does it have?", "How many levels does the tower have?"], "Bus shelter": ["How many seats are in the shelter?", "How many glass panels does it have?", "What route number is posted?"], "Playground border": ["How many timbers make this border side?", "What is the playground surface made of?", "How many slides can you see?"], "Bell tower": ["How many bells can you see?", "How many levels does the tower have?", "What is at the very top of the tower?"], "Veterans memorial": ["How many names or panels do you count?", "What year is on the memorial?", "How many flags surround it?"], "Bandstand": ["How many posts hold the bandstand roof?", "How many steps lead up to it?", "What color is the bandstand roof?"], "Marina rack": ["How many kayaks fit in the rack?", "How many levels does the rack have?", "What color is the rack frame?"], "Beacon": ["What color is the beacon light?", "How many legs support the beacon?", "What number is on the beacon?"], "Visitor center": ["How many doors are at the entrance?", "How many windows face the front?", "What are the first words on the sign?"], "Campground sign": ["What is the campground name on the sign?", "How many posts hold the sign?", "What number is on the sign?"], "Community board": ["How many notices are pinned up?", "How many panels does the board have?", "What is the first word on the header?"], "Street lamp": ["How many street lamps line this block?", "How many lights are on this lamp?", "What number is on the lamp post?"], "Gate post": ["How many hinges are on the gate?", "What color is the gate?", "How many posts frame the gate?"], "Cornerstone": ["What year is carved on the cornerstone?", "What is the first word on the stone?", "How many lines are carved on it?"]};
-var CB_MIN = 3, CB_MAX = 7;
+var CB_MIN = 2, CB_MAX = 7;
 var CB_DEFAULT_OBJECTS = ['Bench','Tree','Sign','Light pole','Planter','Fence','Rock','Flag pole'];
 function cbEsc(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 function cbObjects(){
@@ -1059,10 +1286,10 @@ function cbUserClues(){
   while (_hsData.clues.length && _hsData.clues[_hsData.clues.length-1] && _hsData.clues[_hsData.clues.length-1].auto){
     _hsData.clues.pop();
   }
-  if (!_hsData.clues.length) _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  if (!_hsData.clues.length) _hsData.clues.push(cb3BlankClue());
   return _hsData.clues;
 }
-function cbClueDone(c){ return !!(c && c.obj && (c.question||'').trim() && (c.answer||'').trim()); }
+function cbClueDone(c){ return !!(c && cb3ActVal(c) && cb3ObjName(c) && (c.exact||'').trim() && (c.question||'').trim() && (c.answer||'').trim()); }
 function cbAllDone(){ return cbUserClues().every(cbClueDone); }
 function cbSyncCounts(){ _hsClueCount = cbUserClues().length + 1; selectedClue = _hsClueCount; }
 function cbPickObj(i){
@@ -1095,25 +1322,34 @@ function cbInput(kind, v){
   cbSyncFooter();
 }
 function cbFooterHtml(){
-  var n = cbUserClues().length;
-  var curDone = cbClueDone(_hsData.clues[_hsCurrent-1]);
-  var canAdd = curDone && n < CB_MAX;
-  var canDone = cbAllDone() && n >= CB_MIN;
-  return '<button class="hs-nav-back" onclick="hsGoTo(' + (_hsCurrent-1) + ')">\u2190</button>' +
-    '<button class="cb-add" ' + (canAdd?'':'disabled') + ' onclick="cbAddClue()">+ Add clue (' + n + '/' + CB_MAX + ')</button>' +
-    '<button class="cb-done" ' + (canDone?'':'disabled') + ' onclick="cbComplete()">Quest complete</button>';
+  var ucs = cbUserClues();
+  var n = ucs.length;
+  var allDone = cbAllDone();
+  var canAdd = allDone && n < CB_MAX;
+  var isLast = _hsCurrent >= n;
+  var shim = isLast && allDone;
+  return '<button class="cb3-add"' + (canAdd ? '' : ' disabled') + ' onclick="cbAddClue()">+ Add clue (' + n + '/' + CB_MAX + ')</button>' +
+    '<button class="cb3-done' + (shim ? ' shimmer' : '') + '" onclick="cb3DoneOrNext()">' + (isLast ? 'Quest complete' : 'Next') + ' \u2192</button>';
 }
 function cbSyncFooter(){
   if (window._cbNavEl) window._cbNavEl.innerHTML = cbFooterHtml();
 }
 function cbAddClue(){
-  saveHsPanel();
-  if (!cbClueDone(_hsData.clues[_hsCurrent-1])) { showToast('Finish this clue first', 'error'); return; }
-  if (cbUserClues().length >= CB_MAX) { showToast('Maximum ' + CB_MAX + ' clues', 'error'); return; }
-  _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  try { saveHsPanel(); } catch(e){}
+  var ucs = cbUserClues();
+  if (ucs.length >= CB_MAX) { showToast('Maximum ' + CB_MAX + ' clues', 'error'); return; }
+  for (var i = 0; i < ucs.length; i++) {
+    if (!cbClueDone(ucs[i])) { showToast('Complete Clue ' + (i+1) + ' first', 'error'); return; }
+  }
+  _hsData.clues.push(cb3BlankClue());
   cbSyncCounts();
-  _hsCurrent = _hsData.clues.length;
-  saveFormState(); renderHsModal();
+  _hsCurrent = cbUserClues().length;
+  saveFormState(); renderHsModal(); cb3Anim(1);
+  setTimeout(function(){
+    var dots = document.querySelectorAll('.hs-modal-sheet .cb3-tdot');
+    if (dots.length) dots[dots.length - 1].classList.add('pop');
+  }, 0);
 }
 function cbComplete(){
   saveHsPanel();
@@ -1124,6 +1360,12 @@ function cbComplete(){
   _hsClueCount = _hsData.clues.length;
   selectedClue = _hsClueCount;
   saveFormState();
+  // Do not burn an AI generation if nothing relevant changed since the last
+  // one; the Regenerate button on the preview is the only explicit re-roll.
+  if (_generatedClues && _generatedClues.length && window._cb3GenSig && window._cb3GenSig === cb3GenSig()) {
+    hsShowPreview();
+    return;
+  }
   hsGenerateAndPreview();
 }
 
@@ -1181,7 +1423,7 @@ function hs2ShowSheet(id){
   ['hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.toggle('open', s===id); });
 }
 function hs2CloseSheets(){
-  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
+  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet','cb3-start-sheet','cb3-starthelp-sheet','cb3-ob-sheet','cb3-pat-sheet','cb3-ex-sheet','cb3-exact-sheet','cb3s-date-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
 }
 function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
 function hs2WriteNow(){
@@ -1192,14 +1434,14 @@ function hs2WriteNow(){
   if(d){ setTimeout(function(){ try{ d.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){} },120); }
 }
 var hs2Open=0;
-var HS2_CARDS=['hs2-card-0','photo-section-s1'];
+var HS2_CARDS=['hs2-card-0','photo-section-s1','fs-pin-card'];
 function hs2AccStates(){
   var pin=['c1','c2','c3','c4','c5','c6'].every(function(id){ var el=document.getElementById(id); return el&&el.textContent; });
-  return [ !!(questDesc||'').trim() && pin, !!window._hsPhotoDataUrl ];
+  return [ !!questSpot && !!(questDesc||'').trim(), !!window._hsPhotoDataUrl, pin ];
 }
 function hs2AccSync(){
   var st=hs2AccStates();
-  for(var i=0;i<2;i++){
+  for(var i=0;i<3;i++){
     var card=document.getElementById(HS2_CARDS[i]); if(!card) continue;
     card.classList.toggle('openacc', hs2Open===i);
     card.classList.toggle('closedacc', hs2Open!==i);
@@ -1208,25 +1450,29 @@ function hs2AccSync(){
 }
 function hs2Complete(i){
   var pin=['c1','c2','c3','c4','c5','c6'].every(function(id){ var el=document.getElementById(id); return el&&el.textContent; });
+  if(i===2&&!pin){ showToast('Generate or enter your 6-digit PIN first','error'); return; }
   if(i===0){
     if(!questSpot){ showToast('Pick your hiding spot object','error'); return; }
     if(!(questDesc||'').trim()){ showToast('Add a short hiding spot description','error'); return; }
-    if(!pin){ showToast('Generate or enter your 6-digit PIN first','error'); return; }
   }
   if(i===1&&!window._hsPhotoDataUrl){ showToast('Take a photo of the hiding spot','error'); return; }
   hideToast();
-  var st=hs2AccStates();
-  hs2Open = i===0 ? 1 : (!st[0]?0:-1);
+  try{ var _cEl=document.getElementById(HS2_CARDS[i]); if(_cEl) _cEl.classList.add('userdone'); }catch(e){}
+  // Fixed order: PIN opens the hiding spot, hiding spot opens the photo,
+  // photo collapses everything (end of the page).
+  if(i===2){ hs2Open = 0; }
+  else if(i===0){ hs2Open = 1; }
+  else { hs2Open = -1; }
   hs2AccSync();
 }
 function hs2Acc(i){
   hs2Open = (hs2Open===i) ? -1 : i;
   hs2AccSync();
-  if(hs2Open===0){ try{ document.querySelectorAll('#step2 .hs2-chip').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
+  if(hs2Open===2){ try{ document.querySelectorAll('#step2 .hs2-chip, #fs-pin-card .code-digit').forEach(function(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }); }catch(e){} }
 }
 function hs2AccInit(){
-  var st=hs2AccStates();
-  hs2Open = !st[0]?0 : !st[1]?1 : -1;
+  // The PIN section always opens by default on this page.
+  hs2Open = 2;
   hs2AccSync();
 }
 function hs2OpenObjects(){
@@ -1300,11 +1546,29 @@ var HS2_GENERAL=[
  "The bus shelter across from the ball fields, in a ziplock behind the bench leg on the glass side",
  "The dedication plaque at the garden entrance, in a sandwich bag under the border stone directly in front"
 ];
+function hs2PickExample(j){
+  var t=(window._hs2ExItems||[])[j]; if(!t) return;
+  window._hs2ExRef=t;
+  hs2SyncExRef();
+  hs2CloseSheets();
+  var d=document.getElementById('qa-desc');
+  if(d){ try{ d.focus(); var n=d.value.length; d.setSelectionRange(n,n); }catch(e){} }
+}
+function hs2SyncExRef(){
+  var r=document.getElementById('qa-ex-ref'); if(!r) return;
+  if(window._hs2ExRef){
+    r.style.display='block';
+    r.innerHTML='<span style="color:rgba(255,255,255,.35);">Reference:</span> ' + window._hs2ExRef.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  } else {
+    r.style.display='none';
+  }
+}
 function hs2OpenExamples(){
   var t=document.getElementById('hs2-ex-obj'); if(t) t.textContent=questSpot||'your hiding spot';
   var list=document.getElementById('hs2-ex-list');
   var items=questSpot?hs2Examples(questSpot):HS2_GENERAL;
-  if(list) list.innerHTML=items.map(function(s,j){ return '<div class="hs2-ex" style="animation-delay:'+(j*0.04).toFixed(2)+'s">'+s+'</div>'; }).join('');
+  window._hs2ExItems=items;
+  if(list) list.innerHTML=items.map(function(s,j){ return '<div class="hs2-ex" style="animation-delay:'+(j*0.04).toFixed(2)+'s;cursor:pointer;" onclick="hs2PickExample('+j+')">'+s+'</div>'; }).join('');
   hs2ShowSheet('hs2-ex-sheet');
 }
 
@@ -1379,8 +1643,7 @@ function goStep(n) {
     updateMiniSummary();
     // Re-enable schedule button if preset already chosen
     if (n === 5 && selectedPreset) {
-      var pb = document.getElementById('btn-preview');
-      if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
+      if (typeof cb3sReady === 'function') cb3sReady(true);
     }
   }
 
@@ -2005,7 +2268,7 @@ function updateMiniSummary() {
   if (location) location = location.split(',')[0].trim();
 
   var mp = document.getElementById('ms-prize'); if(mp) mp.textContent = '$' + prize;
-  var mc = document.getElementById('ms-clues'); if(mc) mc.textContent = clueLabels[clue] || clue + ' clues';
+  var mc = document.getElementById('ms-clues'); if(mc) mc.textContent = clue + ' \u00b7 ' + personaName + ' voice';
   var ms = document.getElementById('ms-style'); if(ms) ms.textContent = personaName;
   var ml = document.getElementById('ms-location'); if(ml) ml.textContent = location || '—';
 }
@@ -2052,118 +2315,109 @@ function getPresetDates(preset) {
   }
 }
 
-function selPreset(preset, el) {
-  selectedPreset = preset;
-  // Enable Schedule Quest button
-  var pb = document.getElementById('btn-preview');
-  if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
-  // Reset all buttons
-  document.querySelectorAll('.preset-btn').forEach(function(b) {
-    var p = b.dataset.preset;
-    if (p === 'weekend') {
-      b.style.border = '1.5px solid rgba(45,212,191,.3)';
-      b.style.background = 'rgba(45,212,191,.05)';
-      b.querySelector('div').style.color = '#2dd4bf';
-    } else if (p === 'custom') {
-      b.style.border = '1.5px solid rgba(167,139,250,.3)';
-      b.style.background = 'rgba(167,139,250,.05)';
-      b.querySelector('div').style.color = '#a78bfa';
-    } else {
-      b.style.border = '1px solid rgba(255,255,255,.09)';
-      b.style.background = 'rgba(255,255,255,.03)';
-      b.querySelector('div').style.color = 'rgba(255,255,255,.6)';
-    }
-    b.style.boxShadow = '';
+function cb3sPaint(){
+  document.querySelectorAll('.preset-btn').forEach(function(b){
+    b.classList.toggle('sel', b.dataset.preset === selectedPreset);
   });
-
-  // Highlight selected
-  var c = PRESET_COLORS[preset];
-  el.style.border = '2px solid ' + c.border;
-  el.style.background = c.bg;
-  el.querySelector('div').style.color = c.text;
-  el.style.boxShadow = '0 0 14px ' + c.bg;
-
-  // Update info bar
-  var infobar = document.getElementById('preset-infobar');
-  var mainEl = document.getElementById('preset-info-main');
-  var subEl = document.getElementById('preset-info-sub');
-  var customPicker = document.getElementById('custom-picker');
-
-  infobar.style.background = c.infoBg;
-  infobar.style.border = '1px solid ' + c.infoBorder;
-
+}
+function cb3sReady(on){
+  var pb = document.getElementById('btn-preview');
+  if (!pb) return;
+  pb.classList.toggle('cb3s-on', !!on);
+  pb.style.opacity = '';
+  pb.style.pointerEvents = '';
+  pb.textContent = on ? 'Schedule Quest \u2192' : 'Select a window \u2192';
+}
+function cb3sSetInfo(start, end){
+  var d0 = new Date(start); d0.setHours(0,0,0,0);
+  var d1 = new Date(end); d1.setHours(0,0,0,0);
+  var days = Math.round((d1 - d0) / (1000*60*60*24)) + 1;
+  var now = new Date(); now.setHours(0,0,0,0);
+  var when = (d0.getTime() === now.getTime()) ? 'today' : 'on day one';
+  var m = document.getElementById('preset-info-main');
+  if (m) m.innerHTML = 'Runs <b>' + fmtDate(start) + '</b> to <b>' + fmtDate(end) + '</b>';
+  var sb = document.getElementById('preset-info-sub');
+  if (sb) sb.textContent = days + ' day' + (days > 1 ? 's' : '') + ' for seekers to quest. Goes live at 9:00 AM ' + when + '. Daily quest hours 9:00 AM to 9:00 PM.';
+  var ib = document.getElementById('preset-infobar');
+  if (ib) ib.classList.add('set');
+}
+function cb3sOpenDates(){
+  var today = new Date();
+  var defEnd = new Date(today); defEnd.setDate(today.getDate() + 2);
+  var maxDate = new Date(today); maxDate.setDate(today.getDate() + 30);
+  var iso = function(d){ return d.toISOString().split('T')[0]; };
+  var si = document.getElementById('custom-start');
+  var ei = document.getElementById('custom-end');
+  if (si) { if (!si.value) si.value = iso(today); si.min = iso(today); si.max = iso(maxDate); }
+  if (ei) { if (!ei.value) ei.value = iso(defEnd); ei.min = iso(today); ei.max = iso(maxDate); }
+  updateCustomDates();
+  cb3ShowSheet('cb3s-date-sheet');
+}
+function cb3sApplyCustom(){
+  var btn = document.getElementById('cb3s-setdates');
+  if (!btn || btn.classList.contains('dis')) return;
+  var qs = document.getElementById('quest-start-date').value;
+  var qe = document.getElementById('quest-end-date').value;
+  if (!qs || !qe) return;
+  selectedPreset = 'custom';
+  cb3sPaint();
+  cb3sSetInfo(new Date(qs), new Date(qe));
+  cb3sReady(true);
+  cb3CloseSheets();
+  saveFormState();
+}
+function selPreset(preset, el) {
   if (preset === 'custom') {
-    customPicker.style.display = 'block';
-    mainEl.style.color = c.text;
-    subEl.style.color = c.infoText;
-    mainEl.textContent = 'Pick your start and end dates below';
-    subEl.textContent = 'Max 7 days · Max 30 days ahead';
-    // Set default dates — today to +2 days
-    var today = new Date();
-    var defEnd = new Date(today); defEnd.setDate(today.getDate() + 2);
-    document.getElementById('custom-start').value = today.toISOString().split('T')[0];
-    document.getElementById('custom-start').min = today.toISOString().split('T')[0];
-    var maxDate = new Date(today); maxDate.setDate(today.getDate() + 30);
-    document.getElementById('custom-start').max = maxDate.toISOString().split('T')[0];
-    document.getElementById('custom-end').value = defEnd.toISOString().split('T')[0];
-    document.getElementById('custom-end').min = today.toISOString().split('T')[0];
-    document.getElementById('custom-end').max = maxDate.toISOString().split('T')[0];
-    updateCustomDates();
-  } else {
-    customPicker.style.display = 'none';
-    var dates = getPresetDates(preset);
-    mainEl.style.color = '#fff';
-    subEl.style.color = c.infoText;
-    mainEl.textContent = dates.label;
-    subEl.textContent = dates.sub;
-    // Store dates
-    document.getElementById('quest-start-date').value = dates.start.toISOString();
-    document.getElementById('quest-end-date').value = dates.end.toISOString();
-    document.getElementById('dur-slider').value = Math.round((dates.end - dates.start) / (1000*60*60));
+    cb3sOpenDates();
+    return;
   }
+  selectedPreset = preset;
+  cb3sPaint();
+  var dates = getPresetDates(preset);
+  if (!dates) return;
+  // Quest hours enforcement: getNextWeekday sets 9:00 AM local, end set to 9:00 PM local
+  document.getElementById('quest-start-date').value = dates.start.toISOString();
+  document.getElementById('quest-end-date').value = dates.end.toISOString();
+  document.getElementById('dur-slider').value = Math.round((dates.end - dates.start) / (1000*60*60));
+  cb3sSetInfo(dates.start, dates.end);
+  cb3sReady(true);
   saveFormState();
 }
 
 function updateCustomDates() {
-  var startVal = document.getElementById('custom-start').value;
-  var endVal = document.getElementById('custom-end').value;
+  var si = document.getElementById('custom-start');
+  var ei = document.getElementById('custom-end');
+  var startVal = si ? si.value : '';
+  var endVal = ei ? ei.value : '';
   var msgEl = document.getElementById('custom-date-msg');
-  if (!startVal || !endVal) return;
+  var btn = document.getElementById('cb3s-setdates');
+  if (si) si.classList.toggle('ok', !!startVal);
+  if (ei) ei.classList.toggle('ok', !!endVal);
+  if (msgEl) msgEl.className = 'cb3s-dmsg';
+  if (btn) btn.classList.add('dis');
+  if (!startVal || !endVal) { if (msgEl) msgEl.textContent = '\u2717 Pick both dates'; return; }
+  // Quest hours enforcement: 9:00 AM local start day, 9:00 PM local end day
   var start = new Date(startVal + 'T09:00:00');
   var end = new Date(endVal + 'T21:00:00');
   var today = new Date(); today.setHours(0,0,0,0);
   var maxFwd = new Date(today); maxFwd.setDate(today.getDate() + 30);
-
-  if (start < today) {
-    msgEl.style.color = '#f87171';
-    msgEl.textContent = '✗ Start date cannot be in the past';
-    return;
-  }
-  if (start > maxFwd) {
-    msgEl.style.color = '#f87171';
-    msgEl.textContent = '✗ Cannot schedule more than 30 days ahead';
-    return;
-  }
-  if (end <= start) {
-    msgEl.style.color = '#f87171';
-    msgEl.textContent = '✗ End date must be after start date';
-    return;
-  }
+  function bad(t){ if (msgEl) { msgEl.classList.add('err'); msgEl.textContent = t; } }
+  if (start < today) { bad('\u2717 Start date cannot be in the past'); return; }
+  if (start > maxFwd) { bad('\u2717 Cannot schedule more than 30 days ahead'); return; }
+  if (end <= start) { bad('\u2717 End date must be after the start date'); return; }
   var days = Math.round((end - start) / (1000*60*60*24));
-  if (days > 7) {
-    msgEl.style.color = '#f87171';
-    msgEl.textContent = '✗ Maximum 7 days — please shorten your window';
-    return;
+  if (days > 7) { bad('\u2717 Max 7 days. This window is ' + days + ' days'); return; }
+  var d0 = new Date(start); d0.setHours(0,0,0,0);
+  var d1 = new Date(end); d1.setHours(0,0,0,0);
+  var incDays = Math.round((d1 - d0) / (1000*60*60*24)) + 1;
+  if (msgEl) {
+    msgEl.classList.add('good');
+    msgEl.textContent = '\u2713 ' + incDays + ' day' + (incDays > 1 ? 's' : '') + ' \u00b7 ' + fmtDate(start) + ' 9:00 AM to ' + fmtDate(end) + ' 9:00 PM';
   }
-  msgEl.style.color = 'rgba(167,139,250,.8)';
-  msgEl.textContent = '✓ ' + days + ' day' + (days !== 1 ? 's' : '') + ' · ' + fmtDate(start) + ' 9am → ' + fmtDate(end) + ' 9pm';
   document.getElementById('quest-start-date').value = start.toISOString();
   document.getElementById('quest-end-date').value = end.toISOString();
   document.getElementById('dur-slider').value = days * 24;
-
-  // Update info bar
-  var pim=document.getElementById('preset-info-main'); if(pim) pim.textContent = fmtDate(start) + ' · 9:00 AM → ' + fmtDate(end) + ' · 9:00 PM';
-  var pis=document.getElementById('preset-info-sub'); if(pis) pis.textContent = days + ' day' + (days !== 1 ? 's' : '') + ' · Custom window';
+  if (btn) btn.classList.remove('dis');
 }
 
 function startTheQuest() {
@@ -2335,6 +2589,15 @@ function showToast(msg, type){
   clearTimeout(window._toastT);
   window._toastT = setTimeout(()=>t.classList.remove('show'), type === 'error' ? 15000 : 4000);
 }
+// Debug mode for the newquest2 test deploy only: surface runtime errors as toasts
+if (window.location.pathname.indexOf('newquest2') > -1) {
+  window.addEventListener('error', function(e){
+    try { showToast('JS error: ' + (e.message || 'unknown') + ' @ ' + ((e.filename||'').split('/').pop()) + ':' + (e.lineno||'?'), 'error'); } catch(x){}
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    try { showToast('Promise error: ' + ((e.reason && e.reason.message) || e.reason || 'unknown'), 'error'); } catch(x){}
+  });
+}
 
 // ============================================================
 //  QUEST CREATION PROGRESS OVERLAY
@@ -2470,7 +2733,7 @@ function validateQuestForm(){
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
   try {
-    localStorage.setItem('fs_magic_return', 'newquest.html');
+    localStorage.setItem('fs_magic_return', (window.location.pathname.split('/').pop() || 'newquest.html'));
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
   } catch(e){}
@@ -2578,11 +2841,11 @@ async function signInWithAppleGate(){
       // Old binary without the plugin: get the OAuth URL from Supabase, then
       // load it directly in the webview (not in an external browser).
       // The entire auth flow stays inside the app.
-      localStorage.setItem('fs_magic_return', 'newquest.html');
+      localStorage.setItem('fs_magic_return', (window.location.pathname.split('/').pop() || 'newquest.html'));
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html'),
           skipBrowserRedirect: true
         }
       });
@@ -2594,7 +2857,7 @@ async function signInWithAppleGate(){
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
-        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
+        options: { redirectTo: window.location.origin + ('/auth-callback.html?return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html')) }
       });
       if (error) throw error;
     }
@@ -2679,7 +2942,7 @@ async function submitEmailGate(){
           (signUpErr.message || '').toLowerCase().includes('user already')) {
         var { error: otpErr } = await supaClient.auth.signInWithOtp({
           email: email,
-          options: { emailRedirectTo: window.location.origin + '/newquest.html' }
+          options: { emailRedirectTo: window.location.origin + '/' + (window.location.pathname.split('/').pop() || 'newquest.html') }
         });
         if (otpErr) throw otpErr;
         errEl.style.color = '#4ade80';
@@ -2794,7 +3057,7 @@ async function signUpFromGate(){
       sessionStorage.setItem('fs_quest_pending_auth', '1');
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
+        options: { redirectTo: window.location.origin + ('/auth-callback.html?return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html')) }
       });
       if (error) throw error;
     }
@@ -3309,6 +3572,11 @@ function saveFormState() {
       staticMapUrl: window._staticMapUrl || '',
       generatedClues: _generatedClues || null,
       generatedLocationRiddle: _generatedLocationRiddle || '',
+      regenLeft: (typeof window._fsRegenLeft !== 'undefined') ? window._fsRegenLeft : 3,
+      preset: selectedPreset || null,
+      qsd: (document.getElementById('quest-start-date')||{}).value || '',
+      qed: (document.getElementById('quest-end-date')||{}).value || '',
+      qdur: (document.getElementById('dur-slider')||{}).value || '',
       savedAt: Date.now(),
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
@@ -3430,9 +3698,19 @@ function restoreFormStateInner() {
         window.scrollTo(0,0);
         if (s.step === 5) {
           updateMiniSummary();
+          // Restore the chosen window so the post-sign-in resume can createQuest
+          if (s.preset && !selectedPreset) {
+            selectedPreset = s.preset;
+            try {
+              if (s.qsd) document.getElementById('quest-start-date').value = s.qsd;
+              if (s.qed) document.getElementById('quest-end-date').value = s.qed;
+              if (s.qdur) document.getElementById('dur-slider').value = s.qdur;
+              if (typeof cb3sPaint === 'function') cb3sPaint();
+              if (s.qsd && s.qed && typeof cb3sSetInfo === 'function') cb3sSetInfo(new Date(s.qsd), new Date(s.qed));
+            } catch(e){}
+          }
           if (selectedPreset) {
-            var pb = document.getElementById('btn-preview');
-            if (pb) { pb.style.opacity = '1'; pb.style.pointerEvents = 'auto'; pb.textContent = 'Schedule Quest →'; }
+            if (typeof cb3sReady === 'function') cb3sReady(true);
           }
         }
       }, 150);
@@ -3450,7 +3728,7 @@ function clearFormState() {
     localStorage.removeItem('fs_qa_state');
     selectedLat = null; selectedLng = null; selectedPlaceName = null;
     window._staticMapUrl = null; window._hsPhotoDataUrl = null;
-    _hsData = { location: '', startingPoint: '', clues: [] }; locationConfirmed = false;
+    _hsData = { location: '', startingPoint: '', startDesc: '', startCustom: false, startConfirmed: false, clues: [] }; locationConfirmed = false;
     // Reset step1 UI
     ['c1','c2','c3','c4','c5','c6'].forEach(function(id){ var el=document.getElementById(id); if(el)el.textContent=''; });
     var saveBtn=document.getElementById('save-code-btn'); if(saveBtn)saveBtn.style.display='none';
@@ -5107,7 +5385,7 @@ document.addEventListener('click', function(e) {
 
 
 // ── HIDING SPOT DETAILS MODAL ────────────────────────────────
-var _hsData = { location: '', startingPoint: '', clues: [], category: '', subcategory: '' };
+var _hsData = { location: '', startingPoint: '', startDesc: '', startCustom: false, startConfirmed: false, clues: [], category: '', subcategory: '' };
 var _hsCurrent = 0; // 0 = location, 1..N = clue index
 
 // Scoped element getter — always finds elements within the active modal sheet,
@@ -5320,6 +5598,11 @@ var _mapOpenedFromStep = false;
 function schedBack() {
   goStep(2);
   openHsModalFromStep();
+  // Back in order: Schedule sits after the preview, so return to the
+  // preview (no regeneration). Builder pages are one more back from there.
+  if (_generatedClues && _generatedClues.length) {
+    hsShowPreview();
+  }
 }
 
 // Rebuild the modal sheet base structure if it was left showing the
@@ -5328,8 +5611,8 @@ function hsRebuildSheet() {
   var sheet = document.querySelector('.hs-modal-sheet');
   if (!sheet) return;
   sheet.innerHTML =
-'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="width:36px;"></div><div style="font-size:24px;font-weight:500;color:#fff;text-align:center;">Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span></div><div></div></div>' +
-'<div style="flex-shrink:0;"><div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div></div>' +
+'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div class="cb3-back-circ" id="cb3-hdr-back" onclick="cb3HeaderBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div><div id="cb3-hdr-title" style="font-size:25px;font-weight:500;color:#fff;text-align:center;">Start <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Location</span></div><div style="display:flex;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();"><div style="position:relative;width:34px;height:34px;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div></div></div><div id="cb3-guard" onclick="cb3GuardToast()" style="display:none;position:absolute;left:0;right:0;bottom:0;top:64px;z-index:40;"></div>' +
+'<div style="flex-shrink:0;"><div id="hs-radar-wrap" style="display:none;position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div></div>' +
 '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
 '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
 '<div class="hs-nav" id="hs-nav"></div>';
@@ -5360,10 +5643,27 @@ function openHsModal() {
       _hsData = fs.hsData;
       if (typeof _hsData.category === 'undefined') _hsData.category = '';
       if (typeof _hsData.subcategory === 'undefined') _hsData.subcategory = '';
+      // cb3: migrate old drafts (no startDesc/startCustom keys)
+      if (typeof _hsData.startDesc === 'undefined') _hsData.startDesc = '';
+      if (typeof _hsData.startConfirmed === 'undefined') _hsData.startConfirmed = false;
+      if (typeof _hsData.startCustom === 'undefined') {
+        _hsData.startCustom = false;
+        try {
+          var _spv = (_hsData.startingPoint || '').trim();
+          if (_spv && (((QA_DATA[questArea]||{}).starts)||[]).indexOf(_spv) === -1) _hsData.startCustom = true;
+        } catch(e){}
+      }
     }
+    // cb3: regeneration allowance rides in the draft (default 3)
+    if (typeof fs.regenLeft !== 'undefined') window._fsRegenLeft = fs.regenLeft;
+    else if (typeof window._fsRegenLeft === 'undefined') window._fsRegenLeft = 3;
     // Restore placeName
     if (fs.placeName) selectedPlaceName = fs.placeName;
   } catch(e){}
+  // cb3: unconditional defaults so injected or legacy hsData objects are safe
+  if (typeof _hsData.startDesc === 'undefined') _hsData.startDesc = '';
+  if (typeof _hsData.startCustom === 'undefined') _hsData.startCustom = false;
+  if (typeof _hsData.startConfirmed === 'undefined') _hsData.startConfirmed = false;
   // New builder: strip any auto final from a previous pass, migrate old
   // drafts (clues without obj keep their question and answer), never pad.
   if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
@@ -5371,8 +5671,8 @@ function openHsModal() {
   _hsData.clues = _hsData.clues.filter(function(c){
     return c && (c.obj || (c.question||'').trim() || (c.answer||'').trim());
   });
-  _hsData.clues.forEach(function(c){ if (!c.action) c.action = 'find'; if (!c.hint) c.hint = c.obj || ''; });
-  if (!_hsData.clues.length) _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+  _hsData.clues.forEach(function(c){ cb3MigrateClue(c); });
+  while (_hsData.clues.length < CB_MIN) _hsData.clues.push(cb3BlankClue());
   cbSyncCounts();
   _hsCurrent = 0;
   if (!document.getElementById('hs-panel') || !document.getElementById('hs-action-area')) hsRebuildSheet();
@@ -5437,21 +5737,23 @@ function hsModalBgClose(e) { /* Background taps no longer close the builder; the
 
 function saveHsPanel() {
   if (_hsCurrent === 0) {
-    var el = hsEl('hs-loc-input');
-    if (el) { _hsData.location = el.value; hsApplyFilled(el); }
-    var sp = hsEl('hs-start-input');
-    if (sp) { _hsData.startingPoint = sp.value; hsApplyFilled(sp); }
+    var sd = hsEl('cb3-sp-desc');
+    if (sd) _hsData.startDesc = sd.value;
+    var spe = hsEl('cb3-sp-edit');
+    if (spe && _hsData.startCustom) _hsData.startingPoint = spe.value.trim();
   } else {
     var idx = _hsCurrent - 1;
     if (!Array.isArray(_hsData.clues)) _hsData.clues = [];
     while (_hsData.clues.length <= idx) {
-      _hsData.clues.push({ obj:'', question:'', answer:'', hint:'', action:'find' });
+      _hsData.clues.push(cb3BlankClue());
     }
     var c = _hsData.clues[idx];
-    var a = hsEl('cb-ans'); if (a) c.answer = a.value;
-    var cq = hsEl('cb-cq'); if (cq && c.customQ) c.question = cq.value;
-    c.hint = c.obj || c.hint || '';
-    c.action = c.action || 'find';
+    var ae = hsEl('cb3-act-edit'); if (ae && (ae.classList.contains('show') || c.customAct)) c.customAct = ae.value;
+    var oe = hsEl('cb3-ob-edit'); if (oe && (oe.classList.contains('show') || c.customObj)) c.customObj = oe.value;
+    var ex = hsEl('cb3-exact'); if (ex) c.exact = ex.value;
+    var ct = hsEl('cb3-cbtext'); if (ct && (c.edited || !c.tplPat)) c.question = ct.textContent;
+    var an = hsEl('cb3-ans'); if (an) c.answer = an.value;
+    cb3SyncDerived(c);
   }
 }
 
@@ -5466,14 +5768,13 @@ function hsGoTo(idx) {
   // Validate current panel before moving forward
   if (idx > _hsCurrent) {
     if (_hsCurrent === 0) {
-      if (!selectedLat || !selectedLng || !locationConfirmed) { showToast('Set the hiding spot location on the map first', 'error'); return; }
-      if (!_hsData.location || _hsData.location.trim() === '') { showToast('Enter a description of the exact hiding spot', 'error'); return; }
-      if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Enter a starting point for seekers', 'error'); return; }
+      if (!_hsData.startingPoint || _hsData.startingPoint.trim() === '') { showToast('Pick a Starting Point or add your own first', 'error'); return; }
+      if (!_hsData.startDesc || _hsData.startDesc.trim() === '') { showToast('Describe the Starting Point first', 'error'); return; }
+      _hsData.startConfirmed = true;
     } else {
       var cl = (_hsData.clues && _hsData.clues[_hsCurrent - 1]) || {};
-      if (!cl.obj) { showToast('Pick what clue ' + _hsCurrent + ' is about', 'error'); return; }
-      if (!(cl.question||'').trim()) { showToast('Pick or write a question for clue ' + _hsCurrent, 'error'); return; }
-      if (!(cl.answer||'').trim()) { showToast('Enter the answer for clue ' + _hsCurrent, 'error'); return; }
+      var _gm = cb3Missing(cl);
+      if (_gm) { showToast(_gm, 'error'); return; }
     }
   }
   _hsCurrent = idx;
@@ -5485,9 +5786,527 @@ function hsGoTo(idx) {
   }
 }
 
+// ===== cb3 Stage 2: clue page template =====
+var CB3_PATS = {count:'🔢 Count',sequence:'👣 Sequence',read:'👁\uFE0F Read',odd:'🎯 Odd one out',super:'📏 Superlative',look:'🔭 Look up / down',pivot:'🧭 Pivot',math:'\u2795 Object math'};
+var CB3_PATD = {count:'How many? Easiest to build',sequence:'Walk and count on the way',read:'Signs, plaques, and words',odd:'Spot the one that is different',super:'Biggest, tallest, closest',look:'Above and below you',pivot:'Stand, face, turn',math:'Add two finds. Hardest'};
+var CB3_EX = {
+count:["At {at}, how many bolts hold it together?","At {at}, how many colors can you count on it?","How many steps does it take to walk all the way around the {obj}?","At {at}, how many screws or nails can you spot?","Standing at {at}, how many trees can you see?","How many words are printed on the {obj}?","At {at}, how many legs or posts touch the ground?","How many benches can you see while standing at {at}?"],
+sequence:["From the main entrance toward the {obj}, how many lamp posts do you pass?","Walking from the parking lot to the {obj}, how many trash cans do you pass?","From the fountain toward the {obj}, what is the first blue thing you reach?","From the playground to the {obj}, how many benches do you pass?","From the flag pole toward the {obj}, how many trees are on your right?","Walking to the {obj} from the entrance, which do you reach first: bench, sign, or fountain?","From the pavilion to the {obj}, how many picnic tables do you pass?","From the restrooms toward the {obj}, how many yellow things do you pass?"],
+read:["At {at}, read the nearest sign. What is the last word?","What word or name is written on the {obj}?","At {at}, find the closest plaque. What year is shown?","What is the first letter you can find on the {obj}?","At {at}, read the nearest sign. What is the third word?","Find any sticker or label on the {obj}. What does it say?","At {at}, what is the longest word you can see?","What number appears on or near the {obj}?"],
+odd:["One {obj} here is different from the rest. What makes it different?","Near the {obj}, one thing is a different color. What is it?","At {at}, something looks out of place. What?","One side of the {obj} is different from the other. How?","Near the {obj}, one tree stands out from the rest. How?","Something on the {obj} does not match. What is it?","At {at}, find the one thing that is not green. What is it?","One part of the {obj} looks newer than the rest. Which part?"],
+super:["Find the biggest {obj} in the area. What sits closest to it?","At {at}, what is the tallest thing you can see?","Find the {obj} closest to the water. What color is it?","At {at}, what is the brightest colored thing nearby?","Find the oldest looking {obj}. What is on it?","At {at}, what is the widest thing you can see?","Find the {obj} nearest the entrance. What is behind it?","At {at}, what is the smallest thing with writing on it?"],
+look:["Stand at {at} and look up. What is directly above you?","Stand at {at} and look down. What is at your feet?","At {at}, look up. What hangs closest overhead?","At {at}, look down. What color is the ground?","Stand at {at}. Look up. How many wires or branches cross above you?","At {at}, look down. What is stamped or printed on the ground?","Look under the {obj}. What do you find?","Look above the {obj}. What is the first thing you see?"],
+pivot:["Stand at {at}. Turn left. What is the closest thing with four legs?","Stand at {at}. Turn right. What color is the first thing you see?","Stand at {at}. Turn around. What is straight ahead?","Stand at {at} facing the entrance. Turn left. Which do you see first: tree, sign, or bench?","Stand at {at}. Turn right. How many trees are in front of you?","Stand at {at}. Turn around. What is the tallest thing you see?","Stand at {at}. Turn left. What is painted or written nearby?","Stand at {at}. Turn right. What sits closest to the ground?"],
+math:["Add the legs on the {obj} to the number of trash cans you can see.","Count the benches you can see from {at}, then add the lamp posts.","Add the letters in the area name to the bolts on the {obj}.","Count the trees around the {obj}, then subtract the signs.","Add the number of swings to the legs on the {obj}.","From {at}, count the picnic tables and add the trash cans.","Add the steps it takes to circle the {obj} to the benches nearby.","Count the posts on the {obj}, then multiply by the slides at the playground."]
+};
+var CB3_ATMAP = {'bench':'the front of the bench','sign':'the front of the sign','tree':'the base of the tree','rock':'the big rock','picnic table':'the end of the picnic table','lamp post':'the base of the lamp post','light pole':'the base of the light pole','flag pole':'the base of the flag pole','statue':'the front of the statue','plaque':'the plaque','fountain':'the edge of the fountain','bush':'the bush','fence':'the fence line','gate':'the gate','gate post':'the gate post','stairs':'the bottom of the stairs','bridge':'the middle of the bridge','boardwalk':'the start of the boardwalk','bleachers':'the front of the bleachers','pavilion':'the edge of the pavilion','planter':'the planter','bike rack':'the bike rack','garden bed':'the edge of the garden bed','fallen log':'the fallen log','trail marker':'the trail marker','overlook rail':'the overlook rail','scoreboard':'the base of the scoreboard','clock tower':'the base of the clock tower','column':'the base of the column','sculpture':'the front of the sculpture','driftwood':'the driftwood','jetty':'the start of the jetty','pier post':'the pier post','beacon':'the beacon','boulder':'the boulder'};
+function cb3BlankClue(){
+  return { obj:'', question:'', answer:'', hint:'', action:'', landmark:'', exact:'', pattern:'', customAct:'', customObj:'', tplPat:null, tplIdx:null, edited:false };
+}
+function cb3MigrateClue(c){
+  if (!c) return;
+  if (typeof c.landmark === 'undefined') c.landmark = '';
+  if (typeof c.exact === 'undefined') c.exact = '';
+  if (typeof c.pattern === 'undefined') c.pattern = '';
+  if (typeof c.customAct === 'undefined') c.customAct = '';
+  if (typeof c.customObj === 'undefined') c.customObj = '';
+  if (typeof c.tplPat === 'undefined') c.tplPat = null;
+  if (typeof c.tplIdx === 'undefined') c.tplIdx = null;
+  if (typeof c.edited === 'undefined') c.edited = !!((c.question||'').trim());
+  if (typeof c.obj === 'undefined') c.obj = '';
+  if (typeof c.hint === 'undefined') c.hint = '';
+  if (typeof c.action === 'undefined') c.action = '';
+}
+function cb3Cur(){
+  var idx = _hsCurrent - 1;
+  if (idx < 0) return null;
+  var ucs = cbUserClues();
+  return ucs[idx] || null;
+}
+function cb3ObjName(c){
+  if (!c) return '';
+  if (c.customObj) return (c.customObj||'').replace(/^find\s+(the\s+)?/i,'').trim();
+  return (c.obj||'').trim();
+}
+function cb3ActVal(c){
+  if (!c) return '';
+  if ((c.landmark||'').trim()) return c.landmark.trim();
+  return (c.customAct||'').replace(/^walk towards(\s+the)?\s*/i,'').trim();
+}
+function cb3ObAt(c){
+  var n = cb3ObjName(c);
+  if (!n) return 'the object';
+  if (c.customObj) return 'the ' + n;
+  return CB3_ATMAP[n.toLowerCase()] || ('the ' + n.toLowerCase());
+}
+function cb3SyncDerived(c){
+  if (!c) return;
+  var o = cb3ObjName(c);
+  var ex = (c.exact||'').trim();
+  c.obj = o;
+  c.hint = o ? (ex ? (o + ' - ' + ex) : o) : '';
+  c.action = (c.landmark||'').trim() ? ('Walk towards the ' + c.landmark.trim().toLowerCase()) : ((c.customAct||'').trim());
+}
+function cb3ObjDisp(c){
+  var n = cb3ObjName(c);
+  if (!n) return '';
+  return c.customObj ? n : n.toLowerCase();
+}
+function cb3FillTpl(t, c){
+  var n = cb3ObjDisp(c) || 'object';
+  return t.split('{obj}').join(n).split('{at}').join(cb3ObAt(c));
+}
+function cb3TokSpan(n){
+  return '<span class="cb3-objtok" onclick="cb3ObjTok(event)">' + cbEsc(n) + '</span>';
+}
+function cb3FillTplHtml(t, c){
+  var n = cb3ObjDisp(c) || 'object';
+  var at = cb3ObAt(c);
+  var ix = at.toLowerCase().indexOf(n.toLowerCase());
+  var atH = ix >= 0
+    ? cbEsc(at.slice(0, ix)) + cb3TokSpan(at.substr(ix, n.length)) + cbEsc(at.slice(ix + n.length))
+    : cbEsc(at);
+  return cbEsc(t).split('{obj}').join(cb3TokSpan(n)).split('{at}').join(atH);
+}
+function cb3ObjTok(e){
+  if (e && e.stopPropagation) e.stopPropagation();
+  if (window._cb3Editing) return;
+  cb3OpenObSheet();
+}
+function cb3Missing(c){
+  if (!cb3ActVal(c)) return 'Pick or write the Action first';
+  if (!cb3ObjName(c)) return 'Pick or write the Object first';
+  if (!((c.exact||'').trim())) return 'Describe the Object Exact Location';
+  if (!((c.question||'').trim())) return 'Pick or write the Clue';
+  if (!((c.answer||'').trim())) return 'Enter the Answer';
+  return null;
+}
+function cb3GuardToast(){ showToast('Complete the Start Location first', 'error'); }
+function cb3Grow(el){ if (!el) return; el.style.height = 'auto'; el.style.height = (el.scrollHeight || 48) + 'px'; }
+function cb3RefreshTrail(){
+  var trail = document.querySelector('.hs-modal-sheet .cb3-trail');
+  if (trail) trail.outerHTML = cb3TrailHtml();
+}
+function cb3RefreshFooter(){
+  if (window._cbNavEl) window._cbNavEl.innerHTML = cbFooterHtml();
+}
+function cb3Confetti(){
+  var cols = ['#f5c842','#e8a820','#4ade80','#fff','#ef4444'];
+  for (var i = 0; i < 26; i++) {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;left:50%;bottom:130px;width:8px;height:8px;border-radius:2px;z-index:23000;pointer-events:none;background:' + cols[i % cols.length] + ';';
+    document.body.appendChild(d);
+    var dx = (Math.random() * 2 - 1) * 160, dy = -(80 + Math.random() * 220), rot = (Math.random() * 2 - 1) * 540;
+    try {
+      d.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg)',opacity:0}],{duration:700 + Math.random() * 500,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish = (function(el){ return function(){ el.remove(); }; })(d);
+    } catch(e){ d.remove(); }
+  }
+}
+function cb3CluePaint(){
+  var c = cb3Cur(); if (!c) return;
+  cb3SyncDerived(c);
+  var actOk = !!cb3ActVal(c), obOk = !!cb3ObjName(c);
+  var exOk = !!((c.exact||'').trim()), qOk = !!((c.question||'').trim()), aOk = !!((c.answer||'').trim());
+  var m = {'cb3-dd-act':actOk,'cb3-dd-ob':obOk,'cb3-exact':exOk,'cb3-cluebox':qOk,'cb3-ddchip':qOk,'cb3-ans':aOk};
+  Object.keys(m).forEach(function(id){ var el = hsEl(id); if (el) el.classList.toggle('ok', !!m[id]); });
+  var ae = hsEl('cb3-act-edit'); if (ae) ae.classList.toggle('ok', actOk && !!c.customAct);
+  var oe = hsEl('cb3-ob-edit'); if (oe) oe.classList.toggle('ok', obOk && !!c.customObj);
+  cb3RefreshTrail();
+  cb3RefreshFooter();
+  var allDone = cbAllDone();
+  if (allDone && !window._cb3PrevAll && _hsCurrent > 0) cb3Confetti();
+  window._cb3PrevAll = allDone;
+}
+function cb3ActEditInput(el){
+  var c = cb3Cur(); if (!c) return;
+  c.customAct = el.value;
+  cb3CluePaint();
+  saveFormState();
+}
+function cb3ObEditInput(el){
+  var c = cb3Cur(); if (!c) return;
+  c.customObj = el.value;
+  cb3ReTpl(c);
+  cb3CluePaint();
+  saveFormState();
+}
+function cb3ExactInput(el){
+  var c = cb3Cur(); if (!c) return;
+  c.exact = el.value;
+  cb3Grow(el);
+  cb3CluePaint();
+  saveFormState();
+}
+function cb3AnsInput(el){
+  var c = cb3Cur(); if (!c) return;
+  c.answer = el.value;
+  cb3CluePaint();
+  saveFormState();
+}
+function cb3ReTpl(c){
+  if (!c) return;
+  if (c.tplPat && c.tplIdx != null && !c.edited) {
+    c.question = cb3FillTpl(CB3_EX[c.tplPat][c.tplIdx], c);
+    var ct = hsEl('cb3-cbtext');
+    if (ct) ct.innerHTML = cb3FillTplHtml(CB3_EX[c.tplPat][c.tplIdx], c);
+  }
+}
+function cb3OpenObSheet(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  var objs = hs2Objects();
+  var sub = document.getElementById('cb3-ob-sub');
+  if (sub) sub.textContent = 'Objects for ' + (questArea || 'your quest') + ' areas. Bolted beats portable.';
+  var h = '';
+  objs.forEach(function(o, i){
+    h += '<div class="cb3-lm" onclick="cb3PickOb(' + i + ')">🔎 ' + cbEsc(o) + '</div>';
+    if (i === 0) h += '<div class="cb3-lm own" onclick="cb3OwnOb()">\u270E My own object</div>';
+  });
+  var g = document.getElementById('cb3-ob-grid');
+  if (g) g.innerHTML = h;
+  cb3ShowSheet('cb3-ob-sheet');
+}
+function cb3PickOb(i){
+  var c = cb3Cur(); if (!c) return;
+  var o = hs2Objects()[i]; if (!o) return;
+  c.obj = o; c.customObj = '';
+  cb3SyncDerived(c);
+  cb3ReTpl(c);
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+}
+function cb3OwnOb(){
+  var c = cb3Cur(); if (!c) return;
+  c.obj = ''; c.customObj = 'Find ';
+  cb3SyncDerived(c);
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+  setTimeout(function(){ var e = hsEl('cb3-ob-edit'); if (e) { e.focus(); try { e.setSelectionRange(e.value.length, e.value.length); } catch(x){} } }, 380);
+}
+function cb3OpenPats(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  var c = cb3Cur(); if (!c) return;
+  var h = '';
+  Object.keys(CB3_PATS).forEach(function(k){
+    h += '<div class="cb3-patc' + (c.pattern === k ? ' sel' : '') + '" onclick="cb3SelPat(\'' + k + '\')"><div class="cb3-ph">' + CB3_PATS[k] + '</div><div class="cb3-pd">' + CB3_PATD[k] + '</div></div>';
+  });
+  var g = document.getElementById('cb3-pat-grid');
+  if (g) g.innerHTML = h;
+  cb3ShowSheet('cb3-pat-sheet');
+}
+function cb3SelPat(k){
+  var c = cb3Cur(); if (!c) return;
+  c.pattern = k;
+  var pv = hsEl('cb3-pat-val'); if (pv) pv.textContent = CB3_PATS[k];
+  saveFormState();
+  var ps = document.getElementById('cb3-pat-sheet'); if (ps) ps.classList.remove('open');
+  cb3OpenExs();
+}
+function cb3OpenExs(){
+  var c = cb3Cur(); if (!c || !c.pattern) return;
+  var t = document.getElementById('cb3-ex-title');
+  if (t) t.innerHTML = 'Pick a <span>' + CB3_PATS[c.pattern].replace(/^[^ ]+ /,'') + '</span> example';
+  var h = '<div class="cb3-ex own" onclick="cb3OwnEx()">\u270E Create your own</div>';
+  CB3_EX[c.pattern].forEach(function(exT, i){
+    h += '<div class="cb3-ex" onclick="cb3PickEx(' + i + ')">' + cbEsc(cb3FillTpl(exT, c)) + '</div>';
+  });
+  var l = document.getElementById('cb3-ex-list');
+  if (l) l.innerHTML = h;
+  cb3ShowSheet('cb3-ex-sheet');
+}
+function cb3PickEx(i){
+  var c = cb3Cur(); if (!c) return;
+  c.tplPat = c.pattern; c.tplIdx = i; c.edited = false;
+  c.question = cb3FillTpl(CB3_EX[c.pattern][i], c);
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+}
+function cb3OwnEx(){
+  var c = cb3Cur(); if (!c) return;
+  c.tplPat = null; c.tplIdx = null; c.edited = true; c.question = '';
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+  setTimeout(function(){ cb3SetEdit(true); }, 380);
+}
+function cb3TogEdit(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  cb3SetEdit(!window._cb3Editing);
+}
+function cb3SetEdit(on){
+  var c = cb3Cur(); if (!c) return;
+  window._cb3Editing = !!on;
+  var ct = hsEl('cb3-cbtext');
+  var te = hsEl('cb3-tapedit');
+  if (ct) {
+    if (on) {
+      // flatten any token markup before editing starts
+      ct.textContent = c.question || '';
+      ct.setAttribute('contenteditable', 'true');
+      try { ct.focus(); } catch(e){}
+    } else {
+      ct.setAttribute('contenteditable', 'false');
+    }
+  }
+  if (te) te.classList.toggle('editing', !!on);
+}
+function cb3MarkEdited(el){
+  var c = cb3Cur(); if (!c) return;
+  c.edited = true;
+  c.question = el.textContent || '';
+  cb3CluePaint();
+  saveFormState();
+}
+function cb3ExactHelp(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  cb3ShowSheet('cb3-exact-sheet');
+}
+function cb3DoneOrNext(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  try { saveHsPanel(); } catch(e){}
+  var ucs = cbUserClues();
+  var idx = _hsCurrent - 1;
+  var m = cb3Missing(ucs[idx] || {});
+  if (m) { showToast(m, 'error'); cb3RefreshTrail(); return; }
+  if (_hsCurrent < ucs.length) {
+    _hsCurrent = _hsCurrent + 1;
+    renderHsModal();
+    cb3Anim(1);
+    return;
+  }
+  for (var i = 0; i < ucs.length; i++) {
+    var mi = cb3Missing(ucs[i]);
+    if (mi) {
+      _hsCurrent = i + 1;
+      renderHsModal();
+      showToast('Clue ' + (i + 1) + ': ' + mi, 'error');
+      return;
+    }
+  }
+  cbComplete();
+}
+function cb3ClueHtml(c, cur){
+  var actCustom = !!c.customAct;
+  var obCustom = !!c.customObj;
+  var actOk = !!cb3ActVal(c), obOk = !!cb3ObjName(c);
+  var exOk = !!((c.exact||'').trim()), qOk = !!((c.question||'').trim()), aOk = !!((c.answer||'').trim());
+  var cbInner;
+  if (c.tplPat && c.tplIdx != null && !c.edited) cbInner = cb3FillTplHtml(CB3_EX[c.tplPat][c.tplIdx], c);
+  else cbInner = cbEsc(c.question || '');
+  return '<div style="flex-shrink:0;">' + cb3TrailHtml() + '</div>' +
+    '<div class="cb3-card" style="margin-top:12px;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">' +
+        '<div><div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">1</span>WALK TOWARDS</div>' +
+          '<div class="cb3-dd' + (actOk ? ' ok' : '') + '" id="cb3-dd-act" onclick="cb3OpenActSheet()"><div class="cb3-dv" id="cb3-act-val">' + (actCustom ? '\u270E custom' : ((c.landmark||'').trim() ? cbEsc(c.landmark) : 'Pick landmark')) + '</div><div class="cb3-da">\u25BE</div></div></div>' +
+        '<div><div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">2</span>FIND AN OBJECT</div>' +
+          '<div class="cb3-dd' + (obOk ? ' ok' : '') + '" id="cb3-dd-ob" onclick="cb3OpenObSheet()"><div class="cb3-dv" id="cb3-ob-val">' + (obCustom ? '\u270E custom' : (c.obj ? cbEsc(c.obj) : 'Pick object')) + '</div><div class="cb3-da">\u25BE</div></div></div>' +
+      '</div>' +
+      '<input class="cb3-editline' + (actCustom ? ' show' : '') + (actCustom && actOk ? ' ok' : '') + '" id="cb3-act-edit" maxlength="80" placeholder="e.g. Walk towards the blue mural" value="' + cbEsc(c.customAct || '') + '" oninput="cb3ActEditInput(this)"/>' +
+      '<input class="cb3-editline' + (obCustom ? ' show' : '') + (obCustom && obOk ? ' ok' : '') + '" id="cb3-ob-edit" maxlength="60" placeholder="e.g. Find the carved totem pole" value="' + cbEsc(c.customObj || '') + '" oninput="cb3ObEditInput(this)"/>' +
+      '<div class="cb3-lblrow" style="margin:14px 0 4px;"><div class="cb3-lbl"><span class="cb3-stepn">3</span>OBJECT EXACT LOCATION</div><div class="cb3-qm" onclick="cb3ExactHelp()">?</div></div>' +
+      '<textarea class="cb3-exact' + (exOk ? ' ok' : '') + '" id="cb3-exact" rows="1" style="min-height:48px;overflow:hidden;" placeholder="Where exactly? Next to? Color?" oninput="cb3ExactInput(this)">' + cbEsc(c.exact || '') + '</textarea>' +
+    '</div>' +
+    '<div class="cb3-card" style="margin-top:12px;">' +
+      '<div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">4</span>CLUE STYLE, CLUE &amp; ANSWER</div>' +
+      '<div class="cb3-cluebox' + (qOk ? ' ok' : '') + '" id="cb3-cluebox">' +
+        '<div class="cb3-cbhead">' +
+          '<div class="cb3-ddchip' + (qOk ? ' ok' : '') + '" id="cb3-ddchip" onclick="cb3OpenPats()"><span id="cb3-pat-val">' + (c.pattern ? CB3_PATS[c.pattern] : 'Pick a style') + '</span><span class="cb3-da">\u25BE</span></div>' +
+          '<div class="cb3-tapedit" id="cb3-tapedit" onclick="cb3TogEdit()">\u270E Tap to Edit</div>' +
+        '</div>' +
+        '<div class="cb3-cbtext" id="cb3-cbtext" contenteditable="false" oninput="cb3MarkEdited(this)">' + cbInner + '</div>' +
+      '</div>' +
+      '<div class="cb3-anslbl">ANSWER <span>\u00b7 unlocks next clue</span></div>' +
+      '<input class="cb3-ans' + (aOk ? ' ok' : '') + '" id="cb3-ans" maxlength="60" placeholder="Stand there and check, then type it" value="' + cbEsc(c.answer || '') + '" oninput="cb3AnsInput(this)"/>' +
+    '</div>' +
+    '<div class="cb-final">\u2728 The final reveal clue is added automatically from your hiding spot: <b>' + cbEsc(_hsData.location || 'set it on step 2') + '</b></div>';
+}
+
+// ===== cb3: rebranded builder helpers (Stage 1: Start Location) =====
+function cb3HeaderBack(){
+  if (typeof _hsCurrent !== 'undefined' && _hsCurrent > 0) {
+    try { saveHsPanel(); } catch(e){}
+    _hsCurrent = _hsCurrent - 1;
+    renderHsModal();
+    cb3Anim(-1);
+  } else {
+    hsBackToStep3();
+  }
+}
+function cb3Anim(dir){
+  var p = hsEl('hs-panel');
+  if (!p) return;
+  p.style.animation = 'none'; void p.offsetWidth;
+  p.style.animation = (dir < 0 ? 'cb3SlideL' : 'cb3SlideR') + ' .28s ease-out';
+}
+function cb3StartDone(){
+  return !!((_hsData.startingPoint||'').trim()) && !!((_hsData.startDesc||'').trim()) && !!_hsData.startConfirmed;
+}
+function cb3TrailHtml(){
+  var ucs = cbUserClues();
+  var flags = [cb3StartDone()];
+  ucs.forEach(function(c){ flags.push(cbClueDone(c)); });
+  var pf = window._cb3Flags || [];
+  function jd(ix){ return flags[ix] && pf[ix] === false; }
+  var cur = _hsCurrent;
+  var stag = !!window._cb3TrailStagger;
+  window._cb3TrailStagger = false;
+  function pop(i){ return stag ? (' pop" style="animation-delay:' + (i * 70) + 'ms;') : ''; }
+  var h = '<div class="cb3-trail">';
+  h += '<div class="cb3-tdot start' + (cur === 0 ? ' on' : '') + (flags[0] ? ' done' : '') + (jd(0) ? ' justdone' : '') + pop(0) + '" onclick="cb3Jump(0)">📍</div>';
+  ucs.forEach(function(c, i){
+    var last = (i === ucs.length - 1 && ucs.length > 2);
+    var fillL = flags[i], justL = fillL && pf[i] === false;
+    h += '<div class="cb3-tline' + (fillL ? ' fill' : '') + (justL ? ' justfill' : '') + '"></div>';
+    h += '<div class="cb3-tdot' + (cur === i + 1 ? ' on' : '') + (flags[i+1] ? ' done' : '') + (jd(i+1) ? ' justdone' : '') + (last ? ' lastd' : '') + pop(i + 1) + '" onclick="cb3Jump(' + (i+1) + ')">' + (i+1) + (last ? '<span class="cb3-dx" onclick="cb3DelClue(event)">\u2715</span>' : '') + '</div>';
+  });
+  h += '</div>';
+  window._cb3Flags = flags;
+  return h;
+}
+function cb3Jump(idx){
+  if (idx === _hsCurrent) return;
+  try { saveHsPanel(); } catch(e){}
+  var dir = idx > _hsCurrent ? 1 : -1;
+  _hsCurrent = idx;
+  renderHsModal();
+  cb3Anim(dir);
+}
+function cb3DelClue(e){
+  if (e && e.stopPropagation) e.stopPropagation();
+  var ucs = cbUserClues();
+  if (ucs.length <= 2) { showToast('A quest needs at least 2 clues', 'error'); return; }
+  var dots = document.querySelectorAll('.hs-modal-sheet .cb3-tdot');
+  var el = dots.length ? dots[dots.length - 1] : null;
+  if (el) { el.style.transition = 'transform .16s'; el.style.transform = 'scale(0)'; }
+  var n = ucs.length;
+  setTimeout(function(){
+    var target = ucs[ucs.length - 1];
+    var lastIdx = _hsData.clues.lastIndexOf(target);
+    if (lastIdx > -1) _hsData.clues.splice(lastIdx, 1);
+    cbSyncCounts();
+    if (_hsCurrent > cbUserClues().length) _hsCurrent = cbUserClues().length;
+    saveFormState();
+    renderHsModal();
+    showToast('Clue ' + n + ' deleted');
+  }, 170);
+}
+function cb3ShowSheet(id){
+  var b = document.getElementById('hs2-back'); if (b) b.classList.add('open');
+  var sh = document.getElementById(id); if (sh) sh.classList.add('open');
+}
+function cb3CloseSheets(){ hs2CloseSheets(); }
+function cb3StartHelp(){ cb3ShowSheet('cb3-starthelp-sheet'); }
+function cb3Starts(){
+  return ((QA_DATA[questArea]||{}).starts||['Main entrance','Parking lot','Playground','Restrooms']);
+}
+function cb3OpenStartSheet(){ cb3OpenLmSheet('start'); }
+function cb3OpenActSheet(){
+  if (!cb3StartDone()) { cb3GuardToast(); return; }
+  cb3OpenLmSheet('act');
+}
+function cb3OpenLmSheet(mode){
+  window._cb3LmMode = mode;
+  var t = document.getElementById('cb3-lm-title');
+  if (t) t.innerHTML = (mode === 'start' ? 'Start at the <span>...which landmark?</span>' : 'Walk towards the <span>...which landmark?</span>');
+  var starts = cb3Starts();
+  var sub = document.getElementById('cb3-start-sub');
+  if (sub) sub.textContent = 'Landmarks for ' + (questArea || 'your quest') + ' areas. Changes with your Quest Area.';
+  var h = '';
+  starts.forEach(function(st, i){
+    h += '<div class="cb3-lm" onclick="cb3PickLm(' + i + ')">📍 ' + cbEsc(st) + '</div>';
+    if (i === 0) h += '<div class="cb3-lm own" onclick="cb3OwnLm()">\u270E My own landmark</div>';
+  });
+  var g = document.getElementById('cb3-start-grid');
+  if (g) g.innerHTML = h;
+  cb3ShowSheet('cb3-start-sheet');
+}
+function cb3PickLm(i){
+  var st = cb3Starts()[i]; if (!st) return;
+  if (window._cb3LmMode === 'act') {
+    var c = cb3Cur(); if (!c) return;
+    c.landmark = st; c.customAct = '';
+    cb3SyncDerived(c);
+    saveFormState();
+    cb3CloseSheets();
+    renderHsModal();
+    return;
+  }
+  _hsData.startingPoint = st;
+  _hsData.startCustom = false;
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+}
+function cb3OwnLm(){
+  if (window._cb3LmMode === 'act') {
+    var c = cb3Cur(); if (!c) return;
+    c.landmark = '';
+    c.customAct = 'Walk towards the ';
+    cb3SyncDerived(c);
+    saveFormState();
+    cb3CloseSheets();
+    renderHsModal();
+    setTimeout(function(){ var e = hsEl('cb3-act-edit'); if (e) { e.focus(); try { e.setSelectionRange(e.value.length, e.value.length); } catch(x){} } }, 380);
+    return;
+  }
+  _hsData.startCustom = true;
+  _hsData.startingPoint = '';
+  saveFormState();
+  cb3CloseSheets();
+  renderHsModal();
+  setTimeout(function(){ var e = hsEl('cb3-sp-edit'); if (e) e.focus(); }, 380);
+}
+function cb3SpCustomInput(el){
+  _hsData.startingPoint = (el.value||'').trim();
+  _hsData.startCustom = true;
+  cb3StartPaint();
+  saveFormState();
+}
+function cb3SpDescInput(el){
+  _hsData.startDesc = el.value || '';
+  cb3StartPaint();
+  saveFormState();
+}
+function cb3StartPaint(){
+  var spOk = !!((_hsData.startingPoint||'').trim());
+  var sdOk = !!((_hsData.startDesc||'').trim());
+  var dd = hsEl('cb3-sp-dd'); if (dd) dd.classList.toggle('ok', spOk);
+  var ed = hsEl('cb3-sp-edit'); if (ed) ed.classList.toggle('ok', spOk && !!_hsData.startCustom);
+  var ta = hsEl('cb3-sp-desc'); if (ta) ta.classList.toggle('ok', sdOk);
+  var trail = document.querySelector('.hs-modal-sheet .cb3-trail');
+  if (trail) trail.outerHTML = cb3TrailHtml();
+}
+function cb3StartNext(){
+  try { saveHsPanel(); } catch(e){}
+  if (!((_hsData.startingPoint||'').trim())) { showToast('Pick a Starting Point or add your own first', 'error'); return; }
+  if (!((_hsData.startDesc||'').trim())) { showToast('Describe the Starting Point first', 'error'); return; }
+  _hsData.startConfirmed = true;
+  saveFormState();
+  _hsCurrent = 1;
+  renderHsModal();
+  cb3Anim(1);
+}
+
 function renderHsModal() {
   var total = _hsClueCount;
   var cur = _hsCurrent;
+
+  window._cb3TrailStagger = true; // one staggered dot bounce per page render
+  // cb3: header title follows the page
+  var _cb3T = hsEl('cb3-hdr-title') || document.getElementById('cb3-hdr-title');
+  if (_cb3T) _cb3T.innerHTML = (cur === 0)
+    ? 'Start <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Location</span>'
+    : 'Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span>';
+
+  // cb3: browse guard over clue pages until Start Location is complete
+  var _cb3G = hsEl('cb3-guard');
+  if (_cb3G) {
+    var _cb3Hd = document.querySelector('.hs-modal-sheet .hs-modal-header');
+    _cb3G.style.top = (_cb3Hd && _cb3Hd.offsetHeight ? _cb3Hd.offsetHeight : 64) + 'px';
+    _cb3G.style.display = (cur > 0 && !cb3StartDone()) ? 'block' : 'none';
+  }
 
   // ── Full-width rectangular map ──────────────────────────
   var actionArea = hsEl('hs-action-area');
@@ -5500,181 +6319,51 @@ function renderHsModal() {
     actionArea.innerHTML = '';
   }
 
-  // ── Full-width rectangular map with radar rings overlay ──
+  // cb3: radar and static map removed from render; element stays hidden
   var radarWrap = hsEl('hs-radar-wrap');
-  var mapContent = '';
-  if (locationConfirmed && selectedLat && selectedLng) {
-    var sMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedLat + ',' + selectedLng +
-      '&zoom=17&size=800x320&scale=2&maptype=roadmap' +
-      '&style=feature:all|element:labels.text.fill|color:0x9ca3af' +
-      '&style=feature:all|element:labels.text.stroke|color:0x1f2937' +
-      '&style=feature:landscape|element:geometry|color:0x1f2937' +
-      '&style=feature:road|element:geometry|color:0x374151' +
-      '&style=feature:road|element:geometry.stroke|color:0x1f2937' +
-      '&style=feature:water|element:geometry|color:0x111827' +
-      '&style=feature:poi|element:geometry|color:0x1f2937' +
-      '&style=feature:poi.park|element:geometry|color:0x14532d' +
-      '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|' + selectedLat + ',' + selectedLng +
-      '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
-    mapContent = '<img src="' + sMapUrl + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>';
-  } else {
-    mapContent = '<div style="position:absolute;inset:0;background:#0a0810;display:flex;align-items:center;justify-content:center;"><span style="font-size:18px;color:rgba(255,255,255,.2);">Set location to see map</span></div>';
-  }
-
-  // Radar rings: r=0 innermost, r=rings-1 outermost (largest)
-  // cur=0 (location) → gold on outermost ring; progresses inward each clue step
-  var rings = total + 1;
-  var maxR = 140, minR = 18;
-  var step = (maxR - minR) / (rings - 1 || 1);
-  var allDoneRadar = cur >= rings;
-  var dotColor = allDoneRadar ? '#4ade80' : cur > 0 ? '#e8a820' : 'rgba(255,255,255,.3)';
-  var dotGlow = cur > 0 ? ('box-shadow:0 0 14px ' + dotColor + ',0 0 28px ' + dotColor + ';') : '';
-
-  var ringsHtml = '';
-  var activeRingHtml = '';
-  // activeIdx maps cur=0→outermost (rings-1), cur=rings-1→innermost (0)
-  var activeIdx = (rings - 1) - cur;
-  for (var r = 0; r < rings; r++) {
-    var size = minR + r * step; // r=0=smallest, r=rings-1=largest
-    var isDone = r > activeIdx;
-    var isActive = r === activeIdx;
-    var borderColor = isDone
-      ? 'rgba(74,222,128,' + Math.min(0.9, 0.35 + (r/(rings-1))*0.55) + ')'
-      : isActive
-        ? (allDoneRadar ? '#4ade80' : 'rgba(232,168,32,.92)')
-        : 'rgba(255,255,255,.18)';
-    var glowStyle = isActive && !allDoneRadar
-      ? ';animation:hsRingPulse 2s ease-in-out infinite'
-      : isActive && allDoneRadar
-        ? ';animation:hsRingPulse 1.5s ease-in-out infinite'
-        : '';
-    var ringDiv = '<div style="position:absolute;width:' + size + 'px;height:' + size + 'px;border:1.5px solid ' + borderColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)' + glowStyle + ';pointer-events:none;box-sizing:border-box;"></div>';
-    if (isActive) {
-      activeRingHtml = ringDiv;
-    } else {
-      ringsHtml += ringDiv;
-    }
-  }
-  ringsHtml += activeRingHtml; // active ring rendered last = on top
-  ringsHtml += '<div style="position:absolute;width:12px;height:12px;background:' + dotColor + ';border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);' + dotGlow + 'z-index:2;pointer-events:none;"></div>';
-
-  radarWrap.innerHTML = mapContent + ringsHtml;
+  if (radarWrap) { radarWrap.style.display = 'none'; radarWrap.innerHTML = ''; }
 
   // ── Panel ─────────────────────────────────────────────────
   var panel = hsEl('hs-panel');
+  panel.style.display = '';
+  panel.style.flexDirection = '';
+  panel.style.overflowY = 'auto';
+  panel.style.gap = '';
+  panel.style.padding = '';
+  panel.style.paddingTop = '10px';
   if (cur === 0) {
-    // Map picker button — pick if no location, change if already set
-    var mapPickerHtml = locationConfirmed ?
-      '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:14px;padding:18px 16px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.22);border-radius:14px;cursor:pointer;margin-bottom:18px;-webkit-tap-highlight-color:transparent;min-height:64px;">' +
-      '<div style="width:44px;height:44px;border-radius:50%;background:rgba(74,222,128,.12);border:1.5px solid rgba(74,222,128,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
-      '<div style="flex:1;min-width:0;">' +
-      '<div style="font-size:18px;color:#4ade80;font-weight:500;">✓ ' + (selectedPlaceName || (selectedAddress ? selectedAddress.split(',')[0] : 'Tap to change location')) + '</div>' +
-      (selectedAddress ? '<div style="font-size:18px;color:rgba(74,222,128,.65);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + selectedAddress + '</div>' : '<div style="font-size:18px;color:rgba(74,222,128,.5);margin-top:3px;">Location confirmed · tap to change</div>') +
+    // cb3 Start Location screen: trail + starting point card + treasure map
+    panel.style.display = 'flex';
+    panel.style.flexDirection = 'column';
+    panel.style.overflowY = 'hidden';
+    panel.style.gap = '12px';
+    panel.style.padding = '10px 14px 12px';
+    var spName = (_hsData.startingPoint || '').trim();
+    var spDone = !!spName;
+    var sdDone = !!((_hsData.startDesc || '').trim());
+    panel.innerHTML =
+      '<div class="cb3-au1" style="flex-shrink:0;">' + cb3TrailHtml() +
+        '<div class="cb3-tlabel"><b>START</b> \u00b7 where every seeker begins</div></div>' +
+      '<div class="cb3-card cb3-au2" style="flex-shrink:0;">' +
+        '<div class="cb3-lblrow" style="margin:0 0 12px;"><div class="cb3-lbl">STARTING POINT</div><div class="cb3-qm" onclick="cb3StartHelp()">?</div></div>' +
+        '<div class="cb3-dd' + (spDone ? ' ok' : '') + '" id="cb3-sp-dd" onclick="cb3OpenStartSheet()">' +
+          '<div class="cb3-dv" id="cb3-sp-val">' + (spDone ? (_hsData.startCustom ? '\u270E ' : '') + cbEsc(spName) : 'Pick a Starting Point') + '</div>' +
+          '<div class="cb3-da">\u25BE</div></div>' +
+        '<input class="cb3-editline' + (_hsData.startCustom ? ' show' : '') + (spDone && _hsData.startCustom ? ' ok' : '') + '" id="cb3-sp-edit" maxlength="60" placeholder="e.g. the big red barn" value="' + cbEsc(_hsData.startCustom ? spName : '') + '" oninput="cb3SpCustomInput(this)"/>' +
+        '<div class="cb3-lblrow" style="margin:14px 0 4px;"><div class="cb3-lbl">DESCRIPTION</div></div>' +
+        '<div class="cb3-sublbl">Where? Next to? Walk towards?</div>' +
+        '<textarea class="cb3-exact' + (sdDone ? ' ok' : '') + '" id="cb3-sp-desc" maxlength="160" placeholder="e.g. next to the main entrance sign on Loop 336" oninput="cb3SpDescInput(this)">' + cbEsc(_hsData.startDesc || '') + '</textarea>' +
       '</div>' +
-      '<div style="font-size:18px;color:rgba(255,255,255,.4);text-decoration:underline;flex-shrink:0;">Change</div>' +
-      '</div>' :
-      '<div id="hs-map-pick-btn" style="display:flex;align-items:center;gap:14px;padding:18px 16px;background:rgba(232,168,32,.08);border:1.5px solid rgba(232,168,32,.35);border-radius:14px;cursor:pointer;margin-bottom:18px;-webkit-tap-highlight-color:transparent;min-height:64px;">' +
-      '<div style="width:44px;height:44px;border-radius:50%;background:rgba(232,168,32,.18);border:1.5px solid rgba(232,168,32,.45);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a820" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
-      '<div style="flex:1;"><div style="font-size:18px;color:#fff;font-weight:500;">Set Location</div>' +
-      '<div style="font-size:18px;color:#b8c4d0;margin-top:3px;">Opens full screen Google Map</div></div>' +
-      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>' +
-      '</div>';
-
-    var mapsLinkHtml = '';
-
-    // Location Type: category + subcategory. Drives the hint ideas and the
-    // ready-made question bank on the clue pages.
-    var catVal = _hsData.category || '';
-    var subVal = _hsData.subcategory || '';
-    var LT_CHK = '<span style="color:#4ade80;font-size:18px;margin-left:6px;font-weight:500;">\u2713</span>';
-    var LT_REQ = '<span style="font-size:18px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;"> \u00b7 required</span>';
-    var ddBtn = 'width:100%;padding:14px 16px;background:rgba(232,168,32,.10);border:1.5px solid rgba(232,168,32,.45);border-radius:12px;min-height:52px;box-sizing:border-box;font-size:18px;color:#fff;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
-    var ddList = 'display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#1a1300;border:2px solid #e8a820;border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch;';
-    var ddItem = 'padding:13px 16px;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;touch-action:manipulation;';
-    var chev = '<svg style="flex-shrink:0;pointer-events:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>';
-    var catItems = fsLocCats().map(function(c, i){
-      return '<div onclick="fsCatPick(' + i + ')" class="hs-drop-item' + (c === catVal ? ' hs-drop-sel' : '') + '" style="' + ddItem + '"><span>' + c + '</span>' + (c === catVal ? '<span style="color:#4ade80;">\u2713</span>' : '') + '</div>';
-    }).join('');
-    var subItems = fsLocSubs(catVal).map(function(sc, i){
-      return '<div onclick="fsSubPick(' + i + ')" class="hs-drop-item' + (sc === subVal ? ' hs-drop-sel' : '') + '" style="' + ddItem + '"><span>' + sc + '</span>' + (sc === subVal ? '<span style="color:#4ade80;">\u2713</span>' : '') + '</div>';
-    }).join('');
-    var subDim = catVal ? '' : 'opacity:.45;';
-    var locTypeHtml =
-      '<div style="font-size:18px;color:#fff;font-weight:500;margin-bottom:6px;">Location Type' + (catVal && subVal ? LT_CHK : LT_REQ) + '</div>' +
-      '<div style="font-size:18px;color:rgba(184,196,208,.55);margin-bottom:8px;">Unlocks ready made questions and hint ideas for your clues</div>' +
-      '<div style="position:relative;margin-bottom:10px;">' +
-        '<div onclick="fsCatToggle()" style="' + ddBtn + '"><span>' + (catVal ? catVal : 'Pick a category') + '</span>' + (catVal ? '<span style="color:#4ade80;font-size:18px;font-weight:500;margin-left:auto;margin-right:10px;">\u2713</span>' : '') + chev + '</div>' +
-        '<div id="fs-cat-list" style="' + ddList + '">' + catItems + '</div>' +
-      '</div>' +
-      '<div style="position:relative;margin-bottom:4px;' + subDim + '">' +
-        '<div onclick="fsSubToggle()" style="' + ddBtn + '"><span>' + (subVal ? subVal : 'Pick a spot type') + '</span>' + (subVal ? '<span style="color:#4ade80;font-size:18px;font-weight:500;margin-left:auto;margin-right:10px;">\u2713</span>' : '') + chev + '</div>' +
-        '<div id="fs-sub-list" style="' + ddList + '">' + subItems + '</div>' +
-      '</div>' +
-      '<div style="height:1px;background:rgba(255,255,255,.08);margin:18px 0;"></div>';
-
-    var lockedMode = !!(catVal && !FS_LOC_BANK[catVal]);
-    if (lockedMode) {
-      locTypeHtml = '';
-    }
-    panel.innerHTML = mapPickerHtml + mapsLinkHtml + locTypeHtml +
-            (lockedMode
-              ? '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;"><div style="font-size:18px;color:#fff;font-weight:500;">Hiding Spot' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:18px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:18px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;">· required</span>') + '</div><div style="font-size:18px;color:#f5c842;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + catVal + '</div></div>'
-              : '<div style="font-size:18px;color:#fff;font-weight:500;margin-bottom:6px;">Exact Location' + (_hsData.location.trim() ? '<span style="color:#4ade80;font-size:18px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:18px;color:rgba(239,68,68,.55);font-weight:400;margin-left:6px;">· required</span>') + '</div>') +
-      '<textarea class="hs-ta" id="hs-loc-input" rows="2" placeholder="e.g. Kroger on Loop 336, Conroe" maxlength="80" onclick="this.focus()">' + (_hsData.location||'') + '</textarea>' +
-
-  '<div style="height:22px;"></div>' +
-  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:4px;height:22px;border-radius:2px;background:linear-gradient(180deg,#c9890c,#e8a820);flex-shrink:0;"></div><div style="font-size:18px;color:#fff;font-weight:500;">Starting Point' + (_hsData.startingPoint ? '<span style="color:#4ade80;font-size:18px;margin-left:6px;font-weight:500;">✓</span>' : '<span style="font-size:18px;color:rgba(239,68,68,.55);font-weight:400;"> · required</span>') + '</div></div></div>' +
-  '<div onclick="openQaSheet(\'start\')" style="display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;margin-bottom:8px;padding:13px 12px;border-radius:14px;border:1.5px solid rgba(232,168,32,.5);background:' + (_hsData.startingPoint ? 'linear-gradient(135deg,rgba(201,137,12,.35),rgba(232,168,32,.25))' : 'rgba(232,168,32,.09)') + ';color:#fff;font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (_hsData.startingPoint || 'Pick a Starting Point') + '</span></div>' +
-  '<textarea class="hs-ta" id="hs-start-input" rows="3" placeholder="Pick above or type your own" maxlength="120" onclick="this.focus()">' + (_hsData.startingPoint||'') + '</textarea>';
-
-setTimeout(function() {
-  var pickBtn = document.getElementById('hs-map-pick-btn');
-  if (pickBtn) pickBtn.addEventListener('click', function() { _mapOpenedFromStep = false; openMapModal(); });
-}, 0);
+      '<div class="cb3-mapslot cb3-au3"><img src="/treasuremap.jpg" alt="Treasure map"/></div>';
 
 } else {
 var _uc = cbUserClues();
 if (cur - 1 >= _uc.length) { _hsCurrent = _uc.length; cur = _hsCurrent; }
-var cl2 = _uc[cur-1] || {};
+var cl2 = _uc[cur - 1] || cb3BlankClue();
 cbSyncCounts();
-
-var trail = '<div class="cb-trail">' +
-  '<div class="cb-stop"><div class="cb-dot cb-flag" onclick="hsGoTo(0)">\u2691</div><div class="cb-lbl">Start</div></div>';
-_uc.forEach(function(cc, i){
-  var cls = (i === cur-1) ? ' cb-cur' : (cbClueDone(cc) ? ' cb-done-dot' : '');
-  trail += '<div class="cb-seg"></div><div class="cb-stop"><div class="cb-dot' + cls + '" onclick="hsGoTo(' + (i+1) + ')">' + (i+1) + '</div><div class="cb-lbl">' + (cc.obj || 'clue') + '</div></div>';
-});
-trail += '<div class="cb-seg"></div><div class="cb-stop"><div class="cb-dot cb-flag2">\u2714</div><div class="cb-lbl">Treasure</div></div></div>';
-
-var pillsHtml = cbObjects().map(function(o, i){
-  return '<div class="qa-pill' + (cl2.obj === o ? ' sel' : '') + '" onclick="cbPickObj(' + i + ')">' + o + '</div>';
-}).join('');
-
-var qsHtml = '';
-if (cl2.obj){
-  qsHtml = '<div class="cb-label">Question seekers must answer' + ((cl2.question||'').trim() ? '<span class="cb-ok">\u2713</span>' : '') + '</div>' +
-    (CB_QLIB[cl2.obj]||[]).map(function(q, i){
-      return '<button class="cb-qopt' + (!cl2.customQ && cl2.question === q ? ' sel' : '') + '" onclick="cbPickQ(' + i + ')">' + q + '</button>';
-    }).join('') +
-    '<button class="cb-qopt cb-custom' + (cl2.customQ ? ' sel' : '') + '" onclick="cbCustomQ()">\u270E Write my own question</button>' +
-    (cl2.customQ ? '<input class="cb-inp" id="cb-cq" maxlength="80" placeholder="Type your question" value="' + cbEsc(cl2.question) + '" oninput="cbInput(\'q\', this.value)"/>' : '');
-}
-var ansHtml = '';
-if ((cl2.question||'').trim() || cl2.customQ){
-  ansHtml = '<div class="cb-label">Correct answer' + ((cl2.answer||'').trim() ? '<span class="cb-ok">\u2713</span>' : '') + '</div>' +
-    '<input class="cb-inp" id="cb-ans" maxlength="30" placeholder="What you count or see, e.g. 4" value="' + cbEsc(cl2.answer) + '" oninput="cbInput(\'a\', this.value)"/>';
-}
-panel.innerHTML = trail +
-  '<div class="cb-card">' +
-    '<div class="cb-label" style="margin-top:0;">Clue ' + cur + ' is about a \u2026</div>' +
-    '<div class="cb-pills">' + pillsHtml + '</div>' + qsHtml + ansHtml +
-  '</div>' +
-  '<div class="cb-final">\u2728 The final reveal clue is added automatically from your hiding spot: <b>' + cbEsc(_hsData.location || 'set it on the first page') + '</b></div>';
-
-// Select wired via inline onchange
-
+window._cb3Editing = false;
+panel.innerHTML = cb3ClueHtml(cl2, cur);
+setTimeout(function(){ var _ge = hsEl('cb3-exact'); if (_ge) cb3Grow(_ge); }, 0);
 }
 
 // ── Nav ───────────────────────────────────────────────────
@@ -5685,7 +6374,7 @@ var nav = hsEl('hs-nav');
 // Final page (cur === total): question/answer not required (it's the reveal).
 function isHsPageComplete() {
 if (cur === 0) {
-return !!((_hsData.location||'').trim()) && !!((_hsData.startingPoint||'').trim()) && !!locationConfirmed && !!_hsData.category && !!_hsData.subcategory;
+return !!((_hsData.startingPoint||'').trim()) && !!((_hsData.startDesc||'').trim());
 }
 return cbClueDone(_hsData.clues[cur - 1]);
 }
@@ -5695,8 +6384,7 @@ var pageReady = isHsPageComplete();
 var allDone = _hsData.location.trim() && locationConfirmed && cbAllDone();
 var disabledAttr = pageReady ? '' : ' disabled';
 if (cur === 0) {
-nav.innerHTML = '<button class="hs-nav-back" onclick="hsBackToStep3()">← Back</button>' +
-'<button class="hs-nav-next" onclick="hsGoTo(1)"' + disabledAttr + '>Next Clue →</button>';
+nav.innerHTML = '<button class="cb3-next" onclick="cb3StartNext()">Next \u2192</button>';
 window._cbNavEl = null;
 } else {
 nav.innerHTML = cbFooterHtml();
@@ -5727,23 +6415,19 @@ else { nextBtn.setAttribute('disabled', ''); }
 var _generatedClues = null;
 var _generatedLocationRiddle = null;
 
-async function hsGenerateAndPreview() {
+async function hsGenerateAndPreview(regenCount) {
 window._hsGenConfirmed = false;
-saveHsPanel();
+try { saveHsPanel(); } catch(e){}
 var sheet = document.querySelector('.hs-modal-sheet');
 if (!sheet) return;
 var origHTML = sheet.innerHTML;
+var persona = cb3Persona();
 
-sheet.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:40px;">' +
-'<div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(232,168,32,.2);border-top-color:#e8a820;animation:hs-spin .8s linear infinite;"></div>' +
-'<div style="font-size:20px;color:#fff;text-align:center;">Generating your clues…</div>' +
-'<div style="font-size:18px;color:#b8c4d0;text-align:center;">AI is writing riddles from your hints</div>' +
-'</div><style>@keyframes hs-spin{to{transform:rotate(360deg);}}</style>';
+sheet.innerHTML = cb3LoadHtml(persona);
+cb3LoadStart(persona);
 
 try {
 var searchAddress = (document.getElementById("map-search") && document.getElementById("map-search").value) || "";
-var persona = "pirate";
-try { var fs2 = JSON.parse(localStorage.getItem("fs_newquest_form")||"{}"); if (fs2.persona) persona = fs2.persona; } catch(e2){}
 
 var resp = await fetch(API_BASE + "/api/generate-clues", {
   method: "POST",
@@ -5755,17 +6439,23 @@ var resp = await fetch(API_BASE + "/api/generate-clues", {
     persona: persona,
     placeName: selectedPlaceName || "",
     searchAddress: searchAddress,
-    hsData: _hsData
+    hsData: _hsData,
+    regenCount: regenCount || 0
   })
 });
 var data = await resp.json();
 if (!resp.ok) throw new Error(data.error || "Generation failed");
 _generatedClues = data.clues || [];
 _generatedLocationRiddle = data.location_riddle || "";
+window._cb3GenSig = cb3GenSig();
+var fill = document.getElementById('cb3p-lbar-fill');
+if (fill) fill.style.width = '100%';
+cb3LoadStop();
 sheet.innerHTML = origHTML;
 hsShowPreview();
 
 } catch(err) {
+cb3LoadStop();
 sheet.innerHTML = origHTML;
 showToast("Generation failed: " + err.message, "error");
 renderHsModal();
@@ -5773,6 +6463,177 @@ renderHsModal();
 }
 
 // ── PREVIEW VOICE ────────────────────────────────────────────
+// ===== cb3 Stage 3: persona loading lines + preview helpers =====
+var CB3_LOAD_LINES = {
+pirate: ["The pirate be studyin' yer map...","Dippin' the quill in squid ink...","Inkin' each clue with a steady hand...","Hidin' the treasure riddle...","Polishin' the brass compass...","Sealin' the scroll with wax..."],
+poetic: ["Gathering words like morning dew...","Rhyming your riddle in silver tones...","Weaving each clue into verse...","Listening for the meter of the trail...","Pressing petals between the pages...","Setting the final stanza free..."],
+insults: ["Ugh, fine, reading your map...","Writing clues even YOU can follow...","Dumbing this down... a lot...","Hiding the riddle where you'll still find it...","Spell checking, unlike some people...","Done soon. Try to keep up..."],
+sarcastic: ["Oh sure, studying the map. Thrilling...","Crafting clues. Truly my life's work...","Making the riddle just hard enough...","Adding mystery. You're welcome...","Wrapping it all in suspense. Slowly...","Almost done. Contain your excitement..."],
+hillbilly: ["Readin' yer map by lantern light...","Scratchin' out clues real careful like...","Hidin' the riddle out back...","Tunin' the banjo for the big reveal...","Double checkin' with cousin Earl...","Purtiest quest you ever did see..."],
+grandma: ["Putting on my reading glasses, dear...","Writing your clues in my best cursive...","Baking a little mystery into it...","Tucking the riddle in nice and cozy...","Adding a pinch of adventure...","Almost done, sweetheart..."],
+surfer: ["Scoping the map, bro...","Waxing up these clues...","Riding the riddle wave...","Keeping it totally mysterious, dude...","Lining up the epic reveal...","Almost gnarly enough..."],
+detective: ["Examining the map for prints...","Drafting clues in the case file...","Cross checking the evidence...","Concealing the final riddle...","Tailing the treasure quietly...","Closing the file..."],
+investigator: ["Examining the map for prints...","Drafting clues in the case file...","Cross checking the evidence...","Concealing the final riddle...","Tailing the treasure quietly...","Closing the file..."],
+kid: ["Looking at the map real hard...","Writing clues with my favorite marker...","Making it super duper tricky...","Hiding the riddle, no peeking!","Drawing a tiny treasure chest...","Almost dooone..."],
+"default": ["Studying your map...","Writing your clues...","Crafting the riddle...","Adding a dash of mystery...","Hiding the treasure...","Almost ready..."]
+};
+function cb3GenSig(){
+  try {
+    var ucs = (_hsData.clues||[]).filter(function(c){ return c && !c.auto; }).map(function(c){
+      return [c.action||'', c.obj||'', c.exact||'', c.question||'', c.answer||'', c.hint||'', c.pattern||''];
+    });
+    return JSON.stringify([cb3Persona(), _hsData.location||'', _hsData.startingPoint||'', _hsData.startDesc||'', ucs]);
+  } catch(e){ return 'sig-err-' + Date.now(); }
+}
+function cb3Persona(){
+  try {
+    var p = (document.querySelector('.persona-card.selected')||{}).dataset;
+    if (p && p.persona) return p.persona;
+  } catch(e){}
+  try {
+    var fs3 = JSON.parse(localStorage.getItem('fs_newquest_form')||'{}');
+    if (fs3.persona) return fs3.persona;
+  } catch(e){}
+  return 'pirate';
+}
+function cb3LoadHtml(persona){
+  return '<div class="cb3p-load">' +
+    '<div class="cb3p-compass"><div class="cb3p-needle"></div><div class="cb3p-dotc"></div></div>' +
+    '<div class="cb3p-ltitle">Creating Your Quest</div>' +
+    '<div class="cb3p-lline" id="cb3p-lline"></div>' +
+    '<div class="cb3p-lbar"><div id="cb3p-lbar-fill"></div></div>' +
+    '<div class="cb3p-ldots"><div></div><div></div><div></div></div>' +
+  '</div>';
+}
+function cb3LoadStart(persona){
+  var lines = CB3_LOAD_LINES[persona] || CB3_LOAD_LINES['default'];
+  var i = 0, pct = 8;
+  var lineEl = document.getElementById('cb3p-lline');
+  var barEl = document.getElementById('cb3p-lbar-fill');
+  if (lineEl) lineEl.textContent = lines[0];
+  if (barEl) setTimeout(function(){ barEl.style.width = pct + '%'; }, 30);
+  cb3LoadStop();
+  window._cb3LoadTimer = setInterval(function(){
+    i = (i + 1) % lines.length;
+    pct = Math.min(90, pct + 12);
+    var le = document.getElementById('cb3p-lline');
+    var be = document.getElementById('cb3p-lbar-fill');
+    if (!le) { cb3LoadStop(); return; }
+    le.style.opacity = '0';
+    setTimeout(function(){ le.textContent = lines[i]; le.style.opacity = '1'; }, 280);
+    if (be) be.style.width = pct + '%';
+  }, 2200);
+}
+function cb3LoadStop(){
+  if (window._cb3LoadTimer) { clearInterval(window._cb3LoadTimer); window._cb3LoadTimer = null; }
+}
+// -- Preview audio: server persona voice with device fallback --
+function cb3PvBtn(key){
+  return '<div class="cb3p-play" id="cb3pl-' + key + '" data-pvkey="' + key + '" onclick="cb3PvPlay(this.getAttribute(\'data-pvkey\'))">' + PV_SPEAKER_SVG + '</div>';
+}
+function cb3PvSetBtn(key, state){
+  var b = document.getElementById('cb3pl-' + key);
+  if (!b) return;
+  b.classList.toggle('on', state === 'on');
+  b.classList.toggle('busy', state === 'busy');
+  b.innerHTML = (state === 'on') ? PV_PAUSE_SVG : PV_SPEAKER_SVG;
+}
+function cb3PvStopAudio(){
+  try { if (window._cb3PvAudio) { window._cb3PvAudio.pause(); window._cb3PvAudio = null; } } catch(e){}
+  try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch(e){}
+  if (window._cb3PvKey) { cb3PvSetBtn(window._cb3PvKey, 'off'); window._cb3PvKey = null; }
+  _pvSpeaking = false; _pvKey = null;
+}
+async function cb3PvPlay(key){
+  var el = document.getElementById('cb3tx-' + key);
+  var text = el ? (el.textContent || '').trim() : '';
+  if (!text) return;
+  if (window._cb3PvKey === key) { cb3PvStopAudio(); return; }
+  cb3PvStopAudio();
+  var persona = cb3Persona();
+  window._cb3PvKey = key;
+  cb3PvSetBtn(key, 'busy');
+  var cacheKey = persona + '|' + text;
+  window._cb3PvCache = window._cb3PvCache || {};
+  var url = window._cb3PvCache[cacheKey];
+  if (!url && text.length <= 400) {
+    try {
+      var token = null;
+      try { token = await getFreshToken(); } catch(e){}
+      if (token) {
+        var r = await fetch(API_BASE + '/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ mode: 'preview', text: text, persona: persona })
+        });
+        if (r.ok) {
+          var d = await r.json();
+          if (d && d.audioUrl) { url = d.audioUrl; window._cb3PvCache[cacheKey] = url; }
+        }
+      }
+    } catch(e){}
+  }
+  if (window._cb3PvKey !== key) return; // user tapped elsewhere while fetching
+  if (url) {
+    try {
+      var a = new Audio(url);
+      window._cb3PvAudio = a;
+      a.onended = a.onerror = function(){ if (window._cb3PvKey === key) { cb3PvSetBtn(key, 'off'); window._cb3PvKey = null; window._cb3PvAudio = null; } };
+      a.play().then(function(){ cb3PvSetBtn(key, 'on'); }).catch(function(){ cb3PvSetBtn(key, 'off'); window._cb3PvKey = null; cb3PvDevice(key, text); });
+      return;
+    } catch(e){}
+  }
+  // 401 / no token / fetch failure: device voice fallback
+  cb3PvSetBtn(key, 'off');
+  window._cb3PvKey = null;
+  cb3PvDevice(key, text);
+}
+function cb3PvDevice(key, text){
+  if (!window.speechSynthesis) { showToast('Voice not supported on this device',''); return; }
+  var settings = pvGetSettings();
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.rate = settings.rate; utt.pitch = settings.pitch; utt.lang = 'en-US';
+  var voice = pvPickVoice(settings);
+  if (voice) utt.voice = voice;
+  utt.onstart = function(){ window._cb3PvKey = key; cb3PvSetBtn(key, 'on'); };
+  utt.onend = utt.onerror = function(){ if (window._cb3PvKey === key) { cb3PvSetBtn(key, 'off'); window._cb3PvKey = null; } };
+  window.speechSynthesis.speak(utt);
+}
+// -- Preview edit toggle: writes back into _generatedClues[i].text --
+function cb3PvTogEdit(i){
+  var el = document.getElementById('cb3tx-clue' + i);
+  var btn = document.getElementById('cb3ed-clue' + i);
+  if (!el) return;
+  var on = el.getAttribute('contenteditable') !== 'true';
+  document.querySelectorAll('.cb3p-text').forEach(function(t){ t.setAttribute('contenteditable', 'false'); });
+  document.querySelectorAll('.cb3p-edit').forEach(function(b){ b.classList.remove('editing'); });
+  if (on) {
+    el.setAttribute('contenteditable', 'true');
+    if (btn) btn.classList.add('editing');
+    try { el.focus(); } catch(e){}
+  }
+}
+function cb3PvMarkEd(i){
+  var el = document.getElementById('cb3tx-clue' + i);
+  if (el && _generatedClues && _generatedClues[i]) _generatedClues[i].text = el.textContent || '';
+}
+function cb3Regen(){
+  if (typeof window._fsRegenLeft === 'undefined') window._fsRegenLeft = 3;
+  if (window._fsRegenLeft <= 0) {
+    showToast('Regeneration limit reached (3 per quest). Edit clues by hand or go back to the builder.', 'error');
+    return;
+  }
+  window._fsRegenLeft = window._fsRegenLeft - 1;
+  saveFormState();
+  cb3PvStopAudio();
+  hsGenerateAndPreview(3 - window._fsRegenLeft);
+}
+function cb3ConfirmSave(){
+  cb3PvStopAudio();
+  try { cb3Confetti(); } catch(e){}
+  hsConfirmClues();
+}
+
 var _pvSpeaking = false;
 var _pvKey = null;
 
@@ -5859,50 +6720,62 @@ pvSpeak(key, text);
 }
 
 function hsShowPreview() {
-if (window.speechSynthesis) window.speechSynthesis.cancel();
+cb3PvStopAudio();
 var sheet = document.querySelector(".hs-modal-sheet");
 if (!sheet) return;
-var html = '<div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
-'<div style="font-size:20px;color:#fff;">Quest Preview</div>' +
-'<div style="font-size:18px;color:#b8c4d0;">Seeker view</div></div>' +
-'<div style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">';
+if (typeof window._fsRegenLeft === 'undefined') window._fsRegenLeft = 3;
+var persona = cb3Persona();
+var GRAD = 'background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;';
+var esc = function(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+var html = '<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;">' +
+  '<div class="cb3-back-circ" onclick="hsEditFromPreview()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>' +
+  '<div style="font-size:25px;font-weight:500;color:#fff;text-align:center;">Quest <span style="' + GRAD + '">Preview</span></div>' +
+  '<div style="display:flex;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;justify-content:flex-end;" onclick="openHamburger();"><div style="position:relative;width:34px;height:34px;"><div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div><div style="position:absolute;inset:2px;border-radius:50%;background:#1a1300;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(180,190,210,.65)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div></div></div>' +
+'</div>' +
+'<div class="cb3p-sub">SEEKER VIEW \u00b7 ' + esc(persona).toUpperCase() + ' VOICE</div>' +
+'<div class="cb3p-wrap">';
 if (_generatedLocationRiddle) {
-html += '<div style="background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.2);border-radius:12px;padding:14px;">' +
-'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
-'<div style="font-size:20px;color:rgba(232,168,32,.8);font-weight:400;">Location Riddle</div>' +
-pvBtn('loc', _generatedLocationRiddle) +
-'</div>' +
-'<div style="font-size:18px;color:#fff;line-height:1.6;">' + _generatedLocationRiddle + "</div></div>";
+  html += '<div class="cb3p-card riddle" style="animation-delay:.05s;">' +
+    '<div class="cb3p-head"><div class="cb3p-label">LOCATION RIDDLE</div><div class="cb3p-btns">' + cb3PvBtn('loc') + '</div></div>' +
+    '<div class="cb3p-text" id="cb3tx-loc">' + esc(_generatedLocationRiddle) + '</div></div>';
 }
-(_generatedClues || []).forEach(function(clue, i) {
-var isFinal = i === _hsClueCount - 1;
-var label = isFinal ? "Final Clue" : "Clue " + (i+1);
-var key = 'clue' + i;
-html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;">' +
-'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
-'<div style="font-size:20px;color:rgba(184,196,208,.8);font-weight:400;">' + label + "</div>" +
-pvBtn(key, clue.text || '') +
-'</div>' +
-'<div style="font-size:18px;color:#fff;line-height:1.6;margin-bottom:' + (clue.question && !isFinal ? "10px" : "0") + ';">' + (clue.text || "") + "</div>" +
-(clue.question && !isFinal ? '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;font-size:18px;color:#b8c4d0;margin-bottom:6px;">' + clue.question + "</div>" : "") +
-(clue.answer && !isFinal ? '<div style="font-size:18px;color:rgba(184,196,208,.4);">Answer: <span style="color:rgba(74,222,128,.7);">' + clue.answer + "</span></div>" : "") +
-"</div>";
+var arr = _generatedClues || [];
+arr.forEach(function(clue, i) {
+  var isFinal = i === arr.length - 1;
+  var label = isFinal ? 'FINAL CLUE' : 'CLUE ' + (i + 1);
+  var key = 'clue' + i;
+  var hint = '';
+  try {
+    var hc = _hsData.clues[i];
+    if (hc && !hc.auto && (hc.hint||'').trim()) hint = hc.hint.replace(' - ', ' \u00b7 ');
+  } catch(e){}
+  html += '<div class="cb3p-card ' + (isFinal ? 'final' : 'clue') + '" style="animation-delay:' + (0.13 + i * 0.08).toFixed(2) + 's;">' +
+    '<div class="cb3p-head"><div class="cb3p-label">' + label + '</div><div class="cb3p-btns">' + cb3PvBtn(key) +
+      '<div class="cb3p-edit" id="cb3ed-' + key + '" onclick="cb3PvTogEdit(' + i + ')">\u270E Edit</div>' +
+    '</div></div>' +
+    '<div class="cb3p-text" id="cb3tx-' + key + '" contenteditable="false" oninput="cb3PvMarkEd(' + i + ')">' + esc(clue.text || '') + '</div>' +
+    (clue.question && !isFinal ? '<div class="cb3p-q">' + esc(clue.question) + '</div>' : '') +
+    (hint && !isFinal ? '<div class="cb3p-hint"><b>HINT</b> \u00b7 ' + esc(hint) + '</div>' : '') +
+    (clue.answer && !isFinal ? '<div class="cb3p-ans">Answer: <span>' + esc(clue.answer) + '</span></div>' : '') +
+  '</div>';
 });
-html += "</div>" +
-'<div style="display:flex;gap:8px;padding:10px 16px 14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.07);">' +
-'<button onclick="hsEditFromPreview()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;font-size:18px;color:#b8c4d0;font-family:inherit;cursor:pointer;">← Edit</button>' +
-'<button onclick="hsConfirmClues()" style="flex:2;padding:14px;background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:12px;font-size:18px;color:#fff;font-family:inherit;cursor:pointer;">Confirm & Save →</button>' +
-"</div>";
+html += '<div class="cb3p-regen' + (window._fsRegenLeft > 0 ? '' : ' dim') + '" id="cb3p-regen" style="animation-delay:.45s;" onclick="cb3Regen()">\u21BB Regenerate all (' + window._fsRegenLeft + ' left)</div>';
+html += '</div>' +
+'<div class="cb3p-foot">' +
+  '<button class="cb3p-editbtn" onclick="hsEditFromPreview()">\u2190 Edit</button>' +
+  '<button class="cb3p-savebtn" onclick="cb3ConfirmSave()">Confirm &amp; Save \u2192</button>' +
+'</div>';
 sheet.innerHTML = html;
 }
 
 function hsEditFromPreview() {
-if (window.speechSynthesis) window.speechSynthesis.cancel();
-_hsCurrent = _hsClueCount;
+cb3PvStopAudio();
+_hsCurrent = cbUserClues().length;
 var sheet = document.querySelector(".hs-modal-sheet");
 sheet.innerHTML =
-'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div style="width:36px;"></div><div style="font-size:24px;font-weight:500;color:#fff;text-align:center;">Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span></div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:18px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done →</button></div>' +
-'<div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
+'<div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;"><div class="cb3-back-circ" id="cb3-hdr-back" onclick="cb3HeaderBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div><div id="cb3-hdr-title" style="font-size:25px;font-weight:500;color:#fff;text-align:center;">Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span></div><button onclick="closeHsModal()" style="background:linear-gradient(135deg,#c9890c,#e8a820);border:none;border-radius:8px;color:#fff;font-size:18px;font-weight:500;padding:9px 16px;font-family:inherit;cursor:pointer;">Done \u2192</button></div>' +
+'<div id="cb3-guard" onclick="cb3GuardToast()" style="display:none;position:absolute;left:0;right:0;bottom:0;top:64px;z-index:40;"></div>' +
+'<div id="hs-radar-wrap" style="display:none;position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;flex-shrink:0;"></div>' +
 '<div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>' +
 '<div class="hs-panel" id="hs-panel" style="flex:1;overflow-y:auto;padding-top:10px;min-height:120px;"></div>' +
 '<div class="hs-nav" id="hs-nav"></div>';
@@ -6185,8 +7058,8 @@ body.fs-mapfull .step-footer{display:none;}
 <div class="hs-modal-overlay" id="hs-modal-overlay" onclick="hsModalBgClose(event)">
   <div class="hs-modal-sheet">
     <div class="hs-modal-header" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;">
-      <div style="width:36px;"></div>
-      <div style="font-size:24px;font-weight:500;color:#fff;text-align:center;">Create <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Clues</span></div>
+      <div class="cb3-back-circ" id="cb3-hdr-back" onclick="cb3HeaderBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div id="cb3-hdr-title" style="font-size:25px;font-weight:500;color:#fff;text-align:center;">Start <span style="background:linear-gradient(90deg,#e8a820,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Location</span></div>
       <div id="hb-btn" style="display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openHamburger();">
         <div style="position:relative;width:34px;height:34px;flex-shrink:0;">
           <div style="position:absolute;inset:-1px;border-radius:50%;background:linear-gradient(135deg,#92400e,#c9890c,#e8a820,#f5c842,#e8a820,#c9890c,#92400e);background-size:300% auto;animation:hbRingShim 8s linear infinite;"></div>
@@ -6200,9 +7073,10 @@ body.fs-mapfull .step-footer{display:none;}
         </div>
       </div>
     </div>
+    <div id="cb3-guard" onclick="cb3GuardToast()" style="display:none;position:absolute;left:0;right:0;bottom:0;top:64px;z-index:40;"></div>
     <!-- Map full width -->
     <div style="flex-shrink:0;">
-      <div id="hs-radar-wrap" style="position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div>
+      <div id="hs-radar-wrap" style="display:none;position:relative;width:100%;height:160px;overflow:hidden;background:#0a0810;"></div>
     </div>
     <!-- Action below radar -->
     <div class="hs-action-row" id="hs-action-area" style="padding:8px 12px 0;"></div>
@@ -6541,14 +7415,21 @@ function openAreaSuggest(){
   var run=function(lat,lng){
     try{
       var svc=new google.maps.places.PlacesService(_s1Map||document.createElement('div'));
-      var all={},pending=3;
+      var all={},pending=3,retried=false;
       var finish=function(){
         if(--pending>0) return;
         var arr=Object.keys(all).map(function(k){return all[k];});
+        if(!arr.length && !retried){
+          retried=true; pending=3;
+          svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,type:'park'},collect);
+          svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,keyword:'plaza'},collect);
+          svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,keyword:'trail'},collect);
+          return;
+        }
         arr.forEach(function(p){ p._mi=s1Dist(lat,lng,p.geometry.location.lat(),p.geometry.location.lng()); });
         arr.sort(function(a,b){return a._mi-b._mi;});
         arr=arr.slice(0,20);
-        if(!arr.length){ list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:18px;">No spots found nearby. Try moving the pin first.</div>'; return; }
+        if(!arr.length){ var _stTxt=_sts.length?(' ('+_sts.join(', ')+')'):''; list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:18px;">No spots found nearby'+_stTxt+'. Try moving the pin first.</div>'; return; }
         window._s1SugResults=arr;
         list.innerHTML=arr.map(function(p,i){
           var em=(p.types&&p.types.indexOf('park')>=0)?'\uD83C\uDF33':/trail/i.test(p.name)?'\uD83D\uDEB6':/plaza|square/i.test(p.name)?'\u26F2':'\uD83C\uDFDE\uFE0F';
@@ -6557,10 +7438,14 @@ function openAreaSuggest(){
           return '<div class="s1-venue" onclick="s1PickSuggestion('+i+')"><div class="ve">'+em+'</div><div class="vt"><div class="vn">'+nm+'</div><div class="vd">'+vd+'</div></div><div class="dist">'+p._mi.toFixed(1)+' mi</div></div>';
         }).join('');
       };
-      var collect=function(res,st){ if(st==='OK'&&res) res.forEach(function(p){ if(p.place_id&&p.name&&p.geometry) all[p.place_id]=p; }); finish(); };
-      svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,type:'park'},collect);
-      svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,keyword:'plaza'},collect);
-      svc.nearbySearch({location:{lat:lat,lng:lng},radius:40000,keyword:'trail'},collect);
+      var _sts=[];
+      var collect=function(res,st){ if(st!=='OK'&&st!=='ZERO_RESULTS'&&_sts.indexOf(st)<0) _sts.push(st); if(st==='OK'&&res) res.forEach(function(p){ if(p.place_id&&p.name&&p.geometry) all[p.place_id]=p; }); finish(); };
+      // rankBy DISTANCE returns the nearest 20 per category instead of the most
+      // prominent 20 in a 40km circle, so small neighborhood parks show up.
+      var _rb=google.maps.places.RankBy.DISTANCE;
+      svc.nearbySearch({location:{lat:lat,lng:lng},rankBy:_rb,type:'park'},collect);
+      svc.nearbySearch({location:{lat:lat,lng:lng},rankBy:_rb,keyword:'plaza'},collect);
+      svc.nearbySearch({location:{lat:lat,lng:lng},rankBy:_rb,keyword:'trail'},collect);
     }catch(e){ list.innerHTML='<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.5);font-size:18px;">Search unavailable. Check your connection.</div>'; }
   };
   if(selectedLat&&selectedLng){ run(selectedLat,selectedLng); }
@@ -6585,7 +7470,7 @@ function s2Next(){
   var pinOk=!codeDigits.some(function(d){ return !d||d===''; });
   var pinWrap=document.querySelector('#step2 .code-wrap');
   if(pinWrap&&pinWrap.parentElement){ pinWrap.parentElement.classList.remove('field-valid','field-invalid'); pinWrap.parentElement.classList.add(pinOk?'field-valid':'field-invalid'); }
-  if(!pinOk){ hs2Open=0; hs2AccSync(); showToast('Generate or enter your 6-digit PIN first','error'); return; }
+  if(!pinOk){ hs2Open=2; hs2AccSync(); showToast('Generate or enter your 6-digit PIN first','error'); return; }
   if(!questArea){ showToast('Pick your quest location first','error'); return; }
   if(!questSpot){ hs2Open=0; hs2AccSync(); fsFlashMissing('hs2-sug-btn'); showToast('Pick your hiding spot object','error'); return; }
   if(!(questDesc||'').trim()){ hs2Open=0; hs2AccSync(); fsFlashMissing('qa-desc'); showToast('Add a short hiding spot description','error'); return; }
