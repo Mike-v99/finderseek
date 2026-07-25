@@ -837,8 +837,11 @@ window.addEventListener('DOMContentLoaded', function() {
     loadHeroAuth();
     return;
   }
-  playGoldBurst();
-  triggerFlyIn();
+  // In the native app, a cold launch hides the page behind the splash screen
+  // for ~2s; hold the fly-in so it plays after the splash fades.
+  var _fsBoot = 0;
+  try { if (window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() && !document.referrer) _fsBoot = 2050; } catch(e) {}
+  setTimeout(function(){ playGoldBurst(); triggerFlyIn(); }, _fsBoot);
   loadQuests();
   loadHeroAuth();
 });
