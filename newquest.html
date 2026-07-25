@@ -386,6 +386,8 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .fs-mic{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(232,168,32,.7);background:rgba(18,16,28,.85);color:#f5c842;font-size:19px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0;z-index:5;}
 .fs-mic.rec{border-color:#ef4444;color:#ef4444;animation:fsMicPulse 1.2s ease-in-out infinite;}
 @keyframes fsMicPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5);}50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}}
+@keyframes fsPopIn{0%{opacity:0;transform:scale(.6);}70%{opacity:1;transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
+.fs-pop{animation:fsPopIn .45s cubic-bezier(.34,1.56,.64,1) backwards;}
 .hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
 .hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
@@ -7697,11 +7699,70 @@ function fsMicToggle(fieldId){
 function fsMicSync(){
   ['cb3-sp-desc','qa-desc','cb3-exact'].forEach(fsMicAttach);
 }
+/* Entrance animations: stagger cards rising on every screen change */
+function fsRise(container){
+  if (!container) return;
+  var kids = [].slice.call(container.children).filter(function(k){ return k.tagName === 'DIV'; }).slice(0, 8);
+  kids.forEach(function(k, i){
+    k.classList.remove('hs2-rise');
+    void k.offsetWidth;
+    k.style.animationDelay = (i * 0.07) + 's';
+    k.classList.add('hs2-rise');
+  });
+}
+function fsPopSeq(selector, start, step){
+  var els = document.querySelectorAll(selector);
+  els.forEach(function(el, i){
+    el.classList.remove('fs-pop');
+    void el.offsetWidth;
+    el.style.animationDelay = (start + i * step) + 's';
+    el.classList.add('fs-pop');
+  });
+}
+function fsAnimStep1(){
+  var st = document.getElementById('step1'); if (!st) return;
+  fsRise(st.querySelector('div[style*="overflow-y:auto"]'));
+  fsPopSeq('#prize-grid .prize-chip', 0.12, 0.05);
+  fsPopSeq('#step1 .ps-tile', 0.3, 0.045);
+}
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(fsMicSync, 300);
   try {
     var _fsOrigRender = renderHsModal;
-    renderHsModal = function(){ _fsOrigRender.apply(this, arguments); try{ fsMicSync(); }catch(e){} };
+    renderHsModal = function(){
+      _fsOrigRender.apply(this, arguments);
+      try{ fsMicSync(); }catch(e){}
+      try{
+        var key = 'p' + _hsCurrent;
+        if (window._fsAuKey !== key) { window._fsAuKey = key; fsRise(document.getElementById('hs-panel')); }
+      }catch(e){}
+    };
+  } catch(e){}
+  try {
+    var _fsOrigGo = goStep;
+    goStep = function(n){
+      _fsOrigGo.apply(this, arguments);
+      try{
+        window._fsAuKey = 'step' + n;
+        if (n === 1) { fsAnimStep1(); return; }
+        var st = document.getElementById('step' + n);
+        fsRise(st && st.querySelector('div[style*="overflow-y:auto"]'));
+      }catch(e){}
+    };
+  } catch(e){}
+  try { if (document.getElementById('step1') && document.getElementById('step1').style.display !== 'none') setTimeout(fsAnimStep1, 60); } catch(e){}
+  try {
+    var _fsOrigPrev = hsShowPreview;
+    hsShowPreview = function(){
+      _fsOrigPrev.apply(this, arguments);
+      try{
+        if (window._fsAuKey !== 'preview') {
+          window._fsAuKey = 'preview';
+          var sh = document.querySelector('.hs-modal-sheet');
+          fsRise(sh);
+        }
+      }catch(e){}
+    };
   } catch(e){}
 });
 </script>
