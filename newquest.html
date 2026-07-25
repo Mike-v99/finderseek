@@ -378,6 +378,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-help-pulse{animation:fsHelpPulse 3s ease-in-out infinite;}
 @keyframes fsSugPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.35);}70%{box-shadow:0 0 0 7px rgba(255,255,255,0);}100%{box-shadow:0 0 0 0 rgba(255,255,255,0);}}
 #hs2-sug-btn.needspick{border:1.5px solid rgba(255,255,255,.9)!important;animation:fsSugPulse 2.4s ease-in-out infinite;}
+.cb3-dd:not(.ok){border-color:rgba(255,255,255,.9);animation:fsSugPulse 2.4s ease-in-out infinite;}
+.cb3-dd:not(.ok) .cb3-dv{color:#fff;}
+.cb3-dd:not(.ok) .cb3-da{color:#fff;}
+.cb3-ddchip:not(.ok){border-color:rgba(255,255,255,.9);background:rgba(255,255,255,.06);color:#fff;animation:fsSugPulse 2.4s ease-in-out infinite;}
+.cb3-ddchip:not(.ok) .cb3-da{color:#fff;}
 .hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
 .hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
@@ -5940,6 +5945,8 @@ function cb3CluePaint(){
   Object.keys(m).forEach(function(id){ var el = hsEl(id); if (el) el.classList.toggle('ok', !!m[id]); });
   var ae = hsEl('cb3-act-edit'); if (ae) ae.classList.toggle('ok', actOk && !!c.customAct);
   var oe = hsEl('cb3-ob-edit'); if (oe) oe.classList.toggle('ok', obOk && !!c.customObj);
+  var a0 = hsEl('cb3-acc-0'); if (a0) a0.classList.toggle('doneacc', actOk && obOk && exOk);
+  var a1 = hsEl('cb3-acc-1'); if (a1) a1.classList.toggle('doneacc', qOk && aOk);
   cb3RefreshTrail();
   cb3RefreshFooter();
   var allDone = cbAllDone();
@@ -6098,7 +6105,12 @@ function cb3DoneOrNext(){
   var ucs = cbUserClues();
   var idx = _hsCurrent - 1;
   var m = cb3Missing(ucs[idx] || {});
-  if (m) { showToast(m, 'error'); cb3RefreshTrail(); return; }
+  if (m) {
+    var mc = ucs[idx] || {};
+    window._cb3Acc = (!cb3ActVal(mc) || !cb3ObjName(mc) || !((mc.exact||'').trim())) ? 0 : 1;
+    cb3AccApply();
+    showToast(m, 'error'); cb3RefreshTrail(); return;
+  }
   if (_hsCurrent < ucs.length) {
     _hsCurrent = _hsCurrent + 1;
     renderHsModal();
@@ -6121,12 +6133,22 @@ function cb3ClueHtml(c, cur){
   var obCustom = !!c.customObj;
   var actOk = !!cb3ActVal(c), obOk = !!cb3ObjName(c);
   var exOk = !!((c.exact||'').trim()), qOk = !!((c.question||'').trim()), aOk = !!((c.answer||'').trim());
+  var aDone = actOk && obOk && exOk, bDone = qOk && aOk;
+  if (window._cb3AccCur !== cur) { window._cb3AccCur = cur; window._cb3Acc = null; }
+  var openIdx = (window._cb3Acc != null) ? window._cb3Acc : (aDone ? 1 : 0);
+  var aCls = (openIdx === 0 ? ' openacc' : ' closedacc') + (aDone ? ' doneacc' : '');
+  var bCls = (openIdx === 1 ? ' openacc' : ' closedacc') + (bDone ? ' doneacc' : '');
   var cbInner;
   if (c.tplPat && c.tplIdx != null && !c.edited) cbInner = cb3FillTplHtml(CB3_EX[c.tplPat][c.tplIdx], c);
   else cbInner = cbEsc(c.question || '');
   return '<div style="flex-shrink:0;">' + cb3TrailHtml() + '</div>' +
-    '<div class="cb3-card" style="margin-top:12px;">' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">' +
+    '<div class="cb3-card hs2-card' + aCls + '" id="cb3-acc-0" style="margin-top:12px;">' +
+      '<div class="hs2-acc-hd" onclick="cb3AccTog(0)">' +
+        '<div class="hs2-acc-t" style="font-size:25px;font-weight:400;color:#ffffff;">Find an Object</div>' +
+        '<span class="hs2-chev">\u25BE</span>' +
+      '</div>' +
+      '<div class="hs2-acc-body">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;">' +
         '<div><div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">1</span>WALK TOWARDS</div>' +
           '<div class="cb3-dd' + (actOk ? ' ok' : '') + '" id="cb3-dd-act" onclick="cb3OpenActSheet()"><div class="cb3-dv" id="cb3-act-val">' + (actCustom ? '\u270E custom' : ((c.landmark||'').trim() ? cbEsc(c.landmark) : 'Pick landmark')) + '</div><div class="cb3-da">\u25BE</div></div></div>' +
         '<div><div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">2</span>FIND AN OBJECT</div>' +
@@ -6135,11 +6157,16 @@ function cb3ClueHtml(c, cur){
       '<input class="cb3-editline' + (actCustom ? ' show' : '') + (actCustom && actOk ? ' ok' : '') + '" id="cb3-act-edit" maxlength="80" placeholder="e.g. Walk towards the blue mural" value="' + cbEsc(c.customAct || '') + '" oninput="cb3ActEditInput(this)"/>' +
       '<input class="cb3-editline' + (obCustom ? ' show' : '') + (obCustom && obOk ? ' ok' : '') + '" id="cb3-ob-edit" maxlength="60" placeholder="e.g. Find the carved totem pole" value="' + cbEsc(c.customObj || '') + '" oninput="cb3ObEditInput(this)"/>' +
       '<div class="cb3-lblrow" style="margin:14px 0 4px;"><div class="cb3-lbl"><span class="cb3-stepn">3</span>OBJECT EXACT LOCATION</div><div class="cb3-qm" onclick="cb3ExactHelp()">?</div></div>' +
-      '<textarea class="cb3-exact' + (exOk ? ' ok' : '') + '" id="cb3-exact" rows="1" style="min-height:48px;overflow:hidden;" placeholder="Where exactly? Next to? Color?" oninput="cb3ExactInput(this)">' + cbEsc(c.exact || '') + '</textarea>' +
+      '<textarea class="cb3-exact' + (exOk ? ' ok' : '') + '" id="cb3-exact" rows="1" style="min-height:48px;overflow:hidden;" placeholder="Where exactly? Next to? Color?" oninput="cb3ExactInput(this)" onblur="cb3ExactBlur()">' + cbEsc(c.exact || '') + '</textarea>' +
+      '</div>' +
     '</div>' +
-    '<div class="cb3-card" style="margin-top:12px;">' +
-      '<div class="cb3-lbl" style="margin-bottom:12px;"><span class="cb3-stepn">4</span>CLUE STYLE, CLUE &amp; ANSWER</div>' +
-      '<div class="cb3-cluebox' + (qOk ? ' ok' : '') + '" id="cb3-cluebox">' +
+    '<div class="cb3-card hs2-card' + bCls + '" id="cb3-acc-1" style="margin-top:12px;">' +
+      '<div class="hs2-acc-hd" onclick="cb3AccTog(1)">' +
+        '<div class="hs2-acc-t" style="font-size:25px;font-weight:400;color:#ffffff;">Clue &amp; Answer</div>' +
+        '<span class="hs2-chev">\u25BE</span>' +
+      '</div>' +
+      '<div class="hs2-acc-body">' +
+      '<div class="cb3-cluebox' + (qOk ? ' ok' : '') + '" id="cb3-cluebox" style="margin-top:12px;">' +
         '<div class="cb3-cbhead">' +
           '<div class="cb3-ddchip' + (qOk ? ' ok' : '') + '" id="cb3-ddchip" onclick="cb3OpenPats()"><span id="cb3-pat-val">' + (c.pattern ? CB3_PATS[c.pattern] : 'Pick a style') + '</span><span class="cb3-da">\u25BE</span></div>' +
           '<div class="cb3-tapedit" id="cb3-tapedit" onclick="cb3TogEdit()">\u270E Tap to Edit</div>' +
@@ -6148,8 +6175,33 @@ function cb3ClueHtml(c, cur){
       '</div>' +
       '<div class="cb3-anslbl">ANSWER <span>\u00b7 unlocks next clue</span></div>' +
       '<input class="cb3-ans' + (aOk ? ' ok' : '') + '" id="cb3-ans" maxlength="60" placeholder="Stand there and check, then type it" value="' + cbEsc(c.answer || '') + '" oninput="cb3AnsInput(this)"/>' +
+      '</div>' +
     '</div>' +
     '<div class="cb-final">\u2728 The final reveal clue is added automatically from your hiding spot: <b>' + cbEsc(_hsData.location || 'set it on step 2') + '</b></div>';
+}
+function cb3AccTog(i){
+  var c = cb3Cur(); if (!c) return;
+  var aDone = !!cb3ActVal(c) && !!cb3ObjName(c) && !!((c.exact||'').trim());
+  var cur = (window._cb3Acc != null) ? window._cb3Acc : (aDone ? 1 : 0);
+  window._cb3Acc = (cur === i) ? -1 : i;
+  cb3AccApply();
+}
+function cb3AccApply(){
+  var c = cb3Cur(); if (!c) return;
+  var aDone = !!cb3ActVal(c) && !!cb3ObjName(c) && !!((c.exact||'').trim());
+  var bDone = !!((c.question||'').trim()) && !!((c.answer||'').trim());
+  var openIdx = (window._cb3Acc != null) ? window._cb3Acc : (aDone ? 1 : 0);
+  [[0,aDone],[1,bDone]].forEach(function(p){
+    var el = hsEl('cb3-acc-' + p[0]); if (!el) return;
+    el.classList.toggle('openacc', openIdx === p[0]);
+    el.classList.toggle('closedacc', openIdx !== p[0]);
+    el.classList.toggle('doneacc', !!p[1]);
+  });
+}
+function cb3ExactBlur(){
+  var c = cb3Cur(); if (!c) return;
+  var aDone = !!cb3ActVal(c) && !!cb3ObjName(c) && !!((c.exact||'').trim());
+  if (aDone && (window._cb3Acc == null || window._cb3Acc === 0)) { window._cb3Acc = 1; cb3AccApply(); }
 }
 
 // ===== cb3: rebranded builder helpers (Stage 1: Start Location) =====
