@@ -416,8 +416,10 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .cb3-lbl{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.45);font-weight:500;}
 .cb3-lblrow{display:flex;justify-content:space-between;align-items:center;}
 .cb3-qm{width:32px;height:32px;border-radius:50%;background:rgba(232,168,32,.06);border:1.5px solid rgba(232,168,32,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;animation:fsHelpPulse 3s ease-in-out infinite;}
-.cb3-starttrail .cb3-tlabel{font-size:25px;}
 .cb3-startcard .cb3-lbl{font-size:25px;color:#ffffff;}
+#cb3-starthelp-sheet .cb3-sh-title{font-size:25px;}
+#cb3-starthelp-sheet .cb3-helpx{font-size:22px;}
+#cb3-starthelp-sheet .cb3-helpx .cb3-hxl{font-size:22px;}
 .cb3-startcard .cb3-sublbl{font-size:25px;}
 .cb3-startcard .cb3-dd .cb3-dv{font-size:25px;}
 .cb3-startcard .cb3-exact{font-size:25px;}
@@ -909,6 +911,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </div>
 <div id="cb3-starthelp-sheet" class="hs2-sheet cb3-spring">
   <div class="qa-grab"></div>
+  <div style="font-size:22px;letter-spacing:1.5px;color:#e8a820;text-align:center;margin:2px 0 6px;"><b>START</b> &#183; where every seeker begins</div>
   <div class="cb3-sh-title">Starting <span>Point</span></div>
   <div class="cb3-helpx"><div class="cb3-hxl">GOOD STARTING POINTS</div>Quest area entrances are good for starting points or the prize hiding spot.</div>
   <div class="cb3-helpx"><div class="cb3-hxl">ONE START, MANY CLUES</div>📍 Every clue page after this is built the same way: walk somewhere, find an object, answer a question. Add 2 to 7 clues.</div>
@@ -6363,8 +6366,7 @@ function renderHsModal() {
     var spDone = !!spName;
     var sdDone = !!((_hsData.startDesc || '').trim());
     panel.innerHTML =
-      '<div class="cb3-au1 cb3-starttrail" style="flex-shrink:0;">' + cb3TrailHtml() +
-        '<div class="cb3-tlabel"><b>START</b> \u00b7 where every seeker begins</div></div>' +
+      '<div class="cb3-au1 cb3-starttrail" style="flex-shrink:0;">' + cb3TrailHtml() + '</div>' +
       '<div class="cb3-card cb3-au2 cb3-startcard" style="flex-shrink:0;">' +
         '<div class="cb3-lblrow" style="margin:0 0 12px;"><div class="cb3-lbl">STARTING POINT</div><div class="cb3-qm" onclick="cb3StartHelp()">?</div></div>' +
         '<div class="cb3-dd' + (spDone ? ' ok' : '') + '" id="cb3-sp-dd" onclick="cb3OpenStartSheet()">' +
