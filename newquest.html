@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-<title>FinderSeek — Start Quest</title>
+<title>FinderSeek - Start Quest</title>
 <meta name="theme-color" content="#0d0b18"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
@@ -27,24 +27,24 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .inner{background:rgba(13,11,24,.94);border-radius:17px;overflow:hidden;}
 
 /* Back */
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(–dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-size:18px;color:var(--dim);text-decoration:none;margin-bottom:14px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'Noto Sans Display',sans-serif;font-weight:400;}
 
 @keyframes shimmerSlow{0%{background-position:-300% center;}100%{background-position:300% center;}}
 
 /* Page header */
 .page-header{text-align:center;margin-bottom:24px;position:relative;}
 .page-title{font-family:'Noto Sans Display',sans-serif;font-weight:200;font-size:42px;background:linear-gradient(90deg,#c9890c,#e8a820,#f5c842,#fff,#f5c842,#e8a820,#c9890c);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerSlow 4s linear infinite;}
-.page-sub{font-size:18px;color:var(–dim);margin-top:12px;line-height:1.8;}
+.page-sub{font-size:18px;color:var(--dim);margin-top:12px;line-height:1.8;}
 
 /* Step card */
 .step-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
 .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;flex-shrink:0;}
-.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(–blue-light);}
+.step-num-blue{background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.4);color:var(--blue-light);}
 .step-num-silver{background:rgba(148,163,184,.12);border:1.5px solid rgba(148,163,184,.4);color:#b8c4d0;}
-.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(–gold2);}
+.step-num-gold{background:rgba(201,137,12,.15);border:1.5px solid rgba(201,137,12,.4);color:var(--gold2);}
 .step-num-red{background:rgba(232,168,32,.12);border:1.5px solid rgba(232,168,32,.4);color:#e8a820;}
-.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(–purple);}
-.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(–green);}
+.step-num-purple{background:rgba(139,92,246,.12);border:1.5px solid rgba(139,92,246,.4);color:var(--purple);}
+.step-num-green{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.4);color:var(--green);}
 .step-icon{font-size:22px;}
 .step-title{font-size:18px;font-weight:400;color:#ffffff;}
 .step-body{padding:18px;}
@@ -53,37 +53,37 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:18px;color:#ffffff;margin-bottom:8px;letter-spacing:1px;}
-.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(–cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
+.finput{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(200,200,215,.4);border-radius:12px;padding:14px 16px;font-size:18px;color:var(--cream);font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s;position:relative;overflow:hidden;}
 .finput:focus{border-color:rgba(220,220,230,.6);}
 .finput::placeholder{color:#b8d4e8;}
 textarea.finput{resize:vertical;line-height:1.6;}
 
 /* Slider */
 .slider-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
-.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:28px;color:var(–blue-light);}
-input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(–blue-light) var(–pct,50%),rgba(147,197,253,.15) var(–pct,50%));}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(–blue-light),#93c5fd);border:3px solid var(–ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
-.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(–muted);}
+.slider-val{font-family:'Noto Sans Display',sans-serif;font-weight:400;font-size:28px;color:var(--blue-light);}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--blue-light) var(--pct,50%),rgba(147,197,253,.15) var(--pct,50%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue-light),#93c5fd);border:3px solid var(--ink);box-shadow:0 0 0 2px #93c5fd,0 4px 12px rgba(147,197,253,.5);cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:18px;color:var(--muted);}
 
 /* Persona grid */
 .persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .persona-card{border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.persona-card.selected{border-color:var(–gold2);background:rgba(201,137,12,.08);}
+.persona-card.selected{border-color:var(--gold2);background:rgba(201,137,12,.08);}
 .persona-emoji{font-size:28px;display:block;margin-bottom:6px;}
 .persona-name{font-size:18px;font-weight:400;color:#ffffff;}
-.persona-desc{font-size:18px;color:var(–muted);margin-top:4px;line-height:1.4;}
-.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(–gold2);display:none;}
+.persona-desc{font-size:18px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.persona-check{position:absolute;top:8px;right:8px;font-size:18px;color:var(--gold2);display:none;}
 /* persona-check removed - new design uses background tint */
 
 /* Photo drop */
 .photo-drop{border:2px dashed rgba(255,255,255,.15);border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:border-color .2s;}
 .photo-drop:hover{border-color:rgba(201,137,12,.4);}
 .photo-btns{display:flex;align-items:center;justify-content:center;gap:16px;}
-.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;color:var(–cream);}
+.photo-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 20px;cursor:pointer;text-align:center;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;color:var(--cream);}
 .photo-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .photo-btn-icon{font-size:28px;display:block;margin-bottom:6px;}
 .photo-btn-label{font-size:18px;font-weight:400;}
-.photo-or{font-size:18px;color:var(–muted);}
+.photo-or{font-size:18px;color:var(--muted);}
 
 /* Map */
 .map-box{width:100%;height:260px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(203,213,225,.1);overflow:hidden;margin-bottom:6px;position:relative;z-index:2;}
@@ -93,15 +93,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .map-search-input::placeholder{color:rgba(203,213,225,.35);}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
 .map-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;}
-.map-coords span{color:var(–gold);}
+.map-coords span{color:var(--gold);}
 .search-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.25);border-radius:12px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:10000;display:none;backdrop-filter:blur(16px);}
 .search-dropdown.show{display:block;}
 .search-result{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
 .search-result:hover,.search-result.active{background:rgba(201,137,12,.1);}
 .search-result:last-child{border-bottom:none;}
 .search-result-icon{font-size:18px;flex-shrink:0;}
-.search-result-main{font-size:18px;color:var(–cream);font-weight:400;}
-.search-result-sub{font-size:18px;color:var(–muted);margin-top:2px;}
+.search-result-main{font-size:18px;color:var(--cream);font-weight:400;}
+.search-result-sub{font-size:18px;color:var(--muted);margin-top:2px;}
 .my-loc-btn{background:rgba(255,255,255,.06);border:1px solid rgba(203,213,225,.15);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:18px;color:#b8c4d0;font-family:'Noto Sans Display',sans-serif;font-weight:400;transition:all .2s;display:inline-flex;align-items:center;gap:5px;position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;}
 .my-loc-btn:hover{background:rgba(255,255,255,.1);}
 
@@ -109,27 +109,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .code-wrap{display:flex;gap:8px;justify-content:center;}
 .code-digit{width:44px;height:52px;border-radius:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(96,165,250,.3);text-align:center;font-size:24px;font-weight:400;color:#fff;font-family:'Noto Sans Display',sans-serif;font-weight:400;outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
 .code-digit:focus{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.35);}
-.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(–dim);font-family:'Noto Sans Display',sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
-.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(–cream);}
+.btn-gen-code{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;font-size:18px;font-weight:400;color:var(--dim);font-family:'Noto Sans Display',sans-serif;font-weight:400;cursor:pointer;transition:all .2s;}
+.btn-gen-code:hover{background:rgba(255,255,255,.1);color:var(--cream);}
 
 /* Payment options */
 .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .pay-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;position:relative;}
-.pay-opt.selected{border-color:var(–purple);background:rgba(139,92,246,.08);}
+.pay-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.08);}
 .pay-opt-icon{font-size:28px;display:block;margin-bottom:8px;}
 .pay-opt-name{font-size:18px;font-weight:400;color:#ffffff;}
-.pay-opt-tag{font-size:18px;color:var(–muted);margin-top:4px;}
+.pay-opt-tag{font-size:18px;color:var(--muted);margin-top:4px;}
 
 /* Go live options */
 .golive-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .golive-opt{border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);transition:all .2s;}
-.golive-opt.selected{border-color:var(–green);background:rgba(34,197,94,.08);}
+.golive-opt.selected{border-color:var(--green);background:rgba(34,197,94,.08);}
 .golive-icon{font-size:28px;margin-bottom:6px;}
 .golive-name{font-size:18px;font-weight:400;color:#ffffff;}
 
 /* Warning card */
 .warning-card{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(251,146,60,.05));border:1px solid rgba(239,68,68,.25);border-radius:18px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
-.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–red),#f97316);border-radius:18px 18px 0 0;}
+.warning-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316);border-radius:18px 18px 0 0;}
 .warning-title{font-size:18px;font-weight:400;color:#ffffff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .warning-item{display:flex;align-items:center;gap:8px;font-size:18px;color:#ffffff;}
@@ -140,7 +140,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .btn-submit:active{transform:scale(.97);}
 .btn-preview{width:100%;padding:16px;border:2px solid rgba(255,255,255,.2);border-radius:16px;font-size:18px;font-weight:400;font-family:'Noto Sans Display',sans-serif;cursor:pointer;background:rgba(255,255,255,.05);color:#fff;transition:all .2s;}
 .btn-preview:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08);}
-.submit-note{font-size:18px;color:var(–muted);text-align:center;margin-top:10px;line-height:1.5;}
+.submit-note{font-size:18px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
 
 /* Bottom nav */
 /* bottom-nav removed */
@@ -151,15 +151,15 @@ body.kb-up /* bottom-nav removed */
 @supports(padding-bottom:env(safe-area-inset-bottom)){/* bottom-nav removed */.page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}}
 
 /* Toast & loader */
-.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(–cream);font-size:18px;font-weight:400;z-index:23500;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;}
+.toast{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) translateY(-120%);background:rgba(13,11,24,.97);border:1px solid rgba(201,137,12,.3);border-radius:12px;padding:14px 22px;color:var(--cream);font-size:18px;font-weight:400;z-index:23500;backdrop-filter:blur(16px);transition:transform .3s ease,opacity .25s ease;max-width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .toast.error{border-color:rgba(239,68,68,.5);color:#fca5a5;}
 .toast.success{border-color:rgba(74,222,128,.5);color:#86efac;}
 .btn-submit:disabled,.btn-preview:disabled{opacity:.55;cursor:not-allowed;}
 
 /* Step pages */
-.step-page{position:relative;z-index:1;background:var(–ink);max-width:480px;margin:0 auto;width:100%;padding-bottom:120px;}
-/* Hide bottom nav on step pages — each step has its own Next button */
+.step-page{position:relative;z-index:1;background:var(--ink);max-width:480px;margin:0 auto;width:100%;padding-bottom:120px;}
+/* Hide bottom nav on step pages - each step has its own Next button */
 /* bottom-nav removed */
 @keyframes wq-glow-anim{0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0);}50%{box-shadow:0 0 18px 3px rgba(232,168,32,.18);}}
 #wq-btn{animation:wq-glow-anim 3s ease-in-out infinite;}
@@ -282,7 +282,7 @@ body.kb-up /* bottom-nav removed */
 .map-pred-main{font-size:18px;color:#fff;font-weight:400;}
 .map-pred-sub{font-size:18px;color:rgba(255,255,255,.45);margin-top:1px;}
 
-/* PWA safe area protection — status strip covers notch, body padded so content never goes behind it */
+/* PWA safe area protection - status strip covers notch, body padded so content never goes behind it */
 .status-strip{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0a0810;z-index:10000;pointer-events:none;}
 body{padding-top:env(safe-area-inset-top,0px);}
 .hs-drop-item:hover{background:rgba(232,168,32,.12) !important;}
@@ -1009,7 +1009,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="cb3s-lbl">YOUR QUEST</div>
   <div class="cb3s-row"><div class="cb3s-k">💰 Prize</div><div class="cb3s-v money" id="ms-prize">$25</div></div>
   <div class="cb3s-row"><div class="cb3s-k">🧩 Clues</div><div class="cb3s-v" id="ms-clues">4 · Pirate voice</div></div>
-  <div class="cb3s-row"><div class="cb3s-k">📍 Location</div><div class="cb3s-v" id="ms-location">—</div></div>
+  <div class="cb3s-row"><div class="cb3s-k">📍 Location</div><div class="cb3s-v" id="ms-location">-</div></div>
   <div class="cb3s-row"><div class="cb3s-k">💎 Hiding spot</div><div class="cb3s-v" id="ms-hspot">Set ✓</div></div>
 </div>
 
@@ -1069,7 +1069,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 @keyframes aiPulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
 </style>
 
-<!-- Sign-In Gate — Apple & Google only, shown after schedule is set -->
+<!-- Sign-In Gate - Apple & Google only, shown after schedule is set -->
 
 <div id="eg-backdrop" style="display:none;position:fixed;inset:0;background:rgba(6,5,10,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9998;opacity:0;transition:opacity .3s;"></div>
 <div id="eg-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:24px;overflow:hidden;">
@@ -1093,7 +1093,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div id="eg-error" style="font-size:18px;color:#f87171;margin-bottom:12px;min-height:0;text-align:center;"></div>
 
-  <!-- Apple Sign In — primary CTA -->
+  <!-- Apple Sign In - primary CTA -->
   <button id="fs-apple-btn" onclick="signInWithAppleGate()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;background:#fff;border:none;border-radius:14px;font-size:18px;font-weight:600;color:#000;cursor:pointer;font-family:inherit;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.92.8.75-.09 2.17-.91 3.61-.79 1.6.14 2.83.77 3.64 1.97-3.34 2.1-2.8 6.18.53 7.73-.78 1.8-1.69 3.56-2.7 3.15zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
     Continue with Apple
@@ -1107,7 +1107,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 
   <div style="font-size:18px;color:rgba(184,196,208,.3);text-align:center;margin-top:10px;">Used only to notify you when your quest is won</div>
 
-  <!-- Hidden inputs — internal reviewer only -->
+  <!-- Hidden inputs - internal reviewer only -->
   <input id="eg-email" type="hidden" value=""/>
   <input id="eg-password" type="hidden" value=""/>
   <button id="eg-continue-btn" style="display:none;" onclick="submitEmailGate()"></button>
@@ -1126,7 +1126,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
     if (at) {
       localStorage.setItem('fs_token', at);
       if (rt) localStorage.setItem('fs_refresh', rt);
-      // Flag that we just returned from OAuth — show email after page loads
+      // Flag that we just returned from OAuth - show email after page loads
       sessionStorage.setItem('fs_just_signed_in', '1');
       // Strip the tokens from the URL so they aren't left in history.
       var clean = 'newquest.html?from=app';
@@ -1136,7 +1136,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 })();
 </script>
 <script>
-// No early redirect — anyone can enter the quest builder.
+// No early redirect - anyone can enter the quest builder.
 // Auth is checked at the schedule step (startTheQuest) so users
 // build their full quest before being asked to sign in.
 </script>
@@ -1874,15 +1874,15 @@ function updateSummary() {
   var personaNameEl = persona ? persona.querySelector('.persona-name') : null;
   var personaName = personaNameEl ? personaNameEl.textContent : 'Pirate';
   var personaEmoji = (PERSONA_SAMPLES[personaKey] || {emoji:'🏴‍☠️'}).emoji;
-  var _msEl = document.getElementById('map-search'); var location = (_msEl ? _msEl.value : '').split(',')[0] || '—';
+  var _msEl = document.getElementById('map-search'); var location = (_msEl ? _msEl.value : '').split(',')[0] || '-';
   var dur = weekendSelected ? '36 hrs (Weekend)' : (selectedDur + (selectedDur === 1 ? ' day' : ' days'));
   var expiresEl = document.getElementById('dur-expires');
-  var expires = weekendSelected ? 'Sun 9:00 PM' : (expiresEl ? expiresEl.textContent.replace('Expires ','') : '—');
+  var expires = weekendSelected ? 'Sun 9:00 PM' : (expiresEl ? expiresEl.textContent.replace('Expires ','') : '-');
   var sp = document.getElementById('sum-prize'); if(sp) sp.textContent = '$' + prize;
   var sc = document.getElementById('sum-clues'); if(sc) sc.textContent = clueLabels[clue] || clue + ' clues';
   var sd = document.getElementById('sum-dur'); if(sd) sd.textContent = dur;
   var spe = document.getElementById('sum-persona'); if(spe) spe.textContent = personaEmoji + ' ' + personaName;
-  var sl = document.getElementById('sum-location'); if(sl) sl.textContent = location || '—';
+  var sl = document.getElementById('sum-location'); if(sl) sl.textContent = location || '-';
   var se = document.getElementById('sum-expires'); if(se) se.textContent = expires;
   // Update hidden compat fields
   document.getElementById('dur-slider').value = weekendSelected ? 36 : (selectedDur * 24);
@@ -1909,7 +1909,7 @@ function selPrize(val, el) {
 }
 
 function updDur(el){
-  // Legacy compat — sliders replaced by buttons
+  // Legacy compat - sliders replaced by buttons
   if (!el || !el.value) return;
   var v = parseInt(el.value);
   selectedDur = Math.round(v/24) || 1;
@@ -2010,7 +2010,7 @@ function genCode(){
 // Make sure genCode is globally accessible (some iOS WebView contexts need this explicit)
 window.genCode = genCode;
 
-// Wire genCode button — multiple strategies for iOS / Capacitor reliability
+// Wire genCode button - multiple strategies for iOS / Capacitor reliability
 (function() {
   function wireGenCode() {
     var gb = document.getElementById('gen-code-btn');
@@ -2029,7 +2029,7 @@ window.genCode = genCode;
         console.log('[FS] gen-code-btn click');
         try { window.genCode(); } catch(err){ console.error('[FS] genCode call err', err); }
       });
-      // Touchend fallback — fires on iOS even if click is suppressed
+      // Touchend fallback - fires on iOS even if click is suppressed
       gb.addEventListener('touchend', function(e){
         console.log('[FS] gen-code-btn touchend');
         try { window.genCode(); } catch(err){ console.error('[FS] genCode touchend err', err); }
@@ -2079,7 +2079,7 @@ function closePinCardAndViewQuest() {
 
 function showPinCardAfterPayment(huntId, questId, pinOverride) {
   window._fundedHuntId = huntId;
-  window._fundedQuestId = questId || '—';
+  window._fundedQuestId = questId || '-';
 
   // Build digit display. Prefer explicit pin (passed by caller before
   // clearFormState wipes the DOM), then fall back to DOM, then localStorage.
@@ -2159,7 +2159,7 @@ function saveCodeToPhotos(){
     ? window._fundedPin
     : ['c1','c2','c3','c4','c5','c6'].map(function(id){ var el=document.getElementById(id); return el ? (el.textContent || '?') : '?'; }).join('');
   var digits = code.split('');
-  var questId = window._fundedQuestId || '—';
+  var questId = window._fundedQuestId || '-';
   var canvas = document.createElement('canvas');
   canvas.width = 800; canvas.height = 480;
   var ctx = canvas.getContext('2d');
@@ -2264,13 +2264,13 @@ function updateMiniSummary() {
     (selectedAddress ? selectedAddress.split(',')[0] : '') ||
     (document.getElementById('map-search') || {}).value ||
     (_hsData && _hsData.location ? _hsData.location.split(',')[0] : '') ||
-    '—';
+    '-';
   if (location) location = location.split(',')[0].trim();
 
   var mp = document.getElementById('ms-prize'); if(mp) mp.textContent = '$' + prize;
   var mc = document.getElementById('ms-clues'); if(mc) mc.textContent = clue + ' \u00b7 ' + personaName + ' voice';
   var ms = document.getElementById('ms-style'); if(ms) ms.textContent = personaName;
-  var ml = document.getElementById('ms-location'); if(ml) ml.textContent = location || '—';
+  var ml = document.getElementById('ms-location'); if(ml) ml.textContent = location || '-';
 }
 var selectedPreset = null;
 var PRESET_COLORS = {
@@ -2439,7 +2439,7 @@ function startTheQuest() {
     showEmailGate();
     return;
   }
-  // User is signed in — show spinner and proceed
+  // User is signed in - show spinner and proceed
   var overlay = document.getElementById('ai-loading');
   if (overlay) overlay.style.display = 'flex';
   saveFormState();
@@ -2448,7 +2448,7 @@ function startTheQuest() {
 const SB = 'https://qeiuycuasjkopxfkmggp.supabase.co';
 const API_BASE = 'https://www.finderseek.com';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlaXV5Y3Vhc2prb3B4ZmttZ2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwNDYsImV4cCI6MjA4ODQxNjA0Nn0.cSNiP5p9e3IFGJ1tQY2AWHVt8YKznbji4ku9Sab1tQk';
-// NOTIFY_SECRET removed — endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
+// NOTIFY_SECRET removed - endpoints now accept the signed-in user's Supabase token (Authorization: Bearer).
 const PAYPAL_CLIENT_ID = 'LIVE'; // Loaded dynamically from server
 
 let currentUser = null;
@@ -2480,7 +2480,7 @@ try {
     }
   } catch(e) { console.warn('Session promote failed:', e); }
 })();
-// ── Auto-refresh token — uses Supabase session refresh automatically ──────
+// ── Auto-refresh token - uses Supabase session refresh automatically ──────
 async function getFreshToken() {
   try {
     // getSession() auto-refreshes expired access tokens using the refresh token
@@ -2494,7 +2494,7 @@ async function getFreshToken() {
   return getToken(); // fallback to stored token
 }
 
-// Auto-refresh on page load — silently keeps session alive
+// Auto-refresh on page load - silently keeps session alive
 (async function() {
   try {
     if (!supaClient) return;
@@ -2510,8 +2510,8 @@ async function getFreshToken() {
 // they just built (flag set by showEmailGate / signInWithAppleGate). Captured
 // HERE, before any async auth callback can clear it, so loadCurrentUser()'s
 // "different user" draft-wipe can reliably skip it regardless of callback
-// ordering. Without this, a guest who builds a quest then signs in — when
-// fs_last_user_id holds an earlier account — has their PIN/photo/prize/clues
+// ordering. Without this, a guest who builds a quest then signs in - when
+// fs_last_user_id holds an earlier account - has their PIN/photo/prize/clues
 // wiped and is dropped back to step 1.
 var _fsResumingOwnQuest = false;
 try { _fsResumingOwnQuest = sessionStorage.getItem('fs_quest_pending_auth') === '1'; } catch(e){}
@@ -2534,7 +2534,7 @@ function getToken(){
 async function loadCurrentUser(){
   if (!supaClient) return null;
   try {
-    // Use Supabase client — auto-refreshes tokens
+    // Use Supabase client - auto-refreshes tokens
     let { data: { session } } = await supaClient.auth.getSession();
     // If session expired, try refreshing
     if (!session) {
@@ -2550,7 +2550,7 @@ async function loadCurrentUser(){
       var draftOwner = localStorage.getItem('fs_draft_owner');
       // Only wipe when the saved draft was built by a DIFFERENT signed-in user.
       // KEEP it when: no owner recorded (legacy draft), built anonymously
-      // ('anon' — claimable by whoever is here now), or built by THIS user.
+      // ('anon' - claimable by whoever is here now), or built by THIS user.
       // This stops the constant "start over" caused by a stale device account
       // while still never showing one signed-in user's draft to another. The
       // pending_auth flag is kept as extra safety for the guest-signs-in flow.
@@ -2626,11 +2626,11 @@ function setCreationStep(step, state) {
     rowEl.style.border = '1px solid rgba(74,222,128,.3)';
     rowEl.style.background = 'rgba(74,222,128,.05)';
   } else if (state === 'skip') {
-    statusEl.textContent = '—';
+    statusEl.textContent = '-';
     statusEl.style.color = 'rgba(255,255,255,.3)';
     rowEl.style.opacity = '0.4';
   } else {
-    statusEl.textContent = '—';
+    statusEl.textContent = '-';
     statusEl.style.color = 'rgba(255,255,255,.3)';
     rowEl.style.border = '1px solid rgba(255,255,255,.08)';
     rowEl.style.background = 'rgba(255,255,255,.04)';
@@ -2667,11 +2667,11 @@ function setCreationStep(step, state) {
     rowEl.style.background = 'rgba(74,222,128,.05)';
     rowEl.style.opacity = '1';
   } else if (state === 'skip') {
-    statusEl.textContent = '—';
+    statusEl.textContent = '-';
     statusEl.style.color = 'rgba(255,255,255,.3)';
     rowEl.style.opacity = '0.4';
   } else {
-    statusEl.textContent = '—';
+    statusEl.textContent = '-';
     statusEl.style.color = 'rgba(255,255,255,.3)';
     rowEl.style.border = '1px solid rgba(255,255,255,.08)';
     rowEl.style.background = 'rgba(255,255,255,.04)';
@@ -2694,8 +2694,8 @@ function setCreationStep(step, state) {
   if (!se||!re) return;
   if (state==='active'){se.textContent='⏳';se.style.color='#e8a820';re.style.border='1px solid rgba(232,168,32,.4)';re.style.background='rgba(232,168,32,.06)';re.style.opacity='1';}
   else if (state==='done'){se.textContent='✓';se.style.color='#4ade80';re.style.border='1px solid rgba(74,222,128,.3)';re.style.background='rgba(74,222,128,.05)';re.style.opacity='1';}
-  else if (state==='skip'){se.textContent='—';se.style.color='rgba(255,255,255,.3)';re.style.opacity='0.4';}
-  else{se.textContent='—';se.style.color='rgba(255,255,255,.3)';re.style.border='1px solid rgba(255,255,255,.08)';re.style.background='rgba(255,255,255,.04)';re.style.opacity='1';}
+  else if (state==='skip'){se.textContent='-';se.style.color='rgba(255,255,255,.3)';re.style.opacity='0.4';}
+  else{se.textContent='-';se.style.color='rgba(255,255,255,.3)';re.style.border='1px solid rgba(255,255,255,.08)';re.style.background='rgba(255,255,255,.04)';re.style.opacity='1';}
 }
 
 //  CREATE QUEST
@@ -2937,7 +2937,7 @@ async function submitEmailGate(){
     });
 
     if (signUpErr) {
-      // Might already exist — send a magic link instead
+      // Might already exist - send a magic link instead
       if ((signUpErr.message || '').toLowerCase().includes('already registered') ||
           (signUpErr.message || '').toLowerCase().includes('user already')) {
         var { error: otpErr } = await supaClient.auth.signInWithOtp({
@@ -2974,7 +2974,7 @@ async function submitEmailGate(){
       window._pendingPreviewMode = undefined;
       createQuest(mode);
     } else {
-      // Email confirmation is required — tell them to check their inbox
+      // Email confirmation is required - tell them to check their inbox
       errEl.style.color = '#4ade80';
       errEl.textContent = '✓ Check your email to confirm and finish creating your quest.';
       btn.textContent = 'Check your email';
@@ -2993,7 +2993,7 @@ async function signUpFromGate(){
     var isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
     if (isNativeApp) {
       // ── Native Google Sign-In via @codetrix-studio/capacitor-google-auth ──
-      // Shows a native iOS account picker — no browser, no redirect at all.
+      // Shows a native iOS account picker - no browser, no redirect at all.
       var GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
       if (!GoogleAuth) throw new Error('GoogleAuth plugin not found');
 
@@ -3018,7 +3018,7 @@ async function signUpFromGate(){
       var idToken = googleUser && googleUser.authentication && googleUser.authentication.idToken;
       if (!idToken) throw new Error('No ID token received from Google');
 
-      // Exchange native token for a Supabase session — stays entirely in-app
+      // Exchange native token for a Supabase session - stays entirely in-app
       var { data, error } = await supaClient.auth.signInWithIdToken({
         provider: 'google',
         token: idToken
@@ -3050,7 +3050,7 @@ async function signUpFromGate(){
         }, 1400);
       }
     } else {
-      // Web fallback — standard OAuth redirect.
+      // Web fallback - standard OAuth redirect.
       // The pending_auth flag makes onAuthStateChange auto-resume the quest
       // after the page reloads from the redirect. Native doesn't need it
       // (it resumes inline) and setting it there caused a double createQuest().
@@ -3108,7 +3108,7 @@ async function createQuest(){
 
   if (!validateQuestForm()) { window._questCreating = false; return; }
 
-  // Check auth immediately — don't run expensive ops for anonymous users
+  // Check auth immediately - don't run expensive ops for anonymous users
   if (!currentUser) {
     await loadCurrentUser();
   }
@@ -3150,11 +3150,11 @@ async function createQuest(){
 
   // ── 3. Validation ─────────────────────────────────────────
   if (prize < 1 || prize > 100) return showToast('Please select a prize amount', 'error');
-  // hidingSpot comes from _hsData.location — validated at form validation step
+  // hidingSpot comes from _hsData.location - validated at form validation step
   if (!selectedLat || !selectedLng) return showToast('Please select a location on the map', 'error');
   if (code.length !== 6) return showToast('Please enter a 6-digit secret code', 'error');
 
-  // ── 3b. Time restriction — fetch allowed hours from settings ──
+  // ── 3b. Time restriction - fetch allowed hours from settings ──
   try {
     var settingsRes = await fetch(SB + '/rest/v1/settings?key=in.(listing_start_hour,listing_end_hour)&select=key,value', {
       headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (freshToken || KEY) }
@@ -3169,7 +3169,7 @@ async function createQuest(){
       var endHour   = parseInt(getVal('listing_end_hour', 23));
       var nowHour   = new Date().getHours();
 
-      // If endHour is 0 (midnight) or 23, treat as end of day — always allow
+      // If endHour is 0 (midnight) or 23, treat as end of day - always allow
       // Otherwise check if current hour is within the allowed window
       var blocked = false;
       if (endHour !== 0 && endHour !== 23) {
@@ -3190,7 +3190,7 @@ async function createQuest(){
     }
   } catch(e) {
     console.warn('Could not check time restriction:', e);
-    // Non-fatal — allow quest creation if settings fetch fails
+    // Non-fatal - allow quest creation if settings fetch fails
   }
 
   // ── 4. Disable buttons + show progress ────────────────────
@@ -3258,11 +3258,11 @@ async function createQuest(){
         } else {
           var errTxt = await up.text();
           console.error('Photo upload failed:', up.status, errTxt);
-          showToast('Photo upload failed — continuing without photo', 'error');
+          showToast('Photo upload failed - continuing without photo', 'error');
         }
       } catch(e) {
         console.error('Photo upload error', e);
-        showToast('Photo upload failed — continuing without photo', 'error');
+        showToast('Photo upload failed - continuing without photo', 'error');
       }
     }
 
@@ -3276,7 +3276,7 @@ async function createQuest(){
       });
       var profileRows = await profileCheck.json();
       if (!profileRows || profileRows.length === 0) {
-        // Profile doesn't exist — create it
+        // Profile doesn't exist - create it
         var defaultUsername = (currentUser.email || '').split('@')[0].replace(/[^a-zA-Z0-9_]/g,'').substring(0,20) || 'user' + Math.floor(Math.random()*9999);
         await fetch(SB + '/rest/v1/profiles', {
           method: 'POST',
@@ -3315,7 +3315,7 @@ async function createQuest(){
       );
       var drafts = await draftRes.json();
       if (Array.isArray(drafts) && drafts.length > 0) existingDraft = drafts[0];
-    } catch(e) { /* non-fatal — fall through to insert */ }
+    } catch(e) { /* non-fatal - fall through to insert */ }
 
     // Remember the run window so the post-payment PIN card can display it
     window._fundedStartsAt = startsAt.toISOString();
@@ -3323,7 +3323,7 @@ async function createQuest(){
 
     var huntPayload = {
       quest_tz: (function(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch(e){ return null; } })(),
-      week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '–' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      week_label: now.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + '-' + endsAt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
       prize_desc: '$'+prize+' Cash',
       prize_value: Math.round(prize * 100),
       starts_at: startsAt.toISOString(),
@@ -3448,10 +3448,10 @@ async function createQuest(){
 
     // ── 8. Insert clues into Supabase ───────────────────────
     btn.textContent = '⏳ Saving clues...';
-    // Pick a random "finder clue" — any middle clue (not first, not last)
+    // Pick a random "finder clue" - any middle clue (not first, not last)
     const finderIdx = clueCount <= 2 ? 0 : Math.floor(Math.random() * (clueCount - 2)) + 1;
     const clueRows = clueData.clues.map((c, idx) => {
-      // All clues revealed at quest start — Q&A answers are the only unlock gate
+      // All clues revealed at quest start - Q&A answers are the only unlock gate
       const proCount = clueCount >= 5 ? 2 : 1;
       const tier = idx >= (clueCount - proCount) ? 'pro' : 'free';
       const fromEnd = clueCount - 1 - idx;
@@ -3462,7 +3462,7 @@ async function createQuest(){
       else if (fromEnd === 0) { hasMap = true; mapPhotoUrl = photoUrl || 'map:100'; }
       return {
         hunt_id: huntId,
-        clue_number: idx + 1, // always sequential — AI clue numbers can repeat and violate the unique key
+        clue_number: idx + 1, // always sequential - AI clue numbers can repeat and violate the unique key
         tier: tier,
         reveal_at: startsAt.toISOString(),
         clue_text: c.text || '',
@@ -3519,7 +3519,7 @@ async function createQuest(){
       prize: prize,
     });
     // NOTE: Do NOT clear form state here. The user may close the PayPal modal
-    // and try to schedule again with different dates — clearing PIN/photo/location
+    // and try to schedule again with different dates - clearing PIN/photo/location
     // would force them to start over. Form state is cleared inside the PayPal
     // onApprove handler once payment is actually captured.
     // Button re-enable; user now interacts with modal
@@ -3581,10 +3581,10 @@ function saveFormState() {
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
     // Stamp WHO is building this draft, so loadCurrentUser() only wipes it
-    // when it truly belongs to a DIFFERENT signed-in user — not merely because
+    // when it truly belongs to a DIFFERENT signed-in user - not merely because
     // the device last saw another account. 'anon' = built while not signed in.
     try { localStorage.setItem('fs_draft_owner', (typeof currentUser !== 'undefined' && currentUser && currentUser.id) ? currentUser.id : 'anon'); } catch(e){}
-    // Save photo — try localStorage first, fall back to sessionStorage
+    // Save photo - try localStorage first, fall back to sessionStorage
     // Photos can be 1-3MB so localStorage may fail silently on some devices
     if (window._hsPhotoDataUrl) {
       var photoSaved = false;
@@ -3593,7 +3593,7 @@ function saveFormState() {
         try { sessionStorage.setItem(FORM_KEY + '_photo', window._hsPhotoDataUrl); } catch(e){}
       }
     }
-    // Don't remove photo from storage here — only clear on explicit reset
+    // Don't remove photo from storage here - only clear on explicit reset
   } catch(e){}
 }
 
@@ -3607,7 +3607,7 @@ function restoreFormStateInner() {
   try {
     var raw = localStorage.getItem(FORM_KEY);
     if (!raw) {
-      // No saved state — clear any orphan photo so we don't leak it.
+      // No saved state - clear any orphan photo so we don't leak it.
       try { localStorage.removeItem(FORM_KEY + '_photo'); } catch(e){}
       updateExpiry(); setWeekendDates();
       return;
@@ -3668,7 +3668,7 @@ function restoreFormStateInner() {
     if (s.lat && s.lng) { selectedLat = s.lat; selectedLng = s.lng; }
     if (s.locationConfirmed) locationConfirmed = s.locationConfirmed;
     if (s.hsData) _hsData = s.hsData;
-    // Restore photo — check localStorage first, then sessionStorage fallback
+    // Restore photo - check localStorage first, then sessionStorage fallback
     var savedPhoto = localStorage.getItem(FORM_KEY + '_photo') || sessionStorage.getItem(FORM_KEY + '_photo');
     if (savedPhoto) {
       window._hsPhotoDataUrl = savedPhoto;
@@ -3690,7 +3690,7 @@ function restoreFormStateInner() {
     // Restore step
     if (s.step && s.step > 1) {
       setTimeout(function(){
-        // Skip validation when restoring — go directly to saved step
+        // Skip validation when restoring - go directly to saved step
         document.getElementById('step' + currentStep).style.display = 'none';
         currentStep = s.step;
         var el = document.getElementById('step' + s.step);
@@ -3795,7 +3795,7 @@ document.addEventListener('DOMContentLoaded', async function(){
                 if (siEmail) siEmail.textContent = currentUser.email;
               }
 
-              // Close sign-in modal and resume quest — no page reload needed
+              // Close sign-in modal and resume quest - no page reload needed
               var egModal = document.getElementById('eg-modal');
               if (egModal && egModal.style.display !== 'none') {
                 setTimeout(function(){ closeEmailGate(); }, 800);
@@ -3836,7 +3836,7 @@ document.addEventListener('DOMContentLoaded', async function(){
       var hasMeaningful = (pin.length === 6 && pin.indexOf('') === -1) || hidingSpot.length > 0 || hasPhoto;
       if (hasMeaningful) {
         saveFormState();
-        // Set abandon flag only if the PIN is fully filled in — that's the
+        // Set abandon flag only if the PIN is fully filled in - that's the
         // signal that they had a complete-enough draft to consider abandoned.
         if (pin.length === 6 && pin.indexOf('') === -1) {
           try { localStorage.setItem('fs_newquest_abandon', '1'); } catch(e){}
@@ -3873,7 +3873,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   var hasStep = urlParams.get('step');
   var hasPending = !!localStorage.getItem('fs_pending_quest');
   var hasFormState = !!localStorage.getItem('fs_newquest_form');
-  // Treat form state older than 24 hours as stale — clear it and send home
+  // Treat form state older than 24 hours as stale - clear it and send home
   if (hasFormState) {
     try {
       var fs = JSON.parse(localStorage.getItem('fs_newquest_form') || '{}');
@@ -3899,8 +3899,8 @@ document.addEventListener('DOMContentLoaded', async function(){
     if(!hasToken) hasToken = !!localStorage.getItem('fs_token');
   } catch(e){}
 
-  // No redirect — anyone can access the quest builder freely
-  // Allow anyone on the page — auth is gated at schedule step only
+  // No redirect - anyone can access the quest builder freely
+  // Allow anyone on the page - auth is gated at schedule step only
   // Clear abandon flag now that we know we're staying on this page
   try { localStorage.removeItem('fs_newquest_abandon'); } catch(e){}
 
@@ -3928,7 +3928,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Auth is checked later at the schedule step (startTheQuest)
   // so users can build their full quest before being asked to sign in.
-  var user = await loadCurrentUser(); // silent — just loads currentUser if session exists
+  var user = await loadCurrentUser(); // silent - just loads currentUser if session exists
 
   // Hide bottom nav when virtual keyboard is likely up (input focused)
   var focusEls = document.querySelectorAll('input, textarea');
@@ -3955,7 +3955,7 @@ document.addEventListener('DOMContentLoaded', async function(){
       } catch(e) {}
     }, 400);
   } else {
-    // Fresh start — auto-generate PIN immediately
+    // Fresh start - auto-generate PIN immediately
     clearFormState();
     setTimeout(function() {
       try {
@@ -3997,7 +3997,7 @@ document.addEventListener('DOMContentLoaded', async function(){
           // Only auto-resume if this is a fresh OAuth return (not a regular page load)
           // Check for the pending auth flag we set in showEmailGate
           var pendingAuth = sessionStorage.getItem('fs_quest_pending_auth');
-          if (!pendingAuth) return; // regular page load with existing session — do nothing
+          if (!pendingAuth) return; // regular page load with existing session - do nothing
           sessionStorage.removeItem('fs_quest_pending_auth');
           var formState = localStorage.getItem('fs_newquest_form');
           if (formState) {
@@ -4080,7 +4080,7 @@ function handlePhotoSelect(input) {
   }
   const maxMB = 10;
   if (f.size > maxMB * 1024 * 1024) {
-    showToast('Image too big — keep it under '+maxMB+'MB', 'error');
+    showToast('Image too big - keep it under '+maxMB+'MB', 'error');
     return;
   }
   photoFile = f;
@@ -4106,7 +4106,7 @@ function clearPhoto() {
 
 
 function initMap(lat, lng) {
-  // Guard for async Google Maps load — retry until ready
+  // Guard for async Google Maps load - retry until ready
   if (typeof google === 'undefined' || !google.maps || !google.maps.Map) {
     setTimeout(function(){ initMap(lat, lng); }, 100);
     return;
@@ -4188,7 +4188,7 @@ function setCoords(lat, lng) {
   var el = document.getElementById('map-coords');
   el.style.display = 'block';
   var hint = document.getElementById('map-pin-hint'); if(hint) hint.style.display = 'none';
-  el.innerHTML = '<span style="color:#b8c4d0;opacity:.7;font-size:18px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' — drag to reposition</span>';
+  el.innerHTML = '<span style="color:#b8c4d0;opacity:.7;font-size:18px;">📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' - drag to reposition</span>';
 }
 
 async function reverseGeocode(lat, lng) {
@@ -4219,7 +4219,7 @@ function goToMyLocation() {
   var coords = document.getElementById('map-coords');
   if (btn) { btn.style.pointerEvents = 'none'; btn.style.opacity = '0.5'; }
   if (!navigator.geolocation) {
-    if (coords) coords.innerHTML = '⚠️ Location not supported — search manually above';
+    if (coords) coords.innerHTML = '⚠️ Location not supported - search manually above';
     if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
     return;
   }
@@ -4237,7 +4237,7 @@ function goToMyLocation() {
     },
     function() {
       if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
-      if (coords) coords.innerHTML = '⚠️ Location blocked — search an address above or tap the map';
+      if (coords) coords.innerHTML = '⚠️ Location blocked - search an address above or tap the map';
     },
     { timeout: 8000, enableHighAccuracy: true }
   );
@@ -4404,11 +4404,11 @@ if ('serviceWorker' in navigator) {
 </style>
 
 <script>
-// ═══════ PAYMENT MODAL — PayPal Checkout ═══════
+// ═══════ PAYMENT MODAL - PayPal Checkout ═══════
 let _currentHuntId = null, _currentPayload = null;
 var _paypalModalOpen = false;
 
-// Handle back button — return to modal instead of leaving page
+// Handle back button - return to modal instead of leaving page
 window.addEventListener('popstate', function(e) {
   if (_paypalModalOpen && e.state && e.state.paypalModal) {
     // Re-show the modal
@@ -4428,7 +4428,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
   const fee = Math.round(prize * 0.10 * 100) / 100;
   const total = prize + fee;
 
-  document.getElementById('pm-title').textContent = 'Fund your quest — $' + total.toFixed(2);
+  document.getElementById('pm-title').textContent = 'Fund your quest - $' + total.toFixed(2);
   document.getElementById('pm-sub').textContent = '$' + prize.toFixed(2) + ' prize + $' + fee.toFixed(2) + ' fee';
   document.getElementById('pm-error').textContent = '';
 
@@ -4437,9 +4437,9 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
 
   // ── Payment success polling (fallback for broken SDK callbacks) ────────────
   // PayPal's iOS Safari Venmo flow sometimes fails to call onApprove. We poll
-  // the hunt — when it becomes 'funded', show the success UI. We only check
+  // the hunt - when it becomes 'funded', show the success UI. We only check
   // existing 'funded' status; we DO NOT auto-capture pending orders (that
-  // hammers PayPal and triggers rate limits — capture should only happen
+  // hammers PayPal and triggers rate limits - capture should only happen
   // through PayPal's own callback after the user actually approves).
   // Polling runs at 4s for ~2 minutes total, then stops.
   _stopPaymentPoll();
@@ -4464,7 +4464,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         window._paymentSuccessHandled = true;
         _stopPaymentPoll();
         _showPaymentProcessing('Activating your quest...');
-        var qid = row.quest_id || '—';
+        var qid = row.quest_id || '-';
         var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
           var el=document.getElementById(id); return el?el.textContent:'';
         }).join('');
@@ -4495,7 +4495,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
           if (rows && rows[0] && rows[0].escrow_status === 'funded' && !window._paymentSuccessHandled) {
             window._paymentSuccessHandled = true;
             _stopPaymentPoll();
-            var qid = rows[0].quest_id || '—';
+            var qid = rows[0].quest_id || '-';
             // Capture PIN before clearFormState wipes it
             var capturedPin = ['c1','c2','c3','c4','c5','c6'].map(function(id){
               var el=document.getElementById(id); return el?el.textContent:'';
@@ -4590,7 +4590,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         clearFormState();
 
         // Fetch the quest ID that was just assigned
-        var questId = '—';
+        var questId = '-';
         try {
           var qr = await fetch(SB + '/rest/v1/hunts?id=eq.' + _currentPayload.huntId + '&select=quest_id', {
             headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + (getToken() || KEY) }
@@ -4600,8 +4600,8 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         } catch(e) {}
 
         _hidePaymentProcessing();
-        // ── Fire TTS immediately before closing modal — fire and forget ──
-        // Don't await — runs in background while user sees PIN card
+        // ── Fire TTS immediately before closing modal - fire and forget ──
+        // Don't await - runs in background while user sees PIN card
         var _ttsHuntId = window._pendingTtsHuntId;
         var _ttsPersona = window._pendingTtsPersona;
         var _ttsRiddle = window._pendingTtsLocationRiddle;
@@ -4616,7 +4616,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
         showPinCardAfterPayment(_currentPayload.huntId, questId, capturedPin);
         showToast('Quest funded! Your quest is now live.', 'success');
       } catch(e) {
-        // Capture failed — hide processing overlay and surface the error.
+        // Capture failed - hide processing overlay and surface the error.
         _hidePaymentProcessing();
         // Reset state so the user can choose a different funding source and retry.
         window._paymentSuccessHandled = false;
@@ -4693,7 +4693,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
     }
   } catch(e) { console.warn('[paypal] card eligibility check failed', e); }
 
-  // Check eligibility — some PayPal button configs aren't eligible on all devices
+  // Check eligibility - some PayPal button configs aren't eligible on all devices
   if (ppButtons.isEligible()) {
     ppButtons.render('#paypal-button-container').then(function(){
       var errEl = document.getElementById('pm-error');
@@ -4763,7 +4763,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
             (async function() {
               var apOrderId = null;
               try {
-                // 1) Create the PayPal order — identical request to the PayPal buttons
+                // 1) Create the PayPal order - identical request to the PayPal buttons
                 var r = await fetch(API_BASE + '/api/create-checkout', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
@@ -4782,7 +4782,7 @@ async function openPaymentModal({ userId, email, huntId, prize }) {
                 // 2) Hand Apple's encrypted payment token to PayPal
                 await applepay.confirmOrder({ orderId: apOrderId, token: event.payment.token, billingContact: event.payment.billingContact });
                 session.completePayment(ApplePaySession.STATUS_SUCCESS);
-                // 3) Capture + activate — the exact same path as PayPal/card
+                // 3) Capture + activate - the exact same path as PayPal/card
                 await _finalizePaidOrder(apOrderId);
               } catch(e) {
                 console.error('[applepay] payment failed:', e);
@@ -4825,12 +4825,12 @@ function _hidePaymentProcessing(){
   if (el) el.style.display = 'none';
 }
 
-// ── TTS audio generation — runs after payment, non-blocking ──
+// ── TTS audio generation - runs after payment, non-blocking ──
 async function generateClueAudio(huntId, persona, locationRiddle) {
   if (!huntId) return;
   console.log('[tts] Starting audio generation for hunt:', huntId, 'persona:', persona);
   try {
-    // Always get a fresh token — payment flow may have taken several minutes
+    // Always get a fresh token - payment flow may have taken several minutes
     var token = getToken();
     try {
       var _s = await supaClient.auth.getSession();
@@ -4851,11 +4851,11 @@ async function generateClueAudio(huntId, persona, locationRiddle) {
 
     console.log('[tts] Generating audio for', clues.length, 'clues, persona:', persona);
 
-    // Generate one clue at a time — DB write done server-side via service key (bypasses RLS)
+    // Generate one clue at a time - DB write done server-side via service key (bypasses RLS)
     for (var i = 0; i < clues.length; i++) {
       var clue = clues[i];
       try {
-        // Main clue text — pass dbId/dbTable/dbColumn so server patches DB directly
+        // Main clue text - pass dbId/dbTable/dbColumn so server patches DB directly
         var r = await fetch(API_BASE+'/api/tts', {
           method:'POST', headers: ttsHeaders,
           body: JSON.stringify({ text: clue.clue_text, persona: persona, clueId: clue.id, type: 'clue',
@@ -4867,7 +4867,7 @@ async function generateClueAudio(huntId, persona, locationRiddle) {
         } else {
           console.warn('[tts] Clue', clue.clue_number, 'failed:', d.error);
         }
-        // Q&A audio removed — question is already embedded in the clue text
+        // Q&A audio removed - question is already embedded in the clue text
       } catch(e) { console.warn('[tts] Clue', clue.clue_number, 'failed:', e.message); }
     }
 
@@ -4974,8 +4974,8 @@ function closePaymentModal(){
   <!-- profile section -->
   <div style="display:none;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;cursor:default;align-items:center;gap:10px;" id="hb-profile-section">
     <div style="flex:1;min-width:0;">
-      <div style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hb-drawer-name">—</div>
-      <div style="font-size:18px;color:#b8c4d0;margin-top:2px;display:none;" id="hb-drawer-sub">—</div>
+      <div style="font-size:30px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hb-drawer-name">-</div>
+      <div style="font-size:18px;color:#b8c4d0;margin-top:2px;display:none;" id="hb-drawer-sub">-</div>
     </div>
     <div style="display:flex;align-items:center;gap:1px;flex-shrink:0;">
       <div style="position:relative;width:36px;height:36px;">
@@ -5169,7 +5169,7 @@ function initModalMap(lat, lng) {
     gestureHandling: 'greedy',
     styles: DARK_STYLES
   });
-  // Map moves, center pin stays fixed — update address on move end
+  // Map moves, center pin stays fixed - update address on move end
   _modalMap.addListener('dragstart', function() {
     document.getElementById('map-center-pin').classList.add('dragging');
     var _se = document.getElementById('map-modal-search'); if(_se) _se.placeholder = 'Move the map to position the pin'; if(_se) _se.value = '';
@@ -5196,7 +5196,7 @@ function modalReverseGeocode(lat, lng) {
   geocoder.geocode({location: {lat: lat, lng: lng}}, function(results, status) {
     var searchEl = document.getElementById('map-modal-search');
     if (status === 'OK' && results[0]) {
-      // Try to get a clean readable name — prefer establishment/point of interest
+      // Try to get a clean readable name - prefer establishment/point of interest
       var addr = results[0].formatted_address;
       // Strip ZIP code and country for cleaner display
       addr = addr.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '');
@@ -5205,7 +5205,7 @@ function modalReverseGeocode(lat, lng) {
       toggleModalSearchClear(addr);
       document.getElementById('map-modal-address').textContent = addr;
     } else {
-      // Geocoding failed — show placeholder, don't show raw coords
+      // Geocoding failed - show placeholder, don't show raw coords
       if (searchEl) { searchEl.value = ''; searchEl.placeholder = 'Drag map to position pin'; }
       document.getElementById('map-modal-address').textContent = lat.toFixed(5) + ', ' + lng.toFixed(5);
     }
@@ -5214,7 +5214,7 @@ function modalReverseGeocode(lat, lng) {
 
 function confirmMapLocation() {
   console.log('confirmMapLocation called', _modalLat, _modalLng);
-  // Get coords — from stored values or directly from map center
+  // Get coords - from stored values or directly from map center
   if (_modalMap && (_modalLat === null || _modalLng === null)) {
     var c = _modalMap.getCenter();
     if (c) { _modalLat = c.lat(); _modalLng = c.lng(); }
@@ -5239,7 +5239,7 @@ function confirmMapLocation() {
     '&markers=icon:https://maps.google.com/mapfiles/ms/icons/red-dot.png|' + selectedLat + ',' + selectedLng +
     '&key=AIzaSyBQykXzSHkunu_Gow6CV47vl_YL-QFpfgI';
   console.log('Coords confirmed:', selectedLat, selectedLng);
-  // Use reverse-geocoded address (full, with city/state/ZIP) — not search bar which user may have edited
+  // Use reverse-geocoded address (full, with city/state/ZIP) - not search bar which user may have edited
   var searchEl = document.getElementById('map-modal-search');
   var geocodedFull = _modalGeocodedAddress || (searchEl && searchEl.value) || (_modalLat.toFixed(5) + ', ' + _modalLng.toFixed(5));
   var addr = geocodedFull.replace(/, USA$/, '').replace(/\s\d{5}(-\d{4})?/, '').trim();
@@ -5291,7 +5291,7 @@ function modalGoToMyLocation() {
     },
     function() {
       if (btn) btn.style.opacity = '1';
-      showToast('Location blocked — search instead', 'error');
+      showToast('Location blocked - search instead', 'error');
     },
     {timeout: 8000, enableHighAccuracy: true}
   );
@@ -5388,7 +5388,7 @@ document.addEventListener('click', function(e) {
 var _hsData = { location: '', startingPoint: '', startDesc: '', startCustom: false, startConfirmed: false, clues: [], category: '', subcategory: '' };
 var _hsCurrent = 0; // 0 = location, 1..N = clue index
 
-// Scoped element getter — always finds elements within the active modal sheet,
+// Scoped element getter - always finds elements within the active modal sheet,
 // preventing duplicate-ID bugs where static HTML and hsEditFromPreview both have
 // the same IDs and document.getElementById grabs the wrong (hidden) one.
 function hsApplyFilled(el) {
@@ -5682,7 +5682,7 @@ function openHsModal() {
   document.body.style.touchAction = '';
 }
 
-// Back out of the hiding spot modal — saves work-in-progress, returns to step 3 of main flow
+// Back out of the hiding spot modal - saves work-in-progress, returns to step 3 of main flow
 // without running closeHsModal's validation (so user can step away even with incomplete data).
 function hsBackToStep3() {
   try { saveHsPanel(); } catch(e){}
@@ -6313,9 +6313,9 @@ function renderHsModal() {
   if (cur === 0) {
     actionArea.innerHTML = '';
   } else if (cur === total) {
-    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;font-size:18px;color:#4ade80;">📍 Stop here — you have arrived</div>';
+    actionArea.innerHTML = '<div style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;font-size:18px;color:#4ade80;">📍 Stop here - you have arrived</div>';
   } else {
-    // No action area — handled inside panel with Pick Action button
+    // No action area - handled inside panel with Pick Action button
     actionArea.innerHTML = '';
   }
 
@@ -6379,7 +6379,7 @@ return !!((_hsData.startingPoint||'').trim()) && !!((_hsData.startDesc||'').trim
 return cbClueDone(_hsData.clues[cur - 1]);
 }
 var pageReady = isHsPageComplete();
-// allDone is still useful as a sanity check for the final "Generate Clues" button —
+// allDone is still useful as a sanity check for the final "Generate Clues" button -
 // user might be on page 0 but have filled everything via direct nav.
 var allDone = _hsData.location.trim() && locationConfirmed && cbAllDone();
 var disabledAttr = pageReady ? '' : ' disabled';
@@ -6818,7 +6818,7 @@ function hsDropToggle() {
 function hsDropClose(e) {
   document.removeEventListener('click', hsDropClose);
   var wrap = document.getElementById('hs-drop-wrap');
-  // If click was inside the dropdown wrap, don't close — item onclick handles it
+  // If click was inside the dropdown wrap, don't close - item onclick handles it
   if (wrap && wrap.contains(e.target)) return;
   var list = document.getElementById('hs-drop-list');
   if (list) list.style.display = 'none';
@@ -7035,7 +7035,7 @@ body.fs-mapfull .step-footer{display:none;}
     </button>
   </div>
 
-  <!-- Map fills remaining space — padded at bottom so footer doesn't overlap -->
+  <!-- Map fills remaining space - padded at bottom so footer doesn't overlap -->
 
   <div class="map-modal-map" style="flex:1;min-height:0;">
     <div id="map-modal-container"></div>
@@ -7045,7 +7045,7 @@ body.fs-mapfull .step-footer{display:none;}
 
   <div id="map-modal-address" style="display:none;"></div>
 
-  <!-- Confirm footer — INSIDE overlay, no z-index battles -->
+  <!-- Confirm footer - INSIDE overlay, no z-index battles -->
 
   <div id="map-modal-footer-outer" style="padding:12px 14px;padding-bottom:calc(24px + env(safe-area-inset-bottom,16px));background:rgba(10,8,22,.97);border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-shrink:0;">
     <button id="map-modal-sat" onclick="toggleModalSatellite()" style="padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#b8c4d0;font-size:18px;font-family:inherit;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🛰️ Satellite</button>
@@ -7102,7 +7102,7 @@ body.fs-mapfull .step-footer{display:none;}
     <!-- Quest ID -->
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:18px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:4px;">QUEST ID</div>
-      <div id="pin-card-quest-id" style="font-size:24px;color:#e8a820;font-weight:500;letter-spacing:2px;">—</div>
+      <div id="pin-card-quest-id" style="font-size:24px;color:#e8a820;font-weight:500;letter-spacing:2px;">-</div>
     </div>
     <!-- PIN label -->
     <div style="text-align:center;margin-bottom:10px;">
