@@ -2733,7 +2733,7 @@ function validateQuestForm(){
 // ── EMAIL GATE (for anonymous users) ────────────────────────
 function showEmailGate(){
   try {
-    localStorage.setItem('fs_magic_return', 'newquest.html');
+    localStorage.setItem('fs_magic_return', (window.location.pathname.split('/').pop() || 'newquest.html'));
     saveFormState();
     sessionStorage.setItem('fs_quest_pending_auth', '1');
   } catch(e){}
@@ -2841,11 +2841,11 @@ async function signInWithAppleGate(){
       // Old binary without the plugin: get the OAuth URL from Supabase, then
       // load it directly in the webview (not in an external browser).
       // The entire auth flow stays inside the app.
-      localStorage.setItem('fs_magic_return', 'newquest.html');
+      localStorage.setItem('fs_magic_return', (window.location.pathname.split('/').pop() || 'newquest.html'));
       var { data, error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=newquest.html',
+          redirectTo: 'https://www.finderseek.com/auth-callback.html?from_app=1&return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html'),
           skipBrowserRedirect: true
         }
       });
@@ -2857,7 +2857,7 @@ async function signInWithAppleGate(){
     } else {
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'apple',
-        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
+        options: { redirectTo: window.location.origin + ('/auth-callback.html?return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html')) }
       });
       if (error) throw error;
     }
@@ -2942,7 +2942,7 @@ async function submitEmailGate(){
           (signUpErr.message || '').toLowerCase().includes('user already')) {
         var { error: otpErr } = await supaClient.auth.signInWithOtp({
           email: email,
-          options: { emailRedirectTo: window.location.origin + '/newquest.html' }
+          options: { emailRedirectTo: window.location.origin + '/' + (window.location.pathname.split('/').pop() || 'newquest.html') }
         });
         if (otpErr) throw otpErr;
         errEl.style.color = '#4ade80';
@@ -3057,7 +3057,7 @@ async function signUpFromGate(){
       sessionStorage.setItem('fs_quest_pending_auth', '1');
       var { error } = await supaClient.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin + '/auth-callback.html?return_to=newquest.html' }
+        options: { redirectTo: window.location.origin + ('/auth-callback.html?return_to=' + (window.location.pathname.split('/').pop() || 'newquest.html')) }
       });
       if (error) throw error;
     }
@@ -3573,6 +3573,10 @@ function saveFormState() {
       generatedClues: _generatedClues || null,
       generatedLocationRiddle: _generatedLocationRiddle || '',
       regenLeft: (typeof window._fsRegenLeft !== 'undefined') ? window._fsRegenLeft : 3,
+      preset: selectedPreset || null,
+      qsd: (document.getElementById('quest-start-date')||{}).value || '',
+      qed: (document.getElementById('quest-end-date')||{}).value || '',
+      qdur: (document.getElementById('dur-slider')||{}).value || '',
       savedAt: Date.now(),
     };
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
@@ -3694,6 +3698,17 @@ function restoreFormStateInner() {
         window.scrollTo(0,0);
         if (s.step === 5) {
           updateMiniSummary();
+          // Restore the chosen window so the post-sign-in resume can createQuest
+          if (s.preset && !selectedPreset) {
+            selectedPreset = s.preset;
+            try {
+              if (s.qsd) document.getElementById('quest-start-date').value = s.qsd;
+              if (s.qed) document.getElementById('quest-end-date').value = s.qed;
+              if (s.qdur) document.getElementById('dur-slider').value = s.qdur;
+              if (typeof cb3sPaint === 'function') cb3sPaint();
+              if (s.qsd && s.qed && typeof cb3sSetInfo === 'function') cb3sSetInfo(new Date(s.qsd), new Date(s.qed));
+            } catch(e){}
+          }
           if (selectedPreset) {
             if (typeof cb3sReady === 'function') cb3sReady(true);
           }
