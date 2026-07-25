@@ -460,7 +460,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .cb3-helpx .cb3-hxl{font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:5px;}
 .cb3-gotit{margin-top:6px;text-align:center;padding:13px;border-radius:12px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .cb3-lmgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.cb3-lm{padding:12px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:15px;color:rgba(255,255,255,.88);cursor:pointer;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;}
+.cb3-lm{padding:12px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:15px;color:rgba(255,255,255,.88);cursor:pointer;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden;min-width:0;}
 .cb3-lm:active{border-color:#e8a820;background:rgba(232,168,32,.1);}
 .cb3-lm.own{justify-content:center;border-style:dashed;border-color:rgba(232,168,32,.45);color:rgba(232,168,32,.9);}
 .cb3-sh-title{font-size:20px;font-weight:500;color:#fff;margin:4px 0;}
@@ -916,9 +916,11 @@ body{padding-top:env(safe-area-inset-top,0px);}
   <div class="qa-grab"></div>
   <div style="font-size:22px;letter-spacing:1.5px;color:#e8a820;text-align:center;margin:2px 0 6px;"><b>START</b> &#183; where every seeker begins</div>
   <div class="cb3-sh-title">Starting <span>Point</span></div>
+  <div class="hs2-scroll">
   <div class="cb3-helpx"><div class="cb3-hxl">GOOD STARTING POINTS</div>Quest area entrances are good for starting points or the prize hiding spot.</div>
   <div class="cb3-helpx"><div class="cb3-hxl">ONE START, MANY CLUES</div>📍 Every clue page after this is built the same way: walk somewhere, find an object, answer a question. Add 2 to 7 clues.</div>
   <div class="cb3-helpx"><div class="cb3-hxl">QUEST LENGTH</div>The quest length depends on how far the hiding spot is from the Starting Point. Close together makes a quick quest. Far apart makes a longer adventure.</div>
+  </div>
   <div class="cb3-gotit" onclick="cb3CloseSheets()">Got it</div>
 </div>
 <div id="cb3-ob-sheet" class="hs2-sheet cb3-spring">
@@ -6248,6 +6250,18 @@ function cb3OpenLmSheet(mode){
   var g = document.getElementById('cb3-start-grid');
   if (g) g.innerHTML = h;
   cb3ShowSheet('cb3-start-sheet');
+  setTimeout(cb3FitLm, 60);
+}
+function cb3FitLm(){
+  try{
+    var els = document.querySelectorAll('#cb3-start-grid .cb3-lm');
+    if (!els.length) return;
+    var fs = 22;
+    var apply = function(px){ els.forEach(function(el){ el.style.fontSize = px + 'px'; }); };
+    var overflows = function(){ var o = false; els.forEach(function(el){ if (el.scrollWidth > el.clientWidth + 1) o = true; }); return o; };
+    apply(fs);
+    while (fs > 13 && overflows()) { fs--; apply(fs); }
+  }catch(e){}
 }
 function cb3PickLm(i){
   var st = cb3Starts()[i]; if (!st) return;
