@@ -389,7 +389,9 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .fs-mic.rec{border-color:#ef4444;color:#ef4444;animation:fsMicPulse 1.2s ease-in-out infinite;}
 @keyframes fsMicPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5);}50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}}
 @keyframes fsSlideIn{from{opacity:0;transform:translateX(-22px);}to{opacity:1;transform:none;}}
-.hs2-chip.fs-slidein{animation:fsSlideIn 1.1s ease-out backwards !important;}
+.hs2-chip.fs-slidein{animation:fsSlideIn 1.1s ease-out both !important;}
+.hs2-chip.fs-slidein.fsd1{animation-delay:.1s !important;}
+.hs2-chip.fs-slidein.fsd2{animation-delay:.55s !important;}
 @keyframes fsPopIn{0%{opacity:0;transform:scale(.6);}70%{opacity:1;transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
 .fs-pop{animation:fsPopIn .45s cubic-bezier(.34,1.56,.64,1) backwards;}
 .hs2-card.openacc .hs2-chev{transform:rotate(180deg);color:#f5c842;}
@@ -403,7 +405,7 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
 @keyframes hs2SepIn{to{opacity:.4;}}
 #fs-pin-card .code-digit{opacity:0;animation:hs2SpringPop .5s cubic-bezier(.34,1.56,.64,1) .7s forwards;}
 @keyframes hs2ChipBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-@media (prefers-reduced-motion: reduce){.hs2-chip,.hs2-rise,.hs2-tile,.hs2-ex,#fs-pin-card .code-digit{animation:none;opacity:1;}}
+@media (prefers-reduced-motion: reduce){.hs2-chip,.hs2-rise,.hs2-tile,.hs2-ex,#fs-pin-card .code-digit,#hs2-ex-sheet .hs2-nudge{animation:none;opacity:1;}}
 .hs2-sheet{position:fixed;left:0;right:0;bottom:0;z-index:22001;background:#12101c;border-top:1px solid rgba(232,168,32,.6);border-radius:22px 22px 0 0;max-height:74vh;transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,.35,1);display:flex;flex-direction:column;max-width:520px;margin:0 auto;box-shadow:0 -16px 48px rgba(0,0,0,.55);padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));}
 .hs2-sheet.open{transform:translateY(0);}
 /* cb3: rebranded clue builder (Stage 1: Start Location) */
@@ -621,7 +623,19 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
 .hs2-tile{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 8px;text-align:center;font-size:25px;color:#fff;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;text-overflow:ellipsis;animation:hs2Pop .3s ease-out both;}
 .hs2-tile.on{border-color:#e8a820;background:rgba(232,168,32,.12);color:#f5c842;}
 .hs2-tile.hs2-custom{border-style:dashed;border-color:rgba(232,168,32,.5);color:#f5c842;}
-.hs2-ex{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:25px;color:#fff;line-height:1.5;margin-bottom:8px;animation:hs2Pop .3s ease-out both;}
+.hs2-ex{display:flex;align-items:flex-start;gap:12px;border:1px solid rgba(255,255,255,.1);border-left-width:3px;border-radius:12px;padding:12px 14px;font-size:25px;color:#fff;line-height:1.5;margin-bottom:8px;animation:fsExPop .45s cubic-bezier(.34,1.56,.64,1) both;}
+.hs2-ex .exb{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.45);}
+.hs2-ex:nth-child(4n+1){border-left-color:rgba(245,200,66,.75);}
+.hs2-ex:nth-child(4n+1) .exb{background:linear-gradient(135deg,#92400e,#f5c842);}
+.hs2-ex:nth-child(4n+2){border-left-color:rgba(45,212,191,.75);}
+.hs2-ex:nth-child(4n+2) .exb{background:linear-gradient(135deg,#0d9488,#2dd4bf);}
+.hs2-ex:nth-child(4n+3){border-left-color:rgba(167,139,250,.75);}
+.hs2-ex:nth-child(4n+3) .exb{background:linear-gradient(135deg,#6d28d9,#a78bfa);}
+.hs2-ex:nth-child(4n+4){border-left-color:rgba(251,113,133,.75);}
+.hs2-ex:nth-child(4n+4) .exb{background:linear-gradient(135deg,#be123c,#fb7185);}
+@keyframes fsExPop{0%{opacity:0;transform:translateY(12px) scale(.94);}70%{opacity:1;transform:translateY(-2px) scale(1.02);}100%{opacity:1;transform:none;}}
+#hs2-ex-sheet .hs2-nudge{background:linear-gradient(135deg,#c9890c,#e8a820);border:none;color:#fff;font-size:22px;font-weight:500;border-radius:14px;padding:14px;animation:fsNudgeGlow 2.4s ease-in-out infinite;}
+@keyframes fsNudgeGlow{0%,100%{box-shadow:0 0 0 rgba(232,168,32,0);}50%{box-shadow:0 6px 24px rgba(232,168,32,.5);}}
 .hs2-nudge{flex-shrink:0;margin-top:8px;background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.35);border-radius:12px;padding:10px 12px;color:#d8b96a;font-size:20px;line-height:1.4;}
 .qa-sheet h3{font-size:20px;color:#fff;font-weight:500;padding:8px 18px 2px;margin:0;}
 .qa-hsub{color:#f5c842;font-weight:400;font-size:18px;}
@@ -844,8 +858,8 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
   <div class="hs2-acc-body">
   <div style="height:10px;"></div>
   <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;font-size:22px;color:rgba(184,196,208,.85);margin-bottom:10px;">
-    <span class="hs2-chip fs-slidein" style="animation-delay:.1s;white-space:nowrap;"><span style="display:inline-flex;width:24px;height:24px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:14px;font-weight:500;align-items:center;justify-content:center;flex-shrink:0;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
-    <span class="hs2-chip fs-slidein" style="animation-delay:.55s;white-space:nowrap;"><span style="display:inline-flex;width:24px;height:24px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:14px;font-weight:500;align-items:center;justify-content:center;flex-shrink:0;">2</span> <span style="color:#f5ead8;">Seal in envelope</span></span>
+    <span class="hs2-chip fs-slidein fsd1" style="white-space:nowrap;"><span style="display:inline-flex;width:24px;height:24px;border-radius:50%;background:#38bdf8;color:#04222e;font-size:14px;font-weight:500;align-items:center;justify-content:center;flex-shrink:0;">1</span> <span style="color:#f5ead8;">Write PIN down</span></span>
+    <span class="hs2-chip fs-slidein fsd2" style="white-space:nowrap;"><span style="display:inline-flex;width:24px;height:24px;border-radius:50%;background:#6366f1;color:#0b0b2e;font-size:14px;font-weight:500;align-items:center;justify-content:center;flex-shrink:0;">2</span> <span style="color:#f5ead8;">Seal in envelope</span></span>
   </div>
   <div class="code-wrap" style="margin-bottom:12px;">
     <div id="c1" class="code-digit" style="display:flex;align-items:center;justify-content:center;cursor:default;user-select:none;-webkit-user-select:none;"></div>
@@ -992,8 +1006,8 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
 </div>
 <div id="hs2-ex-sheet" class="hs2-sheet">
   <div class="qa-grab"></div>
-  <div class="hs2-sh-title">Which One? <span class="hs2-gold" id="hs2-ex-obj">Near What?</span></div>
-  <div class="hs2-sh-sub">Real examples for reference. Notice how each one says which one, near what, and where on it.</div>
+  <div class="hs2-sh-title">References</div>
+  <div class="hs2-sh-sub">Next to what? In front or behind? Sharp details for <span class="hs2-gold" id="hs2-ex-obj">your hiding spot</span> make the hunt fun to play.</div>
   <div class="hs2-scroll" id="hs2-ex-list"></div>
   <div class="hs2-nudge" onclick="hs2WriteNow()" style="cursor:pointer;text-align:center;">TAP TO START</div>
 </div>
@@ -1612,7 +1626,8 @@ function hs2OpenExamples(){
   var list=document.getElementById('hs2-ex-list');
   var items=questSpot?hs2Examples(questSpot):HS2_GENERAL;
   window._hs2ExItems=items;
-  if(list) list.innerHTML=items.map(function(s,j){ return '<div class="hs2-ex" style="animation-delay:'+(j*0.04).toFixed(2)+'s;cursor:pointer;" onclick="hs2PickExample('+j+')">'+s+'</div>'; }).join('');
+  var ic=['&#128269;','&#127919;','&#129517;','&#128142;','&#128204;','&#11088;'];
+  if(list) list.innerHTML=items.map(function(s,j){ return '<div class="hs2-ex" style="animation-delay:'+(j*0.06).toFixed(2)+'s;cursor:pointer;" onclick="hs2PickExample('+j+')"><span class="exb">'+ic[j%6]+'</span><span class="ext">'+s+'</span></div>'; }).join('');
   hs2ShowSheet('hs2-ex-sheet');
 }
 
