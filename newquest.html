@@ -898,9 +898,9 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
     <button id="hs2-ex-btn" class="hs2-pill" onclick="hs2OpenExamples()"><span style="color:#f5c842;">&#9998;</span> Examples</button>
   </div>
   <div style="position:relative;margin-top:12px;">
-    <textarea id="qa-desc" rows="5" maxlength="200" placeholder="Describe your hiding spot... Where exactly? In front or behind? Next to what?" oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:25px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
+    <textarea id="qa-desc" rows="5" maxlength="200" placeholder="Details..." oninput="questDesc=this.value;saveFormState();try{fsQaMirror();}catch(e){};checkStep1Complete();hs2Count();" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(232,168,32,.5);background:rgba(0,0,0,.35);color:#fff;font-size:25px;font-family:inherit;outline:none;resize:none;line-height:1.4;box-sizing:border-box;display:block;"></textarea>
   </div>
-  <div id="qa-ex-ref" style="display:none;margin-top:6px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);font-size:17px;line-height:1.45;color:#fff;font-style:italic;"></div>
+  <div id="qa-ex-ref" style="display:none;margin-top:6px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);font-size:17px;line-height:1.45;color:#fff;"></div>
   <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:25px;color:#6f6c7e;"><span>Only you see this</span><span id="hs2-count">0 / 200</span></div>
   <div style="display:flex;justify-content:flex-end;margin-top:12px;"><button class="hs2-complete" onclick="hs2Complete(0)">Complete &#10003;</button></div>
   </div>
