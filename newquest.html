@@ -443,7 +443,7 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
 #cb3-starthelp-sheet .cb3-helpx .cb3-hxl{font-size:22px;}
 .cb3-startcard .cb3-sublbl{font-size:25px;}
 .cb3-startcard .cb3-dd .cb3-dv{font-size:25px;}
-.cb3-startcard .cb3-exact{font-size:25px;}
+.cb3-startcard .cb3-exact{font-size:25px;border:1.5px solid rgba(255,255,255,.85);background:rgba(255,255,255,.04);}
 .cb3-startcard .cb3-editline{font-size:25px;}
 .gm-style-cc div{background:rgba(13,11,24,.8)!important;}
 .gm-style-cc a,.gm-style-cc span,.gm-style-cc button{color:#b8c4d0!important;}
@@ -478,6 +478,36 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
 .cb3-helpx{padding:13px 14px;border-radius:13px;background:rgba(232,168,32,.05);border:1px solid rgba(232,168,32,.25);margin-bottom:9px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.9);}
 .cb3-helpx .cb3-hxl{font-size:11px;letter-spacing:1.5px;color:#e8a820;margin-bottom:5px;}
 .cb3-gotit{margin-top:6px;text-align:center;padding:13px;border-radius:12px;background:linear-gradient(135deg,#c9890c,#e8a820);color:#fff;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.fs-shx{display:flex;gap:13px;align-items:flex-start;margin-bottom:15px;opacity:0;}
+.fs-shx .shb{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,.5);opacity:0;transform:scale(.3);}
+.fs-shx .sht{font-size:22px;line-height:1.5;color:rgba(255,255,255,.88);}
+.fs-shx .sht b{display:block;font-size:23px;letter-spacing:1px;margin-bottom:2px;font-weight:500;}
+.fs-shx.x1 .shb{background:linear-gradient(135deg,#92400e,#f5c842);}
+.fs-shx.x1 .sht b{color:#f5c842;}
+.fs-shx.x2 .shb{background:linear-gradient(135deg,#0d9488,#2dd4bf);}
+.fs-shx.x2 .sht b{color:#2dd4bf;}
+.fs-shx.x3 .shb{background:linear-gradient(135deg,#6d28d9,#a78bfa);}
+.fs-shx.x3 .sht b{color:#a78bfa;}
+#cb3-starthelp-sheet.open .fs-shx{animation:fsHiwFade .5s ease both;}
+#cb3-starthelp-sheet.open .fs-shx .shb{animation:fsHiwPop .55s cubic-bezier(.34,1.56,.64,1) both;}
+#cb3-starthelp-sheet.open .x1{animation-delay:.15s;}
+#cb3-starthelp-sheet.open .x1 .shb{animation-delay:.1s;}
+#cb3-starthelp-sheet.open .x2{animation-delay:.35s;}
+#cb3-starthelp-sheet.open .x2 .shb{animation-delay:.3s;}
+#cb3-starthelp-sheet.open .x3{animation-delay:.55s;}
+#cb3-starthelp-sheet.open .x3 .shb{animation-delay:.5s;}
+#cb3-starthelp-sheet.open .cb3-gotit,#cb3-idea-sheet.open .cb3-gotit{animation:fsNudgeGlow 2.4s ease-in-out infinite;}
+.fs-ideabtn{border:1.5px solid rgba(255,255,255,.85);border-radius:11px;padding:7px 14px;color:#fff;font-size:20px;cursor:pointer;background:rgba(255,255,255,.05);white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.fs-ideabtn:active{background:rgba(255,255,255,.15);}
+#cb3-idea-sheet .hs2-ex{animation:none;opacity:0;}
+#cb3-idea-sheet.open .hs2-ex{animation:fsExPop .45s cubic-bezier(.34,1.56,.64,1) both;}
+#cb3-idea-sheet .hs2-ex .ext{font-size:21px;color:rgba(255,255,255,.85);line-height:1.45;}
+#cb3-idea-sheet .hs2-ex .ext b{display:block;font-size:24px;font-weight:500;margin-bottom:1px;}
+#cb3-idea-sheet .hs2-ex:nth-child(4n+1) .ext b{color:#f5c842;}
+#cb3-idea-sheet .hs2-ex:nth-child(4n+2) .ext b{color:#2dd4bf;}
+#cb3-idea-sheet .hs2-ex:nth-child(4n+3) .ext b{color:#a78bfa;}
+#cb3-idea-sheet .hs2-ex:nth-child(4n+4) .ext b{color:#fb7185;}
+@media (prefers-reduced-motion: reduce){.fs-shx,.fs-shx .shb,#cb3-idea-sheet .hs2-ex{animation:none!important;opacity:1!important;transform:none!important;}#cb3-starthelp-sheet.open .cb3-gotit,#cb3-idea-sheet.open .cb3-gotit{animation:none;}}
 .cb3-lmgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .cb3-lm{padding:12px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:15px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden;min-width:0;}
 .cb3-lm:active{border-color:#e8a820;background:rgba(232,168,32,.1);}
@@ -949,11 +979,29 @@ html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-
   <div style="font-size:22px;letter-spacing:1.5px;color:#e8a820;text-align:center;margin:2px 0 6px;"><b>START</b> &#183; where every seeker begins</div>
   <div class="cb3-sh-title">Starting <span>Point</span></div>
   <div class="hs2-scroll">
-  <div class="cb3-helpx"><div class="cb3-hxl">GOOD STARTING POINTS</div>Start a good ways from the Hiding Spot. Think other side of the park, a different floor of the building, or across the plaza.</div>
-  <div class="cb3-helpx"><div class="cb3-hxl">ONE START, MANY CLUES</div>📍 Every clue page after this is built the same way: walk somewhere, find an object, answer a question. Add 2 to 7 clues.</div>
-  <div class="cb3-helpx"><div class="cb3-hxl">QUEST LENGTH</div>The quest length depends on how far the hiding spot is from the Starting Point. Close together makes a quick quest. Far apart makes a longer adventure.</div>
+  <div class="fs-shx x1"><div class="shb">&#128681;</div><div class="sht"><b>GOOD STARTING POINTS</b>Start a good ways from the Hiding Spot. Think other side of the park, a different floor of the building, or across the plaza.</div></div>
+  <div class="fs-shx x2"><div class="shb">&#129513;</div><div class="sht"><b>ONE START, MANY CLUES</b>Every clue page after this is built the same way: walk somewhere, find an object, answer a question. Add 2 to 7 clues.</div></div>
+  <div class="fs-shx x3"><div class="shb">&#128506;&#65039;</div><div class="sht"><b>QUEST LENGTH</b>Close to the hiding spot makes a quick quest. Far apart makes a longer adventure.</div></div>
   </div>
   <div class="cb3-gotit" onclick="cb3CloseSheets()">Got it</div>
+</div>
+<div id="cb3-idea-sheet" class="hs2-sheet cb3-spring">
+  <div class="qa-grab"></div>
+  <div class="cb3-sh-title">Starting Point <span>Ideas</span></div>
+  <div class="cb3-sh-sub">Pick a landmark every seeker can find, then say exactly where to stand.</div>
+  <div class="hs2-scroll">
+  <div class="hs2-ex" style="animation-delay:0.00s;"><span class="exb">&#128681;</span><span class="ext"><b>Flag pole</b>Start at the flag pole. Stand on the side facing the parking lot.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.06s;"><span class="exb">&#9970;</span><span class="ext"><b>Fountain</b>Start at the fountain. Face the water from the walking path.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.12s;"><span class="exb">&#128733;</span><span class="ext"><b>Playground</b>Start at the playground entrance, next to the swing set.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.18s;"><span class="exb">&#128205;</span><span class="ext"><b>Entrance sign</b>Start at the big entrance sign, on the sidewalk side.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.24s;"><span class="exb">&#127359;&#65039;</span><span class="ext"><b>Parking lot</b>Start at the parking lot corner closest to the restrooms.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.30s;"><span class="exb">&#129406;</span><span class="ext"><b>Trailhead</b>Start at the trailhead marker where the gravel path begins.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.36s;"><span class="exb">&#9918;&#65039;</span><span class="ext"><b>Ball field</b>Start behind home plate at the ball field fence.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.42s;"><span class="exb">&#129386;</span><span class="ext"><b>Picnic tables</b>Start at the picnic tables under the big pavilion.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.48s;"><span class="exb">&#128699;</span><span class="ext"><b>Restrooms</b>Start at the restroom building, by the water fountain.</span></div>
+  <div class="hs2-ex" style="animation-delay:0.54s;"><span class="exb">&#127795;</span><span class="ext"><b>Big tree</b>Start under the biggest tree, next to the memorial bench.</span></div>
+  </div>
+  <div class="cb3-gotit" onclick="cb3CloseSheets()">Got it, writing mine</div>
 </div>
 <div id="cb3-ob-sheet" class="hs2-sheet cb3-spring">
   <div class="qa-grab"></div>
@@ -1481,7 +1529,7 @@ function hs2ShowSheet(id){
   ['hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.toggle('open', s===id); });
 }
 function hs2CloseSheets(){
-  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet','cb3-start-sheet','cb3-starthelp-sheet','cb3-ob-sheet','cb3-pat-sheet','cb3-ex-sheet','cb3-exact-sheet','cb3s-date-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
+  ['hs2-back','hs2-obj-sheet','hs2-ex-sheet','hs2-how-sheet','cb3-start-sheet','cb3-starthelp-sheet','cb3-idea-sheet','cb3-ob-sheet','cb3-pat-sheet','cb3-ex-sheet','cb3-exact-sheet','cb3s-date-sheet'].forEach(function(s){ var el=document.getElementById(s); if(el) el.classList.remove('open'); });
 }
 function hs2OpenHow(){ hs2ShowSheet('hs2-how-sheet'); }
 function hs2WriteNow(){
@@ -6306,6 +6354,7 @@ function cb3ShowSheet(id){
 }
 function cb3CloseSheets(){ hs2CloseSheets(); }
 function cb3StartHelp(){ cb3ShowSheet('cb3-starthelp-sheet'); }
+function cb3StartIdeas(){ cb3ShowSheet('cb3-idea-sheet'); }
 function cb3Starts(){
   return ((QA_DATA[questArea]||{}).starts||['Main entrance','Parking lot','Playground','Restrooms']);
 }
@@ -6469,8 +6518,8 @@ function renderHsModal() {
           '<div class="cb3-da">\u25BE</div></div>' +
         '<input class="cb3-editline' + (_hsData.startCustom ? ' show' : '') + (spDone && _hsData.startCustom ? ' ok' : '') + '" id="cb3-sp-edit" maxlength="60" placeholder="e.g. the big red barn" value="' + cbEsc(_hsData.startCustom ? spName : '') + '" oninput="cb3SpCustomInput(this)"/>' +
         '<div class="cb3-lblrow" style="margin:14px 0 4px;"><div class="cb3-lbl">DESCRIPTION</div></div>' +
-        '<div class="cb3-sublbl">Where? Next to? Walk towards?</div>' +
-        '<textarea class="cb3-exact' + (sdDone ? ' ok' : '') + '" id="cb3-sp-desc" maxlength="160" placeholder="e.g. next to the main entrance sign on Loop 336" oninput="cb3SpDescInput(this)">' + cbEsc(_hsData.startDesc || '') + '</textarea>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;"><div class="cb3-sublbl" style="margin-bottom:0;">Where? Next to?</div><div class="fs-ideabtn" onclick="cb3StartIdeas()">&#128161; Ideas</div></div>' +
+        '<textarea class="cb3-exact' + (sdDone ? ' ok' : '') + '" id="cb3-sp-desc" maxlength="160" placeholder="Details..." oninput="cb3SpDescInput(this)">' + cbEsc(_hsData.startDesc || '') + '</textarea>' +
       '</div>' +
       '<div class="cb3-mapslot cb3-au3"><img src="/treasuremap.jpg" alt="Treasure map"/></div>';
 
