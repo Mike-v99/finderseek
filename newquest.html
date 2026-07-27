@@ -2,6 +2,7 @@
 
 <html lang="en">
 <head>
+<script>document.documentElement.classList.add("fs-preanim");setTimeout(function(){document.documentElement.classList.remove("fs-preanim");},2500);</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>FinderSeek - Start Quest</title>
@@ -395,6 +396,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 .hs2-acc-body{overflow:hidden;max-height:1200px;opacity:1;transition:max-height .4s ease,opacity .35s ease;}
 .hs2-card.closedacc .hs2-acc-body{max-height:0;opacity:0;}
 .hs2-rise{animation:hs2Rise .5s ease-out both;}
+html.fs-preanim #step1 div[style*="overflow-y:auto"]>div,html.fs-preanim #prize-grid .prize-chip,html.fs-preanim #step1 .ps-tile{opacity:0;}
 @keyframes hs2Pop{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
 .hs2-chip{display:inline-flex;align-items:center;gap:6px;opacity:0;animation:hs2SpringPop .6s cubic-bezier(.34,1.56,.64,1) forwards;}
 @keyframes hs2SpringPop{0%{opacity:0;transform:scale(.3);}70%{opacity:1;transform:scale(1.12);}100%{opacity:1;transform:scale(1);}}
@@ -7723,6 +7725,7 @@ function fsAnimStep1(){
   fsRise(st.querySelector('div[style*="overflow-y:auto"]'));
   fsPopSeq('#prize-grid .prize-chip', 0.12, 0.05);
   fsPopSeq('#step1 .ps-tile', 0.3, 0.045);
+  document.documentElement.classList.remove('fs-preanim');
 }
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(fsMicSync, 300);
@@ -7749,7 +7752,7 @@ document.addEventListener('DOMContentLoaded', function(){
       }catch(e){}
     };
   } catch(e){}
-  try { if (document.getElementById('step1') && document.getElementById('step1').style.display !== 'none') setTimeout(fsAnimStep1, 60); } catch(e){}
+  try { if (document.getElementById('step1') && document.getElementById('step1').style.display !== 'none') fsAnimStep1(); } catch(e){}
   try {
     var _fsOrigPrev = hsShowPreview;
     hsShowPreview = function(){
