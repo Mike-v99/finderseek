@@ -3,10 +3,11 @@
 <head>
 <script>try{if(!window.Capacitor)document.documentElement.classList.add('fs-web');}catch(e){}</script>
 <style>
-#fs-splash{display:none;position:fixed;inset:0;z-index:99999;background:#153a4b url('/coming-soon.jpg') center/contain no-repeat;}
-html.fs-web #fs-splash{display:block;}
+#fs-splash{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:99999;background:#153a4b;align-items:center;justify-content:center;}
+html.fs-web #fs-splash{display:flex;}
+#fs-splash img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;}
 html.fs-web,html.fs-web body{overflow:hidden;height:100%;}
-@media (min-aspect-ratio: 4/3){#fs-splash{background-size:cover;}}
+@media (min-width:520px){body > #fs-splash{max-width:none !important;margin:0 !important;width:100% !important;}}
 </style>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -485,7 +486,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
-<div id="fs-splash"></div>
+<div id="fs-splash"><img src="/coming-soon.jpg" alt="FinderSeek - Coming Soon"/></div>
 <script>
 // Auto-refresh Supabase session on page load
 (function() {
