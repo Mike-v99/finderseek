@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>try{if(!window.Capacitor)document.documentElement.classList.add('fs-web');}catch(e){}</script>
+<style>
+#fs-splash{display:none;position:fixed;inset:0;z-index:99999;background:#153a4b url('/coming-soon.jpg') center/contain no-repeat;}
+html.fs-web #fs-splash{display:block;}
+html.fs-web,html.fs-web body{overflow:hidden;height:100%;}
+@media (min-aspect-ratio: 4/3){#fs-splash{background-size:cover;}}
+</style>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>FinderSeek — Home</title>
@@ -478,6 +485,7 @@ body{padding-top:env(safe-area-inset-top,0px);}
 </style>
 </head>
 <body>
+<div id="fs-splash"></div>
 <script>
 // Auto-refresh Supabase session on page load
 (function() {
